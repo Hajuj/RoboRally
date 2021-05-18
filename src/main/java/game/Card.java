@@ -5,22 +5,15 @@ import java.util.ArrayList;
 /**
  * @author Ilja Knis
  */
-public abstract class Card {
+public abstract class Card{
 
-    private Card topCard;
+    public String cardName;
 
-    public abstract void initializeDeck();
-
-    public abstract void shuffleDeck();
-
-    public Card getTopCard(){
-        topCard = this.getDeck().get(0);
-        return topCard;
+    public Card() {
+        cardName = "Card";
     }
 
-    public void removeTopCard(ArrayList<Card> Deck){
-        Deck.remove(0);
+    public String getCardName(){
+        return cardName;
     }
-
-    protected abstract ArrayList<Card> getDeck();
 }
