@@ -18,9 +18,11 @@ import java.util.logging.Logger;
 
 public class Server {
     private final int SERVER_PORT = 500;
+    private final int MAX_CLINENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private final MessageHandler messageHandler = new MessageHandler();
     private final String protocolVersion = "Version 0.1";
+
 
     private int clientsCounter = 1;
     private ArrayList<Connection> connections = new ArrayList<>();
@@ -48,7 +50,7 @@ public class Server {
 
         // TODO: begrenzte Anzahl von clients
         // jetzt wartet er unendlich auf die neuen clientSockets
-        while (isWaitingForClients) {
+        while (checkMaxClient()) {
             logger.info("Waiting for new client...");
 
             //serverSocket.accept() waits for new clientSocket
@@ -75,6 +77,12 @@ public class Server {
         } catch (IOException ioException) {
             logger.warning("Exception in closing Serversocket. " + ioException.getMessage());
         }
+    }
+
+    public boolean checkMaxClient () {
+        if (connections.size() < MAX_CLINENT) {
+            return true;
+        } else return false;
     }
 
     public ArrayList<Player> getPlayers () {
