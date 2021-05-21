@@ -56,7 +56,7 @@ public class ClientHandler extends Thread {
             reader = new BufferedReader(in);
 
             //Server schickt dem Client eine HelloClient-Massage. Wenn die Protokollversion passt, wird 
-            //die Variable waitingForHelloClient bei dem Client auf false gesetzt == der client wird 
+            //die Variable waitingForServer bei dem Client auf false gesetzt == der client wird
             //notified, dass er zu dem Server connected ist.
             jsonMessage = new JSONMessage("HelloClient", new HelloClientBody(protocolVersion));
             writer.println(JSONSerializer.serializeJSON(jsonMessage));
