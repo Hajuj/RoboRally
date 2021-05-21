@@ -87,7 +87,7 @@ public class Client {
         this.player = player;
     }
 
-    public MessageHandler getMessageDistributer () {
+    public MessageHandler getMessageHandler () {
         return messageHandler;
     }
 
