@@ -5,6 +5,7 @@ import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.ServerMessageAction;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +23,7 @@ public class ClientThread extends Thread {
     private Socket clientSocket;
     private static final Logger logger = Logger.getLogger(ClientThread.class.getName());
     private MessageHandler messageHandler;
+
 
 
     public ClientThread (Client client, Socket clientSocket) {
@@ -45,6 +47,8 @@ public class ClientThread extends Thread {
             String messageString;
             while ((messageString = reader.readLine()) != null) {
                 // Deserialize the received JSON String into a JSON object
+
+
                 JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(messageString);
                 logger.info("Incoming StringMessage " + messageString + " was deserialised to " + jsonMessage);
 

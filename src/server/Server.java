@@ -23,7 +23,7 @@ public class Server {
     private final String protocolVersion = "Version 0.1";
 
     private int clientsCounter = 1;
-    private ArrayList<ClientWrapper> connectedClients = new ArrayList<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
 
 
@@ -89,8 +89,8 @@ public class Server {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<ClientWrapper> getConnectedClients () {
-        return connectedClients;
+    public ArrayList<Connection> getConnections () {
+        return connections;
     }
 
     public String getProtocolVersion () {
