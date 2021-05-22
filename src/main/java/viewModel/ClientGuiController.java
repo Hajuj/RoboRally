@@ -46,7 +46,7 @@ public class ClientGuiController {
      *
      * @throws IOException the io exception
      */
-    public ClientGuiController() throws IOException {
+    public ClientGuiController () throws IOException {
     }
 
 
@@ -54,7 +54,7 @@ public class ClientGuiController {
      * Instantiates a new chat.Client gui controller.
      */
     /*Konstruktor für GUI Controller*/
-    public void initialize() {
+    public void initialize () {
         messageField.setDisable(true);
         messages.setEditable(false);
         users.setEditable(false);
@@ -65,7 +65,7 @@ public class ClientGuiController {
     /**
      * Refresh messages.
      */
-    public synchronized void refreshMessages() {
+    public synchronized void refreshMessages () {
 
     }
 
@@ -76,10 +76,9 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void sendMessageButton(ActionEvent event) {
+    public void sendMessageButton (ActionEvent event) {
 
     }
-
 
     /**
      * Login button.
@@ -87,7 +86,7 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void loginButton(ActionEvent event) {
+    public void loginButton (ActionEvent event) {
         String serverIP = "localhost";
         int serverPort = 500;
         Client client = new Client(serverIP, serverPort);
@@ -102,7 +101,7 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void startBotClientButton(ActionEvent event) {
+    public void startBotClientButton (ActionEvent event) {
     }
 
 
@@ -110,7 +109,7 @@ public class ClientGuiController {
      * Refresh users.
      */
     /*Funktion um die Benutzer kontinuierlich zu aktualisieren*/
-    public synchronized void refreshUsers() {
+    public synchronized void refreshUsers () {
 
     }
 
@@ -121,7 +120,7 @@ public class ClientGuiController {
      * @param clientConnected the client connected
      */
     /*Funktion um zu überprüfen ob die Verbindung weiterhin besteht*/
-    public synchronized void notifyConnectionStatusChanged(boolean clientConnected) {
+    public synchronized void notifyConnectionStatusChanged (boolean clientConnected) {
 
     }
 
@@ -132,12 +131,9 @@ public class ClientGuiController {
      * @return the user name
      */
     /*Getter für Username*/
-    public String getUserName() {
+    public String getUserName () {
         return userName;
     }
 
-    /*run Methode für Thread*/
-    public void run() {
-    }
 
 }

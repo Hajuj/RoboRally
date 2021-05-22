@@ -1,25 +1,19 @@
 package json;
 
 import com.google.gson.*;
-import json.protocol.ErrorBody;
-import json.protocol.HelloClientBody;
-import json.protocol.HelloServerBody;
-import json.protocol.WelcomeBody;
 
 import java.lang.reflect.Type;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class is responsible for the deserialization (JSON -> Java) of JSON Messages being in their String representation.
  * It makes use of the Gson library. A customized Gson instance using a TypeAdapter is used to properly parse the
  * messageBody object (can be e.g. of type HelloServerBody, HelloClientBody, etc.) while deserializing.
  *
- * @author Mohamad, Viktoria
+ * @author Mohamad, Viktoria, Ilja
  */
 public class JSONDeserializer {
-
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RESET = "\u001B[0m";
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
     /**
@@ -29,7 +23,8 @@ public class JSONDeserializer {
      * @param jsonString The JSON String that needs to be deserialized.
      * @return The {@link JSONMessage} created by deserializing the JSON String.
      */
-    public static JSONMessage deserializeJSON(String jsonString) {
+    public static JSONMessage deserializeJSON (String jsonString) {
+
         // GsonBuilder allows to set settings before parsing stuff
         GsonBuilder gsonBuilder = new GsonBuilder();
 
@@ -45,7 +40,7 @@ public class JSONDeserializer {
 
     public static JsonDeserializer<JSONMessage> customDeserializer = new JsonDeserializer<JSONMessage>() {
         @Override
-        public JSONMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public JSONMessage deserialize (JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             // Get the overall JSON String with type and body
             JsonObject jsonMessage = jsonElement.getAsJsonObject();
 
@@ -57,31 +52,22 @@ public class JSONDeserializer {
 
             // For parsing JSON Arrays into Java ArrayLists<?>
 
-            if (messageType.equals("HelloClient")) {
-                HelloClientBody helloClientBody = new HelloClientBody(
-                        messageBody.get("protocol").getAsString()
-                );
+            // Casting a messageBody class by reflection
+            // Alle mögliche MessageBody aus dem Protokoll befinden sich in package json.protocol. und
+            // haben Namen (messageType + Body).
+            // Wir haben MessageType und suchen nach dem Klass MessageTypeBody. Wenn wir es finden,
+            // cast by reflection zu messageBody
 
-                return new JSONMessage("HelloClient", helloClientBody);
-            } else if (messageType.equals("HelloServer")) {
-                HelloServerBody helloServerBody = new HelloServerBody(
-                        messageBody.get("group").getAsString(),
-                        messageBody.get("isAI").getAsBoolean(),
-                        messageBody.get("protocol").getAsString()
-                );
-
-                return new JSONMessage("HelloServer", helloServerBody);
-            } else if (messageType.equals("Welcome")) {
-
-                WelcomeBody welcomeBody = new WelcomeBody(
-                        messageBody.get("playerID").getAsInt()
-                );
-                return new JSONMessage("Welcome", welcomeBody);
+            Class<?> reflection = null;
+            try {
+                reflection = Class.forName("json.protocol." + messageType + "Body");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            // Something went wrong, could not deserialize!
-            return new JSONMessage("Error", new ErrorBody("Fatal error: Could not resolve message." +
-                    "Something went wrong while deserializing."));
+
+            Gson gson = new Gson();
+            Object messageBodyNEW = reflection.cast(gson.fromJson(messageBody, reflection));
+            return new JSONMessage(messageType, messageBodyNEW);
         }
     };
-
 }
