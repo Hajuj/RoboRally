@@ -3,16 +3,15 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-public class PriorityAntenna extends Element {
+public class ConveyorBelt extends Element {
 
     @Expose
     private String elementName;
 
-    public PriorityAntenna(){
-        elementName = "PriorityAntenna";
+    public ConveyorBelt(){
+        elementName = "ConveyorBelt";
     }
 
-    //TODO find out if antenna should function as a blocker
     public boolean isBlocker() {
         return false;
     }
