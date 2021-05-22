@@ -50,8 +50,6 @@ public class Server {
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
         boolean isWaitingForClients = true;
 
-        // TODO: begrenzte Anzahl von clients
-        // jetzt wartet er unendlich auf die neuen clientSockets
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");
 

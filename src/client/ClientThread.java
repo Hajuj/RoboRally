@@ -65,6 +65,7 @@ public class ClientThread extends Thread {
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, this, messageBody, messageHandler);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
