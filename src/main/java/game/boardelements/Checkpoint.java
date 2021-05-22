@@ -5,11 +5,9 @@ import game.Element;
 
 public class Checkpoint extends Element {
 
-    @Expose
-    public String elementName;
-
     public Checkpoint() {
         elementName = "Checkpoint";
+        amount = 1;
     }
 
     public boolean isBlocker() {

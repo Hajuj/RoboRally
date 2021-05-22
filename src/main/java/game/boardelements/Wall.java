@@ -5,11 +5,9 @@ import game.Element;
 
 public class Wall extends Element {
 
-    @Expose
-    public String elementName;
-
     public Wall() {
         elementName = "Wall";
+        amount = 1;
     }
 
     @Override

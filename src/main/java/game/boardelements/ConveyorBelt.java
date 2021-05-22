@@ -5,11 +5,9 @@ import game.Element;
 
 public class ConveyorBelt extends Element {
 
-    @Expose
-    public String elementName;
-
     public ConveyorBelt() {
         elementName = "ConveyorBelt";
+        amount = 1;
     }
 
     public boolean isBlocker() {

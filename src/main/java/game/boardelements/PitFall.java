@@ -5,11 +5,9 @@ import game.Element;
 
 public class PitFall extends Element {
 
-    @Expose
-    public String elementName;
-
     public PitFall(){
         elementName = "PitFall";
+        amount = 1;
     }
 
     public boolean isBlocker() {

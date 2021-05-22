@@ -5,11 +5,9 @@ import game.Element;
 
 public class StartingPoint extends Element {
 
-    @Expose
-    public String elementName;
-
     public StartingPoint(){
         elementName = "StartingPoint";
+        amount = 1;
     }
 
     public boolean isBlocker() {

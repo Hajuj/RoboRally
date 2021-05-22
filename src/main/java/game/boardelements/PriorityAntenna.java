@@ -5,11 +5,9 @@ import game.Element;
 
 public class PriorityAntenna extends Element {
 
-    @Expose
-    public String elementName;
-
     public PriorityAntenna() {
         elementName = "PriorityAntenna";
+        amount = 1;
     }
 
     //TODO find out if antenna should function as a blocker

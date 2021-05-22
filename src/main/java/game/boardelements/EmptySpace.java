@@ -5,11 +5,9 @@ import game.Element;
 
 public class EmptySpace extends Element {
 
-    @Expose
-    public String elementName;
-
     public EmptySpace() {
         elementName = "EmptySpace";
+        amount = 1;
     }
 
     public boolean isBlocker() {
