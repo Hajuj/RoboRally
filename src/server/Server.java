@@ -44,6 +44,7 @@ public class Server {
             serverSocket = new ServerSocket(SERVER_PORT);
         } catch (IOException ioException) {
             logger.warn("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
+            System.exit(0);
         }
 
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
