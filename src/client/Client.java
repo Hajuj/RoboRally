@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Mohamad, Viktoria

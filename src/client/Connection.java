@@ -1,7 +1,6 @@
 package client;
 
 import game.Player;
-
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -16,9 +15,6 @@ public class Connection {
     private Player player;
     private int playerID;
 
-    public void setPlayer (Player player) {
-        this.player = player;
-    }
 
     public Connection (Socket socket) {
         this.socket = socket;
@@ -27,6 +23,5 @@ public class Connection {
     public Connection (Socket socket, String name, PrintWriter writer, int figure, int playerID, boolean isReady) {
         this.socket = socket;
         this.playerID = playerID;
-
     }
 }

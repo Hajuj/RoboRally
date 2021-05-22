@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
 
 /**
  * This class implements the server.
@@ -22,7 +24,6 @@ public class Server {
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private final MessageHandler messageHandler = new MessageHandler();
     private final String protocolVersion = "Version 0.1";
-
 
     private int clientsCounter = 1;
     private ArrayList<Connection> connections = new ArrayList<>();
@@ -42,7 +43,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
         } catch (IOException ioException) {
-            logger.warning("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
+            logger.warn("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
         }
 
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
@@ -58,7 +59,7 @@ public class Server {
             try {
                 clientSocket = serverSocket.accept();
             } catch (IOException | NullPointerException ioException) {
-                logger.warning("Exception in accepting Clientsocket. " + ioException.getMessage());
+                logger.warn("Exception in accepting Clientsocket. " + ioException.getMessage());
             }
 
             logger.info("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
@@ -71,11 +72,11 @@ public class Server {
             logger.info("Client handler thread " + clientSocket.getInetAddress().getHostAddress());
         }
         //When server shuts down, log the info and close the socket
-        logger.warning("Server shut down. Closing the Serversocket..");
+        logger.warn("Server shut down. Closing the Serversocket..");
         try {
             serverSocket.close();
         } catch (IOException ioException) {
-            logger.warning("Exception in closing Serversocket. " + ioException.getMessage());
+            logger.warn("Exception in closing Serversocket. " + ioException.getMessage());
         }
     }
 

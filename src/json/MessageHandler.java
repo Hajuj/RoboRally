@@ -12,7 +12,8 @@ import server.Server;
 import server.ClientHandler;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Mohamad, Viktoria
@@ -97,7 +98,7 @@ public class MessageHandler {
      * @param errorBody The message body of the message which is of type {@link ErrorBody}.
      */
     public void handleError (Client client, ClientThread task, ErrorBody errorBody) {
-        logger.warning(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
+        logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
     }
 

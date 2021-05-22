@@ -10,7 +10,8 @@ import json.protocol.HelloClientBody;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * Every Client has its own ClientHandlerThread.

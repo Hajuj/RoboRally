@@ -7,7 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.Objects;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * Class client.ClientApplication to start a client.
@@ -42,6 +43,8 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start (Stage stage) throws Exception {
+        //PropertyConfigurator.configure("src/resources/log4j.properties");
+        //BasicConfigurator.configure();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Chat.fxml")));
         stage.setTitle("RoboRally Chat");
         Scene scene = new Scene(root);
