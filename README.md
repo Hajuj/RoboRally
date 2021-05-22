@@ -18,7 +18,6 @@ Please download the project as a zip file on your local machine or clone it usin
 
 ### Game Rules
 
-### Cheats
 
 ## Project Requirements
 *maybe add here the JAR files?*
