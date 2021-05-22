@@ -8,11 +8,13 @@ public class Robot {
     private int xPosition;
     private int yPosition;
     private String name;
+    private Orientation orientation;
 
     public Robot(String name, int xPosition, int yPosition){
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
+        this.orientation = Orientation.RIGHT;
     }
 
     public int getxPosition() {
