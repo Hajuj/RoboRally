@@ -1,25 +1,34 @@
 package main;
 
 import com.google.gson.Gson;
+import game.Orientation;
 import game.boardelements.ConveyorBelt;
-
+import game.damagecards.Virus;
 
 /**
  * for now this class is used for testing
  */
 public class Main {
+    public static Gson gson = new Gson();
 
     public static void main(String[] args) {
-        serializeObject();
+        Virus virus = new Virus();
+        ConveyorBelt conveyorBelt = new ConveyorBelt();
+        conveyorBelt.setOrientation(Orientation.DOWN);
+        String virusJSON = serializeObject(virus);
+        String belt = serializeObject(conveyorBelt);
+        ConveyorBelt conveyorBeltfromJson = (ConveyorBelt) deserializeObject(belt, ConveyorBelt.class);
+        Virus virusfromJSON = (Virus) deserializeObject(virusJSON, Virus.class);
     }
 
-    public static void serializeObject(){
-        //Spam spam = new Spam();
-        ConveyorBelt conveyorBelt = new ConveyorBelt();
+    public static String serializeObject(Object object){
+        return gson.toJson(object);
+    }
 
-        Gson gson = new Gson();
-        String beltjson = gson.toJson(conveyorBelt);
-
+    //TODO find out which Class is responsible for the json in general
+    //      one method with if else body to check for object Class (?)
+    public static Object deserializeObject(String json, Class<?> whichClass){
+        return gson.fromJson(json, whichClass);
     }
 
 }

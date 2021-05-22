@@ -1,8 +1,8 @@
 package game;
 
-
 //TODO consider using interface with method "elementEffect(Robot robot)"
-//     should Element include x and y coordinates for position?
+//     numbers for map specifications (instead of coordinations)
+//     coordination (x,y) -> conversion to map numbers (1,1) -> 1, (1,2) -> 2,...
 
 import com.google.gson.annotations.Expose;
 
