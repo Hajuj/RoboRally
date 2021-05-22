@@ -6,9 +6,9 @@ import game.Element;
 public class ConveyorBelt extends Element {
 
     @Expose
-    private String elementName;
+    public String elementName;
 
-    public ConveyorBelt(){
+    public ConveyorBelt() {
         elementName = "ConveyorBelt";
     }
 

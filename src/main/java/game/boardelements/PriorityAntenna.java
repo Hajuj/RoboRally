@@ -6,9 +6,9 @@ import game.Element;
 public class PriorityAntenna extends Element {
 
     @Expose
-    private String elementName;
+    public String elementName;
 
-    public PriorityAntenna(){
+    public PriorityAntenna() {
         elementName = "PriorityAntenna";
     }
 

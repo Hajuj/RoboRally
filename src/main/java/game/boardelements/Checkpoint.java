@@ -3,19 +3,16 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-public class Wall extends Element {
+public class Checkpoint extends Element {
 
     @Expose
     public String elementName;
 
-    public Wall() {
-        elementName = "Wall";
+    public Checkpoint() {
+        elementName = "Checkpoint";
     }
 
-    @Override
     public boolean isBlocker() {
-        return true;
+        return false;
     }
-
-
 }
