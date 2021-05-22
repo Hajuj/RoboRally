@@ -1,6 +1,6 @@
 package main;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import game.Orientation;
 import game.boardelements.ConveyorBelt;
 import game.damagecards.Virus;
@@ -10,6 +10,7 @@ import game.damagecards.Virus;
  */
 public class Main {
     public static Gson gson = new Gson();
+    public static GsonBuilder gsonBuilder = new GsonBuilder();
 
     public static void main(String[] args) {
         Virus virus = new Virus();
@@ -19,6 +20,10 @@ public class Main {
         String belt = serializeObject(conveyorBelt);
         ConveyorBelt conveyorBeltfromJson = (ConveyorBelt) deserializeObject(belt, ConveyorBelt.class);
         Virus virusfromJSON = (Virus) deserializeObject(virusJSON, Virus.class);
+
+        String virusJSON2 = serializeWithBuilder(virus);
+        String beltJSON = serializeWithBuilder(conveyorBelt);
+
     }
 
     public static String serializeObject(Object object){
@@ -31,4 +36,28 @@ public class Main {
         return gson.fromJson(json, whichClass);
     }
 
+    public static String serializeWithBuilder(Object object){
+        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+        gson = gsonBuilder.create();
+        return gson.toJson(object);
+    }
+
+}
+
+class JSONMessage{
+    private String messageType;
+    private Object messageBody;
+
+    public JSONMessage(String messageType, Object messageBody){
+        this.messageType = messageType;
+        this.messageBody = messageBody;
+    }
+
+    public Object getMessageBody() {
+        return messageBody;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
 }
