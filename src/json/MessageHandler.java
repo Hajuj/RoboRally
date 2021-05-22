@@ -68,8 +68,11 @@ public class MessageHandler {
 
             } else {
                 logger.info("Protocol version test failed");
+                JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Protocol version test failed. Server hat Protokoll " + server.getProtocolVersion()));
+                clientHandler.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
+                clientHandler.getWriter().flush();
                 clientHandler.getClientSocket().close();
-                logger.info("Server connection terminated");
+                logger.info("Client connection terminated");
             }
         } catch (IOException e) {
             e.printStackTrace();

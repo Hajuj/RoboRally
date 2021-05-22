@@ -76,6 +76,7 @@ public class ClientHandler extends Thread {
                 // haben Namen (messageType + Body).
                 // Wir haben MessageType und suchen nach dem Klass MessageTypeBody. Wenn wir es finden,
                 // cast by reflection zu messageBody
+
                 Class<?> reflection = Class.forName("json.protocol." + jsonMessage.getMessageType() + "Body");
                 Object messageBody = reflection.cast(jsonMessage.getMessageBody());
 
