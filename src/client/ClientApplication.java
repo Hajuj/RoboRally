@@ -43,12 +43,10 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start (Stage stage) throws Exception {
-        //PropertyConfigurator.configure("src/resources/log4j.properties");
-        //BasicConfigurator.configure();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Chat.fxml")));
         stage.setTitle("RoboRally Chat");
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/view/Chat.fxml")).toString());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/view/Chat.css")).toString());
         stage.setScene(scene);
         stage.show();
         logger.info("Start!");

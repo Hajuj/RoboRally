@@ -20,11 +20,10 @@ import org.apache.log4j.Logger;
  */
 
 public class ClientThread extends Thread {
-    private Client client;
-    private Socket clientSocket;
+    private final Client client;
+    private final Socket clientSocket;
     private static final Logger logger = Logger.getLogger(ClientThread.class.getName());
-    private MessageHandler messageHandler;
-
+    private final MessageHandler messageHandler;
 
 
     public ClientThread (Client client, Socket clientSocket) {
@@ -59,13 +58,12 @@ public class ClientThread extends Thread {
                 // Wir haben MessageType und suchen nach dem Klass MessageTypeBody. Wenn wir es finden,
                 // cast by reflection zu messageBody
 
-                Class<?> reflection = (Class<?>) Class.forName("json.protocol." + jsonMessage.getMessageType() + "Body");
+                Class<?> reflection = Class.forName("json.protocol." + jsonMessage.getMessageType() + "Body");
                 Object messageBody = reflection.cast(jsonMessage.getMessageBody());
 
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, this, messageBody, messageHandler);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

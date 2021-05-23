@@ -3,7 +3,6 @@ package json;
 import client.Client;
 import client.ClientThread;
 import client.Connection;
-import game.Player;
 import json.protocol.ErrorBody;
 import json.protocol.HelloClientBody;
 import json.protocol.HelloServerBody;
