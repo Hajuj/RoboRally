@@ -1,41 +1,31 @@
-package client;
+package client.model;
 
 import game.Player;
-import json.JSONSerializer;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import org.apache.log4j.Logger;
 
-/**
- * @author Mohamad, Viktoria
- */
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
 
-public class Client {
+public class ClientModel {
+    private String username;
+    private ArrayList<String> usersOnline;
+    private String message;
     private Socket socket;
-    private final String SERVER_IP;
-    private final int SERVER_PORT;
+    private String server_ip;
+    private int server_port;
     private boolean waitingForServer;
-
-    private static final Logger logger = Logger.getLogger(Client.class.getName());
-    private String protocolVersion = "Version 0.1";
-    private MessageHandler messageHandler = new MessageHandler();
-    private String group = "BlindeBonbons";
+    private ClientModelReaderThread clientModelReaderThread;
+    private ClientModelWriterThread clientModelWriterThread;
+    private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
+    private final String protocolVersion = "Version 0.1";
+    private final MessageHandler messageHandler = new MessageHandler();
+    private final String group = "BlindeBonbons";
 
     private Player player;
-
-
-    //konstuktor for client
-    public Client (String serverIP, int serverPort) {
-        this.SERVER_IP = serverIP;
-        this.SERVER_PORT = serverPort;
-    }
 
     /**
      * This method is responsible for connecting the client to the specified server.
@@ -46,13 +36,19 @@ public class Client {
     public boolean connectClient () {
         try {
             //Create socket to connect to server at serverIP:serverPort
-            logger.info("Trying to connect to the server on the port " + SERVER_IP + " : " + SERVER_PORT);
-            socket = new Socket(SERVER_IP, SERVER_PORT);
+            server_ip = "localhost";
+            server_port = 500;
+
+            logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
+            socket = new Socket(server_ip, server_port);
 
             //Start new Thread, that reads incoming messages from server
-            ClientThread clientThread = new ClientThread(this, socket);
-            Thread readerThread = new Thread(clientThread);
+            clientModelReaderThread = new ClientModelReaderThread(this, socket);
+            clientModelReaderThread = new ClientModelReaderThread(this, socket);
+            Thread readerThread = new Thread(clientModelReaderThread);
             readerThread.start();
+            Thread writerTread = new Thread(clientModelWriterThread);
+            writerTread.start();
 
             //TODO kein Busy-Waiting, change to notify()
             //waiting for server response - waitingForHelloClient is changed wenn die clientThread bekommt
@@ -66,22 +62,16 @@ public class Client {
                     e.printStackTrace();
                 }
             }
-
-            //Outputstream for clientsocket und writer for it
-            OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-            PrintWriter writer = new PrintWriter(out);
-
-            // Give the server Information about group, AI and the protocol version with the
-            //JSONMessage with HelloServerBody
-            //for normal clients is isAI false.
-            JSONMessage jsonMessage = new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion));
-            writer.println(JSONSerializer.serializeJSON(jsonMessage));
-            writer.flush();
+            sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
 
         } catch (IOException exp) {
             exp.printStackTrace();
         }
         return false;
+    }
+
+    public void sendMessage (JSONMessage message) {
+        this.clientModelWriterThread.sendMessage(message);
     }
 
     public void setPlayer (Player player) {
@@ -91,6 +81,7 @@ public class Client {
     public MessageHandler getMessageHandler () {
         return messageHandler;
     }
+
 
     public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;

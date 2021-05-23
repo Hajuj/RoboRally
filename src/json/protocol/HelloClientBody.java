@@ -1,8 +1,8 @@
 package json.protocol;
 
 
-import client.Client;
-import client.ClientThread;
+import client.model.ClientModel;
+import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 
@@ -21,7 +21,7 @@ public class HelloClientBody implements ServerMessageAction<HelloClientBody> {
     }
 
     @Override
-    public void triggerAction (Client client, ClientThread task, HelloClientBody message, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread task, HelloClientBody message, MessageHandler messageHandler) {
         messageHandler.handleHelloClient(client, task, message);
     }
 

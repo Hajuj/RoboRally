@@ -1,4 +1,4 @@
-package client;
+package server;
 
 import game.Player;
 import java.io.PrintWriter;
@@ -11,7 +11,7 @@ import java.net.Socket;
  */
 
 public class Connection {
-    private Socket socket;
+    private final Socket socket;
     private Player player;
     private int playerID;
 

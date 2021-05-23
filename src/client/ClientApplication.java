@@ -36,6 +36,7 @@ public class ClientApplication extends Application {
         System.exit(0);
     }
 
+
     /**
      * Design of the Stage including the set of the scene with fxml-File and CSS-File
      *
@@ -43,10 +44,10 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start (Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Chat.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/client/view/Chat.fxml")));
         stage.setTitle("RoboRally Chat");
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/view/Chat.css")).toString());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/client/view/Chat.css")).toString());
         stage.setScene(scene);
         stage.show();
         logger.info("Start!");

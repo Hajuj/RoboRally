@@ -1,4 +1,4 @@
-package client;
+package client.model;
 
 import json.JSONDeserializer;
 import json.JSONMessage;
@@ -14,19 +14,19 @@ import java.net.Socket;
 import org.apache.log4j.Logger;
 
 /**
- * ClientThread for reading ( only! ) of server messages
+ * ClientModelReaderThread for reading ( only! ) of server messages
  *
  * @author Mohamad, Viktoria
  */
 
-public class ClientThread extends Thread {
-    private final Client client;
+public class ClientModelReaderThread extends Thread {
+    private final ClientModel client;
     private final Socket clientSocket;
-    private static final Logger logger = Logger.getLogger(ClientThread.class.getName());
+    private static final Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
     private final MessageHandler messageHandler;
 
 
-    public ClientThread (Client client, Socket clientSocket) {
+    public ClientModelReaderThread (ClientModel client, Socket clientSocket) {
         this.client = client;
         this.clientSocket = clientSocket;
         this.messageHandler = client.getMessageHandler();
@@ -47,7 +47,6 @@ public class ClientThread extends Thread {
             String messageString;
             while ((messageString = reader.readLine()) != null) {
                 // Deserialize the received JSON String into a JSON object
-
 
                 JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(messageString);
                 logger.info("Incoming StringMessage " + messageString + " was deserialised to " + jsonMessage);

@@ -1,6 +1,5 @@
 package server;
 
-import client.*;
 import game.Player;
 import json.MessageHandler;
 
@@ -26,8 +25,8 @@ public class Server {
     private final String protocolVersion = "Version 0.1";
 
     private int clientsCounter = 1;
-    private ArrayList<Connection> connections = new ArrayList<>();
-    private ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Connection> connections = new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
 
 
     public static void main (String[] args) {
@@ -61,14 +60,14 @@ public class Server {
                 logger.warn("Exception in accepting Clientsocket. " + ioException.getMessage());
             }
 
-            logger.info("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
+            logger.info("ClientModel connected from: " + clientSocket.getInetAddress().getHostAddress());
 
             //Every client has its own ClientHandler, starts in the new Thread
             ClientHandler clientHandler = new ClientHandler(clientSocket, this, protocolVersion, messageHandler);
             Thread clientHandlerThread = new Thread(clientHandler);
             clientHandlerThread.start();
 
-            logger.info("Client handler thread " + clientSocket.getInetAddress().getHostAddress());
+            logger.info("ClientModel handler thread " + clientSocket.getInetAddress().getHostAddress());
         }
         //When server shuts down, log the info and close the socket
         logger.warn("Server shut down. Closing the Serversocket..");
@@ -80,9 +79,7 @@ public class Server {
     }
 
     public boolean checkMaxClient () {
-        if (connections.size() < MAX_CLINENT) {
-            return true;
-        } else return false;
+        return connections.size() < MAX_CLINENT;
     }
 
     public ArrayList<Player> getPlayers () {

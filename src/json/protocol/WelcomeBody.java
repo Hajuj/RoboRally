@@ -1,7 +1,7 @@
 package json.protocol;
 
-import client.Client;
-import client.ClientThread;
+import client.model.ClientModel;
+import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 
@@ -12,7 +12,7 @@ import json.MessageHandler;
  */
 public class WelcomeBody implements json.protocol.ServerMessageAction<WelcomeBody> {
     @Expose
-    private Integer playerID;
+    private final Integer playerID;
 
     public WelcomeBody (Integer playerID) {
         this.playerID = playerID;
@@ -23,7 +23,7 @@ public class WelcomeBody implements json.protocol.ServerMessageAction<WelcomeBod
     }
 
     @Override
-    public void triggerAction (Client client, ClientThread task, WelcomeBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread task, WelcomeBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleWelcome(client, task, bodyObject);
     }
 }

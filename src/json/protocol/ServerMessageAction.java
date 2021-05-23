@@ -1,7 +1,7 @@
 package json.protocol;
 
-import client.Client;
-import client.ClientThread;
+import client.model.ClientModel;
+import client.model.ClientModelReaderThread;
 import json.MessageHandler;
 
 /**
@@ -12,5 +12,5 @@ import json.MessageHandler;
  * @author Mohamad, Viktoria
  */
 public interface ServerMessageAction<T> {
-    void triggerAction (Client client, ClientThread task, T bodyObject, MessageHandler messageHandler);
+    void triggerAction (ClientModel client, ClientModelReaderThread task, T bodyObject, MessageHandler messageHandler);
 }

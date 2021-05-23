@@ -25,7 +25,6 @@ public class JSONDeserializer {
      * @return The {@link JSONMessage} created by deserializing the JSON String.
      */
     public static JSONMessage deserializeJSON (String jsonString) {
-
         // GsonBuilder allows to set settings before parsing stuff
         GsonBuilder gsonBuilder = new GsonBuilder();
         // Register TypeAdapter so Gson knows how to parse the messageBody (java.lang.Object)
@@ -58,6 +57,7 @@ public class JSONDeserializer {
                 logger.warn("Something went wrong while deserializing.");
                 return new JSONMessage("Error", new ErrorBody("Something went wrong while deserializing."));
             }
+
             Gson gson = new Gson();
             Object messageBodyNEW = reflection.cast(gson.fromJson(messageBody, reflection));
             return new JSONMessage(messageType, messageBodyNEW);
