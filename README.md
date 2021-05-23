@@ -23,4 +23,4 @@ Please download the project as a zip file on your local machine or clone it usin
 *maybe add here the JAR files?*
 - Java 16
 - JavaFX 16
-- Gson
+- Gson 2.8.6
