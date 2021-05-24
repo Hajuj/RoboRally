@@ -23,7 +23,7 @@ public class SendChatBody implements ClientMessageAction<SendChatBody> {
 
     @Override
     public void triggerAction(Server server, ClientHandler task, SendChatBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleSendChat(server, task, bodyObject);
+        messageHandler.handleSendChat(server, bodyObject);
     }
 
     public String getMessage() {

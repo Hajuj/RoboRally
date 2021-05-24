@@ -157,7 +157,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat(Server server, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
 
         // Using Stream.filter() to get player's ID (filtering collections)
@@ -186,15 +186,15 @@ public class MessageHandler {
             for (Connection client : server.getConnections()) {
                 if (client.getPlayerID() == to) {
                     JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true));
-                    clientHandler.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
-                    clientHandler.getWriter().flush();
+                    client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
+                    client.getWriter().flush();
                 }
             }
         } else { //Send public message
             for (Connection client : server.getConnections()) {
                 JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false));
-                clientHandler.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
-                clientHandler.getWriter().flush();
+                client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
+                client.getWriter().flush();
             }
         }
     }
@@ -203,6 +203,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
 
         //TODO receive the messages
+
 
     }
 
