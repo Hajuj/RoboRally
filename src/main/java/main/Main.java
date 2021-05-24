@@ -1,9 +1,8 @@
 package main;
 
 import com.google.gson.*;
-import game.Orientation;
-import game.boardelements.ConveyorBelt;
-import game.damagecards.Virus;
+import game.boardelements.Belt;
+import game.boardelements.Pit;
 
 /**
  * for now this class is used for testing
@@ -13,16 +12,20 @@ public class Main {
     public static GsonBuilder gsonBuilder = new GsonBuilder();
 
     public static void main(String[] args) {
+
+        /*
         Virus virus = new Virus();
-        ConveyorBelt conveyorBelt = new ConveyorBelt();
+        Belt conveyorBelt = new Belt();
         conveyorBelt.setOrientation(Orientation.DOWN);
         String virusJSON = serializeObject(virus);
         String belt = serializeObject(conveyorBelt);
-        ConveyorBelt conveyorBeltfromJson = (ConveyorBelt) deserializeObject(belt, ConveyorBelt.class);
+        Belt beltfromJson = (Belt) deserializeObject(belt, Belt.class);
         Virus virusfromJSON = (Virus) deserializeObject(virusJSON, Virus.class);
 
         String virusJSON2 = serializeWithBuilder(virus);
         String beltJSON = serializeWithBuilder(conveyorBelt);
+
+         */
 
     }
 

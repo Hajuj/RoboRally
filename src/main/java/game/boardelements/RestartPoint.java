@@ -3,23 +3,20 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-public class Wall extends Element {
+public class RestartPoint extends Element {
 
     @Expose
-    private final String type;
+    private String type;
 
-    public Wall() {
-        type = "Wall";
+    public RestartPoint(){
+        this.type = "RestartPoint";
     }
 
-    @Override
     public String getType() {
         return type;
     }
 
-    @Override
     public boolean isBlocker() {
-        return true;
+        return false;
     }
-
 }

@@ -5,12 +5,16 @@ import game.decks.DeckTrojan;
 import game.decks.DeckVirus;
 import game.decks.DeckWorm;
 
+import java.util.ArrayList;
+
 public class Game {
 
     private DeckSpam deckSpam;
     private DeckTrojan deckTrojan;
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
+    private ArrayList<ArrayList<ArrayList<Element>>> map;
+    private ArrayList<Player> playerList;
 
     public Game(){
         this.deckSpam = new DeckSpam();
@@ -24,5 +28,15 @@ public class Game {
 
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
+
+        this.map = new ArrayList<>();
+    }
+
+    //TODO run() game
+    //     methods for game interaction
+
+
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
     }
 }
