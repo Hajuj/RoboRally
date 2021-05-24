@@ -7,6 +7,9 @@ import json.MessageHandler;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * @author Mohamad
+ */
 public class ReceivedChatBody implements ServerMessageAction<ReceivedChatBody> {
     @Expose
     private String message;

@@ -11,17 +11,31 @@ import java.net.Socket;
  * @author Mohamad, Viktoria
  */
 public class Connection {
-    private final Socket socket;
+    private Socket socket;
+    private ClientHandler clientHandler;
     private Player player;
     private int playerID;
-
-
-    public Connection(Socket socket) {
-        this.socket = socket;
-    }
+    private String name;
 
     public Connection(Socket socket, String name, PrintWriter writer, int figure, int playerID, boolean isReady) {
         this.socket = socket;
         this.playerID = playerID;
+        this.name = name;
+    }
+
+    public Connection(Socket clientSocket) {
+        this.socket = clientSocket;
+    }
+
+    public boolean hasPlayerIdSocket() {
+        return socket.equals(clientHandler.getClientSocket());
+    }
+
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    public String getName() {
+        return name;
     }
 }
