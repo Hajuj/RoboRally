@@ -16,7 +16,7 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
 
-    public Game(){
+    public Game(ArrayList<Player> playerList){
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
 
@@ -30,13 +30,14 @@ public class Game {
         this.deckWorm.initializeDeck();
 
         this.map = new ArrayList<>();
+        this.playerList = playerList;
     }
-
-    //TODO run() game
-    //     methods for game interaction
-
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
+    }
+
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
+        return map;
     }
 }
