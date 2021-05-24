@@ -82,8 +82,7 @@ public class Player {
         return robot;
     }
 
-    //TODO pick robot + player
-    public void foo(int figure, String name) {
+    public void pickRobot(int figure, String name) {
         this.figure = figure;
         this.name = name;
     }
