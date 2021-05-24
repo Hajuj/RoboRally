@@ -1,5 +1,6 @@
 package client.model;
 
+
 import game.Player;
 import json.JSONMessage;
 import json.MessageHandler;
@@ -85,5 +86,9 @@ public class ClientModel {
 
     public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
+    }
+
+
+    public void connectClient(String serverIPAdress, int serverPort) {
     }
 }

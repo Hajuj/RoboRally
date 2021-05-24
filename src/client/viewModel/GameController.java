@@ -26,6 +26,7 @@ public class GameController implements Initializable {
     }
 
 
+
     public GridPane getStartScreen() {
         return startScreen;
     }
