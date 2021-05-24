@@ -3,13 +3,13 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-public class Wall extends Element {
+public class Pit extends Element {
 
     @Expose
     private final String type;
 
-    public Wall() {
-        type = "Wall";
+    public Pit(){
+        this.type = "Pit";
     }
 
     @Override
@@ -17,9 +17,7 @@ public class Wall extends Element {
         return type;
     }
 
-    @Override
     public boolean isBlocker() {
-        return true;
+        return false;
     }
-
 }

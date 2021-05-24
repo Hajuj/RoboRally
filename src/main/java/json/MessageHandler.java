@@ -4,10 +4,7 @@ import client.Client;
 import client.ClientThread;
 import client.Connection;
 import game.Player;
-import json.protocol.ErrorBody;
-import json.protocol.HelloClientBody;
-import json.protocol.HelloServerBody;
-import json.protocol.WelcomeBody;
+import json.protocol.*;
 import server.Server;
 import server.ClientHandler;
 
@@ -33,7 +30,7 @@ public class MessageHandler {
      * @param helloClientBody The message body of the message which is of type HelloClientBody
      */
     public void handleHelloClient (Client client, ClientThread clientThread, HelloClientBody helloClientBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The Client will be notified" + ANSI_RESET);
+        logger.info(ANSI_CYAN + "[MessageHandler]: HelloClient Message received. The Client will be notified" + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
 
         //TODO change to notify() in class Client
@@ -49,7 +46,7 @@ public class MessageHandler {
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
     public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "[MessageHandler]: HelloServer Message received. " + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
                 logger.info("Protocol version test succeeded");
@@ -105,5 +102,9 @@ public class MessageHandler {
         logger.info("Error has occurred! " + errorBody.getError());
     }
 
+    public void handleGameStarted(Client client, ClientThread task, GameStartedBody bodyObject) {
+        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
 
+        //TODO implement map controller and use in this method to build the map
+    }
 }
