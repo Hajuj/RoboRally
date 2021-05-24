@@ -1,0 +1,33 @@
+.root {
+    -fx-background-image: url("/Users/altugutas/blinde-bonbons/src/main/java/View/metallicbackground.jpg");
+    -fx-background-repeat: repeat;
+}
+
+.label {
+    -fx-font-family: Verdana;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+
+#errorLabel {
+    -fx-font-size: 10;
+    -fx-font-weight: bold;
+
+}
+
+.yourNamelabel {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+
+}
+
+
+.button {
+    -fx-font-family: Verdana;
+    -fx-font-size: 11;
+    -fx-background-color: tan;
+    -fx-border-color: white;
+    -fx-font-weight: bold;
+}
