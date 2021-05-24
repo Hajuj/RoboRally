@@ -74,6 +74,34 @@ public class Player {
         return deckDiscard;
     }
 
+    public DeckHand getDeckHand() {
+        return deckHand;
+    }
+
+    public DeckProgramming getDeckProgramming() {
+        return deckProgramming;
+    }
+
+    public DeckRegister getDeckRegister() {
+        return deckRegister;
+    }
+
+    public DeckSpam getDeckSpam() {
+        return deckSpam;
+    }
+
+    public DeckTrojan getDeckTrojan() {
+        return deckTrojan;
+    }
+
+    public DeckVirus getDeckVirus() {
+        return deckVirus;
+    }
+
+    public DeckWorm getDeckWorm() {
+        return deckWorm;
+    }
+
     public int getFigure() {
         return figure;
     }
