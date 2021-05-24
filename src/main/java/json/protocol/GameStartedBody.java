@@ -8,6 +8,9 @@ import json.MessageHandler;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ilja Knis
+ */
 public class GameStartedBody implements ServerMessageAction<GameStartedBody>{
 
     @Expose

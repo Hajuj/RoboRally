@@ -7,6 +7,9 @@ import game.decks.DeckWorm;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ilja Knis
+ */
 public class Game {
 
     private DeckSpam deckSpam;

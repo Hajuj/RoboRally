@@ -5,6 +5,9 @@ import game.Element;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ilja Knis
+ */
 public class RotatingBelt extends Element {
 
     @Expose

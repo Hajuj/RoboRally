@@ -5,6 +5,10 @@ import game.Element;
 
 import java.util.ArrayList;
 
+
+/**
+ * @author Ilja Knis
+ */
 public class Antenna extends Element {
 
     @Expose

@@ -3,6 +3,9 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
+/**
+ * @author Ilja Knis
+ */
 public class Wall extends Element {
 
     @Expose
