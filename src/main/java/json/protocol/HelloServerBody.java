@@ -1,9 +1,11 @@
 package json.protocol;
 
-import com.google.gson.annotations.Expose;
 import server.Server;
-import json.MessageHandler;
 import server.ClientHandler;
+
+import json.MessageHandler;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * This is the wrapper class for the message body of the 'HelloServer' protocol JSON message.
