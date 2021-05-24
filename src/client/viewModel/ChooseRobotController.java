@@ -65,7 +65,7 @@ public class ChooseRobotController {
 
     }
 
-    public void playButtonClicked {
+    public void playButtonClicked() {
         username.setValue(nameField.getText());
         nameProperty().setValue(nameField.getText());
         model.setPlayerReady(username.get(), figure.getValue().intValue());
