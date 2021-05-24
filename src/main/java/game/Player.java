@@ -13,6 +13,7 @@ public class Player {
     private int figure;
 
     private DeckDiscard deckDiscard;
+    private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
     private DeckSpam deckSpam;
@@ -20,12 +21,17 @@ public class Player {
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
 
+
     public Player(int playerID) {
         this.playerID = playerID;
 
         this.deckDiscard = new DeckDiscard();
         deckDiscard.initializeDeck();
         deckDiscard.shuffleDeck();
+
+        this.deckProgramming = new DeckProgramming();
+        deckProgramming.initializeDeck();
+        deckProgramming.shuffleDeck();
 
         this.deckHand = new DeckHand();
         deckHand.initializeDeck();

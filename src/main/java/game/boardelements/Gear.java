@@ -10,6 +10,7 @@ public class Gear extends Element {
     @Expose
     private String type;
 
+    //symbolizes the direction of rotation
     @Expose
     private ArrayList<String> orientations;
 

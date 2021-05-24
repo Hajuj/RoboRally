@@ -13,6 +13,9 @@ public class PushPanel extends Element {
     @Expose
     private ArrayList<String> orientations;
 
+    @Expose
+    private ArrayList<Integer> registers;
+
     public PushPanel(String orientation){
         this.type = "PushPanel";
         this.orientations = new ArrayList<>();
