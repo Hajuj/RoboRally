@@ -28,7 +28,7 @@
 
    <ImageView fitHeight="615.0" fitWidth="815.0">
       <image>
-         <Image url="@../images/game-menu.png" />
+         <Image url="@../../resources/game-menu.png" />
       </image>
       <viewport>
          <Rectangle2D minX="800.0" minY="600.0" />
@@ -73,10 +73,6 @@
          <Button fx:id="buttonRules" layoutX="470.0" layoutY="280.0" minHeight="50.0" minWidth="100.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="50.0" prefWidth="100.0" text="Rules">
          <font>
             <Font name="Consolas Bold" size="20.0" />
-         </font></Button>
-      <Button fx:id="buttonCourses" minHeight="50.0" minWidth="100.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="50.0" prefWidth="100.0" text="Maps">
-         <font>
-            <Font name="Consolas Bold" size="21.0" />
          </font></Button>
     </HBox>
 </GridPane>

@@ -13,12 +13,12 @@
    <children>
       <ImageView fitHeight="724.0" fitWidth="751.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../images/roborally_start.jpg" />
+            <Image url="@../../resources/roborally_start.jpg" />
          </image>
       </ImageView>
       <ImageView fitHeight="122.0" fitWidth="542.0" layoutX="280.0" layoutY="572.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="45.73651123046875" AnchorPane.topAnchor="572.0">
          <image>
-            <Image url="@../images/robo_rally_logo.png" />
+            <Image url="@../../resources/robo_rally_logo.png" />
          </image>
       </ImageView>
       <VBox layoutX="260.0" layoutY="190.0" prefHeight="344.0" prefWidth="226.0">
