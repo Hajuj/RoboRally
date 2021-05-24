@@ -155,7 +155,18 @@ public class MessageHandler {
             player.pickRobot(figure, username);
             logger.info("Alles gut, der Spieler mit ID" + clientHandler.getPlayer_id() + " heißt " + username + " und dat figur " + figure);
         }
+    }
 
+    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+        logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
+
+        //Send private or public message method to be implemented
+    }
+
+    public void handleReceivedChat(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, ReceivedChatBody receivedChatBody) {
+        logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
+
+        //Receive message from user method to be implemented
     }
 
 }

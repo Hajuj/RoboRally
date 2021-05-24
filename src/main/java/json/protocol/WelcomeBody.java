@@ -12,7 +12,7 @@ import com.google.gson.annotations.Expose;
  *
  * @author Mohamad, Viktoria
  */
-public class WelcomeBody implements json.protocol.ServerMessageAction<WelcomeBody> {
+public class WelcomeBody implements ServerMessageAction<WelcomeBody> {
     @Expose
     private final Integer playerID;
 
