@@ -43,17 +43,13 @@ public class ClientApplication extends Application {
      * @param stage the window of the application
      */
     @Override
-    public void start(Stage stage) {
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Chat.fxml")));
-            stage.setTitle("RoboRally Chat");
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/view/Chat.css")).toString());
-            stage.setScene(scene);
-            stage.show();
-            logger.info("Start!");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    public void start (Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/resources/view/Startscreen.fxml")));
+        stage.setTitle("RoboRally Menu");
+        Scene scene = new Scene(root);
+       // scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/client/view/Chat.css")).toString());
+        stage.setScene(scene);
+        stage.show();
+        logger.info("Start!");
     }
 }

@@ -1,28 +1,44 @@
-package client.viewModel;
+package main.java.client.viewModel;
 
 import client.model.ClientModel;
 
+//import com.sun.javafx.charts.Legend;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-
+import java.net.URL;
+import java.util.ResourceBundle;
+//this class could also be considered as our sec. Window
 /**
  * The type client.viewModel.ClientModel gui controller.
  *
  * @author Vorprojekt
  */
-public class ClientViewModel {
+public class ClientViewModel implements Initializable{
     ClientModel model = new ClientModel();
+    public IntegerProperty figure;
+    private StringProperty username;
+    private StringProperty message;
+    private StringProperty serverAddress;
 
     @FXML
     private TextArea messages;
     @FXML
-    private Button loginButton;
+    private Button connectButton;
     @FXML
     private Button startButton;
     @FXML
@@ -42,19 +58,38 @@ public class ClientViewModel {
     @FXML
     private Label chatLabel;
 
+
+    private int serverPort;
+    private String serverIPAdress;
+    private TextField serverAddressField;
+    private TextField PortField;
+
     /**
      * Instantiates a new chat.ClientModel.
      *
      * @throws IOException the io exception
      */
-    public ClientViewModel() throws IOException {
+    public ClientViewModel () throws IOException {
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+
+        message = new SimpleStringProperty();
+        serverAddress = new SimpleStringProperty();
+
+
+
+
     }
 
     /**
      * Instantiates a new chat.ClientModel gui controller.
      */
     /*Konstruktor für GUI Controller*/
-    public void initialize() {
+    public void initialize () {
         messageField.setDisable(true);
         messages.setEditable(false);
         users.setEditable(false);
@@ -64,7 +99,7 @@ public class ClientViewModel {
     /**
      * Refresh messages.
      */
-    public synchronized void refreshMessages() {
+    public synchronized void refreshMessages () {
 
     }
 
@@ -74,8 +109,8 @@ public class ClientViewModel {
      * @param event the event
      */
     @FXML
-    public void sendMessageButton(ActionEvent event) {
-        model.sendUsernameAndRobot("Lola", 4);
+    public void sendMessageButton (ActionEvent event) {
+        //messageField.textProperty().bind(model.sendMessage(messageField.getText());
     }
 
     /**
@@ -84,27 +119,55 @@ public class ClientViewModel {
      * @param event the event
      */
     @FXML
-    public void connect(ActionEvent event) {
-        model.connectClient();
-        loginButton.setDisable(true);
+    public void setConnectButton (ActionEvent event) {
+        serverAddress.addListener(((observableValue, oldValue, newValue) -> {
+
+            serverAddressProperty().set(serverAddressField.getText());
+            serverIPAdress = serverAddress.getName();
+            serverPort = Integer.parseInt(PortField.getText());
+          //  model.connectClient(serverIPAdress,serverPort);
+            connectButton.setDisable(true);
+        }));
     }
+
+
+    public StringProperty serverAddressProperty() {
+        return serverAddress;
+    }
+ /*   @FXML
+    public void goToStartScreen(ActionEvent event){
+        try {
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/view/Startscreen.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage= new Stage();
+            stage.setTitle("RoboRally");
+            stage.setScene(new Scene(root1));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }*/
+
 
     /**
      * Start bot client button.
      *
      * @param event the event
      */
-    @FXML
-    public void startBotClientButton(ActionEvent event) {
+ /*   @FXML
+    public voidstartBotClientButton (ActionEvent event) {
     }
+*/
 
     /**
      * Refresh users.
      */
     /*Funktion um die Benutzer kontinuierlich zu aktualisieren*/
-    public synchronized void refreshUsers() {
+    public synchronized void refreshUsers () {
 
     }
+
 
     /**
      * Notify connection status changed.
@@ -112,8 +175,11 @@ public class ClientViewModel {
      * @param clientConnected the client connected
      */
     /*Funktion um zu überprüfen ob die Verbindung weiterhin besteht*/
-    public synchronized void notifyConnectionStatusChanged(boolean clientConnected) {
+    public synchronized void notifyConnectionStatusChanged (boolean clientConnected) {
 
     }
 
+
+    public void setPlayerReady(String name, int intValue) {
+    }
 }
