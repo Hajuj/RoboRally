@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -15,13 +17,12 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ChooseRobotController {
+    public TextField nameField;
+    public Button playButton;
     private StringProperty username;
     public IntegerProperty figure;
 
-    @FXML
-    private Button playButton;
-    @FXML
-    private TextField nameField;
+    
     @FXML
     private ImageView robot1;
     @FXML
@@ -71,6 +72,7 @@ public class ChooseRobotController {
 
     public void playButtonClicked() {
         try {
+
             username.setValue(nameField.getText());
             nameProperty().setValue(nameField.getText());
             model.setPlayerReady(username.get(), figure.getValue().intValue());

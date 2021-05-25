@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 public class ClientViewModel implements Initializable{
     ClientModel model = new ClientModel();
     public IntegerProperty figure;
-    private StringProperty username;
+
     private StringProperty message;
     private StringProperty serverAddress;
 
@@ -123,7 +123,7 @@ public class ClientViewModel implements Initializable{
             serverIPAdress = serverAddress.getName();
             serverPort = Integer.parseInt(PortField.getText());
           //  model.connectClient(serverIPAdress,serverPort);
-            ConnectButton.setDisable(true);
+           // ConnectButton.setDisable(true);
         }));
     }
 
