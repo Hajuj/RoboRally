@@ -206,4 +206,11 @@ public class MessageHandler {
         // Works for both ordinary and private messages
         Platform.runLater(() -> clientModel.receiveMessage(receivedChatBody.getMessage()));
     }
+
+    public void handleGameStarted(ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
+        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+
+        //TODO implement map controller and use in this method to build the map
+    }
+
 }
