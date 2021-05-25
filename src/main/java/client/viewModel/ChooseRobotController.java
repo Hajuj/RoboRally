@@ -1,4 +1,4 @@
-package main.java.client.viewModel;
+package client.viewModel;
 
 import client.model.ClientModel;
 import javafx.beans.property.IntegerProperty;
@@ -75,7 +75,7 @@ public class ChooseRobotController {
             nameProperty().setValue(nameField.getText());
             model.setPlayerReady(username.get(), figure.getValue().intValue());
 
-            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/resources/view/chat.fxml"));
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/view/chat.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage= new Stage();
             stage.setTitle("RoboRally");

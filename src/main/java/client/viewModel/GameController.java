@@ -1,4 +1,4 @@
-package main.java.client.viewModel;
+package client.viewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;

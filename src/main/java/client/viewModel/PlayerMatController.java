@@ -1,4 +1,4 @@
- package main.java.client.viewModel;
+ package client.viewModel;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;

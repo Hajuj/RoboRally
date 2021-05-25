@@ -33,6 +33,7 @@ public class Server {
     private final ArrayList<Player> players = new ArrayList<>();
 
 
+
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
@@ -92,7 +93,7 @@ public class Server {
     }
 
     public boolean checkMaxClient() {
-        return connections.size() < MAX_CLINENT;
+        return connections.size() < MAX_CLIENT;
     }
 
     public ArrayList<Player> getPlayers() {

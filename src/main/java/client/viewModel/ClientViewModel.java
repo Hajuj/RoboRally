@@ -1,23 +1,18 @@
-package main.java.client.viewModel;
+package client.viewModel;
 
 import client.model.ClientModel;
 
 //import com.sun.javafx.charts.Legend;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,7 +33,7 @@ public class ClientViewModel implements Initializable{
     @FXML
     private TextArea messages;
     @FXML
-    private Button connectButton;
+    private Button ConnectButton;
     @FXML
     private Button startButton;
     @FXML
@@ -61,7 +56,9 @@ public class ClientViewModel implements Initializable{
 
     private int serverPort;
     private String serverIPAdress;
+    @FXML
     private TextField serverAddressField;
+    @FXML
     private TextField PortField;
 
     /**
@@ -118,7 +115,7 @@ public class ClientViewModel implements Initializable{
      *
      * @param event the event
      */
-    @FXML
+
     public void setConnectButton (ActionEvent event) {
         serverAddress.addListener(((observableValue, oldValue, newValue) -> {
 
@@ -126,7 +123,7 @@ public class ClientViewModel implements Initializable{
             serverIPAdress = serverAddress.getName();
             serverPort = Integer.parseInt(PortField.getText());
           //  model.connectClient(serverIPAdress,serverPort);
-            connectButton.setDisable(true);
+            ConnectButton.setDisable(true);
         }));
     }
 
@@ -134,6 +131,7 @@ public class ClientViewModel implements Initializable{
     public StringProperty serverAddressProperty() {
         return serverAddress;
     }
+
  /*   @FXML
     public void goToStartScreen(ActionEvent event){
         try {

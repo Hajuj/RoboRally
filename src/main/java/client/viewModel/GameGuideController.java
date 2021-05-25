@@ -1,4 +1,4 @@
-package main.java.client.viewModel;
+package client.viewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

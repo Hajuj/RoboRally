@@ -1,4 +1,4 @@
-package main.java.client.viewModel;
+package client.viewModel;
 
 
 
