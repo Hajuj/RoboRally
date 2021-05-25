@@ -7,7 +7,7 @@ import game.decks.*;
  */
 public class Player {
 
-    private int playerID;
+    private final int playerID;
     private String name;
     private Robot robot;
     private int figure;
@@ -58,15 +58,15 @@ public class Player {
         deckWorm.shuffleDeck();
     }
 
-    public int getPlayerID() {
+    public int getPlayerID () {
         return playerID;
     }
 
-    public void setName(String name) {
+    public void setName (String name) {
         this.name = name;
     }
 
-    public String getName() {
+    public String getName () {
         return name;
     }
 

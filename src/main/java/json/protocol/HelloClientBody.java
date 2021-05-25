@@ -1,11 +1,11 @@
 package json.protocol;
 
+import client.model.ClientModel;
+import client.model.ClientModelReaderThread;
 
-import client.Client;
-import client.ClientThread;
-import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 
+import com.google.gson.annotations.Expose;
 
 /**
  * This is the wrapper class for the message body of the 'HelloClient' protocol JSON message.
@@ -21,7 +21,7 @@ public class HelloClientBody implements ServerMessageAction<HelloClientBody> {
     }
 
     @Override
-    public void triggerAction(Client client, ClientThread task, HelloClientBody message, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, ClientModelReaderThread task, HelloClientBody message, MessageHandler messageHandler) {
         messageHandler.handleHelloClient(client, task, message);
     }
 

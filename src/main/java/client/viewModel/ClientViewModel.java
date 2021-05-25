@@ -1,6 +1,7 @@
-package viewModel;
+package client.viewModel;
 
-import client.Client;
+import client.model.ClientModel;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,12 +12,12 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 /**
- * The type viewModel.Client gui controller.
+ * The type client.viewModel.ClientModel gui controller.
  *
  * @author Vorprojekt
  */
-public class ClientGuiController {
-    private String userName;
+public class ClientViewModel {
+    ClientModel model = new ClientModel();
 
     @FXML
     private TextArea messages;
@@ -42,33 +43,30 @@ public class ClientGuiController {
     private Label chatLabel;
 
     /**
-     * Instantiates a new chat.Client.
+     * Instantiates a new chat.ClientModel.
      *
      * @throws IOException the io exception
      */
-    public ClientGuiController () throws IOException {
+    public ClientViewModel() throws IOException {
     }
 
-
     /**
-     * Instantiates a new chat.Client gui controller.
+     * Instantiates a new chat.ClientModel gui controller.
      */
     /*Konstruktor für GUI Controller*/
-    public void initialize () {
+    public void initialize() {
         messageField.setDisable(true);
         messages.setEditable(false);
         users.setEditable(false);
         nameField.setDisable(true);
     }
 
-
     /**
      * Refresh messages.
      */
-    public synchronized void refreshMessages () {
+    public synchronized void refreshMessages() {
 
     }
-
 
     /**
      * Send message button.
@@ -76,8 +74,8 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void sendMessageButton (ActionEvent event) {
-
+    public void sendMessageButton(ActionEvent event) {
+        model.sendUsernameAndRobot("Lola", 4);
     }
 
     /**
@@ -86,14 +84,10 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void loginButton (ActionEvent event) {
-        String serverIP = "localhost";
-        int serverPort = 500;
-        Client client = new Client(serverIP, serverPort);
-        client.connectClient();
+    public void connect(ActionEvent event) {
+        model.connectClient();
         loginButton.setDisable(true);
     }
-
 
     /**
      * Start bot client button.
@@ -101,18 +95,16 @@ public class ClientGuiController {
      * @param event the event
      */
     @FXML
-    public void startBotClientButton (ActionEvent event) {
+    public void startBotClientButton(ActionEvent event) {
     }
-
 
     /**
      * Refresh users.
      */
     /*Funktion um die Benutzer kontinuierlich zu aktualisieren*/
-    public synchronized void refreshUsers () {
+    public synchronized void refreshUsers() {
 
     }
-
 
     /**
      * Notify connection status changed.
@@ -120,20 +112,8 @@ public class ClientGuiController {
      * @param clientConnected the client connected
      */
     /*Funktion um zu überprüfen ob die Verbindung weiterhin besteht*/
-    public synchronized void notifyConnectionStatusChanged (boolean clientConnected) {
+    public synchronized void notifyConnectionStatusChanged(boolean clientConnected) {
 
     }
-
-
-    /**
-     * Gets user name.
-     *
-     * @return the user name
-     */
-    /*Getter für Username*/
-    public String getUserName () {
-        return userName;
-    }
-
 
 }

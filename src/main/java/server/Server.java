@@ -1,7 +1,7 @@
 package server;
 
-import client.*;
 import game.Player;
+
 import json.MessageHandler;
 
 import java.io.IOException;
@@ -17,25 +17,25 @@ import org.apache.log4j.Logger;
  *
  * @author Mohamad, Viktoria
  */
-
 public class Server {
     private final int SERVER_PORT = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private final MessageHandler messageHandler = new MessageHandler();
     private final String protocolVersion = "Version 0.1";
+    private final ArrayList<Player> waitingPlayer = new ArrayList<>();
 
     private int clientsCounter = 1;
-    private ArrayList<Connection> connections = new ArrayList<>();
-    private ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Connection> connections = new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
 
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Server server = new Server();
         server.start();
     }
 
-    public void start () {
+    public void start() {
         logger.info("Starting server...");
 
         // Open socket for incoming connections, if socket already exists start aborts
@@ -50,7 +50,6 @@ public class Server {
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
         boolean isWaitingForClients = true;
 
-        // jetzt wartet er unendlich auf die neuen clientSockets
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");
 
@@ -62,14 +61,14 @@ public class Server {
                 logger.warn("Exception in accepting Clientsocket. " + ioException.getMessage());
             }
 
-            logger.info("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
+            logger.info("ClientModel connected from: " + clientSocket.getInetAddress().getHostAddress());
 
             //Every client has its own ClientHandler, starts in the new Thread
             ClientHandler clientHandler = new ClientHandler(clientSocket, this, protocolVersion, messageHandler);
             Thread clientHandlerThread = new Thread(clientHandler);
             clientHandlerThread.start();
 
-            logger.info("Client handler thread " + clientSocket.getInetAddress().getHostAddress());
+            logger.info("ClientModel handler thread " + clientSocket.getInetAddress().getHostAddress());
         }
         //When server shuts down, log the info and close the socket
         logger.warn("Server shut down. Closing the Serversocket..");
@@ -80,29 +79,31 @@ public class Server {
         }
     }
 
-    public boolean checkMaxClient () {
-        if (connections.size() < MAX_CLIENT) {
-            return true;
-        } else return false;
+    public ArrayList<Player> getWaitingPlayer() {
+        return waitingPlayer;
     }
 
-    public ArrayList<Player> getPlayers () {
+    public boolean checkMaxClient() {
+        return connections.size() < MAX_CLINENT;
+    }
+
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    public int getClientsCounter () {
+    public int getClientsCounter() {
         return clientsCounter;
     }
 
-    public void setClientsCounter (int clientsCounter) {
+    public void setClientsCounter(int clientsCounter) {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections () {
+    public ArrayList<Connection> getConnections() {
         return connections;
     }
 
-    public String getProtocolVersion () {
+    public String getProtocolVersion() {
         return protocolVersion;
     }
 

@@ -1,5 +1,7 @@
 package server;
 
+import game.Player;
+
 import json.JSONDeserializer;
 import json.JSONSerializer;
 import json.JSONMessage;
@@ -14,16 +16,16 @@ import java.net.SocketException;
 import org.apache.log4j.Logger;
 
 /**
- * Every Client has its own ClientHandlerThread.
+ * Every ClientModel has its own ClientHandlerThread.
  *
  * @author Mohamad, Viktoria
  */
-
 public class ClientHandler extends Thread {
     private final Server server;
     private final Socket clientSocket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private int player_id;
 
 
     private JSONMessage jsonMessage;
@@ -34,19 +36,27 @@ public class ClientHandler extends Thread {
     private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
 
-    public ClientHandler (Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
+    public ClientHandler(Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.messageHandler = messageHandler;
         this.protocolVersion = protocolVersion;
     }
 
-    public Socket getClientSocket () {
+    public int getPlayer_id() {
+        return player_id;
+    }
+
+    public void setPlayer_id(int player_id) {
+        this.player_id = player_id;
+    }
+
+    public Socket getClientSocket() {
         return clientSocket;
     }
 
     @Override
-    public void run () {
+    public void run() {
         try {
             // output and input Streams of the Clientsocket
             OutputStreamWriter out = new OutputStreamWriter(clientSocket.getOutputStream());
@@ -56,8 +66,8 @@ public class ClientHandler extends Thread {
             writer = new PrintWriter(out);
             reader = new BufferedReader(in);
 
-            //Server schickt dem Client eine HelloClient-Massage. Wenn die Protokollversion passt, wird
-            //die Variable waitingForServer bei dem Client auf false gesetzt == der client wird
+            //Server schickt dem ClientModel eine HelloClient-Massage. Wenn die Protokollversion passt, wird
+            //die Variable waitingForServer bei dem ClientModel auf false gesetzt == der client wird
             //notified, dass er zu dem Server connected ist.
             jsonMessage = new JSONMessage("HelloClient", new HelloClientBody(protocolVersion));
             writer.println(JSONSerializer.serializeJSON(jsonMessage));
@@ -86,7 +96,7 @@ public class ClientHandler extends Thread {
             }
         } catch (SocketException exp) {
             if (exp.getMessage().contains("Socket closed"))
-                logger.info("Client at " + clientSocket.getInetAddress().getHostAddress() + " disconnected.");
+                logger.info("ClientModel at " + clientSocket.getInetAddress().getHostAddress() + " disconnected.");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -94,7 +104,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public PrintWriter getWriter () {
+    public PrintWriter getWriter() {
         return writer;
     }
 }
