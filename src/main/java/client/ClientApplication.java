@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ public class ClientApplication extends Application {
      * starts before the method start - Lifecycle of JavaFX
      */
     @Override
-    public void init () {
+    public void init() {
         logger.info("Init!");
     }
 
@@ -31,11 +32,10 @@ public class ClientApplication extends Application {
      * starts before the application will close - Lifecycle of JavaFX
      */
     @Override
-    public void stop () {
+    public void stop() {
         logger.info("Stage is closing..");
         System.exit(0);
     }
-
 
     /**
      * Design of the Stage including the set of the scene with fxml-File and CSS-File

@@ -1,8 +1,10 @@
 package json;
 
-import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
+import client.Client;
+import client.ClientThread;
+import client.Connection;
+import game.Player;
+import json.protocol.*;
 import server.Server;
 import server.Connection;
 import server.ClientHandler;
@@ -157,16 +159,56 @@ public class MessageHandler {
         }
     }
 
-    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat(Server server, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
 
-        //Send private or public message method to be implemented
+        // Using Stream.filter() to get player's ID (filtering collections)
+        int playerID = server.getConnections()
+                .stream()
+                .filter(Connection::hasPlayerIdSocket)
+                .findFirst()
+                .get()
+                .getPlayerID();
+
+        // Using Stream.filter() to get player's name (filtering collections)
+        String senderName = server.getConnections()
+                .stream()
+                .filter(Connection::hasPlayerIdSocket)
+                .findFirst()
+                .get()
+                .getName();
+
+        // Build new string from client's name and the actual message, to show name in chat
+        String actualMessage = sendChatBody.getMessage();
+        String message = senderName + " @" + playerID + ": " + actualMessage;
+
+        int to = sendChatBody.getTo();
+        //Send Private message
+        if (to != -1) {
+            for (Connection client : server.getConnections()) {
+                if (client.getPlayerID() == to) {
+                    JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true));
+                    client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
+                    client.getWriter().flush();
+                }
+            }
+        } else { //Send public message
+            for (Connection client : server.getConnections()) {
+                JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false));
+                client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
+                client.getWriter().flush();
+            }
+        }
     }
 
     public void handleReceivedChat(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
 
-        //Receive message from user method to be implemented
+        //TODO receive the messages
+
+
     }
 
+        //TODO implement map controller and use in this method to build the map
+    }
 }

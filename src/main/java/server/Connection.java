@@ -1,7 +1,5 @@
 package server;
 
-import game.Player;
-
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -11,17 +9,36 @@ import java.net.Socket;
  * @author Mohamad, Viktoria
  */
 public class Connection {
-    private final Socket socket;
-    private Player player;
+    private PrintWriter writer;
+    private Socket socket;
+    private ClientHandler clientHandler;
     private int playerID;
+    private String name;
 
-
-    public Connection(Socket socket) {
-        this.socket = socket;
-    }
-
-    public Connection(Socket socket, String name, PrintWriter writer, int figure, int playerID, boolean isReady) {
+    public Connection(Socket socket, String name, PrintWriter writer, int playerID) {
         this.socket = socket;
         this.playerID = playerID;
+        this.name = name;
+        this.writer = writer;
+    }
+
+    public Connection(Socket clientSocket) {
+        this.socket = clientSocket;
+    }
+
+    public boolean hasPlayerIdSocket() {
+        return socket.equals(clientHandler.getClientSocket());
+    }
+
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PrintWriter getWriter() {
+        return writer;
     }
 }

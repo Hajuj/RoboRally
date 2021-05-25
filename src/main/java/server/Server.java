@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class Server {
     private final int SERVER_PORT = 500;
-    private final int MAX_CLINENT = 50;
+    private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private final MessageHandler messageHandler = new MessageHandler();
     private final String protocolVersion = "Version 0.1";
