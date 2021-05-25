@@ -3,6 +3,8 @@ package json;
 import client.model.ClientModel;
 import client.model.ClientModelReaderThread;
 
+import javafx.application.Platform;
+
 import server.Server;
 import server.Connection;
 import server.ClientHandler;
@@ -157,7 +159,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSendChat(Server server, SendChatBody sendChatBody) {
+    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
 
         // Using Stream.filter() to get player's ID (filtering collections)
@@ -185,16 +187,13 @@ public class MessageHandler {
         if (to != -1) {
             for (Connection client : server.getConnections()) {
                 if (client.getPlayerID() == to) {
-                    JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true));
-                    client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
-                    client.getWriter().flush();
+                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), client.getWriter());
                 }
             }
         } else { //Send public message
+            //TODO check how to exclude the user himself
             for (Connection client : server.getConnections()) {
-                JSONMessage jsonMessage = new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false));
-                client.getWriter().println(JSONSerializer.serializeJSON(jsonMessage));
-                client.getWriter().flush();
+                server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), client.getWriter());
             }
         }
     }
@@ -204,7 +203,7 @@ public class MessageHandler {
 
         //TODO receive the messages
 
-
+        // Works for both ordinary and private messages
+        Platform.runLater(() -> clientModel.receiveMessage(receivedChatBody.getMessage()));
     }
-
 }

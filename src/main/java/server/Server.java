@@ -2,9 +2,12 @@ package server;
 
 import game.Player;
 
+import json.JSONMessage;
+import json.JSONSerializer;
 import json.MessageHandler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -77,6 +80,11 @@ public class Server {
         } catch (IOException ioException) {
             logger.warn("Exception in closing Serversocket. " + ioException.getMessage());
         }
+    }
+
+    public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
+        writer.println(JSONSerializer.serializeJSON(jsonMessage));
+        writer.flush();
     }
 
     public ArrayList<Player> getWaitingPlayer() {

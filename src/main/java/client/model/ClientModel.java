@@ -2,6 +2,7 @@ package client.model;
 
 import game.Player;
 
+import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -31,6 +32,7 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private final String group = "BlindeBonbons";
     private Player player;
+    private StringProperty chatHistory;
 
     /**
      * This method is responsible for connecting the client to the specified server.
@@ -80,6 +82,12 @@ public class ClientModel {
         this.clientModelWriterThread.sendMessage(message);
     }
 
+    //TODO check if working
+    public void receiveMessage(String message) {
+        String oldHistory = chatHistory.get();
+        String newHistory = oldHistory + "\n" + message;
+        chatHistory.setValue(newHistory);
+    }
 
     public void sendUsernameAndRobot(String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));

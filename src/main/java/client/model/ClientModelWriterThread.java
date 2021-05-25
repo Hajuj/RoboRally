@@ -3,13 +3,13 @@ package client.model;
 import json.JSONMessage;
 import json.JSONSerializer;
 import json.MessageHandler;
-import json.protocol.HelloServerBody;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import json.protocol.SendChatBody;
 import org.apache.log4j.Logger;
 
 /**
@@ -48,5 +48,15 @@ public class ClientModelWriterThread extends Thread {
     public void sendMessage(JSONMessage jsonMessage) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
+    }
+
+    //TODO check if working
+    public void broadcastMessage(String message) {
+        sendMessage(new JSONMessage("SendChat", new SendChatBody(message, -1)));
+    }
+
+    //TODO check if working
+    public void sendDirectMessage(String message, int playerID) {
+        sendMessage(new JSONMessage("SendChat", new SendChatBody(message, playerID)));
     }
 }
