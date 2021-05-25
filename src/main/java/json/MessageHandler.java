@@ -1,8 +1,10 @@
 package json;
 
-import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
+import client.Client;
+import client.ClientThread;
+import client.Connection;
+import game.Player;
+import json.protocol.*;
 import server.Server;
 import server.Connection;
 import server.ClientHandler;
@@ -207,4 +209,6 @@ public class MessageHandler {
 
     }
 
+        //TODO implement map controller and use in this method to build the map
+    }
 }

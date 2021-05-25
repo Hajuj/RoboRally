@@ -6,13 +6,13 @@ import game.Element;
 /**
  * @author Ilja Knis
  */
-public class Wall extends Element {
+public class StartPoint extends Element {
 
     @Expose
     private final String type;
 
-    public Wall() {
-        type = "Wall";
+    public StartPoint(){
+        type = "StartPoint";
     }
 
     @Override
@@ -20,9 +20,7 @@ public class Wall extends Element {
         return type;
     }
 
-    @Override
     public boolean isBlocker() {
-        return true;
+        return false;
     }
-
 }

@@ -6,23 +6,20 @@ import game.Element;
 /**
  * @author Ilja Knis
  */
-public class Wall extends Element {
+public class RestartPoint extends Element {
 
     @Expose
-    private final String type;
+    private String type;
 
-    public Wall() {
-        type = "Wall";
+    public RestartPoint(){
+        this.type = "RestartPoint";
     }
 
-    @Override
     public String getType() {
         return type;
     }
 
-    @Override
     public boolean isBlocker() {
-        return true;
+        return false;
     }
-
 }

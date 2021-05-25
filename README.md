@@ -1,4 +1,4 @@
-*A very beautiful photo will be added here :)*
+![alt text](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/Mohamad/src/main/resources/images/RoboRallyLogo.jpg "RoboRally")
 
 # Welcome!
 This is our university project for the board game RoboRally.
@@ -23,4 +23,4 @@ Please download the project as a zip file on your local machine or clone it usin
 *maybe add here the JAR files?*
 - Java 16
 - JavaFX 16
-- Gson
+- Gson 2.8.6

@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 /**
  * @author Ilja Knis
  */
@@ -8,13 +10,13 @@ public class Robot {
     private int xPosition;
     private int yPosition;
     private String name;
-    private Orientation orientation;
+    private ArrayList<String> orientation;
 
     public Robot(String name, int xPosition, int yPosition){
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        this.orientation = Orientation.RIGHT;
+        orientation.add("Right");
     }
 
     public int getxPosition() {
