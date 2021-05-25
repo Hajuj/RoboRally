@@ -7,6 +7,9 @@ import game.decks.DeckWorm;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ilja Knis
+ */
 public class Game {
 
     private DeckSpam deckSpam;
@@ -35,5 +38,9 @@ public class Game {
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
+    }
+
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
+        return map;
     }
 }
