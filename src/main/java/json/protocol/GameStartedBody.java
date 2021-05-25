@@ -1,7 +1,7 @@
 package json.protocol;
 
-import client.Client;
-import client.ClientThread;
+import client.model.ClientModel;
+import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
 import game.Element;
 import json.MessageHandler;
@@ -21,7 +21,7 @@ public class GameStartedBody implements ServerMessageAction<GameStartedBody>{
     }
 
     @Override
-    public void triggerAction(Client client, ClientThread task, GameStartedBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, ClientModelReaderThread task, GameStartedBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleGameStarted(client, task, bodyObject);
     }
 
