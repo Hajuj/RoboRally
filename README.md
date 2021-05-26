@@ -1,35 +1,26 @@
-# Informationen
-Hallo Blinde Bonbons,
+![alt text](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/Mohamad/src/main/resources/images/RoboRallyLogo.jpg "RoboRally")
 
-dies hier ist euer Git-Repository, welches ihr im Rahmen des Hauptprojekts im Softwareentwicklungspraktikums nutzen könnt und sollt. Im derzeitigen Zustand befindet sich in diesem dieses Readme, welches ihr grade lest, und ein [.gitignore](https://git-scm.com/docs/gitignore)-File.
+# Welcome!
+This is our university project for the board game RoboRally.
 
-## Handhabung
+Here you will find everything needed for you to downaload and run the game on your local machine.
 
-Eine sehr einfach und verständliche Anleitung zum Thema "git" findet ihr unter folgender Adresse:  https://rogerdudler.github.io/git-guide/index.de.html (Bitte schaut euch diese mindestens einmal an!)
+## Download
+Please download the project as a zip file on your local machine or clone it using git.
 
-### Download
-* Git für eure Kommandozeile könnt ihr euch hier herunterladen: https://git-scm.com/downloads
-* Als Plugin für Eclipse: https://www.eclipse.org/egit/
-* Einbindung in IntelliJ: https://www.jetbrains.com/help/idea/using-git-integration.html
+## Run
+1. Connect to the server by running server.Server class.
+2. Start a client by running client.ClientApplication class.
 
+## Game
 
-### Einstellungen
+### Lobby
 
-    git config --global user.name "Vorname Nachname"
-    git config --global user.email "name@cip.ifi.lmu.de"
-
-### Klonen des Repositorys
-Die Adresse eures Repositorys findet ihr oben rechts auf dieser Seite, wenn ihr auf den blauen `Clone` Knopf klickt. 
-Auf euren Computer bekommt ihr dieses dann, indem ihr im gewünschten Verzeichnis folgenden Befehl aufruft:
-
-    
-    git clone git@gitlab2.cip.ifi.lmu.de:dbs_sep/dbs_sep2021/mobile-mauspads.git
-
-Dies setzt einen von euch erstellten SSH Schlüssel voraus. Informiert euch bitte, wie ihr dies mit eurem Betriebssystem am Besten macht. Alternativ ist es auch möglich mit https zu arbeiten. 
-
-## Keine Angst!
-Git und GitLab bieten eine Menge an Funktionen. Wir möchten euch ermutigen diese zu erkunden und zu experimentieren. Solltet ihr Hemmungen haben an diesem Repository zu werkeln, könnt ihr euch auch gerne eigene Repositorys hier im GitLab erstellen und dort euer Wissen erweitern.
-
-Solltet ihr im Laufe des Praktikums dazu entscheiden mit Branches zu arbeiten, würden wir euch bitten diese nicht mutwillig zu löschen. Um die schlimmsten Unfälle zu verhindern, ist in diesem Repository das Löschen des `master` Branches sowie `git push --force` auf diesem Branch nicht möglich. Falls ihr zusätzliche Branches geschützt haben möchtet, wendet euch bitte an euren Tutor.
+### Game Rules
 
 
+## Project Requirements
+*maybe add here the JAR files?*
+- Java 16
+- JavaFX 16
+- Gson 2.8.6
