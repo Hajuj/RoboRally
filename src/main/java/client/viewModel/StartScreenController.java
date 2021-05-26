@@ -6,9 +6,11 @@ import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
@@ -21,7 +23,7 @@ import java.util.ResourceBundle;
 
 
 public class StartScreenController {
-    AudioClip sound;
+
     @FXML
     private Button StartGameButton;
    @FXML
@@ -29,52 +31,58 @@ public class StartScreenController {
     @FXML
     private Button ExitButton;
 
-    public StartScreenController() throws IOException {
-    }
-
-
     @FXML
-    public void chooseRobotScreen(ActionEvent event){
+    private AnchorPane StartscreenPane;
 
-    }
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        sound = new AudioClip(this.getClass().getResource("/src/images/sounds/walking-dead.mp3").toExternalForm());
+
+        @FXML
+        public void chooseRobotScreen (ActionEvent event){
+
+        }
+
+        @FXML
+        public void setExitButton (ActionEvent event){
+            ExitButton.setCancelButton(true);
+        }
+        @FXML
+        public void openGameGuid (ActionEvent event) throws IOException {
+            Stage rootStage = new Stage();
+            Parent root2;
+
+            if (event.getSource() == GameGuidButton) {
+
+                root2 = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
+                rootStage.setScene(new Scene(root2));
+                rootStage.setTitle("Game Guide");
+                rootStage.show();
+
+
+            }
+            if (event.getSource() == StartGameButton) {
+                root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
+                rootStage.setScene(new Scene(root2));
+                rootStage.setTitle("Lobby");
+                rootStage.show();
+
+
+                // StartscreenPane.getChildren().setAll(pane);
+                //  root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
+
+                //Stage stage2 = new Stage();
+                //stage2.setScene(new Scene(root2));
+                //stage2.setTitle("Robot Choice");
+                //stage2.show();
+            }
+        }
+
+        /* for Audio_Music
+        *  @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        sound = new AudioClip(this.getClass().getResource("sounds/walking-dead.mp3").toExternalForm());
         sound.setCycleCount(AudioClip.INDEFINITE);
         sound.play();
-    }
-    @FXML
-    public void setExitButton(ActionEvent event){
-        ExitButton.setCancelButton(false);
-    }
-    @FXML
-    public void openGameGuid(ActionEvent event) throws IOException{
-        Stage rootStage;
-        Parent root2;
 
-        if (event.getSource() == GameGuidButton) {
-
-            root2 = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root2));
-            stage.setTitle("Game Guide");
-            stage.show();
-
-
-        }
-        if (event.getSource() == StartGameButton) {
-
-            root2 = FXMLLoader.load(getClass().getResource("/resources/view/ServerIpStage.fxml"));
-
-            Stage stage2 = null;
-            stage2.setScene(new Scene(root2));
-            stage2.setTitle("Robot Choice");
-            stage2.show();
-
-
-        }
-
-
-    }
+    }*/
 
 
 

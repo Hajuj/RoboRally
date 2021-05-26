@@ -22,7 +22,7 @@
    <children>
       <ImageView fitHeight="584.0" fitWidth="751.0" pickOnBounds="true">
          <image>
-            <Image url="@../../resources/game-menu.png" />
+            <Image url="@../game-menu.png" />
          </image>
       </ImageView>
       <VBox alignment="CENTER" prefHeight="593.0" prefWidth="764.0">
@@ -33,7 +33,7 @@
                      <children>
                         <ImageView fx:id="robot1" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot1" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot1.png" />
+                              <Image url="@../Robots/robot1.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -42,7 +42,7 @@
                      <children>
                         <ImageView fx:id="robot2" fitHeight="154.0" fitWidth="237.0" onMouseClicked="#setRobot2" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot2.png" />
+                              <Image url="@../Robots/robot2.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -51,7 +51,7 @@
                      <children>
                         <ImageView fx:id="robot3" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot3" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot3.png" />
+                              <Image url="@../Robots/robot3.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -64,7 +64,7 @@
                      <children>
                         <ImageView fx:id="robot4" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot4" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot4.png" />
+                              <Image url="@../Robots/robot4.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -73,7 +73,7 @@
                      <children>
                         <ImageView fx:id="robot5" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot5" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot5.png" />
+                              <Image url="@../Robots/robot5.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -82,14 +82,14 @@
                      <children>
                         <ImageView fx:id="robot6" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot6" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/Robots/robot6.png" />
+                              <Image url="@../Robots/robot6.png" />
                            </image>
                         </ImageView>
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Button fx:id="playButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" prefHeight="37.0" prefWidth="144.0" text="Play">
+            <Button fx:id="playButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="37.0" prefWidth="144.0" text="Play">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

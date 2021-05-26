@@ -21,8 +21,12 @@ public class ChooseRobotController {
     public Button playButton;
     private StringProperty username;
     public IntegerProperty figure;
+    ClientModel model = ClientModel.getInstance();
 
-    
+
+
+
+
     @FXML
     private ImageView robot1;
     @FXML
@@ -36,7 +40,7 @@ public class ChooseRobotController {
     @FXML
     private ImageView robot6;
 
-    ClientViewModel model= new ClientViewModel();
+
 
     public ChooseRobotController() throws IOException {
     }
@@ -44,52 +48,73 @@ public class ChooseRobotController {
     public void setRobot1() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(1);
+        System.out.println("robot1 is been set");
+
 
     }
     public void setRobot2() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(2);
+        System.out.println("robot2 is been set");
     }
     public void setRobot3() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(3);
-
+        System.out.println("robot3 is been set");
     }
     public void setRobot4() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(4);
+        System.out.println("robot4 is been set");
 
     }
     public void setRobot5() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(5);
+        System.out.println("robot5 is been set");
     }
     public void setRobot6() throws IOException {
         ClientViewModel Client = new ClientViewModel();
         Client.figure.setValue(6);
+        System.out.println("robot6 is been set");
 
     }
+    //TODO:die Implementierung der Methode setPlayerReady
+    //TODO:die Methoden funktionieren noch nicht
 
     public void playButtonClicked() {
         try {
 
             username.setValue(nameField.getText());
-            nameProperty().setValue(nameField.getText());
-            model.setPlayerReady(username.get(), figure.getValue().intValue());
+           // getNameProperty().setValue(nameField.getText());
 
-            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/view/chat.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage= new Stage();
-            stage.setTitle("RoboRally");
-            stage.setScene(new Scene(root1));
-            stage.show();
+            model.sendUsernameAndRobot(username.getName(), figure.getValue().intValue());
 
+
+            System.out.println(username.get() +" "+ figure.getValue().intValue());
+
+            Parent root= FXMLLoader.load(getClass().getResource("/view/chat.fxml"));
+            Stage window = (Stage) playButton.getScene().getWindow();
+            window.setScene(new Scene(root, 800, 800));
+            //Parent root1 = (Parent) fxmlLoader.load();
+            //Stage stage= new Stage();
+            //stage.setTitle("RoboRally");
+            //stage.setScene(new Scene(root1));
+            //stage.show();
         }catch (IOException e) {
             e.printStackTrace();
             }
+
     }
 
-    public StringProperty nameProperty() {
-        return username;
+    public ImageView getRobot1() {
+        return robot1;
     }
+
+    public void setRobot1(ImageView robot1) {
+        this.robot1 = robot1;
+    }
+   /* public StringProperty getNameProperty() {
+        return username;
+    }*/
 }

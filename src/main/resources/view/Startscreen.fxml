@@ -8,12 +8,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenController">
+<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenController">
 
    <children>
       <ImageView fitHeight="724.0" fitWidth="751.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../../resources/roborally_start.jpg" />
+            <Image url="@../roborally_start.jpg" />
          </image>
       </ImageView>
       <ImageView fitHeight="122.0" fitWidth="542.0" layoutX="280.0" layoutY="572.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="45.73651123046875" AnchorPane.topAnchor="572.0">

@@ -6,6 +6,8 @@ import javafx.scene.layout.GridPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+//TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
+
 public class GameController implements Initializable {
     @FXML
     private GridPane playerMat;

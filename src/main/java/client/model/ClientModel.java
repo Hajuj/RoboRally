@@ -2,7 +2,6 @@ package client.model;
 
 import game.Player;
 
-import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -12,12 +11,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import json.protocol.SendChatBody;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
 
 /**
  * @author Mohamad, Viktoria
+ * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
+ *
  */
 public class ClientModel {
+    private static ClientModel instance;
     private String username;
     private ArrayList<String> usersOnline;
     private String message;
@@ -32,7 +37,17 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private final String group = "BlindeBonbons";
     private Player player;
-    private StringProperty chatHistory;
+
+
+    private ClientModel () {
+    }
+
+    public static ClientModel getInstance () {
+        if (instance == null){
+            instance = new ClientModel();
+        }
+        return instance;
+    }
 
     /**
      * This method is responsible for connecting the client to the specified server.
@@ -40,12 +55,9 @@ public class ClientModel {
      *
      * @return <code>true</code> if connection could be established.
      */
-    public boolean connectClient() {
+    public boolean connectClient(String server_ip ,int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
-            server_ip = "localhost";
-            server_port = 500;
-
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
             socket = new Socket(server_ip, server_port);
 
@@ -82,18 +94,20 @@ public class ClientModel {
         this.clientModelWriterThread.sendMessage(message);
     }
 
-    //TODO check if working
-    public void receiveMessage(String message) {
-        String oldHistory = chatHistory.get();
-        String newHistory = oldHistory + "\n" + message;
-        chatHistory.setValue(newHistory);
-    }
+    //TODO: sendMsg(String message)
 
     public void sendUsernameAndRobot(String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
+    //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
+    public void sendMsg(String message){
+       clientModelWriterThread.broadcastMessage(message);
+    }
 
+    public void sendPrivateMsg(String message, int PlayerId){
+        clientModelWriterThread.sendDirectMessage(message,PlayerId);
+    }
 
     public void setPlayer(Player player) {
         this.player = player;
