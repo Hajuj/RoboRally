@@ -32,6 +32,7 @@ public class ChatViewModel implements Initializable {
     private StringProperty messageInput;
     private StringProperty chatText;
     private String message;
+    private StringProperty chatHistory;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,11 +49,17 @@ public class ChatViewModel implements Initializable {
 
 
     //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
+
     public void sendMessageButton(ActionEvent event) {
+        System.out.println("HI");
        //messageInput.addListener((observableValue, oldValue, newValue) -> {
                 message = messageField.getText();
+                //ChatField.textProperty().bind(chatTextProperty());
+
                 if (message.charAt(0) == '@') {
                     if (message.contains(" ")) {
+                        System.out.println("ACHTUNG this is a private message");
+
                         int Begin_msg = message.indexOf(" ");
                         int playerPrivate = Integer.parseInt(message.substring(1, Begin_msg));
                         int End_msg = message.length();
@@ -60,23 +67,54 @@ public class ChatViewModel implements Initializable {
                         System.out.println("this is a private message");
                         messageField.setText("");
                         messageProperty().setValue(messageField.getText());
+                        ChatField.textProperty().bind(chatTextProperty());
                         //model.sendPrivateMsg((message.substring(Begin_msg + 1,End_msg), int playerSenderID);
                     }
                 } else {
-                    model.sendMsg(message);
                     System.out.println("this is a public Msg");
+                    model.sendMsg(message);
+                   // chatText.bind(model.getChatHistoryProperty());
+                    //setChatHistory(model.getNewHistory());
+                    //setChatHistory(model.receiveMessage(message));
+
+                    //chatText.bind(chatHistory);
+                    //processIncomingMessage(message);
                     messageField.setText("");
-                    //model.sendMsgAllPlayers(message,-1);
-                    messageProperty().setValue(messageField.getText());
+                    ChatField.setText(message);
+                    //messageProperty().setValue(messageField.getText());
                 }
            // });
 
+    }
+    /**
+     * Refresh messages.
+     */
+    public synchronized void refreshMessages() {
+        ChatField.appendText(model.getNewMessage() + "\n");
+    }
+    /**
+     * Processes the message.
+     * @param message the message
+     */
+
+    protected void processIncomingMessage(String message) {
+        model.setNewMessage(message);
+        refreshMessages();
     }
 
 
     public StringProperty messageProperty() {return messageInput;}
 
-    public StringProperty chatText() {return chatText;}
+    public StringProperty chatTextProperty() {return chatText;}
+
+   /* public void setChatText(String chatText) {
+        this.chatText.set(chatText);
+
+    }*/
+
+    public void setChatHistory(String chatHistory) {
+        this.chatHistory.set(chatHistory);
+    }
 
 
 }

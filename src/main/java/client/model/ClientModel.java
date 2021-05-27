@@ -1,7 +1,9 @@
 package client.model;
 
+
 import game.Player;
 
+import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -37,6 +39,10 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private final String group = "BlindeBonbons";
     private Player player;
+    private String newMessage;
+    private String newHistory;
+
+    private StringProperty chatHistory;
 
 
     private ClientModel () {
@@ -108,6 +114,53 @@ public class ClientModel {
     public void sendPrivateMsg(String message, int PlayerId){
         clientModelWriterThread.sendDirectMessage(message,PlayerId);
     }
+    //TODO check if working
+
+    public void receiveMessage(String message) {
+        String oldHistory = chatHistory.get();
+        String newHistory = oldHistory + "\n" + message;
+        chatHistory.setValue(newHistory);
+    }
+    public StringProperty getChatHistoryProperty() { return chatHistory; }
+
+  /*  public String receiveMessage(String message) {
+
+         newHistory =  message;
+        return newHistory;
+        /*String oldHistory = chatHistory.get();
+        String newHistory = oldHistory + "\n" + message;
+        return newHistory;
+
+
+
+    }
+    */
+
+    /**
+     * Sets new message.
+     *
+     * @param newMessage the new message
+     */
+    /*Setter für Nachrichten*/
+    public void setNewMessage(String newMessage) {
+        this.newMessage = newMessage;
+    }
+
+    public String getNewHistory() {
+        return newHistory;
+    }
+
+    /**
+     * Gets new message.
+     *
+     * @return the new message
+     */
+    /*Getter für Nachrichten*/
+    public String getNewMessage() {
+        return newMessage;
+    }
+
+
 
     public void setPlayer(Player player) {
         this.player = player;
@@ -121,4 +174,5 @@ public class ClientModel {
     public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
+
 }

@@ -117,7 +117,6 @@ public class ClientViewModel implements Initializable{
 
 
 
-
  /*   @FXML
     public void goToStartScreen(ActionEvent event){
         try {

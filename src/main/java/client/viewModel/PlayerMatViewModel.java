@@ -3,7 +3,7 @@ import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-public class PlayerMatController {
+public class PlayerMatViewModel {
     //5 Registern für die jeweiligen ausgewählten ProgrammierKarten
     @FXML
     private HBox playerRegister;

@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
-public class GameController implements Initializable {
+public class GameViewModel implements Initializable {
     @FXML
     private GridPane playerMat;
     @FXML
@@ -19,9 +19,9 @@ public class GameController implements Initializable {
     @FXML
     private ClientViewModel chatController;
     @FXML
-    private ChooseRobotController chooseRobotController;
+    private ChooseRobotViewModel chooseRobotViewModel;
     @FXML
-    private PlayerMatController playerMatController;
+    private PlayerMatViewModel playerMatViewModel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenController">
+<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenViewModel">
 
    <children>
       <ImageView fitHeight="724.0" fitWidth="751.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.IOException;
 
-public class ChooseRobotController {
+public class ChooseRobotViewModel {
     public TextField nameField;
     public Button playButton;
     private StringProperty username;
@@ -42,7 +42,7 @@ public class ChooseRobotController {
 
 
 
-    public ChooseRobotController() throws IOException {
+    public ChooseRobotViewModel() throws IOException {
     }
 
     public void setRobot1() throws IOException {

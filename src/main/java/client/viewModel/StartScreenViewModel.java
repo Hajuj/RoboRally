@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 
 
 
-public class StartScreenController {
+public class StartScreenViewModel {
 
     @FXML
     private Button StartGameButton;
