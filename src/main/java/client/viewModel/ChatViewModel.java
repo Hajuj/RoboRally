@@ -39,6 +39,7 @@ public class ChatViewModel implements Initializable {
 
         messageInput = new SimpleStringProperty();
         chatText = new SimpleStringProperty();
+        chatHistory = new SimpleStringProperty();
 
        /* sendButton.setOnMouseClicked(event -> {
 
@@ -71,11 +72,12 @@ public class ChatViewModel implements Initializable {
                         //model.sendPrivateMsg((message.substring(Begin_msg + 1,End_msg), int playerSenderID);
                     }
                 } else {
+                    //TODO add bindings
                     System.out.println("this is a public Msg");
                     model.sendMsg(message);
                    // chatText.bind(model.getChatHistoryProperty());
                     //setChatHistory(model.getNewHistory());
-                    //setChatHistory(model.receiveMessage(message));
+                    setChatHistory(model.getNewHistory());
 
                     //chatText.bind(chatHistory);
                     //processIncomingMessage(message);

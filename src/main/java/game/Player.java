@@ -13,7 +13,7 @@ public class Player {
     private int figure;
 
     private DeckDiscard deckDiscard;
-    private DeckProgramming deckProgramming;
+//    private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
     private DeckSpam deckSpam;
@@ -29,9 +29,9 @@ public class Player {
         deckDiscard.initializeDeck();
         deckDiscard.shuffleDeck();
 
-        this.deckProgramming = new DeckProgramming();
-        deckProgramming.initializeDeck();
-        deckProgramming.shuffleDeck();
+//        this.deckProgramming = new DeckProgramming();
+//        deckProgramming.initializeDeck();
+//        deckProgramming.shuffleDeck();
 
         this.deckHand = new DeckHand();
         deckHand.initializeDeck();
@@ -78,9 +78,9 @@ public class Player {
         return deckHand;
     }
 
-    public DeckProgramming getDeckProgramming() {
-        return deckProgramming;
-    }
+//    public DeckProgramming getDeckProgramming() {
+//        return deckProgramming;
+//    }
 
     public DeckRegister getDeckRegister() {
         return deckRegister;

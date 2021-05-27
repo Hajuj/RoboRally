@@ -24,6 +24,8 @@ public class MessageHandler {
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_GREEN = "\u001B[0m";
+    private Server server = Server.getInstance();
 
     /**
      * Wenn client ein HalloClient Massage von Server bekommt, wird die Variable waitingForServer
@@ -63,6 +65,9 @@ public class MessageHandler {
                 // Create a Connection to this clientSocket
                 Connection connection = new Connection(clientHandler.getClientSocket());
                 server.getConnections().add(connection);
+                connection.setPlayerID(actual_id);
+                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+                connection.setConnected(true);
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
@@ -93,8 +98,8 @@ public class MessageHandler {
      */
     public void handleWelcome(ClientModel clientmodel, ClientModelReaderThread clientModelReaderThread, WelcomeBody welcomeBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
-        logger.info("Your PlayerID: " + welcomeBody.getPlayerID());
-        Player player = new Player(welcomeBody.getPlayerID());
+        logger.info("Your PlayerID: " + welcomeBody.getClientID());
+        Player player = new Player(welcomeBody.getClientID());
         clientmodel.setPlayer(player);
     }
 
@@ -162,25 +167,12 @@ public class MessageHandler {
     public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
 
-        // Using Stream.filter() to get player's ID (filtering collections)
-        int playerID = server.getConnections()
-                .stream()
-                .filter(Connection::hasPlayerIdSocket)
-                .findFirst()
-                .get()
-                .getPlayerID();
-
-        // Using Stream.filter() to get player's name (filtering collections)
-        String senderName = server.getConnections()
-                .stream()
-                .filter(Connection::hasPlayerIdSocket)
-                .findFirst()
-                .get()
-                .getName();
+        int playerID = clientHandler.getPlayer_id();
+        String senderName = clientHandler.getName();
 
         // Build new string from client's name and the actual message, to show name in chat
         String actualMessage = sendChatBody.getMessage();
-        String message = senderName + " @" + playerID + ": " + actualMessage;
+        String message = senderName + " " + playerID + ": " + actualMessage;
 
         int to = sendChatBody.getTo();
         //Send Private message
@@ -191,9 +183,10 @@ public class MessageHandler {
                 }
             }
         } else { //Send public message
-            //TODO check how to exclude the user himself
             for (Connection client : server.getConnections()) {
-                server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), client.getWriter());
+                if (client.getPlayerID() != clientHandler.getPlayer_id()) {
+                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), client.getWriter());
+                }
             }
         }
     }
@@ -201,7 +194,7 @@ public class MessageHandler {
     public void handleReceivedChat(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
 
-        //TODO receive the messages
+        //TODO change the method
 
         // Works for both ordinary and private messages
         Platform.runLater(() -> clientModel.receiveMessage(receivedChatBody.getMessage()));
@@ -213,4 +206,30 @@ public class MessageHandler {
         //TODO implement map controller and use in this method to build the map
     }
 
+    //Server sends
+    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+        Connection connection = null;
+        for (Connection connection1 : server.getConnections()) {
+            if (connection1.getPlayerID() == clientHandler.getPlayer_id()) {
+                connection = connection1;
+            }
+        }
+        try {
+            connection.setConnected(true);
+            Thread.sleep(5000);
+//            logger.info(ANSI_CYAN + "Client " + clientHandler.getPlayer_id() + " Alive" + ANSI_RESET);
+            //TODO print 'is not alive' only once
+            connection.setConnected(false);
+//            logger.info(ANSI_CYAN + "Client " + clientHandler.getPlayer_id() + " is not alive!" + ANSI_RESET);
+            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Client sends
+    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
+//        logger.info(ANSI_CYAN + "Alive" + ANSI_RESET);
+    }
 }

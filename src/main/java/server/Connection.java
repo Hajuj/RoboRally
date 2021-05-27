@@ -1,5 +1,8 @@
 package server;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -14,20 +17,23 @@ public class Connection {
     private ClientHandler clientHandler;
     private int playerID;
     private String name;
+    private boolean isConnected;
 
-    public Connection(Socket socket, String name, PrintWriter writer, int playerID) {
-        this.socket = socket;
-        this.playerID = playerID;
-        this.name = name;
-        this.writer = writer;
-    }
-
-    public Connection(Socket clientSocket) {
+    public Connection(Socket clientSocket) throws IOException {
         this.socket = clientSocket;
+        this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
-    public boolean hasPlayerIdSocket() {
-        return socket.equals(clientHandler.getClientSocket());
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
     }
 
     public int getPlayerID() {

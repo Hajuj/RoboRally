@@ -114,27 +114,11 @@ public class ClientModel {
     public void sendPrivateMsg(String message, int PlayerId){
         clientModelWriterThread.sendDirectMessage(message,PlayerId);
     }
-    //TODO check if working
 
-    public void receiveMessage(String message) {
-        String oldHistory = chatHistory.get();
-        String newHistory = oldHistory + "\n" + message;
-        chatHistory.setValue(newHistory);
+   public void receiveMessage(String message) {
+        //TODO implement with bindings so it can work in ChatViewModel
+       System.out.println(message);
     }
-    public StringProperty getChatHistoryProperty() { return chatHistory; }
-
-  /*  public String receiveMessage(String message) {
-
-         newHistory =  message;
-        return newHistory;
-        /*String oldHistory = chatHistory.get();
-        String newHistory = oldHistory + "\n" + message;
-        return newHistory;
-
-
-
-    }
-    */
 
     /**
      * Sets new message.
@@ -160,7 +144,9 @@ public class ClientModel {
         return newMessage;
     }
 
-
+    public Player getPlayer() {
+        return player;
+    }
 
     public void setPlayer(Player player) {
         this.player = player;
