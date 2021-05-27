@@ -8,9 +8,6 @@ import game.Element;
  */
 public class Empty extends Element {
 
-    @Expose
-    private final String type;
-
     public Empty() {
         this.type = "Empty";
     }
@@ -19,7 +16,8 @@ public class Empty extends Element {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
+
 }

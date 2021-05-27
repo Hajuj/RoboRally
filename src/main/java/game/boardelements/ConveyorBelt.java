@@ -8,28 +8,29 @@ import java.util.ArrayList;
 /**
  * @author Ilja Knis
  */
-public class Belt extends Element {
-
-    @Expose
-    private String type;
-
-    @Expose
-    private ArrayList<String> orientations;
+public class ConveyorBelt extends Element {
 
     @Expose
     private int speed;
+    @Expose
+    private ArrayList<String> orientations;
 
-    public Belt(String orientation, String colour) {
+    private String colour;
 
-        this.type = "Belt";
+    public ConveyorBelt(String type, String isOnBoard, ArrayList<String> orientations) {
+
+        this.type = type;
+        this.isOnBoard = isOnBoard;
         this.orientations = new ArrayList<>();
-        this.orientations.add(orientation);
+        this.orientations.addAll(orientations);
 
+        //Where do we get the colour?
         if(colour.equals("green")){
             this.speed = 1;
         }else{
             this.speed = 2;
         }
+
     }
 
 
@@ -37,8 +38,8 @@ public class Belt extends Element {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 
     public ArrayList<String> getOrientations() {

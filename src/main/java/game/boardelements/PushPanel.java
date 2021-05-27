@@ -11,29 +11,32 @@ import java.util.ArrayList;
 public class PushPanel extends Element {
 
     @Expose
-    private String type;
-
-    @Expose
     private ArrayList<String> orientations;
 
     @Expose
     private ArrayList<Integer> registers;
 
-    public PushPanel(String orientation){
-        this.type = "PushPanel";
+    public PushPanel(String type, String isOnBoard, ArrayList<String> orientations, ArrayList<Integer> registers){
+        this.type = type;
+        this.isOnBoard = isOnBoard;
         this.orientations = new ArrayList<>();
-        this.orientations.add(orientation);
+        this.orientations.addAll(orientations);
+        this.registers = registers;
     }
 
     public String getType() {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 
     public ArrayList<String> getOrientations() {
         return orientations;
+    }
+
+    public ArrayList<Integer> getRegisters() {
+        return registers;
     }
 }

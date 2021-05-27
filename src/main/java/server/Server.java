@@ -92,7 +92,7 @@ public class Server {
     }
 
     public boolean checkMaxClient() {
-        return connections.size() < MAX_CLINENT;
+        return connections.size() < MAX_CLIENT;
     }
 
     public ArrayList<Player> getPlayers() {

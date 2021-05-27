@@ -11,18 +11,15 @@ import java.util.ArrayList;
 public class Laser extends Element {
 
     @Expose
-    private String type;
-
-    @Expose
     private ArrayList<String> orientations;
 
     @Expose
     private int count;
 
-    public Laser(int count, String orientation){
-        this.type = "Laser";
+    public Laser(String type, String isOnBoard, ArrayList<String> orientations, int count){
+        this.type = type;
         this.orientations = new ArrayList<>();
-        this.orientations.add(orientation);
+        this.orientations.addAll(orientations);
         this.count = count;
     }
 
@@ -38,7 +35,9 @@ public class Laser extends Element {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    @Override
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
+
 }

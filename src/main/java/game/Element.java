@@ -1,5 +1,7 @@
 package game;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 
 /**
@@ -7,14 +9,15 @@ import java.util.ArrayList;
  */
 public abstract class Element {
 
-    private String type;
-    private ArrayList<String> orientations;
+    @Expose
+    public String type;
+    @Expose
+    public String isOnBoard;
 
     public Element(){
     }
 
     public abstract String getType();
-
-    public abstract boolean isBlocker();
+    public abstract String getIsOnBoard();
 }
 
