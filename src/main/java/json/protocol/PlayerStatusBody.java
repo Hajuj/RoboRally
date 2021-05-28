@@ -7,7 +7,7 @@ import json.MessageHandler;
 
 /*
 {
-"messageType": "PlayerStatus",
+"messageType": "PlayerStatusBody",
    "messageBody": {
       "clientID": 42,
       "ready": true
@@ -15,21 +15,21 @@ import json.MessageHandler;
 }
 
  */
-public class PlayerStatus implements ServerMessageAction<PlayerStatus> {
+public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
 
     @Expose
     private int clientID;
     @Expose
     private boolean ready;
 
-    public PlayerStatus (int clientID, boolean ready) {
+    public PlayerStatusBody (int clientID, boolean ready) {
         this.clientID = clientID;
         this.ready = ready;
     }
 
 
     @Override
-    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, PlayerStatus bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, PlayerStatusBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handlePlayerStatus(client, readerThread, bodyObject);
     }
 

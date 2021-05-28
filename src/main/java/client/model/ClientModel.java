@@ -11,6 +11,7 @@ import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class ClientModel {
     private Socket socket;
     private String server_ip;
     private int server_port;
-    private boolean waitingForServer;
+    private boolean waitingForServer = true;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
@@ -62,9 +63,7 @@ public class ClientModel {
 
     /**
      * This method is responsible for connecting the client to the specified server.
-     * It uses the {@link client.ClientApplication} to get the IP and Port.
-     *
-     * @return <code>true</code> if connection could be established.
+     * @return true if connection could be established.
      */
     public boolean connectClient(String server_ip ,int server_port) {
         try {
@@ -72,7 +71,7 @@ public class ClientModel {
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
             socket = new Socket(server_ip, server_port);
 
-            //Start new Thread, that reads incoming messages from server
+            //Start new Threads for reading/writing messages from/to the server
             clientModelReaderThread = new ClientModelReaderThread(this, socket);
             clientModelWriterThread = new ClientModelWriterThread(this, socket, messageHandler);
             Thread readerThread = new Thread(clientModelReaderThread);
@@ -80,24 +79,21 @@ public class ClientModel {
             Thread writerTread = new Thread(clientModelWriterThread);
             writerTread.start();
 
+            //TODO: kann es sein, dass Client sehr lange hier in der While-Schleife wartet ohne dass ConnectException passiert? -> THOMAS
             //TODO kein Busy-Waiting, change to notify()
             //waiting for server response - waitingForHelloClient is changed wenn die clientThread bekommt
             //ein JSONMessage mit dem type HelloClient
-            waitingForServer = true;
             while (waitingForServer) {
                 logger.info("Waiting for the server answer...");
-                if (waitingForServer) try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(1000);
             }
-
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
-
-        } catch (IOException exp) {
+            return true;
+        } catch (ConnectException connectException){
+        } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
         }
+        logger.info("Something went wrong..");
         return false;
     }
 
@@ -137,6 +133,7 @@ public class ClientModel {
 
    public void receiveMessage(String message) {
         //TODO implement with bindings so it can work in ChatViewModel
+       //newMessage = message;
        System.out.println(message);
     }
 

@@ -14,7 +14,6 @@ import game.Player;
 import json.protocol.*;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,12 @@ public class MessageHandler {
     public static final String ANSI_GREEN = "\u001B[0m";
     private Server server = Server.getInstance();
 
+
+
+
     /**
-     * Wenn client ein HalloClient Massage von Server bekommt, wird die Variable waitingForServer
-     * auf false gesetz und client kann dem Server Nachrichten schicken.
+     * Wenn Client ein HalloClient Message von Server bekommt, wird die Variable waitingForServer
+     * auf false gesetzt und Client kann dem Server Nachrichten schicken.
      *
      * @param clientmodel             The ClientModel
      * @param clientModelReaderThread The ClientModelReaderThread of the ClientModel
@@ -75,7 +77,7 @@ public class MessageHandler {
 
                 //TODO: need to test
                 for (Player player1 : server.getWaitingPlayer()){
-                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatus(player1.getPlayerID(), player1.isReady()));
+                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player1.getPlayerID(), player1.isReady()));
                     server.sendMessage(jsonMessage, clientHandler.getWriter());
                 }
 
@@ -175,6 +177,8 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "[MessageHandler]: Send Chat received. " + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
+        //TODO: clientHandler hat keinen Namen, lol
+        //TODO: getName() Returns this thread's name.
         String senderName = clientHandler.getName();
 
         // Build new string from client's name and the actual message, to show name in chat
@@ -186,23 +190,25 @@ public class MessageHandler {
         if (to != -1) {
             for (Connection client : server.getConnections()) {
                 if (client.getPlayerID() == to) {
+                    //TODO: Private Nachrich bekommt SENDER und Emphanger.
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), client.getWriter());
                 }
             }
         } else { //Send public message
-            for (Connection client : server.getConnections()) {
-                if (client.getPlayerID() != clientHandler.getPlayer_id()) {
-                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), client.getWriter());
-                }
+            for (Connection connection : server.getConnections()) {
+                //if (connection.getPlayerID() != clientHandler.getPlayer_id()) {
+                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), connection.getWriter());
+               // }
             }
         }
     }
 
+    //TODO refactoren
     public void handleReceivedChat(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
 
         //TODO change the method
-
+        //TODO: auch von wem die message ist übergeben
         // Works for both ordinary and private messages
         Platform.runLater(() -> clientModel.receiveMessage(receivedChatBody.getMessage()));
     }
@@ -239,8 +245,8 @@ public class MessageHandler {
         logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 
-    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatus playerStatus){
-        clientModel.refreshPlayerStatus(playerStatus.getClientID(), playerStatus.isReady());
+    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody){
+        clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
 }
