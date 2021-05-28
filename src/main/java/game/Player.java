@@ -11,6 +11,7 @@ public class Player {
     private String name;
     private Robot robot;
     private int figure;
+    private boolean isReady;
 
     private DeckDiscard deckDiscard;
 //    private DeckProgramming deckProgramming;
@@ -21,10 +22,17 @@ public class Player {
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
 
+    public boolean isReady () {
+        return isReady;
+    }
+
+    public void setReady (boolean ready) {
+        isReady = ready;
+    }
 
     public Player(int playerID) {
         this.playerID = playerID;
-
+        this.isReady = false;
         this.deckDiscard = new DeckDiscard();
         deckDiscard.initializeDeck();
         deckDiscard.shuffleDeck();

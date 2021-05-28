@@ -32,7 +32,6 @@ public class Server {
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
-    private final ArrayList<Player> players = new ArrayList<>();
 
     private Server () {
     }
@@ -100,16 +99,21 @@ public class Server {
         writer.flush();
     }
 
+    public Player getPlayerWithID(int ID){
+        for (Player player : waitingPlayer){
+            if (player.getPlayerID() == ID){
+                return player;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Player> getWaitingPlayer() {
         return waitingPlayer;
     }
 
     public boolean checkMaxClient() {
         return connections.size() < MAX_CLIENT;
-    }
-
-    public ArrayList<Player> getPlayers() {
-        return players;
     }
 
     public int getClientsCounter() {

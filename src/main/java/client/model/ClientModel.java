@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import json.protocol.SendChatBody;
+import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 import server.ClientHandler;
 import server.Server;
@@ -41,7 +42,6 @@ public class ClientModel {
     private Player player;
     private String newMessage;
     private String newHistory;
-
     private StringProperty chatHistory;
 
 
@@ -95,6 +95,14 @@ public class ClientModel {
         }
         return false;
     }
+
+    public void sendReadyStatus(boolean ready){
+        this.player.setReady(ready);
+        JSONMessage jsonMessage = new JSONMessage("SetStatus", new SetStatusBody(ready));
+        sendMessage(jsonMessage);
+    }
+
+
 
     public void sendMessage(JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);

@@ -225,4 +225,12 @@ public class MessageHandler {
         //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
         clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
     }
+
+    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        player.setReady(setStatusBody.isReady());
+        String isReady = setStatusBody.isReady()? "ready" : "not ready";
+        logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+    }
+
 }
