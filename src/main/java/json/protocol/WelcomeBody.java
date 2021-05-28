@@ -14,18 +14,18 @@ import com.google.gson.annotations.Expose;
  */
 public class WelcomeBody implements ServerMessageAction<WelcomeBody> {
     @Expose
-    private final Integer playerID;
+    private final Integer clientID;
 
-    public WelcomeBody(Integer playerID) {
-        this.playerID = playerID;
+    public WelcomeBody(Integer clientID) {
+        this.clientID = clientID;
     }
 
-    public Integer getPlayerID() {
-        return playerID;
+    public Integer getClientID() {
+        return clientID;
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread task, WelcomeBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleWelcome(client, task, bodyObject);
+    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, WelcomeBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleWelcome(client, readerThread, bodyObject);
     }
 }

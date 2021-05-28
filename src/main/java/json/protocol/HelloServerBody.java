@@ -27,8 +27,8 @@ public class HelloServerBody implements ClientMessageAction<HelloServerBody> {
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler task, HelloServerBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleHelloServer(server, task, bodyObject);
+    public void triggerAction(Server server, ClientHandler clientHandler, HelloServerBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleHelloServer(server, clientHandler, bodyObject);
     }
 
     public String getProtocol() {

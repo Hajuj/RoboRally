@@ -1,15 +1,16 @@
 package server;
 
+import client.model.ClientModel;
 import game.Player;
 
 import json.JSONMessage;
 import json.JSONSerializer;
 import json.MessageHandler;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -21,10 +22,11 @@ import org.apache.log4j.Logger;
  * @author Mohamad, Viktoria
  */
 public class Server {
-    private final int SERVER_PORT = 500;
+    private static Server instance;
+    private final int SERVER_PORT = 100;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
-    private final MessageHandler messageHandler = new MessageHandler();
+    private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
 
@@ -32,9 +34,20 @@ public class Server {
     private final ArrayList<Connection> connections = new ArrayList<>();
     private final ArrayList<Player> players = new ArrayList<>();
 
+    private Server () {
+    }
+
+    public static Server getInstance () {
+        if (instance == null){
+            instance = new Server();
+        }
+        return instance;
+    }
+
 
     public static void main(String[] args) {
-        Server server = new Server();
+        Server server = Server.getInstance();
+        server.messageHandler = new MessageHandler();
         server.start();
     }
 
@@ -92,7 +105,7 @@ public class Server {
     }
 
     public boolean checkMaxClient() {
-        return connections.size() < MAX_CLINENT;
+        return connections.size() < MAX_CLIENT;
     }
 
     public ArrayList<Player> getPlayers() {

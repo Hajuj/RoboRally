@@ -28,7 +28,7 @@
 
    <ImageView fitHeight="615.0" fitWidth="815.0">
       <image>
-         <Image url="@../../resources/game-menu.png" />
+         <Image url="@../game-menu.png" />
       </image>
       <viewport>
          <Rectangle2D minX="800.0" minY="600.0" />

@@ -1,12 +1,12 @@
-package main.java.client.viewModel;
+package client.viewModel;
 
 import client.model.ClientModel;
 
 //import com.sun.javafx.charts.Legend;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,16 +29,15 @@ import java.util.ResourceBundle;
  * @author Vorprojekt
  */
 public class ClientViewModel implements Initializable{
-    ClientModel model = new ClientModel();
+    ClientModel model = ClientModel.getInstance();
     public IntegerProperty figure;
-    private StringProperty username;
     private StringProperty message;
     private StringProperty serverAddress;
 
     @FXML
     private TextArea messages;
     @FXML
-    private Button connectButton;
+    private Button ConnectButton;
     @FXML
     private Button startButton;
     @FXML
@@ -61,8 +60,11 @@ public class ClientViewModel implements Initializable{
 
     private int serverPort;
     private String serverIPAdress;
+    @FXML
     private TextField serverAddressField;
+    @FXML
     private TextField PortField;
+    private StringProperty chat;
 
     /**
      * Instantiates a new chat.ClientModel.
@@ -74,13 +76,8 @@ public class ClientViewModel implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-
         message = new SimpleStringProperty();
         serverAddress = new SimpleStringProperty();
-
-
 
 
     }
@@ -111,29 +108,15 @@ public class ClientViewModel implements Initializable{
     @FXML
     public void sendMessageButton (ActionEvent event) {
         //messageField.textProperty().bind(model.sendMessage(messageField.getText());
-    }
 
-    /**
-     * Login button.
-     *
-     * @param event the event
-     */
-    @FXML
-    public void setConnectButton (ActionEvent event) {
-        serverAddress.addListener(((observableValue, oldValue, newValue) -> {
-
-            serverAddressProperty().set(serverAddressField.getText());
-            serverIPAdress = serverAddress.getName();
-            serverPort = Integer.parseInt(PortField.getText());
-          //  model.connectClient(serverIPAdress,serverPort);
-            connectButton.setDisable(true);
-        }));
     }
 
 
-    public StringProperty serverAddressProperty() {
-        return serverAddress;
-    }
+
+
+
+
+
  /*   @FXML
     public void goToStartScreen(ActionEvent event){
         try {
@@ -181,5 +164,9 @@ public class ClientViewModel implements Initializable{
 
 
     public void setPlayerReady(String name, int intValue) {
+    }
+
+    public StringProperty getChatText() {
+        return chat;
     }
 }
