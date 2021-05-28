@@ -4,6 +4,7 @@ package client.model;
 import game.Player;
 
 import javafx.beans.property.StringProperty;
+import javafx.util.Pair;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -12,6 +13,8 @@ import json.protocol.PlayerValuesBody;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import json.protocol.SendChatBody;
 import json.protocol.SetStatusBody;
@@ -40,6 +43,8 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private final String group = "BlindeBonbons";
     private Player player;
+    private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
+    private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private String newMessage;
     private String newHistory;
     private StringProperty chatHistory;
@@ -102,6 +107,13 @@ public class ClientModel {
         sendMessage(jsonMessage);
     }
 
+    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
+        playersStatusMap.replace(playerID, newPlayerStatus);
+        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
+            String isReady = p.getValue()? "ready" : "not ready";
+            System.out.println("Player " + p.getKey() + " is " + isReady);
+        }
+    }
 
 
     public void sendMessage(JSONMessage message) {

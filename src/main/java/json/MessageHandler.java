@@ -73,6 +73,12 @@ public class MessageHandler {
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
 
+                //TODO: need to test
+                for (Player player1 : server.getWaitingPlayer()){
+                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatus(player1.getPlayerID(), player1.isReady()));
+                    server.sendMessage(jsonMessage, clientHandler.getWriter());
+                }
+
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
 
@@ -231,6 +237,10 @@ public class MessageHandler {
         player.setReady(setStatusBody.isReady());
         String isReady = setStatusBody.isReady()? "ready" : "not ready";
         logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+    }
+
+    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatus playerStatus){
+        clientModel.refreshPlayerStatus(playerStatus.getClientID(), playerStatus.isReady());
     }
 
 }
