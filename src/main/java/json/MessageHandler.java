@@ -184,9 +184,9 @@ public class MessageHandler {
             }
         } else { //Send public message
             for (Connection client : server.getConnections()) {
-                if (client.getPlayerID() != clientHandler.getPlayer_id()) {
+                /*if (client.getPlayerID() != clientHandler.getPlayer_id()) {*/
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), client.getWriter());
-                }
+               // }
             }
         }
     }
@@ -197,7 +197,7 @@ public class MessageHandler {
         //TODO change the method
 
         // Works for both ordinary and private messages
-         clientModel.receiveMessage(receivedChatBody.getMessage());
+        Platform.runLater(() -> {clientModel.receiveMessage(receivedChatBody.getMessage());});
 
     }
 

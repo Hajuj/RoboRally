@@ -24,7 +24,7 @@
 
             <TextField fx:id="messageField" layoutX="22.0" layoutY="309.0" prefHeight="30.0" prefWidth="358.0" />
             <Button fx:id="sendButton" layoutX="461.0" layoutY="311.0" mnemonicParsing="false" onAction="#sendMessageButton" onMouseClicked="#sendMessageButton" prefHeight="26.0" prefWidth="108.0" style="-fx-background-color: grey;" text="send" />
-            <TextArea fx:id="ChatField" layoutX="22.0" layoutY="52.0" prefHeight="250.0" prefWidth="563.0" />
+            <TextArea fx:id="chatField" layoutX="22.0" layoutY="52.0" prefHeight="250.0" prefWidth="563.0" />
             <Label fx:id="chatLabel" layoutX="20.0" layoutY="19.0" text="Chat:" />
         </AnchorPane>
    </bottom>

@@ -3,6 +3,7 @@ package client.model;
 
 import game.Player;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.MessageHandler;
@@ -40,6 +41,7 @@ public class ClientModel {
     private final String group = "BlindeBonbons";
     private Player player;
     private String newMessage;
+    private StringProperty chatHistory = new SimpleStringProperty("");
 
 
     private ClientModel () {
@@ -106,7 +108,20 @@ public class ClientModel {
     //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
     public void sendMsg(String message){
         System.out.println("Debug");
-       clientModelWriterThread.broadcastMessage(message);
+        if (message.charAt(0) == '@') {
+            if (message.contains(" ")) {
+                int Begin_msg = message.indexOf(" ");
+                int playerPrivate = Integer.parseInt(message.substring(1, Begin_msg));
+                int End_msg = message.length();
+                sendPrivateMsg(message.substring(Begin_msg + 1, End_msg), playerPrivate);
+            }
+        } else {
+            //TODO add bindings
+            System.out.println("this is a public Msg");
+            clientModelWriterThread.broadcastMessage(message);
+
+        }
+
     }
 
     public void sendPrivateMsg(String message, int PlayerId){
@@ -114,15 +129,19 @@ public class ClientModel {
     }
 
 
-   public void receiveMessage(String message) {
+    public void receiveMessage(String message) {
         //TODO implement with bindings so it can work in ChatViewModel
-       System.out.println(message);
-        setNewMessage(message);
-    //    String oldHistory = chatHistory.get();
-      // String newHistory = oldHistory + "\n" + message;
-       //chatHistory.setValue(newHistory);*//*
+        //newMessage = message;
+        //System.out.println(message);
+        chatHistory.setValue(chatHistory.getValue() + message+ "\n" );
+    }
 
+    public String getChatHistory () {
+        return chatHistory.get();
+    }
 
+    public StringProperty chatHistoryProperty () {
+        return chatHistory;
     }
 
 
@@ -164,6 +183,7 @@ public class ClientModel {
     public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
+
 
 
 

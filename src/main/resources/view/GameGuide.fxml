@@ -16,7 +16,7 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="wiki" alignment="CENTER" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameGuideController">
+<GridPane fx:id="wiki" alignment="CENTER" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameGuideViewModel">
 
     <columnConstraints>
         <ColumnConstraints halignment="CENTER" minWidth="0.0" percentWidth="100.0" />

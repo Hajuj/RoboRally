@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GameGuideController {
+public class GameGuideViewModel {
     private Stage rootStage;
 
     @FXML
