@@ -32,27 +32,19 @@ public class ChatViewModel implements Initializable {
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //chatField = new TextArea("");
+    public void initialize (URL location, ResourceBundle resources) {
         model.chatHistoryProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
-                System.out.println("VALUE CHANGED");
                 chatField.setText(t1);
             }
         });
     }
 
-
-    //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
-
-    public void sendMessageButton(ActionEvent event) {
-       //System.out.println("HI");
-            message = messageField.getText();
-            model.sendMsg(message);
-            messageField.clear();
-
-
+    public void sendMessageButton (ActionEvent event) {
+        message = messageField.getText();
+        model.sendMsg(message);
+        messageField.clear();
     }
 
 }

@@ -26,9 +26,6 @@ public class ChooseRobotViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
 
-
-
-
     @FXML
     private ImageView robot1;
     @FXML
@@ -43,54 +40,55 @@ public class ChooseRobotViewModel implements Initializable {
     private ImageView robot6;
 
 
-
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize (URL location, ResourceBundle resources) {
 
     }
 
-    public void setRobot1()   {
+    public void setRobot1 () {
         System.out.println("robot1 is been set");
-        figure =1;
+        figure = 1;
     }
-    public void setRobot2()  {
+
+    public void setRobot2 () {
         System.out.println("robot2 is been set");
-        figure =2;
+        figure = 2;
     }
-    public void setRobot3()   {
+
+    public void setRobot3 () {
 
         System.out.println("robot3 is been set");
-        figure=3;
+        figure = 3;
     }
-    public void setRobot4() {
+
+    public void setRobot4 () {
         System.out.println("robot4 is been set");
-        figure=4;
+        figure = 4;
 
     }
-    public void setRobot5( )  {
+
+    public void setRobot5 () {
         System.out.println("robot5 is been set");
-        figure=5;
+        figure = 5;
     }
-    public void setRobot6() {
+
+    public void setRobot6 () {
         System.out.println("robot6 is been set");
-        figure=6;
+        figure = 6;
 
     }
 
-    public void playButtonClicked() {
+    public void playButtonClicked () {
         try {
-
-            username= nameField.getText();
+            username = nameField.getText();
             model.sendUsernameAndRobot(username, figure);
-            System.out.println(username +" "+ figure);
-
-            Parent root= FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
+            System.out.println(username + " " + figure);
+            Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
             Stage window = (Stage) playButton.getScene().getWindow();
             window.setScene(new Scene(root, 800, 800));
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            }
+        }
 
     }
 }

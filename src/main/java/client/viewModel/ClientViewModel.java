@@ -26,6 +26,28 @@ import java.util.ResourceBundle;
 /**
  * The type client.viewModel.ClientModel gui controller.
  *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *                                  NO MORE ACTUAL
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  * @author Vorprojekt
  */
 public class ClientViewModel implements Initializable{
