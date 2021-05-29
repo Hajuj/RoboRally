@@ -40,9 +40,6 @@ public class ClientModel {
     private final String group = "BlindeBonbons";
     private Player player;
     private String newMessage;
-    private String newHistory;
-
-    private StringProperty chatHistory;
 
 
     private ClientModel () {
@@ -108,6 +105,7 @@ public class ClientModel {
     }
     //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
     public void sendMsg(String message){
+        System.out.println("Debug");
        clientModelWriterThread.broadcastMessage(message);
     }
 
@@ -115,10 +113,18 @@ public class ClientModel {
         clientModelWriterThread.sendDirectMessage(message,PlayerId);
     }
 
+
    public void receiveMessage(String message) {
         //TODO implement with bindings so it can work in ChatViewModel
        System.out.println(message);
+        setNewMessage(message);
+    //    String oldHistory = chatHistory.get();
+      // String newHistory = oldHistory + "\n" + message;
+       //chatHistory.setValue(newHistory);*//*
+
+
     }
+
 
     /**
      * Sets new message.
@@ -130,9 +136,7 @@ public class ClientModel {
         this.newMessage = newMessage;
     }
 
-    public String getNewHistory() {
-        return newHistory;
-    }
+
 
     /**
      * Gets new message.
@@ -160,5 +164,7 @@ public class ClientModel {
     public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
+
+
 
 }

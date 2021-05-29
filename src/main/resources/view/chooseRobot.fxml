@@ -31,7 +31,7 @@
                <children>
                   <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <ImageView fx:id="robot1" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot1" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="robot1" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#handleMouseEvent" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../Robots/robot1.png" />
                            </image>

@@ -197,7 +197,8 @@ public class MessageHandler {
         //TODO change the method
 
         // Works for both ordinary and private messages
-        Platform.runLater(() -> clientModel.receiveMessage(receivedChatBody.getMessage()));
+         clientModel.receiveMessage(receivedChatBody.getMessage());
+
     }
 
     public void handleGameStarted(ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
