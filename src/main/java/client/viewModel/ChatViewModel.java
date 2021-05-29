@@ -48,9 +48,11 @@ public class ChatViewModel implements Initializable {
 
     public void sendMessageButton(ActionEvent event) {
        //System.out.println("HI");
-        message = messageField.getText();
-        model.sendMsg(message);
-        messageField.clear();
+            message = messageField.getText();
+            model.sendMsg(message);
+            messageField.clear();
+
+
     }
 
 }

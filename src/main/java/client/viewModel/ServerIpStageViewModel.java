@@ -47,11 +47,11 @@ public class ServerIpStageViewModel implements Initializable {
     @FXML
     public void connectButtonAction(ActionEvent event) {
         try {
+            serverIP = serverAddressField.getText();
+            //Numberformatexception, wenn nicht checken, ob valide ist
+            serverPort = Integer.parseInt(serverPortField.getText());
             //TODO: statt diese if() eine Methode mit boolean-Wert-zurück. Da auch die valide/not-valide IP&Port checken
-            if (!serverAddressField.getText().equals("") && !serverPortField.getText().equals("")){
-                serverIP = serverAddressField.getText();
-                //Numberformatexception, wenn nicht checken, ob valide ist
-                serverPort = Integer.parseInt(serverPortField.getText());
+            if (validateIpAdress(serverIP, serverPort)){
                 if (model.connectClient(serverIP, serverPort)){
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
