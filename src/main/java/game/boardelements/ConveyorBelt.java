@@ -14,21 +14,21 @@ public class ConveyorBelt extends Element {
     private int speed;
     @Expose
     private ArrayList<String> orientations;
-
+    @Expose
     private String colour;
 
-    public ConveyorBelt(String type, String isOnBoard, ArrayList<String> orientations) {
+    public ConveyorBelt(String type, String isOnBoard, int speed, ArrayList<String> orientations) {
 
         this.type = type;
         this.isOnBoard = isOnBoard;
         this.orientations = new ArrayList<>();
         this.orientations.addAll(orientations);
+        this.speed = speed;
 
-        //Where do we get the colour?
-        if(colour.equals("green")){
-            this.speed = 1;
+        if(speed == 1){
+            this.colour = "green";
         }else{
-            this.speed = 2;
+            this.colour = "blue";
         }
 
     }
@@ -40,6 +40,10 @@ public class ConveyorBelt extends Element {
 
     public String getIsOnBoard() {
         return isOnBoard;
+    }
+
+    public String getColour() {
+        return colour;
     }
 
     public ArrayList<String> getOrientations() {

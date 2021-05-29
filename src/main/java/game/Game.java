@@ -34,6 +34,8 @@ public class Game {
 
         this.map = new ArrayList<>();
         this.playerList = playerList;
+
+        this.map = new ArrayList<>();
     }
 
     public ArrayList<Player> getPlayerList() {
