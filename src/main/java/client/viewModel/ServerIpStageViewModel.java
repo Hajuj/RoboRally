@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -62,6 +63,10 @@ public class ServerIpStageViewModel implements Initializable {
                     newStage.setScene(new Scene(root1));
                     newStage.show();
                 } else {
+                    Alert a = new Alert(Alert.AlertType.NONE);
+                    a.setAlertType(Alert.AlertType.ERROR);
+                    a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
+                    a.show();
                     serverAddressField.clear();
                     serverPortField.clear();
                 }
@@ -69,6 +74,10 @@ public class ServerIpStageViewModel implements Initializable {
              else{
                 serverAddressField.clear();
                 serverPortField.clear();
+                Alert a = new Alert(Alert.AlertType.NONE);
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setContentText("Non-valide-Daten, srry");
+                a.show();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,12 +86,10 @@ public class ServerIpStageViewModel implements Initializable {
     }
 
     //TODO: diese Methode zu implementieren um zu checken ob die eingegebene Port und IP stimmen
-    private boolean validateIpAdress(String IP, int Port) {
-       //String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
+    private boolean validateIpAdress(String IP, int port) {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
-       return IP_PATTERN.matcher(IP).matches();
-        //for port  (portString.length() > 4 || portString.length() == 0)
+        return IP_PATTERN.matcher(IP).matches();
     }
 
 

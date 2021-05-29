@@ -14,13 +14,15 @@ public class GameGuideController {
 
     @FXML
     private Button buttonCards;
+
     @FXML
     private Button buttonRobots;
+
     @FXML
     private Button buttonRules;
+
     @FXML
     private Button buttonCourses;
-
 
     @FXML
     public void buttonClicked(ActionEvent event ) throws IOException {
