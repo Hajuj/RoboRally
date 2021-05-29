@@ -3,6 +3,7 @@ package client.model;
 
 import game.Player;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Pair;
 import json.JSONMessage;
@@ -48,7 +49,7 @@ public class ClientModel {
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private String newMessage;
     private String newHistory;
-    private StringProperty chatHistory;
+    private StringProperty chatHistory = new SimpleStringProperty("");
 
 
     private ClientModel () {
@@ -132,9 +133,18 @@ public class ClientModel {
     }
 
    public void receiveMessage(String message) {
-        //TODO implement with bindings so it can work in ChatViewModel
+       //TODO implement with bindings so it can work in ChatViewModel
        //newMessage = message;
        System.out.println(message);
+       chatHistory.setValue(chatHistory.getValue() + "\n" + message);
+    }
+
+    public String getChatHistory () {
+        return chatHistory.get();
+    }
+
+    public StringProperty chatHistoryProperty () {
+        return chatHistory;
     }
 
     /**
@@ -146,6 +156,7 @@ public class ClientModel {
     public void setNewMessage(String newMessage) {
         this.newMessage = newMessage;
     }
+
 
     public String getNewHistory() {
         return newHistory;

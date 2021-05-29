@@ -4,6 +4,8 @@ package client.viewModel;
 import client.model.ClientModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,13 +42,20 @@ public class ChatViewModel implements Initializable {
         chatText = new SimpleStringProperty();
         chatHistory = new SimpleStringProperty();
 
+        model.chatHistoryProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
+                System.out.println("VALUE CHANGED");
+                ChatField.setText(model.getChatHistory());
+            }
+        });
+
        /* sendButton.setOnMouseClicked(event -> {
 
         });
         */
 
     }
-
 
     //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
 
@@ -76,14 +85,14 @@ public class ChatViewModel implements Initializable {
                     model.sendMsg(message);
                    // chatText.bind(model.getChatHistoryProperty());
                     //setChatHistory(model.getNewHistory());
-                    setChatHistory(model.getNewHistory());
+                    //setChatHistory(model.getNewHistory());
 
                     //chatText.bind(chatHistory);
                     //processIncomingMessage(message);
                     messageField.setText("");
                     //TODO: was passiert hier überhauot :((((
                     //ChatField.setText(message);
-                    ChatField.appendText(model.getNewMessage() + "\n");
+                    //ChatField.appendText(model.getNewMessage() + "\n");
                     //messageProperty().setValue(messageField.getText());
                 }
            // });

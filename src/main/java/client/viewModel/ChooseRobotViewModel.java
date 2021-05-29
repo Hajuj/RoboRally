@@ -45,37 +45,29 @@ public class ChooseRobotViewModel {
     public ChooseRobotViewModel() throws IOException {
     }
 
+    @FXML
     public void setRobot1() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(1);
         System.out.println("robot1 is been set");
-
-
     }
+    @FXML
     public void setRobot2() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(2);
         System.out.println("robot2 is been set");
     }
+    @FXML
     public void setRobot3() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(3);
         System.out.println("robot3 is been set");
     }
+    @FXML
     public void setRobot4() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(4);
         System.out.println("robot4 is been set");
 
     }
+    @FXML
     public void setRobot5() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(5);
         System.out.println("robot5 is been set");
     }
+    @FXML
     public void setRobot6() throws IOException {
-        ClientViewModel Client = new ClientViewModel();
-        Client.figure.setValue(6);
         System.out.println("robot6 is been set");
 
     }
@@ -106,15 +98,4 @@ public class ChooseRobotViewModel {
             }
 
     }
-
-    public ImageView getRobot1() {
-        return robot1;
-    }
-
-    public void setRobot1(ImageView robot1) {
-        this.robot1 = robot1;
-    }
-   /* public StringProperty getNameProperty() {
-        return username;
-    }*/
 }

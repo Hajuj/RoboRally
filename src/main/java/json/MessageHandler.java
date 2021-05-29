@@ -191,6 +191,7 @@ public class MessageHandler {
             for (Connection client : server.getConnections()) {
                 if (client.getPlayerID() == to) {
                     //TODO: Private Nachrich bekommt SENDER und Emphanger.
+                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), clientHandler.getWriter());
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), client.getWriter());
                 }
             }
