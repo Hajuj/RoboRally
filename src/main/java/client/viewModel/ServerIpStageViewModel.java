@@ -85,7 +85,6 @@ public class ServerIpStageViewModel implements Initializable {
         }
     }
 
-    //TODO: diese Methode zu implementieren um zu checken ob die eingegebene Port und IP stimmen
     private boolean validateIpAdress(String IP, int port) {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);

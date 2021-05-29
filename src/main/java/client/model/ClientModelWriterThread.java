@@ -51,7 +51,7 @@ public class ClientModelWriterThread extends Thread {
     }
 
     //TODO check if working
-    public void broadcastMessage(String message) {
+    public void sendChatMessage (String message) {
         sendMessage(new JSONMessage("SendChat", new SendChatBody(message, -1)));
     }
 

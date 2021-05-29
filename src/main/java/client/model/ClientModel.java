@@ -13,14 +13,10 @@ import json.protocol.PlayerValuesBody;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import json.protocol.SendChatBody;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
-import server.Server;
 
 /**
  * @author Mohamad, Viktoria
@@ -29,21 +25,20 @@ import server.Server;
  */
 public class ClientModel {
     private static ClientModel instance;
-    private String username;
-    private ArrayList<String> usersOnline;
-    private String message;
+
     private Socket socket;
-    private String server_ip;
-    private int server_port;
-    private boolean waitingForServer = true;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
+    private boolean waitingForServer = true;
+
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
     private final String protocolVersion = "Version 0.1";
+    private final String group = "BlindeBonbons";
     private final MessageHandler messageHandler = new MessageHandler();
+
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
-    private final String group = "BlindeBonbons";
+
     private Player player;
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
@@ -100,32 +95,39 @@ public class ClientModel {
         this.clientModelWriterThread.sendMessage(message);
     }
 
-    //TODO: sendMsg(String message)
 
     public void sendUsernameAndRobot(String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
-    //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
-    public void sendMsg(String message){
-        System.out.println("Debug");
-        if (message.charAt(0) == '@') {
-            if (message.contains(" ")) {
-                int Begin_msg = message.indexOf(" ");
-                int playerPrivate = Integer.parseInt(message.substring(1, Begin_msg));
-                int End_msg = message.length();
-                sendPrivateMsg(message.substring(Begin_msg + 1, End_msg), playerPrivate);
-            }
-        } else {
-            //TODO add bindings
-            System.out.println("this is a public Msg");
-            clientModelWriterThread.broadcastMessage(message);
-        }
 
+    public int getIDbyUsername(String username){
+        for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()){
+            if (entry.getValue().equals(username)){
+                return entry.getKey();
+            }
+        }
+        return 0;
     }
 
-    public void sendPrivateMsg(String message, int PlayerId){
-        clientModelWriterThread.sendDirectMessage(message,PlayerId);
+    public void sendMsg(String message){
+        //schauen ob das eine private Nachricht ist
+        if (message.charAt(0) == '@') {
+            if (message.contains(" ")) {
+                int beginMsg = message.indexOf(" ");
+                String playerprivate = message.substring(1, beginMsg);
+                if (getIDbyUsername(playerprivate)!= 0){
+                    clientModelWriterThread.sendDirectMessage(message.substring(beginMsg + 1), getIDbyUsername(playerprivate));
+                } else{
+                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found."  + "\n");
+                }
+            } else{
+                this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " +  message.substring(1) + " found."  + "\n");
+            }
+        } else {
+            //offentliche nachricht.
+            clientModelWriterThread.sendChatMessage(message);
+        }
     }
 
 
