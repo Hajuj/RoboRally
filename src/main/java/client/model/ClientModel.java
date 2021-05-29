@@ -111,22 +111,24 @@ public class ClientModel {
     }
 
     public void sendMsg(String message){
-        //schauen ob das eine private Nachricht ist
-        if (message.charAt(0) == '@') {
-            if (message.contains(" ")) {
-                int beginMsg = message.indexOf(" ");
-                String playerprivate = message.substring(1, beginMsg);
-                if (getIDbyUsername(playerprivate)!= 0){
-                    clientModelWriterThread.sendDirectMessage(message.substring(beginMsg + 1), getIDbyUsername(playerprivate));
+        if (!message.isBlank()) {
+            //schauen ob das eine private Nachricht ist
+            if (message.charAt(0) == '@') {
+                if (message.contains(" ")) {
+                    int beginMsg = message.indexOf(" ");
+                    String playerprivate = message.substring(1, beginMsg);
+                    if (getIDbyUsername(playerprivate)!= 0){
+                        clientModelWriterThread.sendDirectMessage(message.substring(beginMsg + 1), getIDbyUsername(playerprivate));
+                    } else{
+                        this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found."  + "\n");
+                    }
                 } else{
-                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found."  + "\n");
+                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " +  message.substring(1) + " found."  + "\n");
                 }
-            } else{
-                this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " +  message.substring(1) + " found."  + "\n");
+            } else {
+                //offentliche nachricht.
+                clientModelWriterThread.sendChatMessage(message);
             }
-        } else {
-            //offentliche nachricht.
-            clientModelWriterThread.sendChatMessage(message);
         }
     }
 
