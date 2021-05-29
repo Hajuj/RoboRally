@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 /**
  * @author Mohamad, Viktoria
  * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
- *
  */
 public class ClientModel {
     private static ClientModel instance;
@@ -48,7 +47,7 @@ public class ClientModel {
     }
 
     public static ClientModel getInstance () {
-        if (instance == null){
+        if (instance == null) {
             instance = new ClientModel();
         }
         return instance;
@@ -56,9 +55,10 @@ public class ClientModel {
 
     /**
      * This method is responsible for connecting the client to the specified server.
+     *
      * @return true if connection could be established.
      */
-    public boolean connectClient(String server_ip ,int server_port) {
+    public boolean connectClient (String server_ip, int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
@@ -82,7 +82,7 @@ public class ClientModel {
             }
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
             return true;
-        } catch (ConnectException connectException){
+        } catch (ConnectException connectException) {
         } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
         }
@@ -91,39 +91,39 @@ public class ClientModel {
     }
 
 
-    public void sendMessage(JSONMessage message) {
+    public void sendMessage (JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
     }
 
 
-    public void sendUsernameAndRobot(String username, int figure) {
+    public void sendUsernameAndRobot (String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
 
-    public int getIDbyUsername(String username){
-        for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()){
-            if (entry.getValue().equals(username)){
+    public int getIDbyUsername (String username) {
+        for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
+            if (entry.getValue().equals(username)) {
                 return entry.getKey();
             }
         }
         return 0;
     }
 
-    public void sendMsg(String message){
+    public void sendMsg (String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
             if (message.charAt(0) == '@') {
                 if (message.contains(" ")) {
                     int beginMsg = message.indexOf(" ");
                     String playerprivate = message.substring(1, beginMsg);
-                    if (getIDbyUsername(playerprivate)!= 0){
+                    if (getIDbyUsername(playerprivate) != 0) {
                         clientModelWriterThread.sendDirectMessage(message.substring(beginMsg + 1), getIDbyUsername(playerprivate));
-                    } else{
-                        this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found."  + "\n");
+                    } else {
+                        this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found." + "\n");
                     }
-                } else{
-                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " +  message.substring(1) + " found."  + "\n");
+                } else {
+                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + message.substring(1) + " found." + "\n");
                 }
             } else {
                 //offentliche nachricht.
@@ -133,15 +133,15 @@ public class ClientModel {
     }
 
 
-    public void receiveMessage(String message) {
-        chatHistory.setValue(chatHistory.getValue() + message + "\n" );
+    public void receiveMessage (String message) {
+        chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
 
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
+    public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
-        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
-            String isReady = p.getValue()? "ready" : "not ready";
+        for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
+            String isReady = p.getValue() ? "ready" : "not ready";
             System.out.println("Player " + p.getKey() + " is " + isReady);
         }
     }
@@ -161,10 +161,9 @@ public class ClientModel {
      * @param newMessage the new message
      */
     /*Setter für Nachrichten*/
-    public void setNewMessage(String newMessage) {
+    public void setNewMessage (String newMessage) {
         this.newMessage = newMessage;
     }
-
 
 
     /**
@@ -173,28 +172,26 @@ public class ClientModel {
      * @return the new message
      */
     /*Getter für Nachrichten*/
-    public String getNewMessage() {
+    public String getNewMessage () {
         return newMessage;
     }
 
-    public Player getPlayer() {
+    public Player getPlayer () {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer (Player player) {
         this.player = player;
     }
 
-    public MessageHandler getMessageHandler() {
+    public MessageHandler getMessageHandler () {
         return messageHandler;
     }
 
 
-    public void setWaitingForServer(boolean waitingForServer) {
+    public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
-
-
 
 
 }

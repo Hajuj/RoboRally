@@ -16,16 +16,16 @@ public class WelcomeBody implements ServerMessageAction<WelcomeBody> {
     @Expose
     private final Integer clientID;
 
-    public WelcomeBody(Integer clientID) {
+    public WelcomeBody (Integer clientID) {
         this.clientID = clientID;
     }
 
-    public Integer getClientID() {
+    public Integer getClientID () {
         return clientID;
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, WelcomeBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, WelcomeBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleWelcome(client, readerThread, bodyObject);
     }
 }

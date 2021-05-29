@@ -1,4 +1,5 @@
 package client.viewModel;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
@@ -24,20 +25,19 @@ public class GameViewModel implements Initializable {
     private PlayerMatViewModel playerMatViewModel;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize (URL url, ResourceBundle resourceBundle) {
     }
 
 
-
-    public GridPane getStartScreen() {
+    public GridPane getStartScreen () {
         return startScreen;
     }
 
-    public GridPane getChooseRobot() {
+    public GridPane getChooseRobot () {
         return chooseRobot;
     }
 
-    public GridPane getPlayerMat() {
+    public GridPane getPlayerMat () {
         return playerMat;
     }
 

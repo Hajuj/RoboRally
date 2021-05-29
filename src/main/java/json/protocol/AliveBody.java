@@ -8,18 +8,18 @@ import server.Server;
 
 public class AliveBody implements ServerMessageAction<AliveBody>, ClientMessageAction<AliveBody> {
 
-    public AliveBody() {
+    public AliveBody () {
 
     }
 
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, AliveBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, AliveBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleAlive(server, clientHandler, bodyObject);
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, AliveBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, AliveBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleAlive(client, readerThread, bodyObject);
     }
 }

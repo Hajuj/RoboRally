@@ -16,16 +16,16 @@ public class JSONMessage {
     @Expose
     private Object messageBody;
 
-    public JSONMessage(String messageType, Object messageBody) {
+    public JSONMessage (String messageType, Object messageBody) {
         this.messageType = messageType;
         this.messageBody = messageBody;
     }
 
-    public String getMessageType() {
+    public String getMessageType () {
         return messageType;
     }
 
-    public Object getMessageBody() {
+    public Object getMessageBody () {
         return messageBody;
     }
 

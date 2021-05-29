@@ -37,23 +37,23 @@ public class ServerIpStageViewModel implements Initializable {
 
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize (URL url, ResourceBundle resourceBundle) {
         serverAddress = new SimpleStringProperty();
     }
 
-    public StringProperty serverAddressProperty() {
+    public StringProperty serverAddressProperty () {
         return serverAddress;
     }
 
     @FXML
-    public void connectButtonAction(ActionEvent event) {
+    public void connectButtonAction (ActionEvent event) {
         try {
             serverIP = serverAddressField.getText();
             //Numberformatexception, wenn nicht checken, ob valide ist
             serverPort = Integer.parseInt(serverPortField.getText());
             //TODO: statt diese if() eine Methode mit boolean-Wert-zurück. Da auch die valide/not-valide IP&Port checken
-            if (validateIpAdress(serverIP, serverPort)){
-                if (model.connectClient(serverIP, serverPort)){
+            if (validateIpAdress(serverIP, serverPort)) {
+                if (model.connectClient(serverIP, serverPort)) {
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chooseRobot.fxml"));
@@ -70,8 +70,7 @@ public class ServerIpStageViewModel implements Initializable {
                     serverAddressField.clear();
                     serverPortField.clear();
                 }
-            }
-             else{
+            } else {
                 serverAddressField.clear();
                 serverPortField.clear();
                 Alert a = new Alert(Alert.AlertType.NONE);
@@ -85,12 +84,11 @@ public class ServerIpStageViewModel implements Initializable {
         }
     }
 
-    private boolean validateIpAdress(String IP, int port) {
+    private boolean validateIpAdress (String IP, int port) {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
         return IP_PATTERN.matcher(IP).matches();
     }
-
 
 
 }

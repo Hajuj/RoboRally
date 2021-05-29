@@ -36,27 +36,27 @@ public class ClientHandler extends Thread {
     private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
 
-    public ClientHandler(Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
+    public ClientHandler (Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.messageHandler = messageHandler;
         this.protocolVersion = protocolVersion;
     }
 
-    public int getPlayer_id() {
+    public int getPlayer_id () {
         return player_id;
     }
 
-    public void setPlayer_id(int player_id) {
+    public void setPlayer_id (int player_id) {
         this.player_id = player_id;
     }
 
-    public Socket getClientSocket() {
+    public Socket getClientSocket () {
         return clientSocket;
     }
 
     @Override
-    public void run() {
+    public void run () {
         try {
             // output and input Streams of the Clientsocket
             OutputStreamWriter out = new OutputStreamWriter(clientSocket.getOutputStream());
@@ -111,7 +111,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public PrintWriter getWriter() {
+    public PrintWriter getWriter () {
         return writer;
     }
 }

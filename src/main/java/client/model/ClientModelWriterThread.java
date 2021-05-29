@@ -22,7 +22,7 @@ public class ClientModelWriterThread extends Thread {
     private final MessageHandler messageHandler;
     private PrintWriter writer;
 
-    public ClientModelWriterThread(ClientModel client, Socket clientSocket, MessageHandler messageHandler) {
+    public ClientModelWriterThread (ClientModel client, Socket clientSocket, MessageHandler messageHandler) {
         this.client = client;
         this.clientSocket = clientSocket;
         this.messageHandler = messageHandler;
@@ -34,7 +34,7 @@ public class ClientModelWriterThread extends Thread {
      * Danach wird der messageBody-Klasse mit dem cast by reflection gefunden und die Action aus diese Klasse gemacht.
      */
     @Override
-    public void run() {
+    public void run () {
         //OutputStream for clientSocket und writer for it
         OutputStreamWriter out = null;
         try {
@@ -45,7 +45,7 @@ public class ClientModelWriterThread extends Thread {
         writer = new PrintWriter(out);
     }
 
-    public void sendMessage(JSONMessage jsonMessage) {
+    public void sendMessage (JSONMessage jsonMessage) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
@@ -56,7 +56,7 @@ public class ClientModelWriterThread extends Thread {
     }
 
     //TODO check if working
-    public void sendDirectMessage(String message, int playerID) {
+    public void sendDirectMessage (String message, int playerID) {
         sendMessage(new JSONMessage("SendChat", new SendChatBody(message, playerID)));
     }
 }
