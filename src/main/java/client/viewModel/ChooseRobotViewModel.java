@@ -86,7 +86,7 @@ public class ChooseRobotViewModel {
         try {
 
             username.setValue(nameField.getText());
-           // getNameProperty().setValue(nameField.getText());
+            // getNameProperty().setValue(nameField.getText());
 
             model.sendUsernameAndRobot(username.getName(), figure.getValue().intValue());
 
@@ -103,7 +103,7 @@ public class ChooseRobotViewModel {
             //stage.show();
         }catch (IOException e) {
             e.printStackTrace();
-            }
+        }
 
     }
 
