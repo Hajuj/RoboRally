@@ -6,11 +6,11 @@ import game.Player;
 import json.JSONMessage;
 import json.JSONSerializer;
 import json.MessageHandler;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class Server {
     private static Server instance;
-    private final int SERVER_PORT = 500;
+    private final int SERVER_PORT = 100;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
@@ -32,7 +32,6 @@ public class Server {
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
-    private final ArrayList<Player> players = new ArrayList<>();
 
     private Server () {
     }
@@ -100,16 +99,21 @@ public class Server {
         writer.flush();
     }
 
+    public Player getPlayerWithID(int ID){
+        for (Player player : waitingPlayer){
+            if (player.getPlayerID() == ID){
+                return player;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Player> getWaitingPlayer() {
         return waitingPlayer;
     }
 
     public boolean checkMaxClient() {
         return connections.size() < MAX_CLIENT;
-    }
-
-    public ArrayList<Player> getPlayers() {
-        return players;
     }
 
     public int getClientsCounter() {

@@ -76,7 +76,6 @@ public class ClientHandler extends Thread {
             //Lese alle incomming Strings mit dem reader und deserialize sie mit dem JSONDeserializer
             String messageString;
             while ((messageString = reader.readLine()) != null) {
-
                 // Deserialize the received JSON String into a JSON object
                 jsonMessage = JSONDeserializer.deserializeJSON(messageString);
                 logger.info("Incoming StringMessage " + messageString + " was deserialised to " + jsonMessage);
@@ -93,6 +92,7 @@ public class ClientHandler extends Thread {
                 // nachdem die richtige MessageBody gefunden wurde, rufe die triggerAction Methode auf.
                 ClientMessageAction msg = (ClientMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(this.server, this, messageBody, messageHandler);
+
             }
         } catch (SocketException exp) {
             if (exp.getMessage().contains("Socket closed"))
@@ -101,6 +101,13 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+        logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + "wurde abgebrochen.");
+        try {
+            //TODO inform die anderen Clients, dass dieser Client weg ist.
+            clientSocket.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 

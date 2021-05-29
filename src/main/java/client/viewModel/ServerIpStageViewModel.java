@@ -1,6 +1,7 @@
 package client.viewModel;
 
 import client.model.ClientModel;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;

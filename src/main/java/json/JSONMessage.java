@@ -11,6 +11,8 @@ import com.google.gson.annotations.Expose;
 public class JSONMessage {
     @Expose
     private String messageType;
+
+
     @Expose
     private Object messageBody;
 

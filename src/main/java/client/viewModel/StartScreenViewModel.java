@@ -26,54 +26,54 @@ public class StartScreenViewModel {
 
     @FXML
     private Button StartGameButton;
-   @FXML
+    @FXML
     private Button GameGuidButton;
     @FXML
     private Button ExitButton;
-
     @FXML
     private AnchorPane StartscreenPane;
 
 
-        @FXML
-        public void chooseRobotScreen (ActionEvent event){
+    @FXML
+    public void chooseRobotScreen (ActionEvent event){
+
+    }
+
+    @FXML
+    public void setExitButton (ActionEvent event){
+        ExitButton.setCancelButton(true);
+    }
+    @FXML
+    public void openGameGuid (ActionEvent event) throws IOException {
+        Stage rootStage = new Stage();
+        Parent root2;
+
+        if (event.getSource() == GameGuidButton) {
+
+            root2 = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
+            rootStage.setScene(new Scene(root2));
+            rootStage.setTitle("Game Guide");
+            rootStage.show();
+
 
         }
+        //TODO: close the StartScreen before go to the ServerIPStage??
+        if (event.getSource() == StartGameButton) {
+            root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
+            rootStage.setScene(new Scene(root2));
+            rootStage.setTitle("Lobby");
+            rootStage.show();
 
-        @FXML
-        public void setExitButton (ActionEvent event){
-            ExitButton.setCancelButton(true);
+
+            // StartscreenPane.getChildren().setAll(pane);
+            //  root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
+
+            //Stage stage2 = new Stage();
+            //stage2.setScene(new Scene(root2));
+            //stage2.setTitle("Robot Choice");
+            //stage2.show();
         }
-        @FXML
-        public void openGameGuid (ActionEvent event) throws IOException {
-            Stage rootStage = new Stage();
-            Parent root2;
-
-            if (event.getSource() == GameGuidButton) {
-
-                root2 = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
-                rootStage.setScene(new Scene(root2));
-                rootStage.setTitle("Game Guide");
-                rootStage.show();
-
-
-            }
-            if (event.getSource() == StartGameButton) {
-                root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
-                rootStage.setScene(new Scene(root2));
-                rootStage.setTitle("Lobby");
-                rootStage.show();
-
-
-                // StartscreenPane.getChildren().setAll(pane);
-                //  root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
-
-                //Stage stage2 = new Stage();
-                //stage2.setScene(new Scene(root2));
-                //stage2.setTitle("Robot Choice");
-                //stage2.show();
-            }
-        }
+    }
 
         /* for Audio_Music
         *  @Override
