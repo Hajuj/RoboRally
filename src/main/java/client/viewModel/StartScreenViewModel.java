@@ -26,10 +26,11 @@ public class StartScreenViewModel {
 
     @FXML
     private Button StartGameButton;
-    @FXML
+   @FXML
     private Button GameGuidButton;
     @FXML
     private Button ExitButton;
+
     @FXML
     private AnchorPane StartscreenPane;
 
@@ -57,7 +58,6 @@ public class StartScreenViewModel {
 
 
             }
-            //TODO: close the StartScreen before go to the ServerIPStage??
             if (event.getSource() == StartGameButton) {
                 root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
                 rootStage.setScene(new Scene(root2));

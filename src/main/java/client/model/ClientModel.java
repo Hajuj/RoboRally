@@ -4,21 +4,16 @@ package client.model;
 import game.Player;
 
 import javafx.beans.property.StringProperty;
-import javafx.util.Pair;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import json.protocol.SendChatBody;
-import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 import server.ClientHandler;
 import server.Server;
@@ -36,7 +31,7 @@ public class ClientModel {
     private Socket socket;
     private String server_ip;
     private int server_port;
-    private boolean waitingForServer = true;
+    private boolean waitingForServer;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
@@ -44,10 +39,9 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private final String group = "BlindeBonbons";
     private Player player;
-    private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
-    private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private String newMessage;
     private String newHistory;
+
     private StringProperty chatHistory;
 
 
@@ -63,7 +57,9 @@ public class ClientModel {
 
     /**
      * This method is responsible for connecting the client to the specified server.
-     * @return true if connection could be established.
+     * It uses the {@link client.ClientApplication} to get the IP and Port.
+     *
+     * @return <code>true</code> if connection could be established.
      */
     public boolean connectClient(String server_ip ,int server_port) {
         try {
@@ -71,7 +67,7 @@ public class ClientModel {
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
             socket = new Socket(server_ip, server_port);
 
-            //Start new Threads for reading/writing messages from/to the server
+            //Start new Thread, that reads incoming messages from server
             clientModelReaderThread = new ClientModelReaderThread(this, socket);
             clientModelWriterThread = new ClientModelWriterThread(this, socket, messageHandler);
             Thread readerThread = new Thread(clientModelReaderThread);
@@ -79,38 +75,26 @@ public class ClientModel {
             Thread writerTread = new Thread(clientModelWriterThread);
             writerTread.start();
 
-            //TODO: kann es sein, dass Client sehr lange hier in der While-Schleife wartet ohne dass ConnectException passiert? -> THOMAS
             //TODO kein Busy-Waiting, change to notify()
             //waiting for server response - waitingForHelloClient is changed wenn die clientThread bekommt
             //ein JSONMessage mit dem type HelloClient
+            waitingForServer = true;
             while (waitingForServer) {
                 logger.info("Waiting for the server answer...");
-                Thread.sleep(1000);
+                if (waitingForServer) try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
-            return true;
-        } catch (ConnectException connectException){
-        } catch (IOException | InterruptedException exp) {
+
+        } catch (IOException exp) {
             exp.printStackTrace();
         }
-        logger.info("Something went wrong..");
         return false;
     }
-
-    public void sendReadyStatus(boolean ready){
-        this.player.setReady(ready);
-        JSONMessage jsonMessage = new JSONMessage("SetStatus", new SetStatusBody(ready));
-        sendMessage(jsonMessage);
-    }
-
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
-        playersStatusMap.replace(playerID, newPlayerStatus);
-        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
-            String isReady = p.getValue()? "ready" : "not ready";
-            System.out.println("Player " + p.getKey() + " is " + isReady);
-        }
-    }
-
 
     public void sendMessage(JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
@@ -133,7 +117,6 @@ public class ClientModel {
 
    public void receiveMessage(String message) {
         //TODO implement with bindings so it can work in ChatViewModel
-       //newMessage = message;
        System.out.println(message);
     }
 
