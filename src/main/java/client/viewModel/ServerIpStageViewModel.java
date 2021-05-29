@@ -49,8 +49,7 @@ public class ServerIpStageViewModel implements Initializable {
         try {
             //TODO: statt diese if() eine Methode mit boolean-Wert-zurück. Da auch die valide/not-valide IP&Port checken
             if (!serverAddressField.getText().equals("") && !serverPortField.getText().equals("")){
-                serverAddressProperty().set(serverAddressField.getText());
-                serverIP = serverAddress.getName();
+                serverIP = serverAddressField.getText();
                 //Numberformatexception, wenn nicht checken, ob valide ist
                 serverPort = Integer.parseInt(serverPortField.getText());
                 if (model.connectClient(serverIP, serverPort)){

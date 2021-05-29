@@ -5,7 +5,6 @@ import game.Player;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.util.Pair;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import json.protocol.SendChatBody;
-import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 import server.ClientHandler;
 import server.Server;
@@ -43,12 +41,11 @@ public class ClientModel {
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
     private final String protocolVersion = "Version 0.1";
     private final MessageHandler messageHandler = new MessageHandler();
-    private final String group = "BlindeBonbons";
-    private Player player;
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private final String group = "BlindeBonbons";
+    private Player player;
     private String newMessage;
-    private String newHistory;
     private StringProperty chatHistory = new SimpleStringProperty("");
 
 
@@ -98,20 +95,6 @@ public class ClientModel {
         return false;
     }
 
-    public void sendReadyStatus(boolean ready){
-        this.player.setReady(ready);
-        JSONMessage jsonMessage = new JSONMessage("SetStatus", new SetStatusBody(ready));
-        sendMessage(jsonMessage);
-    }
-
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
-        playersStatusMap.replace(playerID, newPlayerStatus);
-        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
-            String isReady = p.getValue()? "ready" : "not ready";
-            System.out.println("Player " + p.getKey() + " is " + isReady);
-        }
-    }
-
 
     public void sendMessage(JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
@@ -125,18 +108,38 @@ public class ClientModel {
     }
     //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
     public void sendMsg(String message){
-       clientModelWriterThread.broadcastMessage(message);
+        System.out.println("Debug");
+        if (message.charAt(0) == '@') {
+            if (message.contains(" ")) {
+                int Begin_msg = message.indexOf(" ");
+                int playerPrivate = Integer.parseInt(message.substring(1, Begin_msg));
+                int End_msg = message.length();
+                sendPrivateMsg(message.substring(Begin_msg + 1, End_msg), playerPrivate);
+            }
+        } else {
+            //TODO add bindings
+            System.out.println("this is a public Msg");
+            clientModelWriterThread.broadcastMessage(message);
+        }
+
     }
 
     public void sendPrivateMsg(String message, int PlayerId){
         clientModelWriterThread.sendDirectMessage(message,PlayerId);
     }
 
-   public void receiveMessage(String message) {
-       //TODO implement with bindings so it can work in ChatViewModel
-       //newMessage = message;
-       System.out.println(message);
-       chatHistory.setValue(chatHistory.getValue() + "\n" + message);
+
+    public void receiveMessage(String message) {
+        chatHistory.setValue(chatHistory.getValue() + message + "\n" );
+    }
+
+
+    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
+        playersStatusMap.replace(playerID, newPlayerStatus);
+        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
+            String isReady = p.getValue()? "ready" : "not ready";
+            System.out.println("Player " + p.getKey() + " is " + isReady);
+        }
     }
 
     public String getChatHistory () {
@@ -146,6 +149,7 @@ public class ClientModel {
     public StringProperty chatHistoryProperty () {
         return chatHistory;
     }
+
 
     /**
      * Sets new message.
@@ -158,9 +162,6 @@ public class ClientModel {
     }
 
 
-    public String getNewHistory() {
-        return newHistory;
-    }
 
     /**
      * Gets new message.
@@ -188,5 +189,8 @@ public class ClientModel {
     public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
+
+
+
 
 }

@@ -1,11 +1,11 @@
 package client.viewModel;
 
 import client.model.ClientModel;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
+
 import javafx.fxml.FXML;
 
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,14 +13,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class ChooseRobotViewModel {
-    public TextField nameField;
+public class ChooseRobotViewModel implements Initializable {
+
     public Button playButton;
-    private StringProperty username;
-    public IntegerProperty figure;
+    public TextField nameField;
+    private String username;
+    public int figure;
     ClientModel model = ClientModel.getInstance();
 
 
@@ -42,57 +44,50 @@ public class ChooseRobotViewModel {
 
 
 
-    public ChooseRobotViewModel() throws IOException {
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 
-    @FXML
-    public void setRobot1() throws IOException {
+    public void setRobot1()   {
         System.out.println("robot1 is been set");
+        figure =1;
     }
-    @FXML
-    public void setRobot2() throws IOException {
+    public void setRobot2()  {
         System.out.println("robot2 is been set");
+        figure =2;
     }
-    @FXML
-    public void setRobot3() throws IOException {
+    public void setRobot3()   {
+
         System.out.println("robot3 is been set");
+        figure=3;
     }
-    @FXML
-    public void setRobot4() throws IOException {
+    public void setRobot4() {
         System.out.println("robot4 is been set");
+        figure=4;
 
     }
-    @FXML
-    public void setRobot5() throws IOException {
+    public void setRobot5( )  {
         System.out.println("robot5 is been set");
+        figure=5;
     }
-    @FXML
-    public void setRobot6() throws IOException {
+    public void setRobot6() {
         System.out.println("robot6 is been set");
+        figure=6;
 
     }
-    //TODO:die Implementierung der Methode setPlayerReady
-    //TODO:die Methoden funktionieren noch nicht
 
     public void playButtonClicked() {
         try {
 
-            username.setValue(nameField.getText());
-           // getNameProperty().setValue(nameField.getText());
+            username= nameField.getText();
+            model.sendUsernameAndRobot(username, figure);
+            System.out.println(username +" "+ figure);
 
-            model.sendUsernameAndRobot(username.getName(), figure.getValue().intValue());
-
-
-            System.out.println(username.get() +" "+ figure.getValue().intValue());
-
-            Parent root= FXMLLoader.load(getClass().getResource("/view/chat.fxml"));
+            Parent root= FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
             Stage window = (Stage) playButton.getScene().getWindow();
             window.setScene(new Scene(root, 800, 800));
-            //Parent root1 = (Parent) fxmlLoader.load();
-            //Stage stage= new Stage();
-            //stage.setTitle("RoboRally");
-            //stage.setScene(new Scene(root1));
-            //stage.show();
         }catch (IOException e) {
             e.printStackTrace();
             }

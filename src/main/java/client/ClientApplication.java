@@ -44,7 +44,7 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start (Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/chooseRobot.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Startscreen.fxml")));
         stage.setTitle("RoboRally Menu");
         Scene scene = new Scene(root);
         stage.setScene(scene);
