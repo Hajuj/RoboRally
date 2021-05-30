@@ -26,6 +26,8 @@ public class ChatViewModel implements Initializable {
     private TextField messageField;
     @FXML
     private Button sendButton;
+    @FXML
+    private Button playButton;
 
     AudioClip sound;
     private String message;
@@ -45,6 +47,11 @@ public class ChatViewModel implements Initializable {
         message = messageField.getText();
         model.sendMsg(message);
         messageField.clear();
+    }
+
+    public void changeStatusButton (ActionEvent event) {
+        //TODO: kann auch false sein
+        model.setNewStatus(true);
     }
 
 }

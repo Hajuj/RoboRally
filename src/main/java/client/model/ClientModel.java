@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 
 /**
@@ -88,6 +89,13 @@ public class ClientModel {
         }
         logger.info("Something went wrong..");
         return false;
+    }
+
+
+    public void setNewStatus (Boolean newStatus) {
+        player.setReady(newStatus);
+        JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
+        sendMessage(statusMessage);
     }
 
 
