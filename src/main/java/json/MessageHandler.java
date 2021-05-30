@@ -3,8 +3,6 @@ package json;
 import client.model.ClientModel;
 import client.model.ClientModelReaderThread;
 
-import client.viewModel.ChooseRobotViewModel;
-import javafx.application.Platform;
 
 import server.Server;
 import server.Connection;
@@ -128,6 +126,7 @@ public class MessageHandler {
     public void handleError(ClientModel clientmodel, ClientModelReaderThread clientModelReaderThread, ErrorBody errorBody) {
         logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
+        clientmodel.sendError("Error has occurred! " + errorBody.getError());
         //TODO: kann ich hier ein Alert-Fenster bei dem Client ausmachen?
     }
 
@@ -259,7 +258,10 @@ public class MessageHandler {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         player.setReady(setStatusBody.isReady());
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
-        logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
+        }
+        // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 
     public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
