@@ -34,6 +34,8 @@ public class Server {
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
 
+    //TODO when all robots are in a game, no more clients are allowed to join.
+
     private Server () {
     }
 

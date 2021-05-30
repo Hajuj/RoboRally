@@ -69,28 +69,27 @@ public class ChatViewModel implements Initializable {
                 readyDisplay.setText(s2);
             }
         });
-        model.errorPorperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
-                System.out.println("ERROR");
-                Alert a = new Alert(Alert.AlertType.NONE);
-                a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText(model.errorPorperty().toString());
-                a.show();
-            }
-        });
+        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
+        chatField.setEditable(false);
+        readyDisplay.setEditable(false);
+//        model.errorProperty().addListener(new ChangeListener<String>() {
+//            @Override
+//            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
+//                System.out.println("ERROR");
+//                //TODO fix error when writing the same username
+//                Alert a = new Alert(Alert.AlertType.NONE);
+//                a.setAlertType(Alert.AlertType.ERROR);
+//                a.setContentText(model.errorProperty().toString());
+//                a.show();
+//            }
+//        });
     }
-
-
-    //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
 
     public void sendMessageButton(ActionEvent event) {
        //System.out.println("HI");
             message = messageField.getText();
             model.sendMsg(message);
             messageField.clear();
-
-
     }
 
     public void goToGameGuide(ActionEvent event) throws IOException {
