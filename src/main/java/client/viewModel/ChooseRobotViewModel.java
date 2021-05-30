@@ -97,28 +97,28 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void setRobot1() {
         refreshShadow();
-        System.out.println("robot1 is been set");
+        System.out.println("robot1 has been set");
         robot1.setEffect(new DropShadow(20.0, Color.RED));
         figure = 0;
     }
 
     public void setRobot2() {
         refreshShadow();
-        System.out.println("robot2 is been set");
+        System.out.println("robot2 has been set");
         robot2.setEffect(new DropShadow(20.0, Color.RED));
         figure = 1;
     }
 
     public void setRobot3() {
         refreshShadow();
-        System.out.println("robot3 is been set");
+        System.out.println("robot3 has been set");
         robot3.setEffect(new DropShadow(20.0, Color.RED));
         figure = 2;
     }
 
     public void setRobot4() {
         refreshShadow();
-        System.out.println("robot4 is been set");
+        System.out.println("robot4 has been set");
         robot4.setEffect(new DropShadow(20.0, Color.RED));
         figure = 3;
 
@@ -126,14 +126,14 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void setRobot5() {
         refreshShadow();
-        System.out.println("robot5 is been set");
+        System.out.println("robot5 has been set");
         robot5.setEffect(new DropShadow(20.0, Color.RED));
         figure = 4;
     }
 
     public void setRobot6() {
         refreshShadow();
-        System.out.println("robot6 is been set");
+        System.out.println("robot6 has been set");
         robot6.setEffect(new DropShadow(20.0, Color.RED));
         figure = 5;
 

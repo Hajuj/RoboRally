@@ -70,21 +70,19 @@ public class MessageHandler {
                 connection.setPlayerID(actual_id);
                 connection.setConnected(true);
 
-                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+//                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
 
-                //TODO: need to test
                 for (Player player1 : server.getWaitingPlayer()) {
                     if (player1.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player1.getPlayerID(), player1.getName(), player1.getFigure()));
                         server.sendMessage(jsonMessage1, clientHandler.getWriter());
                     }
-                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player1.getPlayerID(), player1.isReady()));
-                    server.sendMessage(jsonMessage, clientHandler.getWriter());
+//                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player1.getPlayerID(), player1.isReady()));
+//                    server.sendMessage(jsonMessage, clientHandler.getWriter());
                 }
-
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
 
@@ -113,8 +111,6 @@ public class MessageHandler {
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
         clientmodel.setPlayer(player);
-        //TODO check if needed
-        clientmodel.refreshPlayerStatus(clientmodel.getPlayer().getPlayerID(), false);
     }
 
 
@@ -137,12 +133,12 @@ public class MessageHandler {
 
         Player player = server.getWaitingPlayer().get(clientHandler.getPlayer_id() - 1);
         player.pickRobot(figure, username);
-        //TODO test
+
         for (Player player1 : server.getWaitingPlayer()) {
             JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player.getPlayerID(), player.getName(), player.getFigure()));
             server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
-//            JSONMessage jsonMessage1 = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.getName(), player.getFigure()));
-//            server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
+            JSONMessage jsonMessage2 = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), false));
+            server.sendMessage(jsonMessage2, server.getConnectionWithID(player1.getPlayerID()).getWriter());
         }
         logger.info("Alles gut, der Spieler mit ID " + clientHandler.getPlayer_id() + " heißt " + username + " und hat figur " + figure);
     }
@@ -186,22 +182,22 @@ public class MessageHandler {
     }
 
     //Server receive this message
-    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
-        try {
-            //warten 5 sek
-            Thread.sleep(5000);
-            //senden ein neues Alive- Message zu Client
-            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Client receive this message
-    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
-        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
-        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
-    }
+//    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+//        try {
+//            //warten 5 sek
+//            Thread.sleep(5000);
+//            //senden ein neues Alive- Message zu Client
+//            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    //Client receive this message
+//    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+//        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
+//        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
+//    }
 
     public void handlePlayerAdded(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
         int clientID = playerAddedBody.getClientID();
