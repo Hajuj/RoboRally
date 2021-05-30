@@ -109,6 +109,15 @@ public class Server {
         return null;
     }
 
+    public Connection getConnectionWithID (int ID) {
+        for (Connection connection : connections) {
+            if (connection.getPlayerID() == ID) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Player> getWaitingPlayer () {
         return waitingPlayer;
     }

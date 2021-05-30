@@ -39,12 +39,11 @@ public class ClientModel {
 
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private Player player;
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
-
-    private ChooseRobotViewModel chooseRobotViewModel;
 
 
     private ClientModel () {
@@ -208,7 +207,7 @@ public class ClientModel {
         return playersNamesMap;
     }
 
-    public ChooseRobotViewModel getChooseRobotViewModel() {
-        return chooseRobotViewModel;
+    public HashMap<Integer, Integer> getPlayersFigureMap() {
+        return playersFigureMap;
     }
 }
