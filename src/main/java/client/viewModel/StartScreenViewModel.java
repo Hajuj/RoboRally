@@ -1,7 +1,6 @@
 package client.viewModel;
 
 
-
 import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
@@ -21,7 +20,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-
 public class StartScreenViewModel {
 
     @FXML
@@ -35,14 +33,15 @@ public class StartScreenViewModel {
 
 
     @FXML
-    public void chooseRobotScreen (ActionEvent event){
+    public void chooseRobotScreen (ActionEvent event) {
 
     }
 
     @FXML
-    public void setExitButton (ActionEvent event){
+    public void setExitButton (ActionEvent event) {
         ExitButton.setCancelButton(true);
     }
+
     @FXML
     public void openGameGuid (ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
@@ -83,7 +82,6 @@ public class StartScreenViewModel {
         sound.play();
 
     }*/
-
 
 
 }

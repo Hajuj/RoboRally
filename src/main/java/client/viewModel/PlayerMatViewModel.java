@@ -1,4 +1,5 @@
 package client.viewModel;
+
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -19,8 +20,10 @@ public class PlayerMatViewModel {
     private ImageView register5;
 
 
-    public HBox getPlayerRegister() {
+    public HBox getPlayerRegister () {
         return playerRegister;
     }
-    public void initialize() {}
+
+    public void initialize () {
+    }
 }

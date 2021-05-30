@@ -114,6 +114,10 @@ public class Player {
         return figure;
     }
 
+    public void setFigure(int figure) {
+        this.figure = figure;
+    }
+
     public Robot getRobot() {
         return robot;
     }
