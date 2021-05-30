@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
+    <stylesheets>
+        <URL value="@../Chat.css" />
+    </stylesheets>
+   <bottom>
+        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="806.0" prefWidth="608.0" BorderPane.alignment="CENTER">
+
+            <ImageView fitHeight="505.0" fitWidth="608.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <image>
+                    <Image url="@../metallicBackground.jpg" />
+                </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+            </ImageView>
+
+            <TextField fx:id="messageField" layoutX="22.0" layoutY="309.0" prefHeight="30.0" prefWidth="358.0" />
+            <Button fx:id="sendButton" layoutX="461.0" layoutY="311.0" mnemonicParsing="false" onAction="#sendMessageButton" prefHeight="26.0" prefWidth="108.0" style="-fx-background-color: grey;" text="send" />
+            <TextArea fx:id="chatField" layoutX="22.0" layoutY="52.0" prefHeight="250.0" prefWidth="563.0" />
+            <Label fx:id="chatLabel" layoutX="20.0" layoutY="19.0" text="Chat:" />
+        </AnchorPane>
+   </bottom>
+</BorderPane>
