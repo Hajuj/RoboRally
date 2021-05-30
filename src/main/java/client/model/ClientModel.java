@@ -1,7 +1,6 @@
 package client.model;
 
 
-import client.viewModel.ChooseRobotViewModel;
 import game.Player;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -19,7 +18,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,6 +45,7 @@ public class ClientModel {
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
     private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
+    private StringProperty error = new SimpleStringProperty("");
 
 
     private ClientModel () {
@@ -216,4 +215,14 @@ public class ClientModel {
     public HashMap<Integer, Integer> getPlayersFigureMap() {
         return playersFigureMap;
     }
+
+    public void sendError(String s) {
+        error.setValue(s);
+
+    }
+    public StringProperty errorPorperty () {
+        return error;
+    }
+
+
 }

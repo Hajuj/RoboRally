@@ -75,7 +75,7 @@ public class ServerIpStageViewModel implements Initializable {
                 serverPortField.clear();
                 Alert a = new Alert(Alert.AlertType.NONE);
                 a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText("Non-valide-Daten, srry");
+                a.setContentText("Please enter a number for Ip port");
                 a.show();
             }
         } catch (IOException e) {

@@ -13,8 +13,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorInput;
@@ -67,6 +67,16 @@ public class ChatViewModel implements Initializable {
             public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
                 System.out.println("PLAYER REFRESHED");
                 readyDisplay.setText(s2);
+            }
+        });
+        model.errorPorperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
+                System.out.println("ERROR");
+                Alert a = new Alert(Alert.AlertType.NONE);
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setContentText(model.errorPorperty().toString());
+                a.show();
             }
         });
     }
