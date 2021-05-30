@@ -29,4 +29,6 @@ public class DeckSpam extends Deck {
     public ArrayList<Card> getDeck() {
         return deckSpam;
     }
+
+    //TODO method draw card and remove from top of the deck
 }

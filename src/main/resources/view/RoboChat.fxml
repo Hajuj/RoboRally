@@ -35,5 +35,5 @@
             <TextArea fx:id="chatField" layoutX="22.0" layoutY="52.0" prefHeight="250.0" prefWidth="563.0"/>
             <Label fx:id="chatLabel" layoutX="20.0" layoutY="19.0" text="Chat:"/>
         </AnchorPane>
-   </bottom>
+    </bottom>
 </BorderPane>

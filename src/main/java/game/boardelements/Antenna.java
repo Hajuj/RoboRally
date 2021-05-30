@@ -12,24 +12,22 @@ import java.util.ArrayList;
 public class Antenna extends Element {
 
     @Expose
-    private String type;
-
-    @Expose
     private ArrayList<String> orientations;
 
-    public Antenna() {
-        this.type = "Antenna";
+    public Antenna(String type, String isOnBoard, ArrayList<String> orientations) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
         this.orientations = new ArrayList<>();
-        this.orientations.add("right");
+        this.orientations.addAll(orientations);
     }
 
     public String getType() {
         return type;
     }
 
-    //TODO find out if antenna should function as a blocker
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return null;
     }
+
 
 }

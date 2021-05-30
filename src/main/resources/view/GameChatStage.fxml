@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.stage.Screen?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+
+
+<GridPane fx:id="stage"
+          xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+
+
+    <fx:define>
+        <Screen fx:factory="getPrimary" fx:id="screen"/>
+    </fx:define>
+
+    <columnConstraints>
+        <ColumnConstraints  hgrow="ALWAYS" minWidth="0.0" percentWidth="80.0"/> <!-- Board -->
+        <ColumnConstraints  hgrow="ALWAYS" minWidth="0.0" percentWidth="20.0"/> <!-- Chat -->
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" minHeight="0.0" percentHeight="100.0"/>
+    </rowConstraints>
+
+    <!-- Board -->
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
+
+</GridPane>

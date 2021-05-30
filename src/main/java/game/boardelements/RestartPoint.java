@@ -11,15 +11,17 @@ public class RestartPoint extends Element {
     @Expose
     private String type;
 
-    public RestartPoint(){
-        this.type = "RestartPoint";
+    public RestartPoint(String type, String isOnBoard){
+        this.type = type;
+        this.isOnBoard = isOnBoard;
     }
 
     public String getType() {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
+
 }

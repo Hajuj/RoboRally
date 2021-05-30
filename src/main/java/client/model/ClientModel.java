@@ -1,6 +1,7 @@
 package client.model;
 
 
+import client.viewModel.ChooseRobotViewModel;
 import game.Player;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -38,6 +39,7 @@ public class ClientModel {
 
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private Player player;
     private String newMessage;
@@ -201,5 +203,11 @@ public class ClientModel {
         this.waitingForServer = waitingForServer;
     }
 
+    public HashMap<Integer, String> getPlayersNamesMap() {
+        return playersNamesMap;
+    }
 
+    public HashMap<Integer, Integer> getPlayersFigureMap() {
+        return playersFigureMap;
+    }
 }
