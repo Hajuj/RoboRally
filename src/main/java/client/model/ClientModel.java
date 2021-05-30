@@ -1,14 +1,19 @@
 package client.model;
 
-
+import client.viewModel.ChooseRobotViewModel;
 import game.Player;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableMap;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
+import json.protocol.SetStatusBody;
+
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -43,10 +48,13 @@ public class ClientModel {
     private final MessageHandler messageHandler = new MessageHandler();
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
     private final String group = "BlindeBonbons";
     private Player player;
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
+    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
+    private ChooseRobotViewModel chooseRobotViewModel;
 
 
     private ClientModel () {
@@ -100,33 +108,63 @@ public class ClientModel {
         this.clientModelWriterThread.sendMessage(message);
     }
 
-    //TODO: sendMsg(String message)
+
+    public void setNewStatus (Boolean newStatus) {
+        player.setReady(newStatus);
+        JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
+        sendMessage(statusMessage);
+
+
+    }
+
+    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
+        playersStatusMap.replace(playerID, newPlayerStatus);
+        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
+            String isReady = p.getValue()? "ready" : "not ready";
+            playersStatusMapProperty.setValue("Player " + p.getKey() + " is " + isReady + "\n");
+            // System.out.println("Player " + p.getKey() + " is " + isReady);
+        }
+    }
+
 
     public void sendUsernameAndRobot(String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
-    //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
-    public void sendMsg(String message){
-        System.out.println("Debug");
-        if (message.charAt(0) == '@') {
-            if (message.contains(" ")) {
-                int Begin_msg = message.indexOf(" ");
-                int playerPrivate = Integer.parseInt(message.substring(1, Begin_msg));
-                int End_msg = message.length();
-                sendPrivateMsg(message.substring(Begin_msg + 1, End_msg), playerPrivate);
+
+
+    public int getIDbyUsername (String username) {
+        for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
+            if (entry.getValue().equals(username)) {
+                return entry.getKey();
             }
-        } else {
-            //TODO add bindings
-            System.out.println("this is a public Msg");
-            clientModelWriterThread.broadcastMessage(message);
         }
-
+        return 0;
     }
 
-    public void sendPrivateMsg(String message, int PlayerId){
-        clientModelWriterThread.sendDirectMessage(message,PlayerId);
+    //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
+    public void sendMsg (String message) {
+        if (!message.isBlank()) {
+            //schauen ob das eine private Nachricht ist
+            if (message.charAt(0) == '@') {
+                if (message.contains(" ")) {
+                    int beginMsg = message.indexOf(" ");
+                    String playerprivate = message.substring(1, beginMsg);
+                    if (getIDbyUsername(playerprivate) != 0) {
+                        clientModelWriterThread.sendDirectMessage(message.substring(beginMsg + 1), getIDbyUsername(playerprivate));
+                    } else {
+                        this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerprivate + " found." + "\n");
+                    }
+                } else {
+                    this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + message.substring(1) + " found." + "\n");
+                }
+            } else {
+                //offentliche nachricht.
+                clientModelWriterThread.sendChatMessage(message);
+            }
+        }
     }
+
 
 
     public void receiveMessage(String message) {
@@ -134,13 +172,10 @@ public class ClientModel {
     }
 
 
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
-        playersStatusMap.replace(playerID, newPlayerStatus);
-        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
-            String isReady = p.getValue()? "ready" : "not ready";
-            System.out.println("Player " + p.getKey() + " is " + isReady);
-        }
-    }
+
+    /*public void setPlayerStatusMap(ObservableMap<Integer, Boolean> playerStatusMap) {
+        this.playerStatusMap.set(playerStatusMap);
+    }*/
 
     public String getChatHistory () {
         return chatHistory.get();
@@ -149,6 +184,8 @@ public class ClientModel {
     public StringProperty chatHistoryProperty () {
         return chatHistory;
     }
+
+    public StringProperty playersStatusMapProperty(){return playersStatusMapProperty;}
 
 
     /**
@@ -188,6 +225,13 @@ public class ClientModel {
 
     public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
+    }
+    public HashMap<Integer, String> getPlayersNamesMap() {
+        return playersNamesMap;
+    }
+
+    public HashMap<Integer, Integer> getPlayersFigureMap() {
+        return playersFigureMap;
     }
 
 

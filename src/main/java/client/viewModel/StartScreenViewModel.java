@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 
 
 
-public class StartScreenViewModel {
+public class StartScreenViewModel implements Initializable {
 
     @FXML
     private Button StartGameButton;
@@ -32,12 +32,21 @@ public class StartScreenViewModel {
     private Button ExitButton;
     @FXML
     private AnchorPane StartscreenPane;
+    private AudioClip sound;
 
 
-        @FXML
+    @FXML
         public void chooseRobotScreen (ActionEvent event){
 
         }
+          //for Audio_Music
+          @Override
+    public void initialize(URL location, ResourceBundle resources) {
+      /*  sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
+        sound.setCycleCount(AudioClip.INDEFINITE);
+        sound.play();
+*/
+    }
 
         @FXML
         public void setExitButton (ActionEvent event){
@@ -59,30 +68,24 @@ public class StartScreenViewModel {
             }
             //TODO: close the StartScreen before go to the ServerIPStage??
             if (event.getSource() == StartGameButton) {
+                Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                stage.close();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ServerIpStage.fxml"));
+                Parent root1 = (Parent) fxmlLoader.load();
+                Stage newStage = new Stage();
+                newStage.setTitle("Connect");
+                newStage.setScene(new Scene(root1));
+                newStage.show();
+            }
+            /*if (event.getSource() == StartGameButton) {
                 root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
                 rootStage.setScene(new Scene(root2));
                 rootStage.setTitle("Lobby");
                 rootStage.show();
-
-
-                // StartscreenPane.getChildren().setAll(pane);
-                //  root2 = FXMLLoader.load(getClass().getResource("/view/ServerIpStage.fxml"));
-
-                //Stage stage2 = new Stage();
-                //stage2.setScene(new Scene(root2));
-                //stage2.setTitle("Robot Choice");
-                //stage2.show();
-            }
+*/
         }
 
-        /* for Audio_Music
-        *  @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        sound = new AudioClip(this.getClass().getResource("sounds/walking-dead.mp3").toExternalForm());
-        sound.setCycleCount(AudioClip.INDEFINITE);
-        sound.play();
 
-    }*/
 
 
 

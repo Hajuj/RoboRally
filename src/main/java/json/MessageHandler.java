@@ -240,10 +240,16 @@ public class MessageHandler {
     }
 
     public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         player.setReady(setStatusBody.isReady());
         String isReady = setStatusBody.isReady()? "ready" : "not ready";
-        logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+        for (Connection connection : server.getConnections()) {
+
+            server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
+        }
+       // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+
     }
 
     public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody){
