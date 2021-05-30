@@ -3,18 +3,19 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
+import java.util.ArrayList;
+
 /**
  * @author Ilja Knis
  */
 public class EnergySpace extends Element {
-    @Expose
-    private String type;
 
     @Expose
     private int count;
 
-    public EnergySpace(int count){
-        this.type = "EnergySpace";
+    public EnergySpace(String type, String isOnBoard, int count){
+        this.type = type;
+        this.isOnBoard = isOnBoard;
         this.count = count;
     }
 
@@ -22,8 +23,8 @@ public class EnergySpace extends Element {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 
     public int getCount() {

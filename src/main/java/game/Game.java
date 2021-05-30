@@ -4,6 +4,7 @@ import game.decks.DeckSpam;
 import game.decks.DeckTrojan;
 import game.decks.DeckVirus;
 import game.decks.DeckWorm;
+import server.Server;
 
 import java.util.ArrayList;
 
@@ -18,8 +19,11 @@ public class Game {
     private DeckWorm deckWorm;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
+    private Server server;
 
-    public Game(ArrayList<Player> playerList){
+    public Game(ArrayList<Player> playerList, Server server){
+        this.server = server;
+
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
 
@@ -34,7 +38,26 @@ public class Game {
 
         this.map = new ArrayList<>();
         this.playerList = playerList;
+
+        this.map = new ArrayList<>();
     }
+
+    //TODO select map
+    //     if (Player player:playerList) isAI -> pickRandomMap
+    //     else playerList.get(0)... pickMap
+
+    //TODO at least 2 players ready to start game (max 6)
+
+    //TODO game logic with startGame()
+    //     map creation with elements (deserialization)
+    //     phases
+
+    //TODO if robot moves outside the map -> check map for RestartPoint
+    //     -> spawn robot at RestartPoint
+
+    //TODO element instanceOf Laser -> player draw Spam from DeckSpam
+
+    //TODO calculate distance from antenna -> method
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
