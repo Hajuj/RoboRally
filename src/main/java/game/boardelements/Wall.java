@@ -3,16 +3,21 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
+import java.util.ArrayList;
+
 /**
  * @author Ilja Knis
  */
 public class Wall extends Element {
 
     @Expose
-    private final String type;
+    private ArrayList<String> orientations;
 
-    public Wall() {
-        type = "Wall";
+    public Wall(String type, String isOnBoard, ArrayList<String> orientations) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.orientations = new ArrayList<>();
+        this.orientations.addAll(orientations);
     }
 
     @Override
@@ -21,8 +26,11 @@ public class Wall extends Element {
     }
 
     @Override
-    public boolean isBlocker() {
-        return true;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 
+    public ArrayList<String> getOrientations() {
+        return orientations;
+    }
 }

@@ -26,33 +26,32 @@ public class ChatViewModel implements Initializable {
     private TextField messageField;
     @FXML
     private Button sendButton;
+    @FXML
+    private Button playButton;
 
     AudioClip sound;
     private String message;
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //chatField = new TextArea("");
+    public void initialize (URL location, ResourceBundle resources) {
         model.chatHistoryProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
-                System.out.println("VALUE CHANGED");
                 chatField.setText(t1);
             }
         });
     }
 
+    public void sendMessageButton (ActionEvent event) {
+        message = messageField.getText();
+        model.sendMsg(message);
+        messageField.clear();
+    }
 
-    //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
-
-    public void sendMessageButton(ActionEvent event) {
-       //System.out.println("HI");
-            message = messageField.getText();
-            model.sendMsg(message);
-            messageField.clear();
-
-
+    public void changeStatusButton (ActionEvent event) {
+        //TODO: kann auch false sein
+        model.setNewStatus(true);
     }
 
 }

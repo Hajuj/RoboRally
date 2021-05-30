@@ -11,29 +11,32 @@ import java.util.ArrayList;
 public class Gear extends Element {
 
     @Expose
-    private String type;
-
-    //symbolizes the direction of rotation
-    @Expose
     private ArrayList<String> orientations;
 
-    public Gear(String colour){
+    private String colour;
+
+    public Gear(String type, String isOnBoard){
         this.type = "Gear";
         this.orientations = new ArrayList<>();
+
+        this.isOnBoard = isOnBoard;
+        //Where do we get the colour?
+
         if(colour.equals("red")){
-            this.orientations.add("left");
+            this.orientations.add("counterclockwise");
         }
         else{
-            this.orientations.add("right");
+            this.orientations.add("clockwise");
         }
+
     }
 
     public String getType() {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 
     public ArrayList<String> getOrientations() {

@@ -19,32 +19,32 @@ public class Connection {
     private String name;
     private boolean isConnected;
 
-    public Connection(Socket clientSocket) throws IOException {
+    public Connection (Socket clientSocket) throws IOException {
         this.socket = clientSocket;
         this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
-    public void setConnected(boolean connected) {
+    public void setConnected (boolean connected) {
         isConnected = connected;
     }
 
-    public boolean isConnected() {
+    public boolean isConnected () {
         return isConnected;
     }
 
-    public void setPlayerID(int playerID) {
+    public void setPlayerID (int playerID) {
         this.playerID = playerID;
     }
 
-    public int getPlayerID() {
+    public int getPlayerID () {
         return playerID;
     }
 
-    public String getName() {
+    public String getName () {
         return name;
     }
 
-    public PrintWriter getWriter() {
+    public PrintWriter getWriter () {
         return writer;
     }
 }

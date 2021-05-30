@@ -8,11 +8,9 @@ import game.Element;
  */
 public class StartPoint extends Element {
 
-    @Expose
-    private final String type;
-
-    public StartPoint(){
-        type = "StartPoint";
+    public StartPoint(String type, String isOnBoard){
+        this.type = type;
+        this.isOnBoard = isOnBoard;
     }
 
     @Override
@@ -20,7 +18,9 @@ public class StartPoint extends Element {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    @Override
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
+
 }

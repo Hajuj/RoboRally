@@ -1,4 +1,5 @@
 package client.viewModel;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,16 +15,18 @@ public class GameGuideController {
 
     @FXML
     private Button buttonCards;
+
     @FXML
     private Button buttonRobots;
+
     @FXML
     private Button buttonRules;
+
     @FXML
     private Button buttonCourses;
 
-
     @FXML
-    public void buttonClicked(ActionEvent event ) throws IOException {
+    public void buttonClicked (ActionEvent event) throws IOException {
         Parent root;
 
         if (event.getSource() == buttonCards) {

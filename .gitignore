@@ -38,6 +38,9 @@ local.properties
 # sbteclipse plugin
 .target
 
+# .iml setting
+/blinde-bonbons.iml
+
 # Tern plugin
 .tern-project
 
@@ -103,7 +106,7 @@ local.properties
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 # .idea/modules.xml
-# .idea/*.iml
+.idea/*.iml
 # .idea/modules
 
 # CMake
@@ -134,7 +137,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Editor-based Rest Client
+# Editor-based Rest ClientModel
 .idea/httpRequests
 
 # Android studio 3.1+ serialized cache file

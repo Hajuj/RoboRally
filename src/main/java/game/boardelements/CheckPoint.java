@@ -3,17 +3,16 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-import java.util.ArrayList;
 
 /**
  * @author Ilja Knis
  */
-public class EnergySpace extends Element {
+public class CheckPoint extends Element {
 
     @Expose
     private int count;
 
-    public EnergySpace(String type, String isOnBoard, int count){
+    public CheckPoint(String type, String isOnBoard, int count) {
         this.type = type;
         this.isOnBoard = isOnBoard;
         this.count = count;
@@ -27,7 +26,4 @@ public class EnergySpace extends Element {
         return isOnBoard;
     }
 
-    public int getCount() {
-        return count;
-    }
 }

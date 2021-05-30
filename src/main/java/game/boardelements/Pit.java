@@ -8,19 +8,16 @@ import game.Element;
  */
 public class Pit extends Element {
 
-    @Expose
-    private final String type;
-
-    public Pit(){
-        this.type = "Pit";
+    public Pit(String type, String isOnBoard){
+        this.type = type;
+        this.isOnBoard = isOnBoard;
     }
 
-    @Override
     public String getType() {
         return type;
     }
 
-    public boolean isBlocker() {
-        return false;
+    public String getIsOnBoard() {
+        return isOnBoard;
     }
 }

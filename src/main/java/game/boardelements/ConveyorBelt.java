@@ -5,24 +5,34 @@ import game.Element;
 
 import java.util.ArrayList;
 
-/**#
+/**
  * @author Ilja Knis
  */
-public class PushPanel extends Element {
+public class ConveyorBelt extends Element {
 
+    @Expose
+    private int speed;
     @Expose
     private ArrayList<String> orientations;
-
     @Expose
-    private ArrayList<Integer> registers;
+    private String colour;
 
-    public PushPanel(String type, String isOnBoard, ArrayList<String> orientations, ArrayList<Integer> registers){
+    public ConveyorBelt(String type, String isOnBoard, int speed, ArrayList<String> orientations) {
+
         this.type = type;
         this.isOnBoard = isOnBoard;
         this.orientations = new ArrayList<>();
         this.orientations.addAll(orientations);
-        this.registers = registers;
+        this.speed = speed;
+
+        if(speed == 1){
+            this.colour = "green";
+        }else{
+            this.colour = "blue";
+        }
+
     }
+
 
     public String getType() {
         return type;
@@ -32,11 +42,15 @@ public class PushPanel extends Element {
         return isOnBoard;
     }
 
+    public String getColour() {
+        return colour;
+    }
+
     public ArrayList<String> getOrientations() {
         return orientations;
     }
 
-    public ArrayList<Integer> getRegisters() {
-        return registers;
+    public int getSpeed() {
+        return speed;
     }
 }
