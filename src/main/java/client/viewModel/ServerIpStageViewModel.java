@@ -52,8 +52,8 @@ public class ServerIpStageViewModel implements Initializable {
             //Numberformatexception, wenn nicht checken, ob valide ist
             serverPort = Integer.parseInt(serverPortField.getText());
             //TODO: statt diese if() eine Methode mit boolean-Wert-zurück. Da auch die valide/not-valide IP&Port checken
-            if (validateIpAdress(serverIP, serverPort)) {
-                if (model.connectClient(serverIP, serverPort)) {
+            if (validateIpAdress(serverIP)&& !serverPortField.getText().isEmpty()){
+                if (model.connectClient(serverIP, serverPort)){
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chooseRobot.fxml"));
@@ -75,7 +75,7 @@ public class ServerIpStageViewModel implements Initializable {
                 serverPortField.clear();
                 Alert a = new Alert(Alert.AlertType.NONE);
                 a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText("Non-valide-Daten, srry");
+                a.setContentText("Please enter a number for Ip port");
                 a.show();
             }
         } catch (IOException e) {
@@ -84,7 +84,7 @@ public class ServerIpStageViewModel implements Initializable {
         }
     }
 
-    private boolean validateIpAdress (String IP, int port) {
+    private boolean validateIpAdress (String IP) {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
         return IP_PATTERN.matcher(IP).matches();

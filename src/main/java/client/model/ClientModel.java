@@ -1,7 +1,6 @@
 package client.model;
 
 
-import client.viewModel.ChooseRobotViewModel;
 import game.Player;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -10,6 +9,8 @@ import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
+import json.protocol.SetStatusBody;
+
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -17,7 +18,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,6 +44,8 @@ public class ClientModel {
     private Player player;
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
+    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
+    private StringProperty error = new SimpleStringProperty("");
 
 
     private ClientModel () {
@@ -152,7 +154,8 @@ public class ClientModel {
         playersStatusMap.replace(playerID, newPlayerStatus);
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
             String isReady = p.getValue() ? "ready" : "not ready";
-            System.out.println("Player " + p.getKey() + " is " + isReady);
+            playersStatusMapProperty.setValue("Player " + p.getKey() + " is " + isReady + "\n");
+            // System.out.println("Player " + p.getKey() + " is " + isReady);
         }
     }
 
@@ -163,6 +166,7 @@ public class ClientModel {
     public StringProperty chatHistoryProperty () {
         return chatHistory;
     }
+    public StringProperty playersStatusMapProperty(){return playersStatusMapProperty;}
 
 
     /**
@@ -174,6 +178,7 @@ public class ClientModel {
     public void setNewMessage (String newMessage) {
         this.newMessage = newMessage;
     }
+
 
 
     /**
@@ -210,4 +215,14 @@ public class ClientModel {
     public HashMap<Integer, Integer> getPlayersFigureMap() {
         return playersFigureMap;
     }
+
+    public void sendError(String s) {
+        error.setValue(s);
+
+    }
+    public StringProperty errorPorperty () {
+        return error;
+    }
+
+
 }
