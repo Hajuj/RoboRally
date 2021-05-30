@@ -6,6 +6,7 @@ import game.Player;
 import json.JSONMessage;
 import json.JSONSerializer;
 import json.MessageHandler;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -37,20 +38,20 @@ public class Server {
     }
 
     public static Server getInstance () {
-        if (instance == null){
+        if (instance == null) {
             instance = new Server();
         }
         return instance;
     }
 
 
-    public static void main(String[] args) {
+    public static void main (String[] args) {
         Server server = Server.getInstance();
         server.messageHandler = new MessageHandler();
         server.start();
     }
 
-    public void start() {
+    public void start () {
         logger.info("Starting server...");
 
         // Open socket for incoming connections, if socket already exists start aborts
@@ -94,41 +95,50 @@ public class Server {
         }
     }
 
-    public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
+    public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
 
-    public Player getPlayerWithID(int ID){
-        for (Player player : waitingPlayer){
-            if (player.getPlayerID() == ID){
+    public Player getPlayerWithID (int ID) {
+        for (Player player : waitingPlayer) {
+            if (player.getPlayerID() == ID) {
                 return player;
             }
         }
         return null;
     }
 
-    public ArrayList<Player> getWaitingPlayer() {
+    public Connection getConnectionWithID (int ID) {
+        for (Connection connection : connections) {
+            if (connection.getPlayerID() == ID) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Player> getWaitingPlayer () {
         return waitingPlayer;
     }
 
-    public boolean checkMaxClient() {
+    public boolean checkMaxClient () {
         return connections.size() < MAX_CLIENT;
     }
 
-    public int getClientsCounter() {
+    public int getClientsCounter () {
         return clientsCounter;
     }
 
-    public void setClientsCounter(int clientsCounter) {
+    public void setClientsCounter (int clientsCounter) {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections() {
+    public ArrayList<Connection> getConnections () {
         return connections;
     }
 
-    public String getProtocolVersion() {
+    public String getProtocolVersion () {
         return protocolVersion;
     }
 

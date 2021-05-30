@@ -95,10 +95,13 @@ public class ChatViewModel implements Initializable {
 
     public void sendReadyStatus(ActionEvent event) {
 
-         model.setNewStatus(true);
-
+        model.setNewStatus(true);
+    }
         //readyButton.setBackground(BackgroundFill);
         //readyButton.setVisible(true);
-    }
+  /*  public void changeStatusButton (ActionEvent event) {
+        //TODO: kann auch false sein
+        model.setNewStatus(true);
+    }*/
 
 }

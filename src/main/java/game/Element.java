@@ -1,20 +1,21 @@
 package game;
 
-import java.util.ArrayList;
+import com.google.gson.annotations.Expose;
 
 /**
  * @author Ilja Knis
  */
 public abstract class Element {
 
-    private String type;
-    private ArrayList<String> orientations;
+    @Expose
+    public String type;
+    @Expose
+    public String isOnBoard;
 
     public Element(){
     }
 
     public abstract String getType();
-
-    public abstract boolean isBlocker();
+    public abstract String getIsOnBoard();
 }
 

@@ -32,9 +32,6 @@ public class ChooseRobotViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
 
-
-
-
     @FXML
     private ImageView robot1;
     @FXML
@@ -49,34 +46,20 @@ public class ChooseRobotViewModel implements Initializable {
     private ImageView robot6;
 
 
-
-
+    //TODO disable robots in the hash map
     @Override
-        public void initialize(URL location, ResourceBundle resources) {
-        GaussianBlur blur = new GaussianBlur(20);
+    public void initialize(URL location, ResourceBundle resources) {
         for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
-                switch (entry.getValue()) {
-                    case 1 : robot1.setDisable(true);
-                             robot1.setEffect(blur);
-
-                    case 2 : robot2.setDisable(true);
-                             robot2.setEffect(blur);
-
-                    case 3 : robot3.setDisable(true);
-                             robot3.setEffect(blur);
-
-                    case 4 : robot4.setDisable(true);
-                             robot4.setEffect(blur);
-
-                    case 5 : robot5.setDisable(true);
-                             robot5.setEffect(blur);
-
-                    case 6 : robot6.setDisable(true);
-                             robot6.setEffect(blur);
-
-                }
+            switch (entry.getValue()) {
+                case 1 -> robot1.setDisable(true);
+                case 2 -> robot2.setDisable(true);
+                case 3 -> robot3.setDisable(true);
+                case 4 -> robot4.setDisable(true);
+                case 5 -> robot5.setDisable(true);
+                case 6 -> robot6.setDisable(true);
             }
         }
+    }
 
 
         public void setRobot1()   {
@@ -124,7 +107,8 @@ public class ChooseRobotViewModel implements Initializable {
             window.setScene(new Scene(root, 800, 800));
         }catch (IOException e) {
             e.printStackTrace();
-            }
+        }
 
     }
+
 }

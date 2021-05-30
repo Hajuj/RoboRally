@@ -1,13 +1,11 @@
 package client.model;
 
+
 import client.viewModel.ChooseRobotViewModel;
 import game.Player;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableMap;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.HelloServerBody;
@@ -18,50 +16,44 @@ import json.protocol.SetStatusBody;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import json.protocol.SendChatBody;
+import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
-import server.Server;
 
 /**
  * @author Mohamad, Viktoria
  * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
- *
  */
 public class ClientModel {
     private static ClientModel instance;
-    private String username;
-    private ArrayList<String> usersOnline;
-    private String message;
+
     private Socket socket;
-    private String server_ip;
-    private int server_port;
-    private boolean waitingForServer = true;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
+    private boolean waitingForServer = true;
+
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
     private final String protocolVersion = "Version 0.1";
+    private final String group = "BlindeBonbons";
     private final MessageHandler messageHandler = new MessageHandler();
+
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
-    private final String group = "BlindeBonbons";
+
     private Player player;
     private String newMessage;
     private StringProperty chatHistory = new SimpleStringProperty("");
     private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
-    private ChooseRobotViewModel chooseRobotViewModel;
 
 
     private ClientModel () {
     }
 
     public static ClientModel getInstance () {
-        if (instance == null){
+        if (instance == null) {
             instance = new ClientModel();
         }
         return instance;
@@ -69,9 +61,10 @@ public class ClientModel {
 
     /**
      * This method is responsible for connecting the client to the specified server.
+     *
      * @return true if connection could be established.
      */
-    public boolean connectClient(String server_ip ,int server_port) {
+    public boolean connectClient (String server_ip, int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
@@ -95,7 +88,7 @@ public class ClientModel {
             }
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
             return true;
-        } catch (ConnectException connectException){
+        } catch (ConnectException connectException) {
         } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
         }
@@ -104,34 +97,22 @@ public class ClientModel {
     }
 
 
-    public void sendMessage(JSONMessage message) {
-        this.clientModelWriterThread.sendMessage(message);
-    }
-
-
     public void setNewStatus (Boolean newStatus) {
         player.setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
-
-
-    }
-
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus){
-        playersStatusMap.replace(playerID, newPlayerStatus);
-        for (Map.Entry<Integer, Boolean> p: playersStatusMap.entrySet()){
-            String isReady = p.getValue()? "ready" : "not ready";
-            playersStatusMapProperty.setValue("Player " + p.getKey() + " is " + isReady + "\n");
-            // System.out.println("Player " + p.getKey() + " is " + isReady);
-        }
     }
 
 
-    public void sendUsernameAndRobot(String username, int figure) {
+    public void sendMessage (JSONMessage message) {
+        this.clientModelWriterThread.sendMessage(message);
+    }
+
+
+    public void sendUsernameAndRobot (String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
-
 
     public int getIDbyUsername (String username) {
         for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
@@ -142,7 +123,6 @@ public class ClientModel {
         return 0;
     }
 
-    //TODO:checken ob es hier ok zu implementieren oder lieber die methoden aus ClientModelWriterThread.java zu nehemen
     public void sendMsg (String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
@@ -166,16 +146,19 @@ public class ClientModel {
     }
 
 
-
-    public void receiveMessage(String message) {
-        chatHistory.setValue(chatHistory.getValue() + message + "\n" );
+    public void receiveMessage (String message) {
+        chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
 
-
-    /*public void setPlayerStatusMap(ObservableMap<Integer, Boolean> playerStatusMap) {
-        this.playerStatusMap.set(playerStatusMap);
-    }*/
+    public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
+        playersStatusMap.replace(playerID, newPlayerStatus);
+        for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
+            String isReady = p.getValue() ? "ready" : "not ready";
+            playersStatusMapProperty.setValue("Player " + p.getKey() + " is " + isReady + "\n");
+            // System.out.println("Player " + p.getKey() + " is " + isReady);
+        }
+    }
 
     public String getChatHistory () {
         return chatHistory.get();
@@ -184,7 +167,6 @@ public class ClientModel {
     public StringProperty chatHistoryProperty () {
         return chatHistory;
     }
-
     public StringProperty playersStatusMapProperty(){return playersStatusMapProperty;}
 
 
@@ -194,7 +176,7 @@ public class ClientModel {
      * @param newMessage the new message
      */
     /*Setter für Nachrichten*/
-    public void setNewMessage(String newMessage) {
+    public void setNewMessage (String newMessage) {
         this.newMessage = newMessage;
     }
 
@@ -206,26 +188,27 @@ public class ClientModel {
      * @return the new message
      */
     /*Getter für Nachrichten*/
-    public String getNewMessage() {
+    public String getNewMessage () {
         return newMessage;
     }
 
-    public Player getPlayer() {
+    public Player getPlayer () {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer (Player player) {
         this.player = player;
     }
 
-    public MessageHandler getMessageHandler() {
+    public MessageHandler getMessageHandler () {
         return messageHandler;
     }
 
 
-    public void setWaitingForServer(boolean waitingForServer) {
+    public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
+
     public HashMap<Integer, String> getPlayersNamesMap() {
         return playersNamesMap;
     }
@@ -233,8 +216,4 @@ public class ClientModel {
     public HashMap<Integer, Integer> getPlayersFigureMap() {
         return playersFigureMap;
     }
-
-
-
-
 }

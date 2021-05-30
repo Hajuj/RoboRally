@@ -14,7 +14,7 @@ public class Player {
     private boolean isReady;
 
     private DeckDiscard deckDiscard;
-//    private DeckProgramming deckProgramming;
+    //    private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
     private DeckSpam deckSpam;
@@ -112,6 +112,10 @@ public class Player {
 
     public int getFigure() {
         return figure;
+    }
+
+    public void setFigure(int figure) {
+        this.figure = figure;
     }
 
     public Robot getRobot() {
