@@ -21,8 +21,8 @@ public class GameStartedBody implements ServerMessageAction<GameStartedBody>{
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread task, GameStartedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleGameStarted(client, task, bodyObject);
+    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, GameStartedBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleGameStarted(client, readerThread, bodyObject);
     }
 
     public ArrayList<ArrayList<ArrayList<Element>>> getGameMap() {

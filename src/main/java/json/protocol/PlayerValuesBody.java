@@ -44,8 +44,9 @@ public class PlayerValuesBody implements ClientMessageAction<PlayerValuesBody> {
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler task, PlayerValuesBody playerValuesBody, MessageHandler messageHandler) {
-        messageHandler.handlePlayerValues(server, task, playerValuesBody);
+    public void triggerAction(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody, MessageHandler messageHandler) {
+        messageHandler.handlePlayerValues(server, clientHandler, playerValuesBody);
+
     }
 
 }

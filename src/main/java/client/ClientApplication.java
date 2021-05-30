@@ -24,7 +24,7 @@ public class ClientApplication extends Application {
      * starts before the method start - Lifecycle of JavaFX
      */
     @Override
-    public void init() {
+    public void init () {
         logger.info("Init!");
     }
 
@@ -32,7 +32,7 @@ public class ClientApplication extends Application {
      * starts before the application will close - Lifecycle of JavaFX
      */
     @Override
-    public void stop() {
+    public void stop () {
         logger.info("Stage is closing..");
         System.exit(0);
     }
@@ -44,10 +44,9 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start (Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/resources/view/Startscreen.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Startscreen.fxml")));
         stage.setTitle("RoboRally Menu");
         Scene scene = new Scene(root);
-       // scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/client/view/Chat.css")).toString());
         stage.setScene(scene);
         stage.show();
         logger.info("Start!");

@@ -1,5 +1,6 @@
 package server;
 
+import client.model.ClientModel;
 import game.Player;
 
 import json.JSONMessage;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -21,24 +23,35 @@ import org.apache.log4j.Logger;
  * @author Mohamad, Viktoria
  */
 public class Server {
+    private static Server instance;
     private final int SERVER_PORT = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
-    private final MessageHandler messageHandler = new MessageHandler();
+    private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
-    private final ArrayList<Player> players = new ArrayList<>();
+
+    private Server () {
+    }
+
+    public static Server getInstance () {
+        if (instance == null) {
+            instance = new Server();
+        }
+        return instance;
+    }
 
 
-    public static void main(String[] args) {
-        Server server = new Server();
+    public static void main (String[] args) {
+        Server server = Server.getInstance();
+        server.messageHandler = new MessageHandler();
         server.start();
     }
 
-    public void start() {
+    public void start () {
         logger.info("Starting server...");
 
         // Open socket for incoming connections, if socket already exists start aborts
@@ -82,36 +95,50 @@ public class Server {
         }
     }
 
-    public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
+    public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
 
-    public ArrayList<Player> getWaitingPlayer() {
+    public Player getPlayerWithID (int ID) {
+        for (Player player : waitingPlayer) {
+            if (player.getPlayerID() == ID) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public Connection getConnectionWithID (int ID) {
+        for (Connection connection : connections) {
+            if (connection.getPlayerID() == ID) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Player> getWaitingPlayer () {
         return waitingPlayer;
     }
 
-    public boolean checkMaxClient() {
+    public boolean checkMaxClient () {
         return connections.size() < MAX_CLIENT;
     }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
-    }
-
-    public int getClientsCounter() {
+    public int getClientsCounter () {
         return clientsCounter;
     }
 
-    public void setClientsCounter(int clientsCounter) {
+    public void setClientsCounter (int clientsCounter) {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections() {
+    public ArrayList<Connection> getConnections () {
         return connections;
     }
 
-    public String getProtocolVersion() {
+    public String getProtocolVersion () {
         return protocolVersion;
     }
 
