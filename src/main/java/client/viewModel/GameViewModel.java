@@ -1,4 +1,5 @@
-package main.java.client.viewModel;
+package client.viewModel;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
@@ -6,7 +7,9 @@ import javafx.scene.layout.GridPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameController implements Initializable {
+//TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
+
+public class GameViewModel implements Initializable {
     @FXML
     private GridPane playerMat;
     @FXML
@@ -17,25 +20,24 @@ public class GameController implements Initializable {
     @FXML
     private ClientViewModel chatController;
     @FXML
-    private ChooseRobotController chooseRobotController;
+    private ChooseRobotViewModel chooseRobotViewModel;
     @FXML
-    private PlayerMatController playerMatController;
+    private PlayerMatViewModel playerMatViewModel;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize (URL url, ResourceBundle resourceBundle) {
     }
 
 
-
-    public GridPane getStartScreen() {
+    public GridPane getStartScreen () {
         return startScreen;
     }
 
-    public GridPane getChooseRobot() {
+    public GridPane getChooseRobot () {
         return chooseRobot;
     }
 
-    public GridPane getPlayerMat() {
+    public GridPane getPlayerMat () {
         return playerMat;
     }
 

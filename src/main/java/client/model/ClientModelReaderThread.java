@@ -24,7 +24,7 @@ public class ClientModelReaderThread extends Thread {
     private final MessageHandler messageHandler;
 
 
-    public ClientModelReaderThread(ClientModel client, Socket clientSocket) {
+    public ClientModelReaderThread (ClientModel client, Socket clientSocket) {
         this.client = client;
         this.clientSocket = clientSocket;
         this.messageHandler = client.getMessageHandler();
@@ -36,7 +36,7 @@ public class ClientModelReaderThread extends Thread {
      * Danach wird der messageBody-Klasse mit dem cast by reflection gefunden und die Action aus diese Klasse gemacht.
      */
     @Override
-    public void run() {
+    public void run () {
         try {
             //InputStream von dem clientSocket and reader fot it to Read server Messages
             InputStreamReader in = new InputStreamReader(clientSocket.getInputStream());

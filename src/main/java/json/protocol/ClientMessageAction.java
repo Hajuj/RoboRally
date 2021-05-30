@@ -13,5 +13,5 @@ import json.MessageHandler;
  * @author Mohamad, Viktoria
  */
 public interface ClientMessageAction<T> {
-    void triggerAction(Server server, ClientHandler task, T bodyObject, MessageHandler messageHandler);
+    void triggerAction(Server server, ClientHandler clientHandler, T bodyObject, MessageHandler messageHandler);
 }

@@ -6,15 +6,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.ServerIpStageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ServerIpStageViewModel">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField layoutX="128.0" layoutY="165.0" prefHeight="26.0" prefWidth="266.0" />
-            <TextField layoutX="128.0" layoutY="239.0" prefHeight="26.0" prefWidth="267.0" />
-            <Button layoutX="128.0" layoutY="285.0" onAction="connectButtonAction" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Connect" />
-            <Label layoutX="128.0" layoutY="205.0" text="Name" />
+            <TextField fx:id="serverAddressField" layoutX="128.0" layoutY="165.0" prefHeight="26.0" prefWidth="266.0" text="127.0.0.1"/>
+            <TextField fx:id="serverPortField" layoutX="128.0" layoutY="239.0" prefHeight="26.0" prefWidth="267.0" text="500"/>
+            <Button fx:id="connectButton" layoutX="128.0" layoutY="285.0" mnemonicParsing="false" onAction="#connectButtonAction" prefHeight="26.0" prefWidth="90.0" text="Connect" />
+            <Label layoutX="128.0" layoutY="205.0" text="Server Port" />
             <Label layoutX="128.0" layoutY="132.0" text="Server IP" />
          </children>
       </AnchorPane>

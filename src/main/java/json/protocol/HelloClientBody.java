@@ -21,8 +21,8 @@ public class HelloClientBody implements ServerMessageAction<HelloClientBody> {
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread task, HelloClientBody message, MessageHandler messageHandler) {
-        messageHandler.handleHelloClient(client, task, message);
+    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, HelloClientBody message, MessageHandler messageHandler) {
+        messageHandler.handleHelloClient(client, readerThread, message);
     }
 
     public String getProtocol() {
