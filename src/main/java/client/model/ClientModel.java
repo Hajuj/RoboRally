@@ -150,9 +150,7 @@ public class ClientModel {
                 }
             } else {
                 //öffentliche nachricht.
-                // this next commented line is here (i think) so the name can be shown while connecting with the LMU-Server.
-//                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
-                clientModelWriterThread.sendChatMessage(message);
+                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
                 chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
             }
         }
@@ -167,8 +165,7 @@ public class ClientModel {
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
             String isReady = p.getValue() ? "ready" : "not ready";
-            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "\n");
-            // System.out.println("Player " + p.getKey() + " is " + isReady);
+            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + playersFigureMap.get(p.getKey()) + "\n");
         }
     }
 

@@ -68,21 +68,23 @@ public class MessageHandler {
                 Connection connection = new Connection(clientHandler.getClientSocket());
                 server.getConnections().add(connection);
                 connection.setPlayerID(actual_id);
-                connection.setConnected(true);
 
+                //TODO:
 //                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
 
+                //informieren den neuen Client über alle anderen clients im chat
                 for (Player player1 : server.getWaitingPlayer()) {
                     if (player1.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player1.getPlayerID(), player1.getName(), player1.getFigure()));
                         server.sendMessage(jsonMessage1, clientHandler.getWriter());
+                        JSONMessage jsonMessage2 = new JSONMessage("PlayerStatus", new PlayerStatusBody(player1.getPlayerID(), player1.isReady()));
+                        server.sendMessage(jsonMessage2, clientHandler.getWriter());
                     }
-//                    JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player1.getPlayerID(), player1.isReady()));
-//                    server.sendMessage(jsonMessage, clientHandler.getWriter());
                 }
+
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
 
@@ -131,9 +133,10 @@ public class MessageHandler {
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
-        Player player = server.getWaitingPlayer().get(clientHandler.getPlayer_id() - 1);
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         player.pickRobot(figure, username);
 
+        //informiere alle anderen clients über den neu gekommnen
         for (Player player1 : server.getWaitingPlayer()) {
             JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player.getPlayerID(), player.getName(), player.getFigure()));
             server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
@@ -147,18 +150,14 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
-        String senderName = server.getPlayerWithID(clientHandler.getPlayer_id()).getName();
 
-        // Build new string from client's name and the actual message, to show name in chat
-        String actualMessage = sendChatBody.getMessage();
-        String message = senderName + " : " + actualMessage;
-
+        String message = sendChatBody.getMessage();
         int to = sendChatBody.getTo();
+
         //Send Private message
         if (to != -1) {
             for (Connection connection : server.getConnections()) {
                 if (connection.getPlayerID() == to) {
-                    server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), clientHandler.getWriter());
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), connection.getWriter());
                 }
             }
