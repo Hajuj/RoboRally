@@ -7,6 +7,7 @@ import game.decks.DeckWorm;
 import server.Server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Ilja Knis
@@ -21,6 +22,8 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
     private ArrayList<String> availableMaps = new ArrayList<>();
+    private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
+
 
     public Game (Server server) {
         this.server = server;
@@ -77,5 +80,9 @@ public class Game {
 
     public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
         return map;
+    }
+
+    public static ArrayList<String> getRobotNames () {
+        return robotNames;
     }
 }

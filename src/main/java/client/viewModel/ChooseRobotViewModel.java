@@ -2,6 +2,7 @@ package client.viewModel;
 
 import client.model.ClientModel;
 
+import game.Game;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -126,46 +127,44 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void setRobot0 () {
         refreshShadow();
-        logger.info("Robot 0 has been set.");
         robot0.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(0);
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot1 () {
         refreshShadow();
-        logger.info("Robot 1 has been set.");
         robot1.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(1);
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot2 () {
         refreshShadow();
-        logger.info("Robot 2 has been set.");
         robot2.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(2);
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot3 () {
         refreshShadow();
-        logger.info("Robot 3 has been set.");
         robot4.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(3);
-
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot4 () {
         refreshShadow();
-        logger.info("Robot 4 has been set.");
         robot5.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(4);
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot5 () {
         refreshShadow();
-        logger.info("Robot 5 has been set.");
         robot6.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(5);
-
+        logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void playButtonClicked () {
@@ -173,11 +172,11 @@ public class ChooseRobotViewModel implements Initializable {
             username = nameField.getText();
             model.getPlayer().setName(username);
             model.getPlayer().setFigure(figureProperty.getValue());
+            logger.info("Username " + username + " has been set.");
             model.sendUsernameAndRobot(username, figureProperty.getValue());
             Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
             Stage window = (Stage) playButton.getScene().getWindow();
             window.setScene(new Scene(root, 800, 800));
-
         } catch (
                 IOException e) {
             e.printStackTrace();

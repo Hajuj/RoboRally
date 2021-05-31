@@ -1,6 +1,7 @@
 package client.model;
 
 
+import game.Game;
 import game.Player;
 
 import javafx.beans.property.BooleanProperty;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,14 +42,14 @@ public class ClientModel {
     private final String group = "BlindeBonbons";
     private final MessageHandler messageHandler = new MessageHandler();
 
+    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private Player player;
-    private String newMessage;
+
     private StringProperty chatHistory = new SimpleStringProperty("");
-    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
     private StringProperty error = new SimpleStringProperty("");
 
     private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
@@ -165,7 +167,7 @@ public class ClientModel {
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
             String isReady = p.getValue() ? "ready" : "not ready";
-            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + playersFigureMap.get(p.getKey()) + "\n");
+            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + Game.getRobotNames().get(playersFigureMap.get(p.getKey())) + "\n");
         }
     }
 
@@ -179,26 +181,6 @@ public class ClientModel {
 
     public StringProperty playersStatusMapProperty() {
         return playersStatusMapProperty;
-    }
-
-    /**
-     * Sets new message.
-     *
-     * @param newMessage the new message
-     */
-    /*Setter für Nachrichten*/
-    public void setNewMessage(String newMessage) {
-        this.newMessage = newMessage;
-    }
-
-    /**
-     * Gets new message.
-     *
-     * @return the new message
-     */
-    /*Getter für Nachrichten*/
-    public String getNewMessage() {
-        return newMessage;
     }
 
     public Player getPlayer() {
