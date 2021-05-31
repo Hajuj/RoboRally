@@ -3,8 +3,6 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-import java.util.ArrayList;
-
 /**
  * @author Ilja Knis
  */

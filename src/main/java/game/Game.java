@@ -16,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Ilja Knis
@@ -29,6 +31,19 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+
+    private Map<String, Antenna> antennaMap = new HashMap<>();
+    private Map<String, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<String, ConveyorBelt> conveyorBeltMap = new HashMap<>();
+    private Map<String, Empty> emptyMap = new HashMap<>();
+    private Map<String, EnergySpace> energySpaceMap = new HashMap<>();
+    private Map<String, Gear> gearMap = new HashMap<>();
+    private Map<String, Laser> laserMap = new HashMap<>();
+    private Map<String, Pit> pitMap = new HashMap<>();
+    private Map<String, PushPanel> pushPanelMap = new HashMap<>();
+    private Map<String, RestartPoint> restartPointMap = new HashMap<>();
+    private Map<String, StartPoint> startPointMap = new HashMap<>();
+    private Map<String, Wall> wallMap = new HashMap<>();
 
     public Game(ArrayList<Player> playerList, Server server){
         this.server = server;
@@ -78,7 +93,6 @@ public class Game {
             for(int y = 0; y < mapY; y++){
                 for(Element element : map.get(x).get(y)){
                     if(element instanceof Antenna){
-                        Antenna antenna = (Antenna) element;
                         System.out.println("The antenna is at ("+x+"|"+y+")");
                     }
                 }
