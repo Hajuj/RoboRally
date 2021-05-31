@@ -26,8 +26,11 @@ public class Antenna extends Element {
     }
 
     public String getIsOnBoard() {
-        return null;
+        return isOnBoard;
     }
 
+    public ArrayList<String> getOrientations() {
+        return orientations;
+    }
 
 }

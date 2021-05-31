@@ -2,20 +2,45 @@ package game;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
+
 /**
  * @author Ilja Knis
  */
-public abstract class Element {
+public class Element {
 
     @Expose
     public String type;
     @Expose
-    public String isOnBoard;
+    private String isOnBoard;
+    @Expose
+    private int speed;
+    @Expose
+    private ArrayList<String> orientations;
+    @Expose
+    private int count;
 
     public Element(){
     }
 
-    public abstract String getType();
-    public abstract String getIsOnBoard();
+    public String getType(){
+        return this.type;
+    }
+
+    public String getIsOnBoard(){
+        return this.isOnBoard;
+    }
+
+    public ArrayList<String> getOrientations() {
+        return this.orientations;
+    }
+
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    public int getCount() {
+        return this.count;
+    }
 }
 
