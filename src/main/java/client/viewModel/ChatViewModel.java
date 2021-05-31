@@ -52,6 +52,7 @@ public class ChatViewModel implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        //TODO check how to do it with observable pattern instead of addListener
         model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {

@@ -69,8 +69,6 @@ public class MessageHandler {
                 server.getConnections().add(connection);
                 connection.setPlayerID(actual_id);
 
-                //TODO:
-
                 server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
 
                 Player player = new Player(actual_id);
@@ -137,7 +135,7 @@ public class MessageHandler {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         player.pickRobot(figure, username);
 
-        //informiere alle anderen clients über den neu gekommnen
+        //informiere alle anderen clients über den neu gekommen
         for (Player player1 : server.getWaitingPlayer()) {
             JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player.getPlayerID(), player.getName(), player.getFigure()));
             server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
