@@ -13,6 +13,7 @@ import game.Player;
 import json.protocol.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -175,30 +176,30 @@ public class MessageHandler {
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
-    public void handleGameStarted(ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
+    public void handleGameStarted (ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
         //TODO implement map controller and use in this method to build the map
     }
 
     //Server receive this message
-//    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
-//        try {
-//            //warten 5 sek
-//            Thread.sleep(5000);
-//            //senden ein neues Alive- Message zu Client
-//            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    //Client receive this message
-//    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
-//        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
-//        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
-//    }
+    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+        try {
+            //warten 5 sek
+            Thread.sleep(5000);
+            //senden ein neues Alive- Message zu Client
+            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void handlePlayerAdded(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
+    //Client receive this message
+    public void handleAlive (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
+        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
+    }
+
+    public void handlePlayerAdded (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -221,11 +222,22 @@ public class MessageHandler {
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
         }
+
+        JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+        server.sendMessage(selectMapmessage, clientHandler.getWriter());
         // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 
-    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
+    public void handlePlayerStatus (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
+    }
+
+    //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
+    public void handleSelectMap (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, SelectMapBody selectMapBody) {
+        for (String map : selectMapBody.getAvailableMaps()) {
+            clientModel.getAvailableMaps().add(map);
+        }
+        clientModel.setDoChooseMap(true);
     }
 
 }

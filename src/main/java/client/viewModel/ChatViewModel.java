@@ -46,29 +46,36 @@ public class ChatViewModel implements Initializable {
     @FXML
     private Button sendButton;
 
-
-
-
     private String message;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                //TODO: Hier (wenn möglich) kein Platform.runLater()
+                Platform.runLater(() -> showMaps());
+            }
+        });
         //chatField = new TextArea("");
         model.chatHistoryProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
-                System.out.println("VALUE CHANGED");
+                //System.out.println("VALUE CHANGED");
                 chatField.setText(t1);
             }
         });
         model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                System.out.println("PLAYER REFRESHED");
+                //System.out.println("PLAYER REFRESHED");
                 readyDisplay.setText(s2);
             }
         });
+
+
         model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
@@ -102,12 +109,22 @@ public class ChatViewModel implements Initializable {
 
     }
 
-    public void sendReadyStatus(ActionEvent event) {
+    public void sendReadyStatus (ActionEvent event) {
 
         model.setNewStatus(true);
     }
-        //readyButton.setBackground(BackgroundFill);
-        //readyButton.setVisible(true);
+
+    public void showMaps () {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        String allMaps = "";
+        for (String mapName : model.getAvailableMaps()) {
+            allMaps = allMaps + mapName + "\n";
+        }
+        a.setContentText(allMaps);
+        a.show();
+    }
+    //readyButton.setBackground(BackgroundFill);
+    //readyButton.setVisible(true);
   /*  public void changeStatusButton (ActionEvent event) {
         //TODO: kann auch false sein
         model.setNewStatus(true);

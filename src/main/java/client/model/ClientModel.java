@@ -3,6 +3,8 @@ package client.model;
 
 import game.Player;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import json.JSONMessage;
@@ -15,6 +17,7 @@ import json.protocol.SetStatusBody;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +50,14 @@ public class ClientModel {
     private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
     private StringProperty error = new SimpleStringProperty("");
 
+    private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
+    private String selectedMap;
+    private ArrayList<String> availableMaps = new ArrayList<>();
 
-    private ClientModel() {
+    private ClientModel () {
     }
 
-    public static ClientModel getInstance() {
+    public static ClientModel getInstance () {
         if (instance == null) {
             instance = new ClientModel();
         }
@@ -226,13 +232,40 @@ public class ClientModel {
         return playersStatusMap;
     }
 
-    public void sendError(String s) {
+    public void sendError (String s) {
         error.setValue(s);
 
     }
 
-    public StringProperty errorProperty() {
+    public StringProperty errorProperty () {
         return error;
     }
 
+    public String getSelectedMap () {
+        return selectedMap;
+    }
+
+    public void setSelectedMap (String selectedMap) {
+        this.selectedMap = selectedMap;
+    }
+
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public boolean isDoChooseMap () {
+        return doChooseMap.get();
+    }
+
+    public BooleanProperty doChooseMapProperty () {
+        return doChooseMap;
+    }
+
+    public void setDoChooseMap (boolean doChooseMap) {
+        this.doChooseMap.set(doChooseMap);
+    }
+
+    public void setAvailableMaps (ArrayList<String> availableMaps) {
+        this.availableMaps = availableMaps;
+    }
 }

@@ -20,8 +20,15 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+    private ArrayList<String> availableMaps = new ArrayList<>();
 
-    public Game(ArrayList<Player> playerList, Server server){
+    public Game (Server server) {
+        this.server = server;
+        availableMaps.add("DizzyHighway");
+    }
+
+
+    public Game (ArrayList<Player> playerList, Server server) {
         this.server = server;
 
         this.deckSpam = new DeckSpam();
@@ -59,11 +66,16 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
-    public ArrayList<Player> getPlayerList() {
+
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public ArrayList<Player> getPlayerList () {
         return playerList;
     }
 
-    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
         return map;
     }
 }

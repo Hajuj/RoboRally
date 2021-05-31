@@ -1,6 +1,7 @@
 package server;
 
 import client.model.ClientModel;
+import game.Game;
 import game.Player;
 
 import json.JSONMessage;
@@ -30,6 +31,8 @@ public class Server {
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
+    private ArrayList<Player> readyPlayer = new ArrayList<>();
+    private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
@@ -97,6 +100,7 @@ public class Server {
         }
     }
 
+
     public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
@@ -118,6 +122,14 @@ public class Server {
             }
         }
         return null;
+    }
+
+    public Game getCurrentGame () {
+        return currentGame;
+    }
+
+    public void setCurrentGame (Game currentGame) {
+        this.currentGame = currentGame;
     }
 
     public ArrayList<Player> getWaitingPlayer () {
