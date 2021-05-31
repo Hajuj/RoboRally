@@ -25,7 +25,7 @@ public class WelcomeBody implements ServerMessageAction<WelcomeBody> {
     }
 
     @Override
-    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, WelcomeBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleWelcome(client, readerThread, bodyObject);
+    public void triggerAction (ClientModel client, WelcomeBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleWelcome(client, bodyObject);
     }
 }

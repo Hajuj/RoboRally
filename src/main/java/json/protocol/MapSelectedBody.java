@@ -24,8 +24,8 @@ public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, Cl
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, MapSelectedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleMapSelected(client, readerThread, bodyObject);
+    public void triggerAction(ClientModel client, MapSelectedBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleMapSelected(client, bodyObject);
     }
 
     public String getMap() {

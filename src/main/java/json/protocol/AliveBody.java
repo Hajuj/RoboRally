@@ -25,7 +25,7 @@ public class AliveBody implements ServerMessageAction<AliveBody>, ClientMessageA
     }
 
     @Override
-    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, AliveBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleAlive(client, readerThread, bodyObject);
+    public void triggerAction (ClientModel client, AliveBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleAlive(client, bodyObject);
     }
 }

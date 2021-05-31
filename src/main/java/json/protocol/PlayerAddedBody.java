@@ -23,8 +23,8 @@ public class PlayerAddedBody implements ServerMessageAction<PlayerAddedBody> {
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, PlayerAddedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handlePlayerAdded(client, readerThread, bodyObject);
+    public void triggerAction(ClientModel client, PlayerAddedBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handlePlayerAdded(client, bodyObject);
     }
 
     public int getClientID() {
