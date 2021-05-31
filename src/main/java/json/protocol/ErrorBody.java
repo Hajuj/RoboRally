@@ -25,7 +25,7 @@ public class ErrorBody implements ServerMessageAction<ErrorBody> {
     }
 
     @Override
-    public void triggerAction (ClientModel clientmodel, ClientModelReaderThread readerThread, ErrorBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleError(clientmodel, readerThread, bodyObject);
+    public void triggerAction (ClientModel clientmodel, ErrorBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleError(clientmodel, bodyObject);
     }
 }

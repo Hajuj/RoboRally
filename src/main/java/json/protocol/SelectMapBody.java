@@ -19,7 +19,7 @@ public class SelectMapBody implements ServerMessageAction<SelectMapBody> {
     }
 
     @Override
-    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, SelectMapBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleSelectMap(client, readerThread, bodyObject);
+    public void triggerAction (ClientModel client, SelectMapBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleSelectMap(client, bodyObject);
     }
 }

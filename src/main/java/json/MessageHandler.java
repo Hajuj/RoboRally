@@ -1,7 +1,6 @@
 package json;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
 
 
 import server.Server;
@@ -13,8 +12,6 @@ import game.Player;
 import json.protocol.*;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -32,10 +29,9 @@ public class MessageHandler {
      * auf false gesetzt und Client kann dem Server Nachrichten schicken.
      *
      * @param clientmodel             The ClientModel
-     * @param clientModelReaderThread The ClientModelReaderThread of the ClientModel
      * @param helloClientBody         The message body of the message which is of type HelloClientBody
      */
-    public void handleHelloClient(ClientModel clientmodel, ClientModelReaderThread clientModelReaderThread, HelloClientBody helloClientBody) {
+    public void handleHelloClient(ClientModel clientmodel, HelloClientBody helloClientBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The ClientModel will be notified" + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
         //TODO change to notify() in class ClientModel
@@ -104,10 +100,9 @@ public class MessageHandler {
      * In der HalloServer method wird ein Welcome-message geschickt, und dann weiss der ClientModel sein id
      *
      * @param clientmodel             The ClientModel itself.
-     * @param clientModelReaderThread The ClientModelReaderThread of the ClientModel
      * @param welcomeBody             The message body of the message which is of type {@link WelcomeBody}.
      */
-    public void handleWelcome(ClientModel clientmodel, ClientModelReaderThread clientModelReaderThread, WelcomeBody welcomeBody) {
+    public void handleWelcome(ClientModel clientmodel, WelcomeBody welcomeBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
@@ -119,10 +114,9 @@ public class MessageHandler {
      * Wenn es ein Error occured bei deserialization, wird ein Message mit dem ErrorBody geschickt
      *
      * @param clientmodel             The ClientModel itself.
-     * @param clientModelReaderThread The ClientModelReaderThread of the ClientModel (Gives access to the PrintWriter).
      * @param errorBody               The message body of the message which is of type {@link ErrorBody}.
      */
-    public void handleError(ClientModel clientmodel, ClientModelReaderThread clientModelReaderThread, ErrorBody errorBody) {
+    public void handleError(ClientModel clientmodel, ErrorBody errorBody) {
         logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
@@ -169,12 +163,12 @@ public class MessageHandler {
         }
     }
 
-    public void handleReceivedChat(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, ReceivedChatBody receivedChatBody) {
+    public void handleReceivedChat(ClientModel clientModel, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
-    public void handleGameStarted(ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
+    public void handleGameStarted(ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
         //TODO implement map controller and use in this method to build the map
     }
@@ -192,12 +186,12 @@ public class MessageHandler {
     }
 
     //Client receive this message
-    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+    public void handleAlive(ClientModel clientModel, AliveBody aliveBody) {
         //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
         clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
     }
 
-    public void handlePlayerAdded(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
+    public void handlePlayerAdded(ClientModel clientModel, PlayerAddedBody playerAddedBody) {
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -234,12 +228,12 @@ public class MessageHandler {
         // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 
-    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
+    public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
-    public void handleSelectMap(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, SelectMapBody selectMapBody) {
+    public void handleSelectMap(ClientModel clientModel, SelectMapBody selectMapBody) {
         for (String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
@@ -252,7 +246,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleMapSelected(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected(ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         clientModel.setSelectedMap("DizzyHighway");
         System.out.println("IM HERE");
     }
