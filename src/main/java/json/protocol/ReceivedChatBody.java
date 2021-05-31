@@ -18,22 +18,22 @@ public class ReceivedChatBody implements ServerMessageAction<ReceivedChatBody> {
     @Expose
     private boolean isPrivate;
 
-    public ReceivedChatBody(String message, int from, boolean isPrivate) {
+    public ReceivedChatBody (String message, int from, boolean isPrivate) {
         this.message = message;
         this.from = from;
         this.isPrivate = isPrivate;
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, ReceivedChatBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, ReceivedChatBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleReceivedChat(client, readerThread, bodyObject);
     }
 
-    public String getMessage() {
+    public String getMessage () {
         return message;
     }
 
-    public int getFrom() {
+    public int getFrom () {
         return from;
     }
 }

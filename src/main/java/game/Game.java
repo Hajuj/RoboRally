@@ -7,6 +7,7 @@ import game.decks.DeckWorm;
 import server.Server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Ilja Knis
@@ -20,8 +21,17 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+    private ArrayList<String> availableMaps = new ArrayList<>();
+    private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
-    public Game(ArrayList<Player> playerList, Server server){
+
+    public Game (Server server) {
+        this.server = server;
+        availableMaps.add("DizzyHighway");
+    }
+
+
+    public Game (ArrayList<Player> playerList, Server server) {
         this.server = server;
 
         this.deckSpam = new DeckSpam();
@@ -59,11 +69,20 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
-    public ArrayList<Player> getPlayerList() {
+
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public ArrayList<Player> getPlayerList () {
         return playerList;
     }
 
-    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
         return map;
+    }
+
+    public static ArrayList<String> getRobotNames () {
+        return robotNames;
     }
 }

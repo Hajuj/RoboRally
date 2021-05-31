@@ -45,52 +45,67 @@ public class ChatViewModel implements Initializable {
     private TextField messageField;
     @FXML
     private Button sendButton;
-
-
-
+    @FXML
+    private Button notReadyBtn;
 
     private String message;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        //TODO check how to do it with observable pattern instead of addListener
+        model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                //TODO: Hier (wenn möglich) kein Platform.runLater()
+                Platform.runLater(() -> {
+                    try {
+                        showMaps();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+            }
+        });
         //chatField = new TextArea("");
         model.chatHistoryProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
-                System.out.println("VALUE CHANGED");
+                //System.out.println("VALUE CHANGED");
                 chatField.setText(t1);
             }
         });
         model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                System.out.println("PLAYER REFRESHED");
+                //System.out.println("PLAYER REFRESHED");
                 readyDisplay.setText(s2);
             }
         });
-        model.errorPorperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
-                System.out.println("ERROR");
-                Alert a = new Alert(Alert.AlertType.NONE);
-                a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText(model.errorPorperty().toString());
-                a.show();
-            }
-        });
+
+
+        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
+        chatField.setEditable(false);
+        readyDisplay.setEditable(false);
+//        model.errorProperty().addListener(new ChangeListener<String>() {
+//            @Override
+//            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
+//                System.out.println("ERROR");
+//                //TODO fix error when writing the same username
+//                Alert a = new Alert(Alert.AlertType.NONE);
+//                a.setAlertType(Alert.AlertType.ERROR);
+//                a.setContentText(model.errorProperty().toString());
+//                a.show();
+//            }
+//        });
     }
-
-
-    //TODO: die Implentierung der MEthoden sendPrivateMsg(String msg, int senderId, int receiverID) und SendMsgAllPlayers(String msg)
 
     public void sendMessageButton(ActionEvent event) {
        //System.out.println("HI");
             message = messageField.getText();
             model.sendMsg(message);
             messageField.clear();
-
-
     }
 
     public void goToGameGuide(ActionEvent event) throws IOException {
@@ -103,15 +118,24 @@ public class ChatViewModel implements Initializable {
 
     }
 
-    public void sendReadyStatus(ActionEvent event) {
+    public void sendReadyStatus (ActionEvent event) {
 
         model.setNewStatus(true);
     }
-        //readyButton.setBackground(BackgroundFill);
-        //readyButton.setVisible(true);
-  /*  public void changeStatusButton (ActionEvent event) {
-        //TODO: kann auch false sein
-        model.setNewStatus(true);
-    }*/
+
+    public void showMaps () throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("Available Maps");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
+    }
+
+    //readyButton.setBackground(BackgroundFill);
+    //readyButton.setVisible(true);
+    public void changeStatusButton (ActionEvent event) {
+        model.setNewStatus(false);
+    }
 
 }

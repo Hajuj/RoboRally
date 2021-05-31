@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<BorderPane stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
+<BorderPane stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
     <bottom>
         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="806.0" prefWidth="608.0" BorderPane.alignment="CENTER">
 
@@ -26,6 +31,7 @@
             <Button fx:id="readyButton" layoutX="25.0" layoutY="708.0" mnemonicParsing="false" onAction="#sendReadyStatus" prefHeight="33.0" prefWidth="356.0" style="-fx-background-color: grey;" text="Ready" />
             <TextArea fx:id="readyDisplay" layoutX="25.0" layoutY="62.0" prefHeight="262.0" prefWidth="278.0" />
             <Label fx:id="playersLabel" layoutX="27.0" layoutY="14.0" prefHeight="31.0" prefWidth="89.0" text="Players" />
+            <Button fx:id="notReadyBtn" layoutX="27.0" layoutY="746.0" mnemonicParsing="false" onAction="#changeStatusButton" prefHeight="32.0" prefWidth="353.0" style="-fx-background-color: grey;" text="Not Ready" />
         </AnchorPane>
     </bottom>
 </BorderPane>
