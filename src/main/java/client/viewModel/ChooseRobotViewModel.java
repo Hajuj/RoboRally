@@ -2,6 +2,12 @@ package client.viewModel;
 
 import client.model.ClientModel;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
 import javafx.fxml.FXMLLoader;
@@ -16,6 +22,8 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
+import server.Server;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,8 +35,9 @@ public class ChooseRobotViewModel implements Initializable {
     public Button playButton;
     public TextField nameField;
     private String username;
-    public int figure;
     ClientModel model = ClientModel.getInstance();
+    private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
+    private static final Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
 
 
     @FXML
@@ -46,11 +55,33 @@ public class ChooseRobotViewModel implements Initializable {
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize (URL location, ResourceBundle resources) {
+        playButton.setDisable(true);
+
+        nameField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
+                if (!isValideUsername(t1)) {
+                    playButton.setDisable(true);
+                } else {
+                    playButton.setDisable(false);
+                }
+            }
+        });
+
+        figureProperty.addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if (figureProperty.getValue() == -1) {
+                    playButton.setDisable(true);
+                }
+            }
+        });
+
         disableUsedRobots();
     }
 
-    public void disableUsedRobots() {
+    public void disableUsedRobots () {
         GaussianBlur blur = new GaussianBlur(10);
         for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
             switch (entry.getValue()) {
@@ -82,7 +113,7 @@ public class ChooseRobotViewModel implements Initializable {
         }
     }
 
-    public void refreshShadow() {
+    public void refreshShadow () {
         robot0.setEffect(new DropShadow(0.0, Color.RED));
         robot1.setEffect(new DropShadow(0.0, Color.RED));
         robot2.setEffect(new DropShadow(0.0, Color.RED));
@@ -95,70 +126,81 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void setRobot0 () {
         refreshShadow();
-        System.out.println("robot0 has been set");
+        logger.info("Robot 0 has been set.");
         robot0.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 0;
+        setFigureProperty(0);
     }
 
     public void setRobot1 () {
         refreshShadow();
-        System.out.println("robot1 has been set");
+        logger.info("Robot 1 has been set.");
         robot1.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 1;
+        setFigureProperty(1);
     }
 
     public void setRobot2 () {
         refreshShadow();
-        System.out.println("robot2 has been set");
+        logger.info("Robot 2 has been set.");
         robot2.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 2;
+        setFigureProperty(2);
     }
 
     public void setRobot3 () {
         refreshShadow();
-        System.out.println("robot3 has been set");
+        logger.info("Robot 3 has been set.");
         robot4.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 3;
+        setFigureProperty(3);
 
     }
 
     public void setRobot4 () {
         refreshShadow();
-        System.out.println("robot4 has been set");
+        logger.info("Robot 4 has been set.");
         robot5.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 4;
+        setFigureProperty(4);
     }
 
     public void setRobot5 () {
         refreshShadow();
-        System.out.println("robot5 has been set");
+        logger.info("Robot 5 has been set.");
         robot6.setEffect(new DropShadow(20.0, Color.RED));
-        figure = 5;
+        setFigureProperty(5);
 
     }
 
-    public void playButtonClicked() {
+    public void playButtonClicked () {
         try {
             username = nameField.getText();
-            if (!username.isEmpty()) {
-                model.getPlayer().setName(username);
-                model.getPlayer().setFigure(figure);
-                model.sendUsernameAndRobot(username, figure);
-                System.out.println(username + " " + figure);
-                Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
-                Stage window = (Stage) playButton.getScene().getWindow();
-                window.setScene(new Scene(root, 800, 800));
-            } else {
-                //TODO you can't choose a new name after you press on the play button
-                Alert a = new Alert(Alert.AlertType.NONE);
-                a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText("Please enter a valid name");
-                a.show();
-            }
-        } catch (IOException e) {
+            model.getPlayer().setName(username);
+            model.getPlayer().setFigure(figureProperty.getValue());
+            model.sendUsernameAndRobot(username, figureProperty.getValue());
+            Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
+            Stage window = (Stage) playButton.getScene().getWindow();
+            window.setScene(new Scene(root, 800, 800));
+
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    public boolean isValideUsername (String username) {
+        if (username.isBlank()) return false;
+        if (username.contains(" ")) return false;
+        if (username.contains("@")) return false;
+        return true;
+    }
+
+    public int getFigureProperty () {
+        return figureProperty.get();
+    }
+
+    public IntegerProperty figurePropertyProperty () {
+        return figureProperty;
+    }
+
+    public void setFigureProperty (int figureProperty) {
+        this.figureProperty.set(figureProperty);
+    }
 }
