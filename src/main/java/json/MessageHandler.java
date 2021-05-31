@@ -13,6 +13,7 @@ import game.Player;
 import json.protocol.*;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -24,7 +25,6 @@ public class MessageHandler {
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_GREEN = "\u001B[0m";
 
 
     /**
@@ -174,13 +174,13 @@ public class MessageHandler {
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
-    public void handleGameStarted (ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
+    public void handleGameStarted(ClientModel client, ClientModelReaderThread clientModelReaderThread, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
         //TODO implement map controller and use in this method to build the map
     }
 
     //Server receive this message
-    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -192,12 +192,12 @@ public class MessageHandler {
     }
 
     //Client receive this message
-    public void handleAlive (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+    public void handleAlive(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
         //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
         clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
     }
 
-    public void handlePlayerAdded (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
+    public void handlePlayerAdded(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -234,16 +234,27 @@ public class MessageHandler {
         // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 
-    public void handlePlayerStatus (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
+    public void handlePlayerStatus(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerStatusBody playerStatusBody) {
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
-    public void handleSelectMap (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, SelectMapBody selectMapBody) {
+    public void handleSelectMap(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, SelectMapBody selectMapBody) {
         for (String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
         clientModel.setDoChooseMap(true);
+    }
+
+    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) {
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
+        }
+    }
+
+    public void handleMapSelected(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, MapSelectedBody mapSelectedBody) {
+        clientModel.setSelectedMap("DizzyHighway");
+        System.out.println("IM HERE");
     }
 
 }

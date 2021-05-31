@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 public class ChooseRobotViewModel implements Initializable {
 
     public Button playButton;
-    public TextField nameField;
+    public TextField nameField = new TextField("");
     private String username;
     ClientModel model = ClientModel.getInstance();
     private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
@@ -64,7 +64,7 @@ public class ChooseRobotViewModel implements Initializable {
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
                 if (!isValideUsername(t1)) {
                     playButton.setDisable(true);
-                } else {
+                } else if (figureProperty.getValue() != -1){
                     playButton.setDisable(false);
                 }
             }
@@ -75,6 +75,8 @@ public class ChooseRobotViewModel implements Initializable {
             public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 if (figureProperty.getValue() == -1) {
                     playButton.setDisable(true);
+                } else if (isValideUsername(nameField.getText())){
+                    playButton.setDisable(false);
                 }
             }
         });
