@@ -42,10 +42,9 @@ public class StartScreenViewModel implements Initializable {
           //for Audio_Music
           @Override
     public void initialize(URL location, ResourceBundle resources) {
-      /*  sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
-        sound.setCycleCount(AudioClip.INDEFINITE);
-        sound.play();
-*/
+//        sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
+//        sound.setCycleCount(AudioClip.INDEFINITE);
+//        sound.play();
     }
 
         @FXML

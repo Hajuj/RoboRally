@@ -26,7 +26,6 @@ public class AvailableMapsViewModel implements Initializable {
 
     public void selectDizzyHighway (Event event) {
         System.out.println("Ich will Dizzy Highway!");
-        //TODO: hier muss ein message MapSelected geschickt
         String map = "Dizzy Highway";
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(map));
         model.sendMessage(jsonMessage);

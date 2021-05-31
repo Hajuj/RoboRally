@@ -45,6 +45,8 @@ public class ChatViewModel implements Initializable {
     private TextField messageField;
     @FXML
     private Button sendButton;
+    @FXML
+    private Button notReadyBtn;
 
     private String message;
 
@@ -132,9 +134,8 @@ public class ChatViewModel implements Initializable {
 
     //readyButton.setBackground(BackgroundFill);
     //readyButton.setVisible(true);
-  /*  public void changeStatusButton (ActionEvent event) {
-        //TODO: kann auch false sein
-        model.setNewStatus(true);
-    }*/
+    public void changeStatusButton (ActionEvent event) {
+        model.setNewStatus(false);
+    }
 
 }
