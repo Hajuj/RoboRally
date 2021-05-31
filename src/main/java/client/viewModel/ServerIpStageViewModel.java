@@ -1,7 +1,6 @@
 package client.viewModel;
 
 import client.model.ClientModel;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -17,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.regex.*;
 
@@ -55,7 +53,7 @@ public class ServerIpStageViewModel implements Initializable {
                 if (model.connectClient(serverIP, serverPort)) {
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chooseRobot.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
                     Parent root1 = (Parent) fxmlLoader.load();
                     Stage newStage = new Stage();
                     newStage.setTitle("RoboRally");

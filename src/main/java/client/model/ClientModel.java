@@ -144,20 +144,18 @@ public class ClientModel {
                 }
             } else {
                 //öffentliche nachricht.
-                //TODO check why the name of the sender printed twice
-                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
+                // this next commented line is here (i think) so the name can be shown while connecting with the LMU-Server.
+//                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
+                clientModelWriterThread.sendChatMessage(message);
                 chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
             }
         }
     }
 
-
     public void receiveMessage(String message) {
         chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
-
-    //TODO test if this method called correctly when someone is connected (in MessageHandler)
     public void refreshPlayerStatus(int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
         playersStatusMapProperty.setValue("");
@@ -180,7 +178,6 @@ public class ClientModel {
         return playersStatusMapProperty;
     }
 
-
     /**
      * Sets new message.
      *
@@ -190,7 +187,6 @@ public class ClientModel {
     public void setNewMessage(String newMessage) {
         this.newMessage = newMessage;
     }
-
 
     /**
      * Gets new message.
