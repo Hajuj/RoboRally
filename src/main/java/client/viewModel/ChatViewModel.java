@@ -30,7 +30,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable {
-
+    @FXML
+    private Button notReadyBtn;
     ClientModel model = ClientModel.getInstance();
 
     @FXML
@@ -55,6 +56,7 @@ public class ChatViewModel implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //chatField = new TextArea("");
+
         model.chatHistoryProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -105,12 +107,24 @@ public class ChatViewModel implements Initializable {
     public void sendReadyStatus(ActionEvent event) {
 
         model.setNewStatus(true);
+
     }
         //readyButton.setBackground(BackgroundFill);
         //readyButton.setVisible(true);
-  /*  public void changeStatusButton (ActionEvent event) {
+    public void changeStatusButton (ActionEvent event) {
         //TODO: kann auch false sein
-        model.setNewStatus(true);
-    }*/
+        model.setNewStatus(false);
+    }
 
+    /*public void lightGreen(MouseEvent mouseEvent) {
+        readyButton.getOnMouseClicked();
+
+        if (mouseEvent.getSource()==readyButton) {
+            readyButton.setStyle("-fx-background-color: #33cc33");
+
+        }if(mouseEvent.getSource()==notReadyBtn){
+            readyButton.setStyle("-fx-background-color: #33cc33");
+
+        }
+    }*/
 }
