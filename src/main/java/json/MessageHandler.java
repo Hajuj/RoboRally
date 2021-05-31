@@ -70,7 +70,8 @@ public class MessageHandler {
                 connection.setPlayerID(actual_id);
 
                 //TODO:
-//                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+
+                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
