@@ -12,6 +12,10 @@ import java.util.ArrayList;
 public class Antenna extends Element {
 
     @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+    @Expose
     private ArrayList<String> orientations;
 
     public Antenna(String type, String isOnBoard, ArrayList<String> orientations) {

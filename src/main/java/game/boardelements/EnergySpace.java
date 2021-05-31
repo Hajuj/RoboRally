@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class EnergySpace extends Element {
 
     @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+    @Expose
     private int count;
 
     public EnergySpace(String type, String isOnBoard, int count){

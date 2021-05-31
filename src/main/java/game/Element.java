@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Element {
 
     @Expose
-    public String type;
+    private String type;
     @Expose
     private String isOnBoard;
     @Expose
