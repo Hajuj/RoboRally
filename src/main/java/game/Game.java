@@ -85,16 +85,68 @@ public class Game {
         this.map = gameStartedBody.getGameMap();
         int mapX = map.size();
         int mapY = map.get(0).size();
-        createMapObjects(mapX, mapY);
+        createMapObjects(map, mapX, mapY);
     }
 
-    private void createMapObjects(int mapX, int mapY) {
+    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for(int x = 0; x < mapX; x++){
             for(int y = 0; y < mapY; y++){
                 for(Element element : map.get(x).get(y)){
-                    if(element instanceof Antenna){
-                        System.out.println("The antenna is at ("+x+"|"+y+")");
+                    switch(element.getType()){
+                        case "Antenna" -> {
+                            String position = x + "/" + y;
+                            antennaMap.put(position, new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                        }
+                        case "ConveyorBelt" -> {
+                            String position = x + "/" + y;
+                            conveyorBeltMap.put(position, new ConveyorBelt(element.getType(), element.getIsOnBoard(),
+                                    element.getSpeed(), element.getOrientations()));
+                        }
+                        case "CheckPoint" -> {
+                            String position = x + "/" + y;
+                            checkPointMap.put(position, new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount()));
+                        }
+                        case "Empty" -> {
+                            String position = x + "/" + y;
+                            emptyMap.put(position, new Empty(element.getType(), element.getIsOnBoard()));
+                        }
+                        case "EnergySpace" -> {
+                            String position = x + "/" + y;
+                            energySpaceMap.put(position, new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount()));
+                        }
+                        case "Gear" -> {
+                            String position = x + "/" + y;
+                            gearMap.put(position, new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                        }
+                        case "Laser" -> {
+                            String position = x + "/" + y;
+                            laserMap.put(position, new Laser(element.getType(), element.getIsOnBoard(),
+                                    element.getOrientations(), element.getCount()));
+                        }
+                        case "Pit" -> {
+                            String position = x + "/" + y;
+                            pitMap.put(position, new Pit(element.getType(), element.getIsOnBoard()));
+                        }
+                        case "PushPanel" -> {
+                            String position = x + "/" + y;
+                            pushPanelMap.put(position, new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
+                                    element.getRegisters()));
+                        }
+                        case "RestartPoint" -> {
+                            String position = x + "/" + y;
+                            restartPointMap.put(position, new RestartPoint(element.getType(), element.getIsOnBoard()));
+                        }
+                        case "StartPoint" -> {
+                            String position = x + "/" + y;
+                            startPointMap.put(position, new StartPoint(element.getType(), element.getIsOnBoard()));
+                        }
+                        case "Wall" -> {
+                            String position = x + "/" + y;
+                            wallMap.put(position, new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                        }
+                        default -> {}
                     }
+
                 }
             }
         }

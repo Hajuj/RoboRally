@@ -9,16 +9,12 @@ import java.util.ArrayList;
  */
 public class Element {
 
-    @Expose
     private String type;
-    @Expose
     private String isOnBoard;
-    @Expose
     private int speed;
-    @Expose
     private ArrayList<String> orientations;
-    @Expose
     private int count;
+    private ArrayList<Integer> registers;
 
     public Element(){
     }
@@ -41,6 +37,10 @@ public class Element {
 
     public int getCount() {
         return this.count;
+    }
+
+    public ArrayList<Integer> getRegisters() {
+        return this.registers;
     }
 }
 
