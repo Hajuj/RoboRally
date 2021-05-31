@@ -56,7 +56,13 @@ public class ChatViewModel implements Initializable {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 //TODO: Hier (wenn möglich) kein Platform.runLater()
-                Platform.runLater(() -> showMaps());
+                Platform.runLater(() -> {
+                    try {
+                        showMaps();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
             }
         });
         //chatField = new TextArea("");
@@ -114,15 +120,15 @@ public class ChatViewModel implements Initializable {
         model.setNewStatus(true);
     }
 
-    public void showMaps () {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        String allMaps = "";
-        for (String mapName : model.getAvailableMaps()) {
-            allMaps = allMaps + mapName + "\n";
-        }
-        a.setContentText(allMaps);
-        a.show();
+    public void showMaps () throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("Available Maps");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
     }
+
     //readyButton.setBackground(BackgroundFill);
     //readyButton.setVisible(true);
   /*  public void changeStatusButton (ActionEvent event) {

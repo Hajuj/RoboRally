@@ -11,10 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.MotionBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -34,11 +32,11 @@ public class ChooseRobotViewModel implements Initializable {
 
 
     @FXML
+    private ImageView robot0;
+    @FXML
     private ImageView robot1;
     @FXML
     private ImageView robot2;
-    @FXML
-    private ImageView robot3;
     @FXML
     private ImageView robot4;
     @FXML
@@ -57,16 +55,16 @@ public class ChooseRobotViewModel implements Initializable {
         for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
             switch (entry.getValue()) {
                 case 0 -> {
+                    robot0.setDisable(true);
+                    robot0.setEffect(blur);
+                }
+                case 1 -> {
                     robot1.setDisable(true);
                     robot1.setEffect(blur);
                 }
-                case 1 -> {
+                case 2 -> {
                     robot2.setDisable(true);
                     robot2.setEffect(blur);
-                }
-                case 2 -> {
-                    robot3.setDisable(true);
-                    robot3.setEffect(blur);
                 }
                 case 3 -> {
                     robot4.setDisable(true);
@@ -85,9 +83,9 @@ public class ChooseRobotViewModel implements Initializable {
     }
 
     public void refreshShadow() {
+        robot0.setEffect(new DropShadow(0.0, Color.RED));
         robot1.setEffect(new DropShadow(0.0, Color.RED));
         robot2.setEffect(new DropShadow(0.0, Color.RED));
-        robot3.setEffect(new DropShadow(0.0, Color.RED));
         robot4.setEffect(new DropShadow(0.0, Color.RED));
         robot5.setEffect(new DropShadow(0.0, Color.RED));
         robot6.setEffect(new DropShadow(0.0, Color.RED));
@@ -98,21 +96,21 @@ public class ChooseRobotViewModel implements Initializable {
     public void setRobot0 () {
         refreshShadow();
         System.out.println("robot0 has been set");
-        robot1.setEffect(new DropShadow(20.0, Color.RED));
+        robot0.setEffect(new DropShadow(20.0, Color.RED));
         figure = 0;
     }
 
     public void setRobot1 () {
         refreshShadow();
         System.out.println("robot1 has been set");
-        robot2.setEffect(new DropShadow(20.0, Color.RED));
+        robot1.setEffect(new DropShadow(20.0, Color.RED));
         figure = 1;
     }
 
     public void setRobot2 () {
         refreshShadow();
         System.out.println("robot2 has been set");
-        robot3.setEffect(new DropShadow(20.0, Color.RED));
+        robot2.setEffect(new DropShadow(20.0, Color.RED));
         figure = 2;
     }
 

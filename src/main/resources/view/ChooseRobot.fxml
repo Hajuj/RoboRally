@@ -41,7 +41,7 @@
                <children>
                   <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="125.0">
                      <children>
-                         <ImageView fx:id="robot1" fitHeight="166.0" fitWidth="201.0" onMouseClicked="#setRobot0"
+                         <ImageView fx:id="robot0" fitHeight="166.0" fitWidth="201.0" onMouseClicked="#setRobot0"
                                     pickOnBounds="true" preserveRatio="true">
                              <image>
                                  <Image url="@../Robots/robot1.png"/>
@@ -58,7 +58,7 @@
                   </VBox>
                   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="157.0">
                       <children>
-                          <ImageView fx:id="robot2" fitHeight="154.0" fitWidth="174.0" onMouseClicked="#setRobot1"
+                          <ImageView fx:id="robot1" fitHeight="154.0" fitWidth="174.0" onMouseClicked="#setRobot1"
                                      pickOnBounds="true" preserveRatio="true">
                               <image>
                                   <Image url="@../Robots/robot2.png"/>
@@ -77,7 +77,7 @@
                   </VBox>
                   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="179.0" prefWidth="174.0">
                       <children>
-                          <ImageView fx:id="robot3" fitHeight="168.0" fitWidth="209.0" onMouseClicked="#setRobot2"
+                          <ImageView fx:id="robot2" fitHeight="168.0" fitWidth="209.0" onMouseClicked="#setRobot2"
                                      pickOnBounds="true" preserveRatio="true">
                               <image>
                                   <Image url="@../Robots/robot3.png"/>

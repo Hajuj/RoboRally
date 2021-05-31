@@ -218,13 +218,21 @@ public class MessageHandler {
     public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         player.setReady(setStatusBody.isReady());
-        String isReady = setStatusBody.isReady() ? "ready" : "not ready";
+
+        if (setStatusBody.isReady()) {
+            server.getReadyPlayer().add(player);
+        } else {
+            server.getReadyPlayer().remove(player);
+        }
+        //String isReady = setStatusBody.isReady() ? "ready" : "not ready";
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
         }
 
-        JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-        server.sendMessage(selectMapmessage, clientHandler.getWriter());
+        if (server.getReadyPlayer().size() == 1) {
+            JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+            server.sendMessage(selectMapmessage, clientHandler.getWriter());
+        }
         // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
     }
 

@@ -132,6 +132,10 @@ public class Server {
         this.currentGame = currentGame;
     }
 
+    public ArrayList<Player> getReadyPlayer () {
+        return readyPlayer;
+    }
+
     public ArrayList<Player> getWaitingPlayer () {
         return waitingPlayer;
     }
