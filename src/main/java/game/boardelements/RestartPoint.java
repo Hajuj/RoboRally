@@ -10,6 +10,8 @@ public class RestartPoint extends Element {
 
     @Expose
     private String type;
+    @Expose
+    private String isOnBoard;
 
     public RestartPoint(String type, String isOnBoard){
         this.type = type;

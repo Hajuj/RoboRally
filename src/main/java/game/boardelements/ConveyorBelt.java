@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class ConveyorBelt extends Element {
 
     @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+    @Expose
     private int speed;
     @Expose
     private ArrayList<String> orientations;
