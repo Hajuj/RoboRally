@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+    private ArrayList<String> availableMaps = new ArrayList<>();
+    private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
@@ -45,6 +48,11 @@ public class Game {
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
+
+    public Game (Server server) {
+        this.server = server;
+        availableMaps.add("DizzyHighway");
+    }
 
     public Game(ArrayList<Player> playerList, Server server){
         this.server = server;
@@ -146,6 +154,14 @@ public class Game {
     //TODO element instanceOf Laser -> player draw Spam from DeckSpam
 
     //TODO calculate distance from antenna -> method
+
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public static ArrayList<String> getRobotNames () {
+        return robotNames;
+    }
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
