@@ -59,7 +59,7 @@ public class ClientModelReaderThread extends Thread {
                 Object messageBody = reflection.cast(jsonMessage.getMessageBody());
 
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
-                msg.triggerAction(client, this, messageBody, messageHandler);
+                msg.triggerAction(client, messageBody, messageHandler);
             }
         } catch (IOException e) {
             e.printStackTrace();
