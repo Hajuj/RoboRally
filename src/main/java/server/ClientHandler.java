@@ -7,6 +7,7 @@ import json.JSONSerializer;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.ClientMessageAction;
+import json.protocol.ConnectionUpdateBody;
 import json.protocol.HelloClientBody;
 
 import java.io.*;
@@ -106,8 +107,12 @@ public class ClientHandler extends Thread {
         server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));
         server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
         server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
+
+        for (Connection connection : server.getConnections()) {
+            JSONMessage removeMessage = new JSONMessage("ConnectionUpdate", new ConnectionUpdateBody(this.player_id, false, "remove"));
+            server.sendMessage(removeMessage, connection.getWriter());
+        }
         try {
-            //TODO hier kommt ConnectionUpdate vom Protocol 2.0
             clientSocket.close();
         } catch (IOException ioException) {
             ioException.printStackTrace();

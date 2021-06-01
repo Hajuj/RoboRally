@@ -79,7 +79,6 @@ public class ChatViewModel implements Initializable {
         model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                //System.out.println("PLAYER REFRESHED");
                 readyDisplay.setText(s2);
             }
         });
@@ -132,8 +131,7 @@ public class ChatViewModel implements Initializable {
         newStage.show();
     }
 
-    //readyButton.setBackground(BackgroundFill);
-    //readyButton.setVisible(true);
+
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);
     }

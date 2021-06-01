@@ -162,7 +162,7 @@ public class ClientModel {
         chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
-    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus) {
+    public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
@@ -172,15 +172,23 @@ public class ClientModel {
         }
     }
 
-    public String getChatHistory() {
+    public void removePlayer (int playerID) {
+        playersStatusMap.remove(playerID);
+        playersFigureMap.remove(playerID);
+        refreshPlayerStatus(playerID, false);
+        chatHistoryProperty().setValue(chatHistoryProperty().getValue() + "Player " + playersNamesMap.get(playerID) + " is disconnected. \n");
+        playersNamesMap.remove(playerID);
+    }
+
+    public String getChatHistory () {
         return chatHistory.get();
     }
 
-    public StringProperty chatHistoryProperty() {
+    public StringProperty chatHistoryProperty () {
         return chatHistory;
     }
 
-    public StringProperty playersStatusMapProperty() {
+    public StringProperty playersStatusMapProperty () {
         return playersStatusMapProperty;
     }
 

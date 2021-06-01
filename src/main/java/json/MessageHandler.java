@@ -246,9 +246,19 @@ public class MessageHandler {
         }
     }
 
-    public void handleMapSelected(ClientModel clientModel, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         clientModel.setSelectedMap("DizzyHighway");
         System.out.println("IM HERE");
+    }
+
+    public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
+        int playerID = connectionUpdateBody.getPlayerID();
+        boolean isConnected = connectionUpdateBody.isConnected();
+        String action = connectionUpdateBody.getAction();
+
+        if (action.equals("remove") && isConnected == false) {
+            clientmodel.removePlayer(playerID);
+        }
     }
 
 }
