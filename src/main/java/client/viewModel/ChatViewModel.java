@@ -94,6 +94,21 @@ public class ChatViewModel implements Initializable {
             notReadyBtn.setVisible(false);
         }
         notReadyBtn.setDisable(true);
+
+        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+
+                Platform.runLater(() -> {
+                    try {
+                        loadGameScene();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+
+            }
+        });
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -136,4 +151,12 @@ public class ChatViewModel implements Initializable {
         model.doChooseMapProperty().setValue(false);
     }
 
+    public void loadGameScene () throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("GAME");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
+    }
 }

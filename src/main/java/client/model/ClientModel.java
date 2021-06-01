@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * @author Mohamad, Viktoria
+ * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
  * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
 public class ClientModel {
@@ -55,6 +55,8 @@ public class ClientModel {
     private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
     private ArrayList<String> availableMaps = new ArrayList<>();
+
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
     private ClientModel () {
     }
@@ -185,6 +187,18 @@ public class ClientModel {
         refreshPlayerStatus(playerID, false);
         chatHistoryProperty().setValue(chatHistoryProperty().getValue() + "Player " + playersNamesMap.get(playerID) + " is disconnected. \n");
         playersNamesMap.remove(playerID);
+    }
+
+    public boolean isGameOn () {
+        return gameOn.get();
+    }
+
+    public BooleanProperty gameOnProperty () {
+        return gameOn;
+    }
+
+    public void setGameOn (boolean gameOn) {
+        this.gameOn.set(gameOn);
     }
 
     public String getChatHistory () {

@@ -11,6 +11,7 @@ import server.Server;
 import game.boardelements.*;
 
 import javafx.geometry.Point2D;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -36,6 +37,7 @@ public class Game {
     private ArrayList<String> availableMaps = new ArrayList<>();
     private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
+
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
@@ -54,7 +56,8 @@ public class Game {
         availableMaps.add("DizzyHighway");
     }
 
-    public Game(ArrayList<Player> playerList, Server server){
+
+    public Game (ArrayList<Player> playerList, Server server) {
         this.server = server;
 
         this.deckSpam = new DeckSpam();
@@ -75,6 +78,14 @@ public class Game {
         this.map = new ArrayList<>();
     }
 
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public static ArrayList<String> getRobotNames () {
+        return robotNames;
+    }
+
     //TODO select map
     //     if (Player player:playerList) isAI -> pickRandomMap
     //     else playerList.get(0)... pickMap
@@ -85,9 +96,10 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
-    public void selectMap() throws IOException {
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        Path pathToMap = Paths.get("blinde-bonbons/src/resources/Maps/DizzyHighway.json");
+        String path = "blinde-bonbons/src/resources/Maps/" + mapName + ".json";
+        Path pathToMap = Paths.get(path);
         String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
         GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
@@ -98,50 +110,87 @@ public class Game {
     }
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
-        for(int x = 0; x < mapX; x++){
-            for(int y = 0; y < mapY; y++){
-                for(Element element : map.get(x).get(y)){
-                    switch(element.getType()){
+        for (int x = 0; x < mapX; x++) {
+            for (int y = 0; y < mapY; y++) {
+                for (int i = 0; i < map.get(x).get(y).size(); i++) {
+                    switch (map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
-                            antennaMap.put(new Point2D(x,y), new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            Element element = map.get(x).get(y).get(i);
+                            Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            replaceElementInMap(map, x, y, element, antenna);
+                            antennaMap.put(new Point2D(x, y), antenna);
                         }
                         case "ConveyorBelt" -> {
-                            conveyorBeltMap.put(new Point2D(x,y), new ConveyorBelt(element.getType(), element.getIsOnBoard(),
-                                    element.getSpeed(), element.getOrientations()));
+                            Element element = map.get(x).get(y).get(i);
+                            ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
+                                    element.getSpeed(), element.getOrientations());
+                            replaceElementInMap(map, x, y, element, conveyorBelt);
+                            conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
                         }
                         case "CheckPoint" -> {
-                            checkPointMap.put(new Point2D(x,y), new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount()));
+                            Element element = map.get(x).get(y).get(i);
+                            CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
+                            replaceElementInMap(map, x, y, element, checkPoint);
+                            checkPointMap.put(new Point2D(x, y), checkPoint);
                         }
                         case "Empty" -> {
-                            emptyMap.put(new Point2D(x,y), new Empty(element.getType(), element.getIsOnBoard()));
+                            Element element = map.get(x).get(y).get(i);
+                            Empty empty = new Empty(element.getType(), element.getIsOnBoard());
+                            replaceElementInMap(map, x, y, element, empty);
+                            emptyMap.put(new Point2D(x, y), empty);
                         }
                         case "EnergySpace" -> {
-                            energySpaceMap.put(new Point2D(x,y), new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount()));
+                            Element element = map.get(x).get(y).get(i);
+                            EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
+                            replaceElementInMap(map, x, y, element, energySpace);
+                            energySpaceMap.put(new Point2D(x, y), energySpace);
                         }
                         case "Gear" -> {
-                            gearMap.put(new Point2D(x,y), new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            Element element = map.get(x).get(y).get(i);
+                            Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            replaceElementInMap(map, x, y, element, gear);
+                            gearMap.put(new Point2D(x, y), gear);
                         }
                         case "Laser" -> {
-                            laserMap.put(new Point2D(x,y), new Laser(element.getType(), element.getIsOnBoard(),
-                                    element.getOrientations(), element.getCount()));
+                            Element element = map.get(x).get(y).get(i);
+                            Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
+                                    element.getOrientations(), element.getCount());
+                            replaceElementInMap(map, x, y, element, laser);
+                            laserMap.put(new Point2D(x, y), laser);
                         }
                         case "Pit" -> {
-                            pitMap.put(new Point2D(x,y), new Pit(element.getType(), element.getIsOnBoard()));
+                            Element element = map.get(x).get(y).get(i);
+                            Pit pit = new Pit(element.getType(), element.getIsOnBoard());
+                            replaceElementInMap(map, x, y, element, pit);
+                            pitMap.put(new Point2D(x, y), pit);
                         }
                         case "PushPanel" -> {
-                            pushPanelMap.put(new Point2D(x,y), new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
-                                    element.getRegisters()));
+                            Element element = map.get(x).get(y).get(i);
+                            PushPanel pushPanel = new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
+                                    element.getRegisters());
+                            replaceElementInMap(map, x, y, element, pushPanel);
+                            pushPanelMap.put(new Point2D(x, y), pushPanel);
                         }
                         case "RestartPoint" -> {
-                            restartPointMap.put(new Point2D(x,y), new RestartPoint(element.getType(), element.getIsOnBoard()));
+                            Element element = map.get(x).get(y).get(i);
+                            RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard());
+                            replaceElementInMap(map, x, y, element, restartPoint);
+                            restartPointMap.put(new Point2D(x, y), restartPoint);
                         }
                         case "StartPoint" -> {
-                            startPointMap.put(new Point2D(x,y), new StartPoint(element.getType(), element.getIsOnBoard()));
+                            Element element = map.get(x).get(y).get(i);
+                            StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
+                            replaceElementInMap(map, x, y, element, startPoint);
+                            startPointMap.put(new Point2D(x, y), startPoint);
                         }
                         case "Wall" -> {
-                            wallMap.put(new Point2D(x,y), new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            Element element = map.get(x).get(y).get(i);
+                            Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            replaceElementInMap(map, x, y, element, wall);
+                            wallMap.put(new Point2D(x, y), wall);
                         }
-                        default -> {}
+                        default -> { //place for exception handling
+                        }
                     }
                 }
             }
@@ -154,14 +203,6 @@ public class Game {
     //TODO element instanceOf Laser -> player draw Spam from DeckSpam
 
     //TODO calculate distance from antenna -> method
-
-    public ArrayList<String> getAvailableMaps () {
-        return availableMaps;
-    }
-
-    public static ArrayList<String> getRobotNames () {
-        return robotNames;
-    }
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
@@ -231,11 +272,24 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
+
+    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+        if (object instanceof Element) {
+            int indexelement = map.get(x).get(y).indexOf(element);
+            map.get(x).get(y).remove(element);
+            map.get(x).get(y).add(indexelement, (Element) object);
+        } else {
+            throw new ClassCastException(object + " is not an Element!" +
+                    "Can't cast this method on Objects other than Elements!");
+
+        }
+    }
+
 }
