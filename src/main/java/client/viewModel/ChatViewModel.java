@@ -59,13 +59,15 @@ public class ChatViewModel implements Initializable {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 //TODO: Hier (wenn möglich) kein Platform.runLater()
-                Platform.runLater(() -> {
-                    try {
-                        showMaps();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                });
+                if (model.doChooseMapProperty().getValue() == true) {
+                    Platform.runLater(() -> {
+                        try {
+                            showMaps();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    });
+                }
             }
         });
         //chatField = new TextArea("");
@@ -91,6 +93,7 @@ public class ChatViewModel implements Initializable {
             readyButton.setVisible(false);
             notReadyBtn.setVisible(false);
         }
+        notReadyBtn.setDisable(true);
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -112,6 +115,8 @@ public class ChatViewModel implements Initializable {
 
     public void sendReadyStatus (ActionEvent event) {
         model.setNewStatus(true);
+        readyButton.setDisable(true);
+        notReadyBtn.setDisable(false);
     }
 
     public void showMaps () throws IOException {
@@ -126,6 +131,9 @@ public class ChatViewModel implements Initializable {
 
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);
+        notReadyBtn.setDisable(true);
+        readyButton.setDisable(false);
+        model.doChooseMapProperty().setValue(false);
     }
 
 }
