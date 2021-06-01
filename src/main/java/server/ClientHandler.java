@@ -108,8 +108,8 @@ public class ClientHandler extends Thread {
         if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
             if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
-                JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-                server.sendMessage(selectMapmessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
             }
         }
         server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));

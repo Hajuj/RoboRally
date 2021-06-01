@@ -216,14 +216,14 @@ public class MessageHandler {
         if (ready) {
             server.getReadyPlayer().add(player);
             if (server.getReadyPlayer().size() == 1) {
-                JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-                server.sendMessage(selectMapmessage, clientHandler.getWriter());
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
-                JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-                server.sendMessage(selectMapmessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
             }
             server.getReadyPlayer().remove(player);
         }
