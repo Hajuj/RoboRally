@@ -10,6 +10,7 @@ import json.protocol.GameStartedBody;
 import server.Server;
 import game.boardelements.*;
 
+import javafx.geometry.Point2D;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,18 +33,18 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
 
-    private Map<String, Antenna> antennaMap = new HashMap<>();
-    private Map<String, CheckPoint> checkPointMap = new HashMap<>();
-    private Map<String, ConveyorBelt> conveyorBeltMap = new HashMap<>();
-    private Map<String, Empty> emptyMap = new HashMap<>();
-    private Map<String, EnergySpace> energySpaceMap = new HashMap<>();
-    private Map<String, Gear> gearMap = new HashMap<>();
-    private Map<String, Laser> laserMap = new HashMap<>();
-    private Map<String, Pit> pitMap = new HashMap<>();
-    private Map<String, PushPanel> pushPanelMap = new HashMap<>();
-    private Map<String, RestartPoint> restartPointMap = new HashMap<>();
-    private Map<String, StartPoint> startPointMap = new HashMap<>();
-    private Map<String, Wall> wallMap = new HashMap<>();
+    private Map<Point2D, Antenna> antennaMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
+    private Map<Point2D, Empty> emptyMap = new HashMap<>();
+    private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
+    private Map<Point2D, Gear> gearMap = new HashMap<>();
+    private Map<Point2D, Laser> laserMap = new HashMap<>();
+    private Map<Point2D, Pit> pitMap = new HashMap<>();
+    private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
+    private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
+    private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
+    private Map<Point2D, Wall> wallMap = new HashMap<>();
 
     public Game(ArrayList<Player> playerList, Server server){
         this.server = server;
@@ -94,59 +95,46 @@ public class Game {
                 for(Element element : map.get(x).get(y)){
                     switch(element.getType()){
                         case "Antenna" -> {
-                            String position = x + "/" + y;
-                            antennaMap.put(position, new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            antennaMap.put(new Point2D(x,y), new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations()));
                         }
                         case "ConveyorBelt" -> {
-                            String position = x + "/" + y;
-                            conveyorBeltMap.put(position, new ConveyorBelt(element.getType(), element.getIsOnBoard(),
+                            conveyorBeltMap.put(new Point2D(x,y), new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations()));
                         }
                         case "CheckPoint" -> {
-                            String position = x + "/" + y;
-                            checkPointMap.put(position, new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount()));
+                            checkPointMap.put(new Point2D(x,y), new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount()));
                         }
                         case "Empty" -> {
-                            String position = x + "/" + y;
-                            emptyMap.put(position, new Empty(element.getType(), element.getIsOnBoard()));
+                            emptyMap.put(new Point2D(x,y), new Empty(element.getType(), element.getIsOnBoard()));
                         }
                         case "EnergySpace" -> {
-                            String position = x + "/" + y;
-                            energySpaceMap.put(position, new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount()));
+                            energySpaceMap.put(new Point2D(x,y), new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount()));
                         }
                         case "Gear" -> {
-                            String position = x + "/" + y;
-                            gearMap.put(position, new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            gearMap.put(new Point2D(x,y), new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations()));
                         }
                         case "Laser" -> {
-                            String position = x + "/" + y;
-                            laserMap.put(position, new Laser(element.getType(), element.getIsOnBoard(),
+                            laserMap.put(new Point2D(x,y), new Laser(element.getType(), element.getIsOnBoard(),
                                     element.getOrientations(), element.getCount()));
                         }
                         case "Pit" -> {
-                            String position = x + "/" + y;
-                            pitMap.put(position, new Pit(element.getType(), element.getIsOnBoard()));
+                            pitMap.put(new Point2D(x,y), new Pit(element.getType(), element.getIsOnBoard()));
                         }
                         case "PushPanel" -> {
-                            String position = x + "/" + y;
-                            pushPanelMap.put(position, new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
+                            pushPanelMap.put(new Point2D(x,y), new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
                                     element.getRegisters()));
                         }
                         case "RestartPoint" -> {
-                            String position = x + "/" + y;
-                            restartPointMap.put(position, new RestartPoint(element.getType(), element.getIsOnBoard()));
+                            restartPointMap.put(new Point2D(x,y), new RestartPoint(element.getType(), element.getIsOnBoard()));
                         }
                         case "StartPoint" -> {
-                            String position = x + "/" + y;
-                            startPointMap.put(position, new StartPoint(element.getType(), element.getIsOnBoard()));
+                            startPointMap.put(new Point2D(x,y), new StartPoint(element.getType(), element.getIsOnBoard()));
                         }
                         case "Wall" -> {
-                            String position = x + "/" + y;
-                            wallMap.put(position, new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            wallMap.put(new Point2D(x,y), new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations()));
                         }
                         default -> {}
                     }
-
                 }
             }
         }
@@ -165,5 +153,73 @@ public class Game {
 
     public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
         return map;
+    }
+
+    public Map<Point2D, Laser> getLaserMap() {
+        return laserMap;
+    }
+
+    public Map<Point2D, Antenna> getAntennaMap() {
+        return antennaMap;
+    }
+
+    public DeckWorm getDeckWorm() {
+        return deckWorm;
+    }
+
+    public DeckVirus getDeckVirus() {
+        return deckVirus;
+    }
+
+    public DeckTrojan getDeckTrojan() {
+        return deckTrojan;
+    }
+
+    public DeckSpam getDeckSpam() {
+        return deckSpam;
+    }
+
+    public Map<Point2D, CheckPoint> getCheckPointMap() {
+        return checkPointMap;
+    }
+
+    public Map<Point2D, ConveyorBelt> getConveyorBeltMap() {
+        return conveyorBeltMap;
+    }
+
+    public Map<Point2D, Empty> getEmptyMap() {
+        return emptyMap;
+    }
+
+    public Map<Point2D, EnergySpace> getEnergySpaceMap() {
+        return energySpaceMap;
+    }
+
+    public Map<Point2D, Gear> getGearMap() {
+        return gearMap;
+    }
+
+    public Map<Point2D, Pit> getPitMap() {
+        return pitMap;
+    }
+
+    public Map<Point2D, PushPanel> getPushPanelMap() {
+        return pushPanelMap;
+    }
+
+    public Map<Point2D, RestartPoint> getRestartPointMap() {
+        return restartPointMap;
+    }
+
+    public Map<Point2D, StartPoint> getStartPointMap() {
+        return startPointMap;
+    }
+
+    public Map<Point2D, Wall> getWallMap() {
+        return wallMap;
+    }
+
+    public Server getServer() {
+        return server;
     }
 }
