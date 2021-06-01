@@ -256,7 +256,7 @@ public class MessageHandler {
         boolean isConnected = connectionUpdateBody.isConnected();
         String action = connectionUpdateBody.getAction();
 
-        if (action.equals("remove") && isConnected == false) {
+        if (action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
         }
     }
