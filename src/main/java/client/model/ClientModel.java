@@ -96,6 +96,7 @@ public class ClientModel {
             }
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
             return true;
+            //TODO: Caused by: java.lang.IllegalArgumentException: port out of range:502022
         } catch (ConnectException connectException) {
         } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
