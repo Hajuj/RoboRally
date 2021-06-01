@@ -11,8 +11,11 @@ import java.util.ArrayList;
 public class PushPanel extends Element {
 
     @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+    @Expose
     private ArrayList<String> orientations;
-
     @Expose
     private ArrayList<Integer> registers;
 

@@ -64,7 +64,9 @@ public class ChooseRobotViewModel implements Initializable {
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
                 if (!isValideUsername(t1)) {
                     playButton.setDisable(true);
-                } else if (figureProperty.getValue() != -1){
+                } else if (figureProperty.getValue() != -1) {
+                    playButton.setDisable(false);
+                } else if (isGameOn()) {
                     playButton.setDisable(false);
                 }
             }
@@ -75,13 +77,19 @@ public class ChooseRobotViewModel implements Initializable {
             public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 if (figureProperty.getValue() == -1) {
                     playButton.setDisable(true);
-                } else if (isValideUsername(nameField.getText())){
+                } else if (isValideUsername(nameField.getText())) {
                     playButton.setDisable(false);
                 }
             }
         });
 
         disableUsedRobots();
+
+        if (isGameOn()) {
+            playButton.setText("Chat!");
+            playButton.setDisable(false);
+        }
+
     }
 
     public void disableUsedRobots () {
@@ -191,6 +199,10 @@ public class ChooseRobotViewModel implements Initializable {
         if (username.contains(" ")) return false;
         if (username.contains("@")) return false;
         return true;
+    }
+
+    public boolean isGameOn () {
+        return (model.getPlayersFigureMap().size() >= 6);
     }
 
     public int getFigureProperty () {

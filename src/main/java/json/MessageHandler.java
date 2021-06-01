@@ -209,23 +209,33 @@ public class MessageHandler {
 
     public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-        player.setReady(setStatusBody.isReady());
+        boolean ready = setStatusBody.isReady();
+        player.setReady(ready);
 
-        if (setStatusBody.isReady()) {
+        if (ready) {
             server.getReadyPlayer().add(player);
+            if (server.getReadyPlayer().size() == 1) {
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, clientHandler.getWriter());
+            }
+            if (server.canStartTheGame()) {
+                logger.info("I CAN START THE GAME");
+            }
         } else {
+            if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
+                Player nextOne = server.getReadyPlayer().get(1);
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+            }
             server.getReadyPlayer().remove(player);
         }
-        //String isReady = setStatusBody.isReady() ? "ready" : "not ready";
+
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
         }
 
-        if (server.getReadyPlayer().size() == 1) {
-            JSONMessage selectMapmessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-            server.sendMessage(selectMapmessage, clientHandler.getWriter());
-        }
-        // logger.info("The player " + clientHandler.getPlayer_id() + " is " + isReady);
+        String isReady = setStatusBody.isReady() ? "ready" : "not ready";
+        logger.info("The player " + player.getName() + " is " + isReady);
     }
 
     public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
@@ -246,9 +256,19 @@ public class MessageHandler {
         }
     }
 
-    public void handleMapSelected(ClientModel clientModel, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         clientModel.setSelectedMap("DizzyHighway");
         System.out.println("IM HERE");
+    }
+
+    public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
+        int playerID = connectionUpdateBody.getPlayerID();
+        boolean isConnected = connectionUpdateBody.isConnected();
+        String action = connectionUpdateBody.getAction();
+
+        if (action.equals("remove") && !isConnected) {
+            clientmodel.removePlayer(playerID);
+        }
     }
 
 }

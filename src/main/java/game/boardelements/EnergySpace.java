@@ -3,13 +3,15 @@ package game.boardelements;
 import com.google.gson.annotations.Expose;
 import game.Element;
 
-import java.util.ArrayList;
-
 /**
  * @author Ilja Knis
  */
 public class EnergySpace extends Element {
 
+    @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
     @Expose
     private int count;
 

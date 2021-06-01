@@ -8,6 +8,11 @@ import game.Element;
  */
 public class StartPoint extends Element {
 
+    @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+
     public StartPoint(String type, String isOnBoard){
         this.type = type;
         this.isOnBoard = isOnBoard;

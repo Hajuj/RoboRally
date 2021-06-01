@@ -106,6 +106,14 @@ public class Server {
         writer.flush();
     }
 
+    //TODO send JSONMessage with GameStarted
+    public boolean canStartTheGame () {
+        if (getReadyPlayer().size() < 2) return false;
+        if (getReadyPlayer().size() == 6) return true;
+        if (getReadyPlayer().size() == getWaitingPlayer().size()) return true;
+        return false;
+    }
+
     public Player getPlayerWithID (int ID) {
         for (Player player : waitingPlayer) {
             if (player.getPlayerID() == ID) {

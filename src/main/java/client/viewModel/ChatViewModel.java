@@ -59,13 +59,15 @@ public class ChatViewModel implements Initializable {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 //TODO: Hier (wenn möglich) kein Platform.runLater()
-                Platform.runLater(() -> {
-                    try {
-                        showMaps();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                });
+                if (model.doChooseMapProperty().getValue() == true) {
+                    Platform.runLater(() -> {
+                        try {
+                            showMaps();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    });
+                }
             }
         });
         //chatField = new TextArea("");
@@ -79,7 +81,6 @@ public class ChatViewModel implements Initializable {
         model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                //System.out.println("PLAYER REFRESHED");
                 readyDisplay.setText(s2);
             }
         });
@@ -88,17 +89,11 @@ public class ChatViewModel implements Initializable {
         model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
-//        model.errorProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
-//                System.out.println("ERROR");
-//                //TODO fix error when writing the same username
-//                Alert a = new Alert(Alert.AlertType.NONE);
-//                a.setAlertType(Alert.AlertType.ERROR);
-//                a.setContentText(model.errorProperty().toString());
-//                a.show();
-//            }
-//        });
+        if (model.getPlayer().getFigure() == -1) {
+            readyButton.setVisible(false);
+            notReadyBtn.setVisible(false);
+        }
+        notReadyBtn.setDisable(true);
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -119,8 +114,9 @@ public class ChatViewModel implements Initializable {
     }
 
     public void sendReadyStatus (ActionEvent event) {
-
         model.setNewStatus(true);
+        readyButton.setDisable(true);
+        notReadyBtn.setDisable(false);
     }
 
     public void showMaps () throws IOException {
@@ -132,10 +128,12 @@ public class ChatViewModel implements Initializable {
         newStage.show();
     }
 
-    //readyButton.setBackground(BackgroundFill);
-    //readyButton.setVisible(true);
+
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);
+        notReadyBtn.setDisable(true);
+        readyButton.setDisable(false);
+        model.doChooseMapProperty().setValue(false);
     }
 
 }
