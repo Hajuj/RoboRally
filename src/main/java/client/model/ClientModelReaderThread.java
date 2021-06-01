@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 
 import org.apache.log4j.Logger;
 
@@ -61,9 +62,9 @@ public class ClientModelReaderThread extends Thread {
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, messageBody, messageHandler);
             }
-        } catch (IOException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

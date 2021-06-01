@@ -78,14 +78,16 @@ public class ChatViewModel implements Initializable {
                 chatField.setText(t1);
             }
         });
-        model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                readyDisplay.setText(s2);
-            }
-        });
-
-
+        synchronized (model.playersStatusMapProperty()) {
+            model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
+                    //TODO check if synchronized block working
+                    //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
+                    readyDisplay.setText(s2);
+                }
+            });
+        }
         model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
@@ -110,7 +112,6 @@ public class ChatViewModel implements Initializable {
         rootStage.setScene(new Scene(root));
         rootStage.setTitle("Game Guide");
         rootStage.show();
-
     }
 
     public void sendReadyStatus (ActionEvent event) {
@@ -127,7 +128,6 @@ public class ChatViewModel implements Initializable {
         newStage.setScene(new Scene(root1));
         newStage.show();
     }
-
 
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);

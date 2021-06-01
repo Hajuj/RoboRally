@@ -85,16 +85,19 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
-    public void selectMap() throws IOException {
-        //TODO maybe try block instead of throws IOException
-        Path pathToMap = Paths.get("blinde-bonbons/src/resources/Maps/DizzyHighway.json");
-        String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
-        GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
-        this.map = gameStartedBody.getGameMap();
-        int mapX = map.size();
-        int mapY = map.get(0).size();
-        createMapObjects(map, mapX, mapY);
+    public void selectMap() {
+        try {
+            Path pathToMap = Paths.get("src/main/resources/Maps/DizzyHighway.json");
+            String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
+            JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
+            GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
+            this.map = gameStartedBody.getGameMap();
+            int mapX = map.size();
+            int mapY = map.get(0).size();
+            createMapObjects(map, mapX, mapY);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
