@@ -167,7 +167,8 @@ public class ClientModel {
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
             String isReady = p.getValue() ? "ready" : "not ready";
-            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + Game.getRobotNames().get(playersFigureMap.get(p.getKey())) + "\n");
+            //TODO change Game.getRobotNames().get(playersFigureMap.get(p.getKey())) for -1 and unknown
+            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + "\n");
         }
     }
 

@@ -102,9 +102,12 @@ public class ClientHandler extends Thread {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + "wurde abgebrochen.");
+        logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
+        server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));
+        server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
+        server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
         try {
-            //TODO inform die anderen Clients, dass dieser Client weg ist.
+            //TODO hier kommt ConnectionUpdate vom Protocol 2.0
             clientSocket.close();
         } catch (IOException ioException) {
             ioException.printStackTrace();
