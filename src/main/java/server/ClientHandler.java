@@ -116,11 +116,15 @@ public class ClientHandler extends Thread {
         server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
         server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
 
-
         for (Connection connection : server.getConnections()) {
             JSONMessage removeMessage = new JSONMessage("ConnectionUpdate", new ConnectionUpdateBody(this.player_id, false, "remove"));
             server.sendMessage(removeMessage, connection.getWriter());
         }
+
+        if (server.canStartTheGame()) {
+            logger.info("I CAN START THE GAME");
+        }
+
         try {
             clientSocket.close();
         } catch (IOException ioException) {
