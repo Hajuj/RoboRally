@@ -136,6 +136,13 @@ public class Server {
         return readyPlayer;
     }
 
+    public boolean canStartTheGame () {
+        if (getReadyPlayer().size() < 2) return false;
+        if (getReadyPlayer().size() == 6) return true;
+        if (getReadyPlayer().size() == getWaitingPlayer().size()) return true;
+        return false;
+    }
+
     public ArrayList<Player> getWaitingPlayer () {
         return waitingPlayer;
     }

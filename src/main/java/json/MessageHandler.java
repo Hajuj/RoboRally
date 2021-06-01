@@ -219,6 +219,9 @@ public class MessageHandler {
                 JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
+            if (server.canStartTheGame()) {
+                logger.info("I CAN START THE GAME");
+            }
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
