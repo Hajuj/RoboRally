@@ -87,17 +87,10 @@ public class ChatViewModel implements Initializable {
         model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
-//        model.errorProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed (ObservableValue<? extends String> observableValue, String err1, String err2) {
-//                System.out.println("ERROR");
-//                //TODO fix error when writing the same username
-//                Alert a = new Alert(Alert.AlertType.NONE);
-//                a.setAlertType(Alert.AlertType.ERROR);
-//                a.setContentText(model.errorProperty().toString());
-//                a.show();
-//            }
-//        });
+        if (model.getPlayer().getFigure() == -1) {
+            readyButton.setVisible(false);
+            notReadyBtn.setVisible(false);
+        }
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -118,7 +111,6 @@ public class ChatViewModel implements Initializable {
     }
 
     public void sendReadyStatus (ActionEvent event) {
-
         model.setNewStatus(true);
     }
 

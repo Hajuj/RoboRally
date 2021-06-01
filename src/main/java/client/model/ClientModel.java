@@ -81,6 +81,7 @@ public class ClientModel {
             clientModelReaderThread = new ClientModelReaderThread(this, socket);
             clientModelWriterThread = new ClientModelWriterThread(this, socket, messageHandler);
             Thread readerThread = new Thread(clientModelReaderThread);
+
             readerThread.start();
             Thread writerTread = new Thread(clientModelWriterThread);
             writerTread.start();
@@ -166,9 +167,14 @@ public class ClientModel {
         playersStatusMap.replace(playerID, newPlayerStatus);
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
-            String isReady = p.getValue() ? "ready" : "not ready";
             //TODO change Game.getRobotNames().get(playersFigureMap.get(p.getKey())) for -1 and unknown
-            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + " is " + isReady + "  |   Robot " + "\n");
+            String robotName = "**chat only**";
+            String isReady = "               ";
+            if (playersFigureMap.get(p.getKey()) != -1) {
+                robotName = "Robot " + Game.getRobotNames().get(playersFigureMap.get(p.getKey()));
+                isReady = p.getValue() ? " is ready" : " is not ready";
+            }
+            playersStatusMapProperty.setValue(playersStatusMapProperty.getValue() + "Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
         }
     }
 
