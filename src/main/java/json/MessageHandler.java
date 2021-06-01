@@ -212,7 +212,6 @@ public class MessageHandler {
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
 
-
         if (ready) {
             server.getReadyPlayer().add(player);
             if (server.getReadyPlayer().size() == 1) {

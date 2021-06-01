@@ -24,6 +24,7 @@ public class AvailableMapsViewModel implements Initializable {
 
     }
 
+    //TODO it should be in ClientModel
     public void selectDizzyHighway (Event event) {
         System.out.println("Ich will Dizzy Highway!");
         String map = "Dizzy Highway";
