@@ -7,6 +7,8 @@ import json.MessageHandler;
 import server.ClientHandler;
 import server.Server;
 
+import java.io.IOException;
+
 /**
  * @author Mohamad
  */
@@ -20,7 +22,11 @@ public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, Cl
 
     @Override
     public void triggerAction(Server server, ClientHandler clientHandler, MapSelectedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleMapSelected(server, clientHandler, bodyObject);
+        try {
+            messageHandler.handleMapSelected(server, clientHandler, bodyObject);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 
     @Override

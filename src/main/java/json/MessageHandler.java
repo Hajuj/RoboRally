@@ -174,6 +174,7 @@ public class MessageHandler {
 
     public void handleGameStarted(ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
 
@@ -264,14 +265,16 @@ public class MessageHandler {
         clientModel.setDoChooseMap(true);
     }
 
-    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
         }
+        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
     }
 
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         clientModel.setSelectedMap("DizzyHighway");
+        //clientModel.gameOnProperty().setValue(true);
         System.out.println("IM HERE");
     }
 
