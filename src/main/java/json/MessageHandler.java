@@ -261,6 +261,15 @@ public class MessageHandler {
         System.out.println("IM HERE");
     }
 
+    public void handleCardPlayed (Server server, ClientModel clientModel, CardPlayedBody cardPlayedBody){
+        int playerID = cardPlayedBody.getPlayerID();
+
+    }
+
+    public void handlePlayCard (Server server, ClientModel clientModel, PlayCardBody playCardBody){
+        int playerID = playCardBody.getPlayerID();
+    }
+
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
         int playerID = connectionUpdateBody.getPlayerID();
         boolean isConnected = connectionUpdateBody.isConnected();
