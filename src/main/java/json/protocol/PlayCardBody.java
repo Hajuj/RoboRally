@@ -22,7 +22,7 @@ public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
 
     @Override
     public void triggerAction(Server server, ClientHandler clientHandler, PlayCardBody playCardBody, MessageHandler messageHandler) {
-        messageHandler.handlePlayCard(server, playCardBody);
+        messageHandler.handlePlayCard(server, clientHandler, playCardBody);
 
     }
 
