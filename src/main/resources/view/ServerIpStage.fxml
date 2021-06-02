@@ -5,6 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="334.0" prefWidth="449.0" xmlns="http://javafx.com/javafx/11.0.1"
@@ -29,12 +30,17 @@
 
 
         <Button fx:id="BBButton" layoutX="352.0" layoutY="68.0" mnemonicParsing="false" onAction="#BBButtonAction"
-                prefHeight="65.0" prefWidth="65.0" style="-fx-background-radius: 180;" text="BB" textAlignment="CENTER">
+                prefHeight="65.0" prefWidth="65.0" style="-fx-background-radius: 180; -fx-background-color: white;"
+                text="BB" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0"/>
             </font>
             <effect>
-                <InnerShadow choke="0.35" height="44.72" radius="24.085" width="53.62"/>
+                <InnerShadow choke="0.35" height="51.4" radius="25.755" width="53.62">
+                    <color>
+                        <Color red="0.75" green="0.0173611119389534" blue="0.0173611119389534"/>
+                    </color>
+                </InnerShadow>
             </effect>
         </Button>
 
@@ -63,13 +69,17 @@
 
 
         <Button fx:id="LMUButton" layoutX="353.0" layoutY="150.0" mnemonicParsing="false" onAction="#LMUButtonAction"
-                prefHeight="65.0" prefWidth="65.0" style="-fx-background-radius: 180;" text="LMU"
-                textAlignment="CENTER">
+                prefHeight="65.0" prefWidth="65.0" style="-fx-background-radius: 180; -fx-background-color: white;"
+                text="LMU" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0"/>
             </font>
             <effect>
-                <InnerShadow choke="0.35" height="44.72" radius="24.085" width="53.62"/>
+                <InnerShadow choke="0.35" height="51.4" radius="25.755" width="53.62">
+                    <color>
+                        <Color red="0.8026315569877625" green="0.01114766113460064" blue="0.01114766113460064"/>
+                    </color>
+                </InnerShadow>
             </effect>
         </Button>
         <TextField fx:id="serverAddressField" layoutX="99.0" layoutY="96.0" prefHeight="39.0" prefWidth="213.0"
