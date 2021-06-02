@@ -1,7 +1,6 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 
@@ -18,9 +17,9 @@ import json.MessageHandler;
 public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
 
     @Expose
-    private int clientID;
+    private final int clientID;
     @Expose
-    private boolean ready;
+    private final boolean ready;
 
     public PlayerStatusBody (int clientID, boolean ready) {
         this.clientID = clientID;

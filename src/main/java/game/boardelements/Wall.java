@@ -11,11 +11,11 @@ import java.util.ArrayList;
 public class Wall extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
     @Expose
-    private ArrayList<String> orientations;
+    private final ArrayList<String> orientations;
 
     public Wall(String type, String isOnBoard, ArrayList<String> orientations) {
         this.type = type;

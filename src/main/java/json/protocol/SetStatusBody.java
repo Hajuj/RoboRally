@@ -18,7 +18,7 @@ import server.Server;
 public class SetStatusBody implements ClientMessageAction<SetStatusBody> {
 
     @Expose
-    private boolean ready;
+    private final boolean ready;
 
     public SetStatusBody (boolean ready) {
         this.ready = ready;

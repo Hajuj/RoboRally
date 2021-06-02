@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 public class ServerIpStageViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
@@ -54,7 +54,7 @@ public class ServerIpStageViewModel implements Initializable {
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
-                    Parent root1 = (Parent) fxmlLoader.load();
+                    Parent root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
                     newStage.setTitle("RoboRally");
                     newStage.setScene(new Scene(root1));

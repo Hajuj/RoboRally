@@ -17,9 +17,9 @@ import json.MessageHandler;
 
 public class ConnectionUpdateBody implements ServerMessageAction<ConnectionUpdateBody> {
 
-    private int playerID;
-    private boolean isConnected;
-    private String action;
+    private final int playerID;
+    private final boolean isConnected;
+    private final String action;
 
     public ConnectionUpdateBody (int playerID, boolean isConnected, String action) {
         this.playerID = playerID;

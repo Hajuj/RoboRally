@@ -1,24 +1,19 @@
 package json;
 
 import client.model.ClientModel;
-
-
 import game.Game;
-import game.Robot;
-import server.Server;
-import server.Connection;
-import server.ClientHandler;
-
 import game.Player;
-
+import game.Robot;
 import json.protocol.*;
+import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Connection;
+import server.Server;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Mohamad, Viktoria

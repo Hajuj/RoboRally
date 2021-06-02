@@ -10,11 +10,11 @@ import com.google.gson.annotations.Expose;
 
 public class JSONMessage {
     @Expose
-    private String messageType;
+    private final String messageType;
 
 
     @Expose
-    private Object messageBody;
+    private final Object messageBody;
 
     public JSONMessage (String messageType, Object messageBody) {
         this.messageType = messageType;

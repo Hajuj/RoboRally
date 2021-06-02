@@ -4,14 +4,13 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.MessageHandler;
 import json.protocol.ServerMessageAction;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
-
-import org.apache.log4j.Logger;
 
 /**
  * ClientModelReaderThread for reading ( only! ) of server messages

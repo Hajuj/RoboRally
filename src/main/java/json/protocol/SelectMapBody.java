@@ -1,7 +1,6 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
 import json.MessageHandler;
 
 import java.util.ArrayList;

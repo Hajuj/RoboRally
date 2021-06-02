@@ -19,9 +19,9 @@ import server.Server;
 public class SetStartingPointBody implements ClientMessageAction<SetStartingPointBody> {
 
     @Expose
-    private int x;
+    private final int x;
     @Expose
-    private int y;
+    private final int y;
 
     public SetStartingPointBody (int x, int y) {
         this.x = x;

@@ -1,21 +1,17 @@
 package server;
 
-import client.model.ClientModel;
 import game.Game;
 import game.Player;
-
 import json.JSONMessage;
 import json.JSONSerializer;
 import json.MessageHandler;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -31,7 +27,7 @@ public class Server {
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
-    private ArrayList<Player> readyPlayer = new ArrayList<>();
+    private final ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
@@ -107,8 +103,7 @@ public class Server {
         //TODO boolean gameOn (when game has started no other players are allowed to join -> if)
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
-        if (getReadyPlayer().size() == getWaitingPlayer().size()) return true;
-        return false;
+        return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
     public Player getPlayerWithID (int ID) {

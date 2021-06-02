@@ -1,11 +1,8 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
-
 import com.google.gson.annotations.Expose;
+import json.MessageHandler;
 
 /**
  * This is the wrapper class for the message body of the 'HelloClient' protocol JSON message.

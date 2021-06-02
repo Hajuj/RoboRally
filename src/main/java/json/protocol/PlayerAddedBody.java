@@ -1,7 +1,6 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 
@@ -10,11 +9,11 @@ import json.MessageHandler;
  */
 public class PlayerAddedBody implements ServerMessageAction<PlayerAddedBody> {
     @Expose
-    private int clientID;
+    private final int clientID;
     @Expose
-    private String name;
+    private final String name;
     @Expose
-    private int figure;
+    private final int figure;
 
     public PlayerAddedBody(int clientID, String name, int figure) {
         this.clientID = clientID;

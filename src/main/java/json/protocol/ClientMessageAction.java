@@ -1,9 +1,8 @@
 package json.protocol;
 
-import server.Server;
-import server.ClientHandler;
-
 import json.MessageHandler;
+import server.ClientHandler;
+import server.Server;
 
 /**
  * This interface is implemented by each class in {@link json.protocol} that represents the message body.

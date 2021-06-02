@@ -1,12 +1,10 @@
 package json;
 
-import json.protocol.ErrorBody;
-
 import com.google.gson.*;
+import json.protocol.ErrorBody;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
-
-import org.apache.log4j.Logger;
 
 /**
  * This class is responsible for the deserialization (JSONString -> Java) of JSON Messages being in their String representation.

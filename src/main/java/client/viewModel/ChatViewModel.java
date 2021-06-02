@@ -3,8 +3,6 @@ package client.viewModel;
 
 import client.model.ClientModel;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -13,18 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.media.AudioClip;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,13 +25,13 @@ public class ChatViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
     @FXML
-    private TextArea readyDisplay = new TextArea("");
+    private final TextArea readyDisplay = new TextArea("");
     @FXML
     private Button readyButton;
     @FXML
     private Button gameGuideBtn;
     @FXML
-    private TextArea chatField = new TextArea("");
+    private final TextArea chatField = new TextArea("");
     @FXML
     private TextField messageField;
     @FXML
@@ -140,7 +131,7 @@ public class ChatViewModel implements Initializable {
 
     public void showMaps () throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
@@ -156,7 +147,7 @@ public class ChatViewModel implements Initializable {
 
     public void loadGameScene () throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("GAME");
         newStage.setScene(new Scene(root1));

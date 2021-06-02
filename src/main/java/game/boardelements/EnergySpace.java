@@ -9,11 +9,11 @@ import game.Element;
 public class EnergySpace extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
     @Expose
-    private int count;
+    private final int count;
 
     public EnergySpace(String type, String isOnBoard, int count){
         this.type = type;
