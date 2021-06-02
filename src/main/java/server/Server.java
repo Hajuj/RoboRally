@@ -4,7 +4,6 @@ import game.Game;
 import game.Player;
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

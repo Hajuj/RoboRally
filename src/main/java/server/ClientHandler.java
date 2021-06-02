@@ -4,7 +4,6 @@ import game.Player;
 import json.JSONDeserializer;
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
 import json.protocol.ClientMessageAction;
 import json.protocol.ConnectionUpdateBody;
 import json.protocol.HelloClientBody;

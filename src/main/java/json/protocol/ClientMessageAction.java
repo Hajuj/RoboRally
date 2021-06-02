@@ -1,7 +1,7 @@
 package json.protocol;
 
-import json.MessageHandler;
 import server.ClientHandler;
+import server.MessageHandler;
 import server.Server;
 
 /**

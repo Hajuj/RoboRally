@@ -13,7 +13,7 @@ package json.protocol;
  */
 
 import client.model.ClientModel;
-import json.MessageHandler;
+import client.model.MessageHandler;
 
 public class ConnectionUpdateBody implements ServerMessageAction<ConnectionUpdateBody> {
 

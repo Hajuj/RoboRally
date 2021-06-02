@@ -1,8 +1,8 @@
 package json.protocol;
 
 import client.model.ClientModel;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 
 /*
 {

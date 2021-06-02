@@ -2,7 +2,6 @@ package client.model;
 
 import json.JSONDeserializer;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.ServerMessageAction;
 import org.apache.log4j.Logger;
 

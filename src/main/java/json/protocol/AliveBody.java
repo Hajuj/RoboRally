@@ -1,7 +1,6 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import json.MessageHandler;
 import server.ClientHandler;
 import server.Server;
 
@@ -13,7 +12,7 @@ public class AliveBody implements ServerMessageAction<AliveBody>, ClientMessageA
 
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, AliveBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, AliveBody bodyObject, server.MessageHandler messageHandler) {
         Thread sadThread = new Thread(new Runnable() {
             @Override
             public void run () {
@@ -24,7 +23,7 @@ public class AliveBody implements ServerMessageAction<AliveBody>, ClientMessageA
     }
 
     @Override
-    public void triggerAction (ClientModel client, AliveBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, AliveBody bodyObject, client.model.MessageHandler messageHandler) {
         messageHandler.handleAlive(client, bodyObject);
     }
 }

@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
  * @author Mohamad, Viktoria, Ilja
  */
 public class JSONDeserializer {
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(JSONDeserializer.class.getName());
 
     /**
      * This method deserializes a JSON String into a Java Object. It makes use of a

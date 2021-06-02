@@ -2,7 +2,6 @@ package client.model;
 
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
 import json.protocol.SendChatBody;
 import org.apache.log4j.Logger;
 

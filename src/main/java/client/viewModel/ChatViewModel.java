@@ -1,6 +1,5 @@
 package client.viewModel;
 
-
 import client.model.ClientModel;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
