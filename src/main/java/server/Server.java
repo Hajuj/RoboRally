@@ -1,6 +1,7 @@
 package server;
 
 import client.model.ClientModel;
+import game.Game;
 import game.Player;
 
 import json.JSONMessage;
@@ -30,9 +31,13 @@ public class Server {
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
+    private ArrayList<Player> readyPlayer = new ArrayList<>();
+    private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
+
+    //TODO when all robots are in a game, no more clients are allowed to join.
 
     private Server () {
     }
@@ -95,9 +100,18 @@ public class Server {
         }
     }
 
+
     public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
+    }
+
+    //TODO send JSONMessage with GameStarted
+    public boolean canStartTheGame () {
+        if (getReadyPlayer().size() < 2) return false;
+        if (getReadyPlayer().size() == 6) return true;
+        if (getReadyPlayer().size() == getWaitingPlayer().size()) return true;
+        return false;
     }
 
     public Player getPlayerWithID (int ID) {
@@ -116,6 +130,18 @@ public class Server {
             }
         }
         return null;
+    }
+
+    public Game getCurrentGame () {
+        return currentGame;
+    }
+
+    public void setCurrentGame (Game currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public ArrayList<Player> getReadyPlayer () {
+        return readyPlayer;
     }
 
     public ArrayList<Player> getWaitingPlayer () {

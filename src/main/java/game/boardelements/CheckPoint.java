@@ -10,6 +10,10 @@ import game.Element;
 public class CheckPoint extends Element {
 
     @Expose
+    private String type;
+    @Expose
+    private String isOnBoard;
+    @Expose
     private int count;
 
     public CheckPoint(String type, String isOnBoard, int count) {
@@ -26,4 +30,7 @@ public class CheckPoint extends Element {
         return isOnBoard;
     }
 
+    public int getCount() {
+        return count;
+    }
 }
