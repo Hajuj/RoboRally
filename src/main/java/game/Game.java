@@ -6,20 +6,20 @@ import game.decks.DeckVirus;
 import game.decks.DeckWorm;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.MessageHandler;
 import json.protocol.GameStartedBody;
 import server.Server;
 import game.boardelements.*;
 
 import javafx.geometry.Point2D;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Ilja Knis
@@ -85,19 +85,18 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
-    public void selectMap() {
-        try {
-            Path pathToMap = Paths.get("src/main/resources/Maps/DizzyHighway.json");
-            String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-            JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
-            GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
-            this.map = gameStartedBody.getGameMap();
-            int mapX = map.size();
-            int mapY = map.get(0).size();
-            createMapObjects(map, mapX, mapY);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void selectMap (String mapName) throws IOException {
+        //TODO maybe try block instead of throws IOException
+        String fileName = "Maps/DizzyHighway.json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+        GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
+        this.map = gameStartedBody.getGameMap();
+        int mapX = map.size();
+        int mapY = map.get(0).size();
+        createMapObjects(map, mapX, mapY);
     }
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {

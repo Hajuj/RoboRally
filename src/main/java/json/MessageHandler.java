@@ -11,11 +11,13 @@ import game.Player;
 
 import json.protocol.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
@@ -225,9 +227,11 @@ public class MessageHandler {
             }
             try {
                 if (server.canStartTheGame()) {
-                    Path pathToMap = Paths.get("src/main/resources/Maps/DizzyHighway.json");
-                    String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-                    JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
+                    String fileName = "Maps/DizzyHighway.json";
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+                    String content = new String(Files.readAllBytes(file.toPath()));
+                    JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
                     for (Connection connection : server.getConnections()) {
                         server.sendMessage(jsonMessage, connection.getWriter());
                     }

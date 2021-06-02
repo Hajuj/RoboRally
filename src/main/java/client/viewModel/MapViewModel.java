@@ -13,8 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.MessageHandler;
 import json.protocol.GameStartedBody;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,10 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MapViewModel implements Initializable {
 
@@ -53,10 +52,10 @@ public class MapViewModel implements Initializable {
 
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        String path = "blinde-bonbons/src/main/resources/Maps/DizzyHighway.json";
-        Path pathToMap = Paths.get(path);
-        String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("Maps/DizzyHighway.json")).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
         this.map = gameStartedBody.getGameMap();
         int mapX = map.size();
@@ -64,9 +63,14 @@ public class MapViewModel implements Initializable {
         createMapObjects(map, mapX, mapY);
     }
 
+    public File findPath(String fileName) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+    }
+
 
     //sep21.dbs.ifi.lmu.de
-    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws FileNotFoundException {
+    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
         FileInputStream input;
         Image image;
         for (int x = 0; x < mapX; x++) {
@@ -78,9 +82,13 @@ public class MapViewModel implements Initializable {
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, antenna);
                             antennaMap.put(new Point2D(x, y), antenna);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/priority-antenna.png");
+                            input = new FileInputStream(findPath("images/mapElements/priority-antenna.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "ConveyorBelt" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -88,45 +96,65 @@ public class MapViewModel implements Initializable {
                                     element.getSpeed(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, conveyorBelt);
                             conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/bluecvb-straight-down.png");
+                            input = new FileInputStream(findPath("images/mapElements/bluecvb-straight-down.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "CheckPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, checkPoint);
                             checkPointMap.put(new Point2D(x, y), checkPoint);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/robot1.png");
+                            input = new FileInputStream(findPath("images/mapElements/robot1.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "Empty" -> {
                             Element element = map.get(x).get(y).get(i);
                             Empty empty = new Empty(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, empty);
                             emptyMap.put(new Point2D(x, y), empty);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/robot1.png");
+                            input = new FileInputStream(findPath("images/mapElements/robot1.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "EnergySpace" -> {
                             Element element = map.get(x).get(y).get(i);
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, energySpace);
                             energySpaceMap.put(new Point2D(x, y), energySpace);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "Gear" -> {
                             Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, gear);
                             gearMap.put(new Point2D(x, y), gear);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "Laser" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -134,18 +162,26 @@ public class MapViewModel implements Initializable {
                                     element.getOrientations(), element.getCount());
                             replaceElementInMap(map, x, y, element, laser);
                             laserMap.put(new Point2D(x, y), laser);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "Pit" -> {
                             Element element = map.get(x).get(y).get(i);
                             Pit pit = new Pit(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, pit);
                             pitMap.put(new Point2D(x, y), pit);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "PushPanel" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -153,36 +189,52 @@ public class MapViewModel implements Initializable {
                                     element.getRegisters());
                             replaceElementInMap(map, x, y, element, pushPanel);
                             pushPanelMap.put(new Point2D(x, y), pushPanel);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "RestartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "StartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, startPoint);
                             startPointMap.put(new Point2D(x, y), startPoint);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         case "Wall" -> {
                             Element element = map.get(x).get(y).get(i);
                             Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, wall);
                             wallMap.put(new Point2D(x, y), wall);
-                            input = new FileInputStream("blinde-bonbons/src/main/resources/images/mapElements/energyspace-left-right.png");
+                            input = new FileInputStream(findPath("images/mapElements/energyspace-left-right.png"));
                             image = new Image(input);
-                            mapGrid.add(new ImageView(image), y, x);
+                            ImageView imageView = new ImageView();
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50);
+                            imageView.setFitHeight(50);
+                            mapGrid.add(imageView, x, y);
                         }
                         default -> { //place for exception handling
                         }

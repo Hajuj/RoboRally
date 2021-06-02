@@ -84,6 +84,8 @@ public class ChatViewModel implements Initializable {
                 public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
                     //TODO check if synchronized block working
                     //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
+                    //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     SYNCHRONIZED IS NOT WORKING LOL
                     readyDisplay.setText(s2);
                 }
             });
@@ -97,6 +99,7 @@ public class ChatViewModel implements Initializable {
         }
         notReadyBtn.setDisable(true);
 
+        //TODO close the chat window when the game starts and make the chat as a button in the game window
         model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
