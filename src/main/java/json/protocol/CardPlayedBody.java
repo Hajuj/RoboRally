@@ -1,5 +1,6 @@
 package json.protocol;
 
+import client.model.ClientModel;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
 import server.ClientHandler;
@@ -15,18 +16,16 @@ public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
     private String card;
     @Expose
     private int clientID;
-    @Expose
-    private int playerID;
 
-    public cardPlayedBody() {
+    public CardPlayedBody(clientID , card) {
 
         this.card = card;
         this.clientID = clientID;
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, CardPlayedBody cardPlayedBody, MessageHandler messageHandler) {
-        messageHandler.handleCardPlayed(server, clientHandler, CardPlayedBody);
+    public void triggerAction(ClientModel clientModel, CardPlayedBody cardPlayedBody, MessageHandler messageHandler) {
+        messageHandler.handleCardPlayed(clientModel, cardPlayedBody);
     }
 
     public String getCard(){return card;}

@@ -13,20 +13,16 @@ public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
 
     @Expose
     private String card;
-    @Expose
-    private int playerID;
-    @Expose
-    private int clientID;
 
-    public playCardBody (int clientID, int playerID, String card) {
-        this.playerID = playerID;
+
+    public PlayCardBody ( card) {
         this.card = card;
-        this.clientID = clientID;
+
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, PlayCardBody playCardBody, MessageHandler messageHandler) {
-        messageHandler.handlePlayCard(server, clientHandler, PlayerAddedBody);
+    public void triggerAction(Server server, PlayCardBody playCardBody, MessageHandler messageHandler) {
+        messageHandler.handlePlayCard(server, playCardBody);
 
     }
 
@@ -36,12 +32,5 @@ public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
 
         }
 
-        public int getPlayerID(){
-        return playerID;
-        }
-
-        public int getClientID(){
-        return clientID;
-        }
     }
 
