@@ -14,7 +14,7 @@ public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
     private String card;
 
 
-    public PlayCardBody ( card) {
+    public PlayCardBody (String card) {
         this.card = card;
 
     }

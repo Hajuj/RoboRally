@@ -15,7 +15,7 @@ public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
     @Expose
     private int clientID;
 
-    public CardPlayedBody(clientID , card) {
+    public CardPlayedBody(int clientID ,String card) {
 
         this.card = card;
         this.clientID = clientID;
