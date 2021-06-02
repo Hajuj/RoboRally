@@ -2,6 +2,7 @@ package json.protocol;
 
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
+import server.ClientHandler;
 import server.Server;
 
 /**
@@ -20,7 +21,7 @@ public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
     }
 
     @Override
-    public void triggerAction(Server server, PlayCardBody playCardBody, MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, PlayCardBody playCardBody, MessageHandler messageHandler) {
         messageHandler.handlePlayCard(server, playCardBody);
 
     }
