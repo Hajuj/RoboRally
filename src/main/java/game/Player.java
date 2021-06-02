@@ -118,12 +118,16 @@ public class Player {
         this.figure = figure;
     }
 
-    public Robot getRobot() {
+    public Robot getRobot () {
         return robot;
     }
 
-    public void pickRobot(int figure, String name) {
+    public void pickRobot (int figure, String name) {
         this.figure = figure;
         this.name = name;
+    }
+
+    public void setRobot (Robot robot) {
+        this.robot = robot;
     }
 }

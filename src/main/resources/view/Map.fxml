@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <GridPane fx:id="mapGrid" alignment="CENTER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="client.viewModel.MapViewModel">
+          fx:controller="client.viewModel.MapViewModel" onMouseClicked="#clickGrid">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>

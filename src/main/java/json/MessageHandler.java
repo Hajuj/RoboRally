@@ -3,6 +3,8 @@ package json;
 import client.model.ClientModel;
 
 
+import game.Game;
+import game.Robot;
 import server.Server;
 import server.Connection;
 import server.ClientHandler;
@@ -13,10 +15,7 @@ import json.protocol.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.apache.log4j.Logger;
@@ -289,6 +288,35 @@ public class MessageHandler {
 
         if (action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
+        }
+    }
+
+    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+        //TODO: hier etwas wie "Server speichert die POsition von dem Player with ID playerID in der position x,y
+        int playerID = clientHandler.getPlayer_id();
+        int x = bodyObject.getX();
+        int y = bodyObject.getY();
+
+
+        //create einen neuen Robot auf (x,y) und setRobot zu dem Player
+        Player player = server.getPlayerWithID(playerID);
+        player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+
+        for (Player otherPlayer : server.getReadyPlayer()) {
+            //sage allen wo der Spieler mit playerID started
+            JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
+            server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+        }
+
+    }
+
+    public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
+        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
+        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
+
+        if (startingPointTakenBody.getClientID() == clientModel.getPlayer().getPlayerID()) {
+            //sein robot
+            clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
         }
     }
 

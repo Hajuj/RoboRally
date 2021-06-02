@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
  */
 public class ClientModel {
     private static ClientModel instance;
+    private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
@@ -242,7 +243,6 @@ public class ClientModel {
 
     public void sendError (String s) {
         error.setValue(s);
-
     }
 
     public StringProperty errorProperty () {
@@ -275,5 +275,9 @@ public class ClientModel {
 
     public void setAvailableMaps (ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;
+    }
+
+    public ClientGameModel getClientGameModel () {
+        return clientGameModel;
     }
 }
