@@ -3,8 +3,6 @@ package json.protocol;
 import client.model.ClientModel;
 import com.google.gson.annotations.Expose;
 import json.MessageHandler;
-import server.ClientHandler;
-import server.Server;
 
 /**
  * @author altug
@@ -30,5 +28,5 @@ public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
 
     public String getCard(){return card;}
 
-    public int clientID(){return clientID;}
+    public int getClientID(){return clientID;}
 }
