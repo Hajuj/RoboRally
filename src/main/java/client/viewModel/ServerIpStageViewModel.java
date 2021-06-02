@@ -12,10 +12,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -33,10 +39,37 @@ public class ServerIpStageViewModel implements Initializable {
     @FXML
     private Button connectButton;
 
+    @FXML
+    ImageView logo;
+
+    @FXML
+    private Button LMUButton;
+
+    @FXML
+    private Button BButton;
+
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
         serverAddress = new SimpleStringProperty();
+        LMUButton = new Button();
+        BButton = new Button();
+        Image image;
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream(findPath("robo_rally_logo.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image = new Image(input);
+        logo = new ImageView();
+        logo.setImage(image);
+        logo.setVisible(true);
+    }
+
+    public File findPath (String fileName) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
     public StringProperty serverAddressProperty () {
@@ -85,6 +118,23 @@ public class ServerIpStageViewModel implements Initializable {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
         return IP_PATTERN.matcher(IP).matches();
+    }
+
+    @FXML
+    public void LMUButtonAction (ActionEvent event) {
+        serverAddressField.setText("sep21.dbs.ifi.lmu.de");
+        serverPortField.setText("52021");
+        LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: chartreuse;");
+        BButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
+    }
+
+    @FXML
+    public void BBButtonAction (ActionEvent event) {
+        serverAddressField.setText("127.0.0.1");
+        serverPortField.setText("500");
+        BButton.setStyle("-fx-background-radius: 180; -fx-background-color: chartreuse;");
+        LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
+        // LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
     }
 
 
