@@ -261,13 +261,14 @@ public class MessageHandler {
         System.out.println("IM HERE");
     }
 
-    public void handleCardPlayed (Server server, ClientModel clientModel, CardPlayedBody cardPlayedBody){
-        int playerID = cardPlayedBody.getPlayerID();
+    public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody){
+        int clientID = cardPlayedBody.getClientID();
+        String card = cardPlayedBody.getCard();
 
     }
 
-    public void handlePlayCard (Server server, ClientModel clientModel, PlayCardBody playCardBody){
-        int playerID = playCardBody.getPlayerID();
+    public void handlePlayCard (Server server, PlayCardBody playCardBody){
+        String card = playCardBody.getCard();
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
