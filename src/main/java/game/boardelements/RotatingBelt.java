@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * @author Ilja Knis
  */
-public class RotatingBelt extends Element {
+public abstract class RotatingBelt extends Element {
 
     @Expose
     private String type;

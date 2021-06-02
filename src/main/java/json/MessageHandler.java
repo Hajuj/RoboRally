@@ -72,7 +72,7 @@ public class MessageHandler {
                 connection.setPlayerID(actual_id);
                 connection.setConnected(true);
 
-//                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+                server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
@@ -222,22 +222,22 @@ public class MessageHandler {
     }
 
     //Server receive this message
-//    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
-//        try {
-//            //warten 5 sek
-//            Thread.sleep(5000);
-//            //senden ein neues Alive- Message zu Client
-//            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    //Client receive this message
-//    public void handleAlive (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
-//        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
-//        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
-//    }
+    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+        try {
+            //warten 5 sek
+            Thread.sleep(5000);
+            //senden ein neues Alive- Message zu Client
+            server.sendMessage(new JSONMessage("Alive", new AliveBody()), clientHandler.getWriter());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Client receive this message
+    public void handleAlive (ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, AliveBody aliveBody) {
+        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
+        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
+    }
 
     public void handlePlayerAdded(ClientModel clientModel, ClientModelReaderThread clientModelReaderThread, PlayerAddedBody playerAddedBody) {
         int clientID = playerAddedBody.getClientID();
