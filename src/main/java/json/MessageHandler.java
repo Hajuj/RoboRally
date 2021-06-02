@@ -320,4 +320,16 @@ public class MessageHandler {
         }
     }
 
+    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+        int playerID = currentPlayerBody.getClientID();
+        clientModel.getClientGameModel().setActualPlayerID(playerID);
+        logger.info("Current Player: " + playerID);
+    }
+
+    public void handleActivePhase(ClientModel clientModel, ActivePhaseBody activePhaseBody) {
+        int phase = activePhaseBody.getPhase();
+        clientModel.getClientGameModel().setActualPhase(phase);
+        logger.info("Current Active Phase: " + phase);
+    }
+
 }

@@ -12,6 +12,7 @@ public class ClientGameModel {
     private int x;
     private int y;
     private int actualPlayerID;
+    private int actualPhase;
 
     //Singelton Zeug
     private ClientGameModel () {
@@ -37,7 +38,6 @@ public class ClientGameModel {
         this.canSetStartingPoint.set(canSetStartingPoint);
     }
 
-
     public int getX () {
         return x;
     }
@@ -60,5 +60,13 @@ public class ClientGameModel {
 
     public void setActualPlayerID (int actualPlayerID) {
         this.actualPlayerID = actualPlayerID;
+    }
+
+    public int getActualPhase() {
+        return actualPhase;
+    }
+
+    public void setActualPhase(int actualPhase) {
+        this.actualPhase = actualPhase;
     }
 }
