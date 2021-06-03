@@ -69,7 +69,6 @@ public class Game {
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
 
-        this.map = new ArrayList<>();
         this.playerList = players;
 
 
@@ -80,9 +79,7 @@ public class Game {
         File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
         String content = new String(Files.readAllBytes(file.toPath()));
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
-        for (Connection connection : server.getConnections()) {
-            server.sendMessage(jsonMessage, connection.getWriter());
-        }
+        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -95,6 +92,13 @@ public class Game {
     //TODO game logic with startGame()
     //     map creation with elements (deserialization)
     //     phases
+
+
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (Player player : playerList) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+        }
+    }
 
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
