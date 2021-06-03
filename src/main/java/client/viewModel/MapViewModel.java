@@ -131,7 +131,7 @@ public class MapViewModel implements Initializable {
                     imageView.setImage(image);}
                 case "right" ->{imageView.setRotate(180);
                     imageView.setImage(image);}
-                case "bottom" ->{imageView.setRotate(0);
+                case "bottom" ->{imageView.setRotate(-90);
                     imageView.setImage(image);}
                 case "null" ->{ imageView.setImage(image);}
             }
@@ -194,7 +194,7 @@ public class MapViewModel implements Initializable {
                             antennaMap.put(new Point2D(x, y), antenna);
                             mapGrid.add(loadImage("priority-antenna", toString(antenna.getOrientations())), y, x);
                         }
-/*
+
 
                         case "CheckPoint" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -263,18 +263,18 @@ public class MapViewModel implements Initializable {
                             pushPanelMap.put(new Point2D(x, y), pushPanel);
                             mapGrid.add(loadImage("PushPanel24", toString(pushPanel.getOrientations())), x, y);
                         }
-                      */
-/*  case "RestartPoint" -> {
+
+                          case "RestartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
-                            RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard());
+                            RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
                             mapGrid.add(loadImage("reboot", toString(restartPoint.getOrientations())), x, y);
-                        }*//*
+                        }
 
 
-                       */
-/* case "StartPoint" -> {
+
+                        case "StartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, startPoint);
@@ -282,7 +282,7 @@ public class MapViewModel implements Initializable {
                             mapGrid.add(loadImage("StartingPoint","null"), x, y);
                         }
 
- */
+
                         case "Empty" -> {
                             Element element = map.get(x).get(y).get(i);
                             Empty empty = new Empty(element.getType(), element.getIsOnBoard());
