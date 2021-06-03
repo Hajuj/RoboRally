@@ -51,6 +51,11 @@ public class MessageHandler {
     public void handleError (ClientModel clientmodel, ErrorBody errorBody) {
         logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
+
+        switch (errorBody.getError()) {
+            case "gameOn":
+                clientmodel.setCanPlay(false);
+        }
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
 
@@ -123,7 +128,6 @@ public class MessageHandler {
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
         clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
-
         if (startingPointTakenBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             //sein robot
             clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
@@ -141,6 +145,5 @@ public class MessageHandler {
         clientModel.getClientGameModel().setActualPhase(phase);
         logger.info("Current Active Phase: " + phase);
     }
-
 
 }

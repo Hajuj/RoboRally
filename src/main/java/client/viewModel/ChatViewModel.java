@@ -47,6 +47,15 @@ public class ChatViewModel implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        chatField.setEditable(false);
+        readyDisplay.setEditable(false);
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+            readyButton.setVisible(false);
+            notReadyBtn.setVisible(false);
+        }
+        notReadyBtn.setDisable(true);
+
         //TODO check how to do it with observable pattern instead of addListener
         model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -84,14 +93,7 @@ public class ChatViewModel implements Initializable {
                 }
             });
         }
-        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
+
 
         //TODO close the chat window when the game starts and make the chat as a button in the game window
         model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
@@ -108,6 +110,8 @@ public class ChatViewModel implements Initializable {
 
             }
         });
+
+
     }
 
     public void sendMessageButton(ActionEvent event) {

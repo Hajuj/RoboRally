@@ -1,6 +1,5 @@
 package client.model;
 
-
 import game.Game;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -24,6 +23,7 @@ import java.util.Map;
  * ClientModel realisiert Singelton-Pattern,
  * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
+
 public class ClientModel {
     private static ClientModel instance;
     private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
@@ -43,6 +43,7 @@ public class ClientModel {
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
+    private boolean canPlay = true;
 
     private StringProperty chatHistory = new SimpleStringProperty("");
     private StringProperty error = new SimpleStringProperty("");
@@ -68,7 +69,7 @@ public class ClientModel {
      *
      * @return true if connection could be established.
      */
-    public boolean connectClient(String server_ip, int server_port) {
+    public boolean connectClient (String server_ip, int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
@@ -103,24 +104,24 @@ public class ClientModel {
     }
 
 
-    public void setNewStatus(Boolean newStatus) {
+    public void setNewStatus (Boolean newStatus) {
         clientGameModel.getPlayer().setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
     }
 
 
-    public void sendMessage(JSONMessage message) {
+    public void sendMessage (JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
     }
 
 
-    public void sendUsernameAndRobot(String username, int figure) {
+    public void sendUsernameAndRobot (String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
 
-    public int getIDbyUsername(String username) {
+    public int getIDbyUsername (String username) {
         for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
             if (entry.getValue().equals(username)) {
                 return entry.getKey();
@@ -129,7 +130,7 @@ public class ClientModel {
         return 0;
     }
 
-    public void sendMsg(String message) {
+    public void sendMsg (String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
             if (message.charAt(0) == '@') {
@@ -157,7 +158,7 @@ public class ClientModel {
         }
     }
 
-    public void receiveMessage(String message) {
+    public void receiveMessage (String message) {
         chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
@@ -208,25 +209,31 @@ public class ClientModel {
         return playersStatusMapProperty;
     }
 
+    public boolean isCanPlay () {
+        return canPlay;
+    }
 
+    public void setCanPlay (boolean canPlay) {
+        this.canPlay = canPlay;
+    }
 
-    public MessageHandler getMessageHandler() {
+    public MessageHandler getMessageHandler () {
         return messageHandler;
     }
 
-    public void setWaitingForServer(boolean waitingForServer) {
+    public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
 
-    public HashMap<Integer, String> getPlayersNamesMap() {
+    public HashMap<Integer, String> getPlayersNamesMap () {
         return playersNamesMap;
     }
 
-    public HashMap<Integer, Integer> getPlayersFigureMap() {
+    public HashMap<Integer, Integer> getPlayersFigureMap () {
         return playersFigureMap;
     }
 
-    public HashMap<Integer, Boolean> getPlayersStatusMap() {
+    public HashMap<Integer, Boolean> getPlayersStatusMap () {
         return playersStatusMap;
     }
 

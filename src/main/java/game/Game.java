@@ -44,9 +44,12 @@ public class Game {
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
 
+    private boolean gameOn;
+
     public Game (Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
+        availableMaps.add("One more map");
     }
 
     public Game (ArrayList<Player> playerList, Server server) {
@@ -153,6 +156,15 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
+
+    public boolean isGameOn () {
+        return gameOn;
+    }
+
+    public void setGameOn (boolean gameOn) {
+        this.gameOn = gameOn;
+    }
+
     public ArrayList<String> getAvailableMaps () {
         return availableMaps;
     }
@@ -161,7 +173,7 @@ public class Game {
         return robotNames;
     }
 
-    public ArrayList<Player> getPlayerList() {
+    public ArrayList<Player> getPlayerList () {
         return playerList;
     }
 

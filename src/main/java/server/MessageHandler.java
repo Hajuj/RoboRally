@@ -62,6 +62,9 @@ public class MessageHandler {
                     }
                 }
 
+                JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
+                server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
 
@@ -76,6 +79,7 @@ public class MessageHandler {
             e.printStackTrace();
         }
     }
+
 
     public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         String username = playerValuesBody.getName();
@@ -93,6 +97,7 @@ public class MessageHandler {
         }
         logger.info("Alles gut, der Spieler mit ID " + clientHandler.getPlayer_id() + " heißt " + username + " und hat figur " + figure);
     }
+
 
     public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
