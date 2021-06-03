@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.*;
 
 public class MapViewModel implements Initializable {
@@ -100,36 +98,33 @@ public class MapViewModel implements Initializable {
     }
 
     //die MEthode mit Eleemtn als Parametre schicekn
-    public ImageView loadImage(String element, ArrayList<String> orientations) throws FileNotFoundException {
-        FileInputStream path = null;
+    public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
+        /*FileInputStream path = null;
         File file = null;
         ClassLoader classLoader = getClass().getClassLoader();
-        //new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-        path = new FileInputStream( new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/Elements/"+element+".png")).getFile()));
+        file = new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/Elements/" + element + ".png")).getFile());
+        path = new FileInputStream(file);*/
+
+        FileInputStream path = null;
+        File input = null;
+        ClassLoader classLoader = getClass().getClassLoader();
+        path = new FileInputStream((Objects.requireNonNull(classLoader.getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
 
         Image image = new Image(path);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        if (orientations.size()==0) {
-            if (orientations.equals("up")) {
-                imageView.setRotate(0);
+            switch (orientations){
+                case "up" ->{ imageView.setRotate(0);}
+                case "left" ->{imageView.setRotate(270);}
+                case "right" ->{imageView.setRotate(90);}
+                case "bottom" ->{imageView.setRotate(180);}
+                case "null" ->{ imageView.setImage(image);}
             }
-            if (orientations.equals("left")) {
-                imageView.setRotate(270);
-            }
-            if (orientations.equals("right")) {
-                imageView.setRotate(90);
-            }
-            if (orientations.equals("bottom")) {
-                imageView.setRotate(180);
-            }
-        }
-        if(orientations.isEmpty()){
-            imageView.setImage(image);
-        }
-        return imageView;
+            return imageView;
+
+
     }
 
     /*    }if (orientations.size()==1){
@@ -184,7 +179,7 @@ public class MapViewModel implements Initializable {
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, antenna);
                             antennaMap.put(new Point2D(x, y), antenna);
-                            mapGrid.add(loadImage("priority-antenna", antenna.getOrientations()), x, y);
+                            mapGrid.add(loadImage("priority-antenna", antenna.getOrientations().toString()), x, y);
                         }
 
                         case "CheckPoint" -> {
@@ -192,7 +187,21 @@ public class MapViewModel implements Initializable {
                             CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, checkPoint);
                             checkPointMap.put(new Point2D(x, y), checkPoint);
-                            mapGrid.add(loadImage("victory-counter",checkPoint.getOrientations()), x, y);
+                            mapGrid.add(loadImage("victory-counter","null"), x, y);
+                        }
+                        case "ConveyorBelt" -> {
+                            Element element = map.get(x).get(y).get(i);
+                            ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
+                                    element.getSpeed(), element.getOrientations());
+                            //if (conveyorBelt.getOrientations().equals("RECHTS")) {
+                            replaceElementInMap(map, x, y, element, conveyorBelt);
+                            conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
+                            if(conveyorBelt.getIsOnBoard().equals("5B")) {
+                                mapGrid.add(loadImage("BlueBelt","null"), y, x);
+                            }
+                            if(conveyorBelt.getIsOnBoard().equals("Start A")){
+                                mapGrid.add(loadImage("GreenBelt","null"),y,x);
+                            }
                         }
 
                         case "Empty" -> {
@@ -200,7 +209,7 @@ public class MapViewModel implements Initializable {
                             Empty empty = new Empty(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, empty);
                             emptyMap.put(new Point2D(x, y), empty);
-                            mapGrid.add(loadImage("normal1",empty.getOrientations()), x, y);
+                            mapGrid.add(loadImage("normal1","null"), x, y);
                         }
 
                         case "EnergySpace" -> {
@@ -208,7 +217,7 @@ public class MapViewModel implements Initializable {
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, energySpace);
                             energySpaceMap.put(new Point2D(x, y), energySpace);
-                            mapGrid.add(loadImage("RedEnergySpace",energySpace.getOrientations()), x, y);
+                            mapGrid.add(loadImage("RedEnergySpace","null"), x, y);
                         }
 
                         case "Gear" -> {
@@ -217,7 +226,7 @@ public class MapViewModel implements Initializable {
                             replaceElementInMap(map, x, y, element, gear);
                             gearMap.put(new Point2D(x, y), gear);
 
-                            mapGrid.add(loadImage("RedGear",gear.getOrientations()), x, y);
+                            mapGrid.add(loadImage("RedGear",gear.getOrientations().toString()), x, y);
                         }
                         //TODO:laser 1 or two handeln und dann orientation
                         case "Laser" -> {
@@ -227,7 +236,7 @@ public class MapViewModel implements Initializable {
                             replaceElementInMap(map, x, y, element, laser);
                             laserMap.put(new Point2D(x, y), laser);
 
-                            mapGrid.add(loadImage("OneLaser", laser.getOrientations()), x, y);
+                            mapGrid.add(loadImage("OneLaser", laser.getOrientations().toString()), x, y);
                         }
                         case "Pit" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -235,7 +244,7 @@ public class MapViewModel implements Initializable {
                             replaceElementInMap(map, x, y, element, pit);
                             pitMap.put(new Point2D(x, y), pit);
 
-                            mapGrid.add(loadImage("Pit", pit.getOrientations()), x, y);
+                            mapGrid.add(loadImage("Pit", "null"), x, y);
                         }
 
                          case "PushPanel" -> {
@@ -244,14 +253,14 @@ public class MapViewModel implements Initializable {
                                     element.getRegisters());
                             replaceElementInMap(map, x, y, element, pushPanel);
                             pushPanelMap.put(new Point2D(x, y), pushPanel);
-                            mapGrid.add(loadImage("PushPanel24", pushPanel.getOrientations()), x, y);
+                            mapGrid.add(loadImage("PushPanel24", pushPanel.getOrientations().toString()), x, y);
                         }
                         case "RestartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
-                            mapGrid.add(loadImage("reboot", restartPoint.getOrientations()), x, y);
+                            mapGrid.add(loadImage("reboot", restartPoint.getOrientations().toString()), x, y);
                         }
 
                         case "StartPoint" -> {
@@ -259,7 +268,7 @@ public class MapViewModel implements Initializable {
                             StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, startPoint);
                             startPointMap.put(new Point2D(x, y), startPoint);
-                            mapGrid.add(loadImage("StartingPoint",startPoint.getOrientations()), x, y);
+                            mapGrid.add(loadImage("StartingPoint","null"), x, y);
                         }
                         //TODO: dopple oder one wall
                         case "Wall" -> {
@@ -267,7 +276,7 @@ public class MapViewModel implements Initializable {
                             Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, wall);
                             wallMap.put(new Point2D(x, y), wall);
-                            mapGrid.add(loadImage("wall-one-up",wall.getOrientations()), x, y);
+                            mapGrid.add(loadImage("wall-one-up",wall.getOrientations().toString()), x, y);
                         }
                         default -> { //place for exception handling
                         }
@@ -277,9 +286,15 @@ public class MapViewModel implements Initializable {
         }
     }
 
+    private String toString(ArrayList<String> orientations) {
+        String liste= "" ;
+        for (int i = 0; i< orientations.size();i++ ) {
+            liste = orientations.get(i) ;
+            liste = String.join(", ", orientations);
 
-
-
+        }
+        return liste;
+    }
 
 
     public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
