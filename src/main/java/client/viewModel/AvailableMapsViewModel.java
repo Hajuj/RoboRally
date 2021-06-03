@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
 import json.JSONMessage;
 import json.protocol.MapSelectedBody;
@@ -19,9 +20,14 @@ public class AvailableMapsViewModel implements Initializable {
     @FXML
     private Button DizzyHighwayButton;
 
+    @FXML
+    ChoiceBox choiseBox;
+
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
-
+        for (String m : model.getAvailableMaps()) {
+            choiseBox.getItems().add(m);
+        }
     }
 
     //TODO it should be in ClientModel
@@ -33,4 +39,5 @@ public class AvailableMapsViewModel implements Initializable {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }
+
 }

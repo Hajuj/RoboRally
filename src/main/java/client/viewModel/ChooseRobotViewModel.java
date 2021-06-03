@@ -79,9 +79,10 @@ public class ChooseRobotViewModel implements Initializable {
 
         disableUsedRobots();
 
-        if (isGameOn()) {
+        if (isGameOn() || !model.isCanPlay()) {
             playButton.setText("Chat!");
             playButton.setDisable(false);
+            disableAllRobots();
         }
 
     }
@@ -116,6 +117,29 @@ public class ChooseRobotViewModel implements Initializable {
                 }
             }
         }
+    }
+
+    public void disableAllRobots () {
+        GaussianBlur blur = new GaussianBlur(10);
+
+        robot0.setDisable(true);
+        robot0.setEffect(blur);
+
+        robot1.setDisable(true);
+        robot1.setEffect(blur);
+
+        robot2.setDisable(true);
+        robot2.setEffect(blur);
+
+        robot3.setDisable(true);
+        robot3.setEffect(blur);
+
+        robot4.setDisable(true);
+        robot4.setEffect(blur);
+
+        robot5.setDisable(true);
+        robot5.setEffect(blur);
+
     }
 
     public void refreshShadow () {
