@@ -6,20 +6,20 @@ import game.decks.DeckVirus;
 import game.decks.DeckWorm;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.MessageHandler;
 import json.protocol.GameStartedBody;
 import server.Server;
 import game.boardelements.*;
 
 import javafx.geometry.Point2D;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Ilja Knis
@@ -85,11 +85,13 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
-    public void selectMap() throws IOException {
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        Path pathToMap = Paths.get("blinde-bonbons/src/resources/Maps/DizzyHighway.json");
-        String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
+        String fileName = "Maps/DizzyHighway.json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
         this.map = gameStartedBody.getGameMap();
         int mapX = map.size();

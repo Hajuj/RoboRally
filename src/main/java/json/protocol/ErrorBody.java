@@ -28,4 +28,6 @@ public class ErrorBody implements ServerMessageAction<ErrorBody> {
     public void triggerAction (ClientModel clientmodel, ErrorBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleError(clientmodel, bodyObject);
     }
+
+
 }

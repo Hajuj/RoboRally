@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="mapGrid" alignment="CENTER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="client.viewModel.MapViewModel" onMouseClicked="#clickGrid">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+</GridPane>

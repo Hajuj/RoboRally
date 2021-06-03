@@ -3,7 +3,7 @@ package game;
 import java.util.ArrayList;
 
 /**
- * @author Ilja Knis
+ * @author Ilja Knis <З
  */
 public class Robot {
 
@@ -12,14 +12,16 @@ public class Robot {
     private String name;
     private ArrayList<String> orientation;
 
-    public Robot(String name, int xPosition, int yPosition){
+
+    //TODO: Orientation immer nach rechts am Anfang? Oder da, wo die Antenne schaut? keine Ahnung
+    public Robot (String name, int xPosition, int yPosition) {
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         orientation.add("Right");
     }
 
-    public int getxPosition() {
+    public int getxPosition () {
         return xPosition;
     }
 
@@ -42,4 +44,5 @@ public class Robot {
     public void setName(String name) {
         this.name = name;
     }
+
 }

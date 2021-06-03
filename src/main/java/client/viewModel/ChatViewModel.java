@@ -78,14 +78,18 @@ public class ChatViewModel implements Initializable {
                 chatField.setText(t1);
             }
         });
-        model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                readyDisplay.setText(s2);
-            }
-        });
-
-
+        synchronized (model.playersStatusMapProperty()) {
+            model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
+                    //TODO check if synchronized block working
+                    //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
+                    //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     SYNCHRONIZED IS NOT WORKING LOL
+                    readyDisplay.setText(s2);
+                }
+            });
+        }
         model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
@@ -94,6 +98,22 @@ public class ChatViewModel implements Initializable {
             notReadyBtn.setVisible(false);
         }
         notReadyBtn.setDisable(true);
+
+        //TODO close the chat window when the game starts and make the chat as a button in the game window
+        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+
+                Platform.runLater(() -> {
+                    try {
+                        loadGameScene();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+
+            }
+        });
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -110,7 +130,6 @@ public class ChatViewModel implements Initializable {
         rootStage.setScene(new Scene(root));
         rootStage.setTitle("Game Guide");
         rootStage.show();
-
     }
 
     public void sendReadyStatus (ActionEvent event) {
@@ -128,7 +147,6 @@ public class ChatViewModel implements Initializable {
         newStage.show();
     }
 
-
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);
         notReadyBtn.setDisable(true);
@@ -136,4 +154,12 @@ public class ChatViewModel implements Initializable {
         model.doChooseMapProperty().setValue(false);
     }
 
+    public void loadGameScene () throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("GAME");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
+    }
 }

@@ -3,6 +3,8 @@ package json;
 import client.model.ClientModel;
 
 
+import game.Game;
+import game.Robot;
 import server.Server;
 import server.Connection;
 import server.ClientHandler;
@@ -11,7 +13,10 @@ import game.Player;
 
 import json.protocol.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
@@ -170,6 +175,7 @@ public class MessageHandler {
 
     public void handleGameStarted(ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
 
@@ -218,8 +224,20 @@ public class MessageHandler {
                 JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
-            if (server.canStartTheGame()) {
-                logger.info("I CAN START THE GAME");
+            try {
+                if (server.canStartTheGame()) {
+                    String fileName = "Maps/DizzyHighway.json";
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+                    String content = new String(Files.readAllBytes(file.toPath()));
+                    JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+                    for (Connection connection : server.getConnections()) {
+                        server.sendMessage(jsonMessage, connection.getWriter());
+                    }
+                    logger.info("I CAN START THE GAME");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
@@ -250,14 +268,16 @@ public class MessageHandler {
         clientModel.setDoChooseMap(true);
     }
 
-    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
         }
+        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
     }
 
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         clientModel.setSelectedMap("DizzyHighway");
+        //clientModel.gameOnProperty().setValue(true);
         System.out.println("IM HERE");
     }
 
@@ -279,6 +299,47 @@ public class MessageHandler {
         if (action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
         }
+    }
+
+    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+        //TODO: hier etwas wie "Server speichert die POsition von dem Player with ID playerID in der position x,y
+        int playerID = clientHandler.getPlayer_id();
+        int x = bodyObject.getX();
+        int y = bodyObject.getY();
+
+
+        //create einen neuen Robot auf (x,y) und setRobot zu dem Player
+        Player player = server.getPlayerWithID(playerID);
+        player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+
+        for (Player otherPlayer : server.getReadyPlayer()) {
+            //sage allen wo der Spieler mit playerID started
+            JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
+            server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+        }
+
+    }
+
+    public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
+        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
+        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
+
+        if (startingPointTakenBody.getClientID() == clientModel.getPlayer().getPlayerID()) {
+            //sein robot
+            clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
+        }
+    }
+
+    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+        int playerID = currentPlayerBody.getClientID();
+        clientModel.getClientGameModel().setActualPlayerID(playerID);
+        logger.info("Current Player: " + playerID);
+    }
+
+    public void handleActivePhase(ClientModel clientModel, ActivePhaseBody activePhaseBody) {
+        int phase = activePhaseBody.getPhase();
+        clientModel.getClientGameModel().setActualPhase(phase);
+        logger.info("Current Active Phase: " + phase);
     }
 
 }

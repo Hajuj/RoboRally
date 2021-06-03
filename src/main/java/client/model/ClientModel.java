@@ -19,18 +19,18 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 /**
- * @author Mohamad, Viktoria
+ * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
  * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
 public class ClientModel {
     private static ClientModel instance;
+    private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
@@ -55,6 +55,8 @@ public class ClientModel {
     private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
     private ArrayList<String> availableMaps = new ArrayList<>();
+
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
     private ClientModel () {
     }
@@ -96,6 +98,7 @@ public class ClientModel {
             }
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
             return true;
+            //TODO: Caused by: java.lang.IllegalArgumentException: port out of range:502022
         } catch (ConnectException connectException) {
         } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
@@ -186,6 +189,18 @@ public class ClientModel {
         playersNamesMap.remove(playerID);
     }
 
+    public boolean isGameOn () {
+        return gameOn.get();
+    }
+
+    public BooleanProperty gameOnProperty () {
+        return gameOn;
+    }
+
+    public void setGameOn (boolean gameOn) {
+        this.gameOn.set(gameOn);
+    }
+
     public String getChatHistory () {
         return chatHistory.get();
     }
@@ -228,7 +243,6 @@ public class ClientModel {
 
     public void sendError (String s) {
         error.setValue(s);
-
     }
 
     public StringProperty errorProperty () {
@@ -261,5 +275,9 @@ public class ClientModel {
 
     public void setAvailableMaps (ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;
+    }
+
+    public ClientGameModel getClientGameModel () {
+        return clientGameModel;
     }
 }

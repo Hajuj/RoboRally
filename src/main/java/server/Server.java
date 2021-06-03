@@ -37,8 +37,6 @@ public class Server {
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
 
-    //TODO when all robots are in a game, no more clients are allowed to join.
-
     private Server () {
     }
 
@@ -69,7 +67,6 @@ public class Server {
         }
 
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
-        boolean isWaitingForClients = true;
 
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");
@@ -106,8 +103,8 @@ public class Server {
         writer.flush();
     }
 
-    //TODO send JSONMessage with GameStarted
     public boolean canStartTheGame () {
+        //TODO boolean gameOn (when game has started no other players are allowed to join -> if)
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         if (getReadyPlayer().size() == getWaitingPlayer().size()) return true;
