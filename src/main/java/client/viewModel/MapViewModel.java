@@ -61,7 +61,7 @@ public class MapViewModel implements Initializable {
                     Platform.runLater(() -> {
                                 setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
 
-                            }
+                    }
                     );
                     clientGameModel.canSetStartingPointProperty().setValue(false);
                 }
