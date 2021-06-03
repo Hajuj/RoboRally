@@ -102,9 +102,10 @@ public class MapViewModel implements Initializable {
     //die MEthode mit Eleemtn als Parametre schicekn
     public ImageView loadImage(String element, ArrayList<String> orientations) throws FileNotFoundException {
         FileInputStream path = null;
-        File input = null;
+        File file = null;
         ClassLoader classLoader = getClass().getClassLoader();
-        path = new FileInputStream((Objects.requireNonNull(classLoader.getResource("images/mapElements/Elements/"+element+".png")).getFile()));
+        //new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
+        path = new FileInputStream( new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/Elements/"+element+".png")).getFile()));
 
         Image image = new Image(path);
         ImageView imageView = new ImageView();
@@ -125,7 +126,7 @@ public class MapViewModel implements Initializable {
                 imageView.setRotate(180);
             }
         }
-        if(orientations.equals(null)){
+        if(orientations.isEmpty()){
             imageView.setImage(image);
         }
         return imageView;
@@ -183,7 +184,7 @@ public class MapViewModel implements Initializable {
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, antenna);
                             antennaMap.put(new Point2D(x, y), antenna);
-                            mapGrid.add(loadImage("priority-antenna",antenna.getOrientations()), x, y);
+                            mapGrid.add(loadImage("priority-antenna", antenna.getOrientations()), x, y);
                         }
 
                         case "CheckPoint" -> {
