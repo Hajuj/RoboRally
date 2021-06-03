@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public class Laser extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
     @Expose
-    private ArrayList<String> orientations;
+    private final ArrayList<String> orientations;
     @Expose
-    private int count;
+    private final int count;
 
     public Laser(String type, String isOnBoard, ArrayList<String> orientations, int count){
         this.type = type;

@@ -5,9 +5,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
-    private ClientModel clientModel = ClientModel.getInstance();
+    private final ClientModel clientModel = ClientModel.getInstance();
     //TODO: Observer hier
-    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
+    private final BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     //Das ist so falsch oh gott
     private int x;
     private int y;

@@ -13,14 +13,14 @@ public class Player {
     private int figure;
     private boolean isReady;
 
-    private DeckDiscard deckDiscard;
+    private final DeckDiscard deckDiscard;
     //    private DeckProgramming deckProgramming;
-    private DeckHand deckHand;
-    private DeckRegister deckRegister;
-    private DeckSpam deckSpam;
-    private DeckTrojan deckTrojan;
-    private DeckVirus deckVirus;
-    private DeckWorm deckWorm;
+    private final DeckHand deckHand;
+    private final DeckRegister deckRegister;
+    private final DeckSpam deckSpam;
+    private final DeckTrojan deckTrojan;
+    private final DeckVirus deckVirus;
+    private final DeckWorm deckWorm;
 
     public boolean isReady () {
         return isReady;
@@ -30,7 +30,7 @@ public class Player {
         isReady = ready;
     }
 
-    public Player(int playerID) {
+    public Player (int playerID) {
         this.playerID = playerID;
         this.isReady = false;
         this.deckDiscard = new DeckDiscard();

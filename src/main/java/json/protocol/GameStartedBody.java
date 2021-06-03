@@ -1,10 +1,9 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 import game.Element;
-import json.MessageHandler;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 public class GameStartedBody implements ServerMessageAction<GameStartedBody> {
 
     @Expose
-    private ArrayList<ArrayList<ArrayList<Element>>> gameMap;
+    private final ArrayList<ArrayList<ArrayList<Element>>> gameMap;
 
     public GameStartedBody (ArrayList<ArrayList<ArrayList<Element>>> map) {
         this.gameMap = map;

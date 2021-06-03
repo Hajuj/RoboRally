@@ -1,8 +1,8 @@
 package json.protocol;
 
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 import server.ClientHandler;
+import server.MessageHandler;
 import server.Server;
 
 /*
@@ -18,7 +18,7 @@ import server.Server;
 public class SetStatusBody implements ClientMessageAction<SetStatusBody> {
 
     @Expose
-    private boolean ready;
+    private final boolean ready;
 
     public SetStatusBody (boolean ready) {
         this.ready = ready;

@@ -1,15 +1,15 @@
 package json.protocol;
 
 import client.model.ClientModel;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 
 /**
  * @author Mohamad
  */
 public class ActivePhaseBody implements ServerMessageAction<ActivePhaseBody> {
     @Expose
-    private int phase;
+    private final int phase;
 
     public ActivePhaseBody(int phase) {
         this.phase = phase;

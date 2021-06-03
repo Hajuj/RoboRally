@@ -2,15 +2,13 @@ package client.model;
 
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
+import json.protocol.SendChatBody;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import json.protocol.SendChatBody;
-import org.apache.log4j.Logger;
 
 /**
  * @author Viktoria

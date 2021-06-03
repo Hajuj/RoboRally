@@ -1,21 +1,16 @@
 package client.viewModel;
 
 import client.model.ClientModel;
-
 import game.Game;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
@@ -24,7 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
-import server.Server;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,7 +31,7 @@ public class ChooseRobotViewModel implements Initializable {
     public TextField nameField = new TextField("");
     private String username;
     ClientModel model = ClientModel.getInstance();
-    private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
+    private final IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
     private static final Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
 
 
@@ -197,8 +191,7 @@ public class ChooseRobotViewModel implements Initializable {
     public boolean isValideUsername (String username) {
         if (username.isBlank()) return false;
         if (username.contains(" ")) return false;
-        if (username.contains("@")) return false;
-        return true;
+        return !username.contains("@");
     }
 
     public boolean isGameOn () {

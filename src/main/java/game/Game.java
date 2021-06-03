@@ -1,24 +1,19 @@
 package game;
 
+import game.boardelements.*;
 import game.decks.DeckSpam;
 import game.decks.DeckTrojan;
 import game.decks.DeckVirus;
 import game.decks.DeckWorm;
+import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.GameStartedBody;
 import server.Server;
-import game.boardelements.*;
-
-import javafx.geometry.Point2D;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -32,29 +27,29 @@ public class Game {
     private DeckWorm deckWorm;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
-    private Server server;
-    private ArrayList<String> availableMaps = new ArrayList<>();
+    private final Server server;
+    private final ArrayList<String> availableMaps = new ArrayList<>();
     private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
-    private Map<Point2D, Antenna> antennaMap = new HashMap<>();
-    private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
-    private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
-    private Map<Point2D, Empty> emptyMap = new HashMap<>();
-    private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
-    private Map<Point2D, Gear> gearMap = new HashMap<>();
-    private Map<Point2D, Laser> laserMap = new HashMap<>();
-    private Map<Point2D, Pit> pitMap = new HashMap<>();
-    private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
-    private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
-    private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
-    private Map<Point2D, Wall> wallMap = new HashMap<>();
+    private final Map<Point2D, Antenna> antennaMap = new HashMap<>();
+    private final Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private final Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
+    private final Map<Point2D, Empty> emptyMap = new HashMap<>();
+    private final Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
+    private final Map<Point2D, Gear> gearMap = new HashMap<>();
+    private final Map<Point2D, Laser> laserMap = new HashMap<>();
+    private final Map<Point2D, Pit> pitMap = new HashMap<>();
+    private final Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
+    private final Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
+    private final Map<Point2D, StartPoint> startPointMap = new HashMap<>();
+    private final Map<Point2D, Wall> wallMap = new HashMap<>();
 
     public Game (Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
     }
 
-    public Game(ArrayList<Player> playerList, Server server){
+    public Game (ArrayList<Player> playerList, Server server) {
         this.server = server;
 
         this.deckSpam = new DeckSpam();

@@ -1,15 +1,15 @@
 package json.protocol;
 
 import client.model.ClientModel;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 
 /**
  * @author Mohamad
  */
 public class CurrentPlayerBody implements ServerMessageAction<CurrentPlayerBody> {
     @Expose
-    private int clientID;
+    private final int clientID;
 
     public CurrentPlayerBody(int clientID) {
         this.clientID = clientID;

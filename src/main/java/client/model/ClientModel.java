@@ -3,17 +3,15 @@ package client.model;
 
 import game.Game;
 import game.Player;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 import json.protocol.SetStatusBody;
-
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -22,15 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 /**
  * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
  * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
 public class ClientModel {
     private static ClientModel instance;
-    private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
+    private static final ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
@@ -42,21 +38,21 @@ public class ClientModel {
     private final String group = "BlindeBonbons";
     private final MessageHandler messageHandler = new MessageHandler();
 
-    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
-    private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
-    private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
-    private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
+    private final StringProperty playersStatusMapProperty = new SimpleStringProperty("");
+    private final HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
+    private final HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private final HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private Player player;
 
-    private StringProperty chatHistory = new SimpleStringProperty("");
-    private StringProperty error = new SimpleStringProperty("");
+    private final StringProperty chatHistory = new SimpleStringProperty("");
+    private final StringProperty error = new SimpleStringProperty("");
 
-    private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
+    private final BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
     private ArrayList<String> availableMaps = new ArrayList<>();
 
-    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
+    private final BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
     private ClientModel () {
     }
