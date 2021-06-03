@@ -10,7 +10,7 @@ public class Robot {
     private int xPosition;
     private int yPosition;
     private String name;
-    private ArrayList<String> orientation;
+    private ArrayList<String> orientation = new ArrayList<>();
 
 
     //TODO: Orientation immer nach rechts am Anfang? Oder da, wo die Antenne schaut? keine Ahnung

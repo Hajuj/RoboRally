@@ -1,21 +1,18 @@
 package server;
 
 import game.Player;
-
 import json.JSONDeserializer;
-import json.JSONSerializer;
 import json.JSONMessage;
-import json.MessageHandler;
+import json.JSONSerializer;
 import json.protocol.ClientMessageAction;
 import json.protocol.ConnectionUpdateBody;
 import json.protocol.HelloClientBody;
+import json.protocol.SelectMapBody;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-
-import json.protocol.SelectMapBody;
-import org.apache.log4j.Logger;
 
 /**
  * Every ClientModel has its own ClientHandlerThread.
