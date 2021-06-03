@@ -1,9 +1,11 @@
 package client.model;
 
+import game.Game;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class ClientGameModel {
+    private Game game;
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
     //TODO: Observer hier
@@ -24,7 +26,19 @@ public class ClientGameModel {
         return instance;
     }
 
+    public void initGame(){
+        game.getCheckPointMap();
+        game.getAntennaMap();
+        game.getConveyorBeltMap();
+        game.getEmptyMap();
+        game.getEnergySpaceMap();
+        game.getWallMap();
+        game.getGearMap();
+        game.getLaserMap();
+        game.getStartPointMap();
+        game.getRestartPointMap();
 
+    }
     public boolean getCanSetStartingPoint () {
         return canSetStartingPoint.get();
     }

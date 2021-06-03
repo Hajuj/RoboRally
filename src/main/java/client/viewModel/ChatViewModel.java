@@ -139,7 +139,7 @@ public class ChatViewModel implements Initializable {
     }
 
     public void showMaps () throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
