@@ -134,7 +134,7 @@ public class Game {
                                     element.getRegisters()));
                         }
                         case "RestartPoint" -> {
-                            restartPointMap.put(new Point2D(x,y), new RestartPoint(element.getType(), element.getIsOnBoard()));
+                            restartPointMap.put(new Point2D(x, y), new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations()));
                         }
                         case "StartPoint" -> {
                             startPointMap.put(new Point2D(x,y), new StartPoint(element.getType(), element.getIsOnBoard()));

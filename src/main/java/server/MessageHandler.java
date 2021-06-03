@@ -62,8 +62,10 @@ public class MessageHandler {
                     }
                 }
 
-                JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
-                server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+                if (server.getCurrentGame().isGameOn()) {
+                    JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
+                    server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+                }
 
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
