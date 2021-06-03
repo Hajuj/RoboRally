@@ -104,7 +104,7 @@ public class MapViewModel implements Initializable {
             //Plan B wir nehemen diese Position und schauen was für ein Element drauf ist, wenn es ein Szartpotn ist
             //dann ja darf man selecten
 
-            clientModel.getClientGameModel().sendStartingPint(colIndex, rowIndex);
+            clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
 //
 //            Point2D positionID = new Point2D(colIndex, rowIndex);
 //            System.out.println(positionID);
