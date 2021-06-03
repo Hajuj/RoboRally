@@ -1,10 +1,9 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 import game.Element;
-import json.MessageHandler;
 
 import java.util.ArrayList;
 

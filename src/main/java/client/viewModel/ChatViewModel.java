@@ -1,10 +1,7 @@
 package client.viewModel;
 
-
 import client.model.ClientModel;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -13,18 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.media.AudioClip;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -85,15 +75,16 @@ public class ChatViewModel implements Initializable {
                     //TODO check if synchronized block working
                     //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
                     //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
                     //     SYNCHRONIZED IS NOT WORKING LOL
                     readyDisplay.setText(s2);
                 }
             });
         }
-        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
-        if (model.getPlayer().getFigure() == -1) {
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
             notReadyBtn.setVisible(false);
         }
@@ -140,7 +131,7 @@ public class ChatViewModel implements Initializable {
 
     public void showMaps () throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
@@ -156,7 +147,7 @@ public class ChatViewModel implements Initializable {
 
     public void loadGameScene () throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("GAME");
         newStage.setScene(new Scene(root1));

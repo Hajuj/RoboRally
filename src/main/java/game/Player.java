@@ -7,7 +7,7 @@ import game.decks.*;
  */
 public class Player {
 
-    private final int playerID;
+    private int playerID;
     private String name;
     private Robot robot;
     private int figure;
@@ -30,7 +30,7 @@ public class Player {
         isReady = ready;
     }
 
-    public Player(int playerID) {
+    public Player (int playerID) {
         this.playerID = playerID;
         this.isReady = false;
         this.deckDiscard = new DeckDiscard();

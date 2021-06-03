@@ -11,23 +11,22 @@ import java.util.ArrayList;
 public class Gear extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
     @Expose
-    private ArrayList<String> orientations;
-    private String colour;
+    private final ArrayList<String> orientations;
+    private final String colour;
 
-    public Gear(String type, String isOnBoard, ArrayList<String> orientations){
+    public Gear (String type, String isOnBoard, ArrayList<String> orientations) {
         this.type = type;
         this.orientations = new ArrayList<>();
         this.isOnBoard = isOnBoard;
         this.orientations.addAll(orientations);
 
-        if(orientations.contains("counterclockwise")){
+        if (orientations.contains("counterclockwise")) {
             this.colour = "red";
-        }
-        else{
+        } else {
             this.colour = "green";
         }
 

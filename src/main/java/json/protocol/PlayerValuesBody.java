@@ -1,14 +1,9 @@
 package json.protocol;
 
-import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import server.ClientHandler;
-import server.Server;
-
-import json.MessageHandler;
-
 import com.google.gson.annotations.Expose;
+import server.ClientHandler;
+import server.MessageHandler;
+import server.Server;
 
 /*
 {

@@ -13,17 +13,17 @@ package json.protocol;
  */
 
 import client.model.ClientModel;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 
 public class StartingPointTakenBody implements ServerMessageAction<StartingPointTakenBody> {
 
     @Expose
-    private int x;
+    private final int x;
     @Expose
-    private int y;
+    private final int y;
     @Expose
-    private int clientID;
+    private final int clientID;
 
     public StartingPointTakenBody (int x, int y, int clientID) {
         this.x = x;

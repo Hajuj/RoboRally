@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
-
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChooseRobotViewModel">
   <columnConstraints>
     <ColumnConstraints minWidth="10.0" />
@@ -44,7 +38,7 @@
                          <ImageView fx:id="robot0" fitHeight="166.0" fitWidth="201.0" onMouseClicked="#setRobot0"
                                     pickOnBounds="true" preserveRatio="true">
                              <image>
-                                 <Image url="@../Robots/robot1.png"/>
+                                 <Image url="@../Robots/robot0.png"/>
                              </image>
                              <VBox.margin>
                                  <Insets left="100.0" top="14.0"/>
@@ -61,7 +55,7 @@
                           <ImageView fx:id="robot1" fitHeight="154.0" fitWidth="174.0" onMouseClicked="#setRobot1"
                                      pickOnBounds="true" preserveRatio="true">
                               <image>
-                                  <Image url="@../Robots/robot2.png"/>
+                                  <Image url="@../Robots/robot1.png"/>
                               </image>
                               <VBox.margin>
                                   <Insets left="128.0"/>
@@ -80,7 +74,7 @@
                           <ImageView fx:id="robot2" fitHeight="168.0" fitWidth="209.0" onMouseClicked="#setRobot2"
                                      pickOnBounds="true" preserveRatio="true">
                               <image>
-                                  <Image url="@../Robots/robot3.png"/>
+                                  <Image url="@../Robots/robot2.png"/>
                               </image>
                               <VBox.margin>
                                   <Insets left="60.0"/>
@@ -100,20 +94,20 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="157.0" prefWidth="187.0" translateX="-70.0">
                       <children>
-                          <ImageView fx:id="robot4" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot3"
+                          <ImageView fx:id="robot3" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot3"
                                      pickOnBounds="true" preserveRatio="true" translateX="2.0">
                               <image>
-                                  <Image url="@../Robots/robot4.png"/>
+                                  <Image url="@../Robots/robot3.png"/>
                               </image>
                           </ImageView>
                       </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                       <children>
-                          <ImageView fx:id="robot5" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot4"
+                          <ImageView fx:id="robot4" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot4"
                                      pickOnBounds="true" preserveRatio="true" translateX="11.0">
                               <image>
-                                  <Image url="@../Robots/robot5.png"/>
+                                  <Image url="@../Robots/robot4.png"/>
                               </image>
                               <VBox.margin>
                                   <Insets/>
@@ -123,10 +117,10 @@
                   </VBox>
                   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="161.0" prefWidth="197.0" translateX="76.0">
                       <children>
-                          <ImageView fx:id="robot6" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot5"
+                          <ImageView fx:id="robot5" fitHeight="186.0" fitWidth="153.0" onMouseClicked="#setRobot5"
                                      pickOnBounds="true" preserveRatio="true">
                               <image>
-                                  <Image url="@../Robots/robot6.png"/>
+                                  <Image url="@../Robots/robot5.png"/>
                               </image>
                           </ImageView>
                       </children>

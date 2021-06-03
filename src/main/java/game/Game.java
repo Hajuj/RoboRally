@@ -1,24 +1,19 @@
 package game;
 
+import game.boardelements.*;
 import game.decks.DeckSpam;
 import game.decks.DeckTrojan;
 import game.decks.DeckVirus;
 import game.decks.DeckWorm;
+import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.GameStartedBody;
 import server.Server;
-import game.boardelements.*;
-
-import javafx.geometry.Point2D;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -34,7 +29,7 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
     private ArrayList<String> availableMaps = new ArrayList<>();
-    private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
+    private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
@@ -54,7 +49,7 @@ public class Game {
         availableMaps.add("DizzyHighway");
     }
 
-    public Game(ArrayList<Player> playerList, Server server){
+    public Game (ArrayList<Player> playerList, Server server) {
         this.server = server;
 
         this.deckSpam = new DeckSpam();
@@ -87,7 +82,8 @@ public class Game {
 
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        String fileName = "Maps/DizzyHighway.json";
+        mapName = mapName.replaceAll("\\s+", "");
+        String fileName = "Maps/" + mapName + ".json";
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
         String content = new String(Files.readAllBytes(file.toPath()));

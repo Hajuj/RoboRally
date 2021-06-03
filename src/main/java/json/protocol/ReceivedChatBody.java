@@ -1,10 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
-
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -12,11 +9,11 @@ import com.google.gson.annotations.Expose;
  */
 public class ReceivedChatBody implements ServerMessageAction<ReceivedChatBody> {
     @Expose
-    private String message;
+    private final String message;
     @Expose
-    private int from;
+    private final int from;
     @Expose
-    private boolean isPrivate;
+    private final boolean isPrivate;
 
     public ReceivedChatBody (String message, int from, boolean isPrivate) {
         this.message = message;

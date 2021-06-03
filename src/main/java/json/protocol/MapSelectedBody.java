@@ -1,9 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 import server.ClientHandler;
 import server.Server;
 
@@ -21,7 +19,7 @@ public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, Cl
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, MapSelectedBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, MapSelectedBody bodyObject, server.MessageHandler messageHandler) {
         try {
             messageHandler.handleMapSelected(server, clientHandler, bodyObject);
         } catch (IOException ioException) {
@@ -30,7 +28,7 @@ public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, Cl
     }
 
     @Override
-    public void triggerAction(ClientModel client, MapSelectedBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (ClientModel client, MapSelectedBody bodyObject, client.model.MessageHandler messageHandler) {
         messageHandler.handleMapSelected(client, bodyObject);
     }
 

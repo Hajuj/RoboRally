@@ -16,9 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import json.JSONDeserializer;
-import json.JSONMessage;
-import json.protocol.GameStartedBody;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,8 +32,6 @@ public class MapViewModel implements Initializable {
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
-    public int mapX;
-    public int mapY;
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
@@ -285,6 +280,7 @@ public class MapViewModel implements Initializable {
 
 
 
+
     public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
@@ -304,3 +300,4 @@ public class MapViewModel implements Initializable {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
 }
+
