@@ -36,7 +36,7 @@ public class ClientGameModel {
     }
 
 
-    public void sendStartingPint (int x, int y) {
+    public void sendStartingPoint (int x, int y) {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
