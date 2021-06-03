@@ -19,6 +19,11 @@ public class Element {
     public Element(){
     }
 
+    public applyOrientation(){
+
+
+    }
+
 
     public String getType(){
         return this.type;
