@@ -24,13 +24,13 @@ public class ChatViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
     @FXML
-    private final TextArea readyDisplay = new TextArea("");
+    private TextArea readyDisplay = new TextArea("");
     @FXML
     private Button readyButton;
     @FXML
     private Button gameGuideBtn;
     @FXML
-    private final TextArea chatField = new TextArea("");
+    private TextArea chatField = new TextArea("");
     @FXML
     private TextField messageField;
     @FXML
@@ -75,6 +75,7 @@ public class ChatViewModel implements Initializable {
                     //TODO check if synchronized block working
                     //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
                     //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
                     //     SYNCHRONIZED IS NOT WORKING LOL
                     readyDisplay.setText(s2);
                 }

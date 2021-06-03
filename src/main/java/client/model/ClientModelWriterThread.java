@@ -14,10 +14,10 @@ import java.net.Socket;
  * @author Viktoria
  */
 public class ClientModelWriterThread extends Thread {
-    private final ClientModel client;
-    private final Socket clientSocket;
-    private static final Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
-    private final MessageHandler messageHandler;
+    private ClientModel client;
+    private Socket clientSocket;
+    private static Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
+    private MessageHandler messageHandler;
     private PrintWriter writer;
 
     public ClientModelWriterThread (ClientModel client, Socket clientSocket, MessageHandler messageHandler) {

@@ -7,20 +7,20 @@ import game.decks.*;
  */
 public class Player {
 
-    private final int playerID;
+    private int playerID;
     private String name;
     private Robot robot;
     private int figure;
     private boolean isReady;
 
-    private final DeckDiscard deckDiscard;
+    private DeckDiscard deckDiscard;
     //    private DeckProgramming deckProgramming;
-    private final DeckHand deckHand;
-    private final DeckRegister deckRegister;
-    private final DeckSpam deckSpam;
-    private final DeckTrojan deckTrojan;
-    private final DeckVirus deckVirus;
-    private final DeckWorm deckWorm;
+    private DeckHand deckHand;
+    private DeckRegister deckRegister;
+    private DeckSpam deckSpam;
+    private DeckTrojan deckTrojan;
+    private DeckVirus deckVirus;
+    private DeckWorm deckWorm;
 
     public boolean isReady () {
         return isReady;

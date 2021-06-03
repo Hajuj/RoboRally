@@ -31,8 +31,8 @@ public class ChooseRobotViewModel implements Initializable {
     public TextField nameField = new TextField("");
     private String username;
     ClientModel model = ClientModel.getInstance();
-    private final IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
-    private static final Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
+    private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
+    private static Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
 
 
     @FXML
@@ -42,11 +42,11 @@ public class ChooseRobotViewModel implements Initializable {
     @FXML
     private ImageView robot2;
     @FXML
+    private ImageView robot3;
+    @FXML
     private ImageView robot4;
     @FXML
     private ImageView robot5;
-    @FXML
-    private ImageView robot6;
 
 
     @Override
@@ -103,16 +103,16 @@ public class ChooseRobotViewModel implements Initializable {
                     robot2.setEffect(blur);
                 }
                 case 3 -> {
+                    robot3.setDisable(true);
+                    robot3.setEffect(blur);
+                }
+                case 4 -> {
                     robot4.setDisable(true);
                     robot4.setEffect(blur);
                 }
-                case 4 -> {
+                case 5 -> {
                     robot5.setDisable(true);
                     robot5.setEffect(blur);
-                }
-                case 5 -> {
-                    robot6.setDisable(true);
-                    robot6.setEffect(blur);
                 }
             }
         }
@@ -122,9 +122,9 @@ public class ChooseRobotViewModel implements Initializable {
         robot0.setEffect(new DropShadow(0.0, Color.RED));
         robot1.setEffect(new DropShadow(0.0, Color.RED));
         robot2.setEffect(new DropShadow(0.0, Color.RED));
+        robot3.setEffect(new DropShadow(0.0, Color.RED));
         robot4.setEffect(new DropShadow(0.0, Color.RED));
         robot5.setEffect(new DropShadow(0.0, Color.RED));
-        robot6.setEffect(new DropShadow(0.0, Color.RED));
         disableUsedRobots();
     }
 
@@ -152,21 +152,21 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void setRobot3 () {
         refreshShadow();
-        robot4.setEffect(new DropShadow(20.0, Color.RED));
+        robot3.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(3);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot4 () {
         refreshShadow();
-        robot5.setEffect(new DropShadow(20.0, Color.RED));
+        robot4.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(4);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
     public void setRobot5 () {
         refreshShadow();
-        robot6.setEffect(new DropShadow(20.0, Color.RED));
+        robot5.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(5);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }

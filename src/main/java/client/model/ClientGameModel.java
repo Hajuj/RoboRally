@@ -11,13 +11,13 @@ import java.util.ArrayList;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
-    private final ClientModel clientModel = ClientModel.getInstance();
+    private ClientModel clientModel = ClientModel.getInstance();
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
 
     //TODO: Observer hier
-    private final BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
+    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     //Das ist so falsch oh gott
     private int x;
     private int y;

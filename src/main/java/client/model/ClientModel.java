@@ -26,32 +26,32 @@ import java.util.Map;
  */
 public class ClientModel {
     private static ClientModel instance;
-    private static final ClientGameModel clientGameModel = ClientGameModel.getInstance();
+    private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
     private boolean waitingForServer = true;
 
-    private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
-    private final String protocolVersion = "Version 0.1";
-    private final String group = "BlindeBonbons";
-    private final MessageHandler messageHandler = new MessageHandler();
+    private static Logger logger = Logger.getLogger(ClientModel.class.getName());
+    private String protocolVersion = "Version 0.1";
+    private String group = "BlindeBonbons";
+    private MessageHandler messageHandler = new MessageHandler();
 
-    private final StringProperty playersStatusMapProperty = new SimpleStringProperty("");
-    private final HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
-    private final HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
-    private final HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
+    private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
+    private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
+    private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
+    private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
 
-    private final StringProperty chatHistory = new SimpleStringProperty("");
-    private final StringProperty error = new SimpleStringProperty("");
+    private StringProperty chatHistory = new SimpleStringProperty("");
+    private StringProperty error = new SimpleStringProperty("");
 
-    private final BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
+    private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
     private ArrayList<String> availableMaps = new ArrayList<>();
 
-    private final BooleanProperty gameOn = new SimpleBooleanProperty(false);
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
     private ClientModel () {
     }

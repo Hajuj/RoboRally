@@ -27,22 +27,22 @@ public class MapViewModel implements Initializable {
 
     @FXML
     public GridPane mapGrid;
-    private final ClientModel clientModel = ClientModel.getInstance();
-    private final ClientGameModel clientGameModel = ClientGameModel.getInstance();
+    private ClientModel clientModel = ClientModel.getInstance();
+    private ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
 
-    private final Map<Point2D, Antenna> antennaMap = new HashMap<>();
-    private final Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
-    private final Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
-    private final Map<Point2D, Empty> emptyMap = new HashMap<>();
-    private final Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
-    private final Map<Point2D, Gear> gearMap = new HashMap<>();
-    private final Map<Point2D, Laser> laserMap = new HashMap<>();
-    private final Map<Point2D, Pit> pitMap = new HashMap<>();
-    private final Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
-    private final Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
-    private final Map<Point2D, StartPoint> startPointMap = new HashMap<>();
-    private final Map<Point2D, Wall> wallMap = new HashMap<>();
+    private Map<Point2D, Antenna> antennaMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
+    private Map<Point2D, Empty> emptyMap = new HashMap<>();
+    private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
+    private Map<Point2D, Gear> gearMap = new HashMap<>();
+    private Map<Point2D, Laser> laserMap = new HashMap<>();
+    private Map<Point2D, Pit> pitMap = new HashMap<>();
+    private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
+    private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
+    private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
+    private Map<Point2D, Wall> wallMap = new HashMap<>();
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
@@ -78,7 +78,7 @@ public class MapViewModel implements Initializable {
         FileInputStream input = null;
         Image image;
         try {
-            input = new FileInputStream(findPath("images/mapElements/Floor.jpg"));
+            input = new FileInputStream(findPath("Robots/robot" + figure + ".png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

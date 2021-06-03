@@ -180,7 +180,7 @@ public class MessageHandler {
     }
 
     public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
-        //TODO: hier etwas wie "Server speichert die POsition von dem Player with ID playerID in der position x,y
+        //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
         int x = bodyObject.getX();
         int y = bodyObject.getY();

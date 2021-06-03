@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, ClientMessageAction<MapSelectedBody> {
     @Expose
-    private final String map;
+    private String map;
 
     public MapSelectedBody(String map) {
         this.map = map;

@@ -27,22 +27,22 @@ public class Game {
     private DeckWorm deckWorm;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
-    private final Server server;
-    private final ArrayList<String> availableMaps = new ArrayList<>();
-    private static final ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
+    private Server server;
+    private ArrayList<String> availableMaps = new ArrayList<>();
+    private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
-    private final Map<Point2D, Antenna> antennaMap = new HashMap<>();
-    private final Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
-    private final Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
-    private final Map<Point2D, Empty> emptyMap = new HashMap<>();
-    private final Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
-    private final Map<Point2D, Gear> gearMap = new HashMap<>();
-    private final Map<Point2D, Laser> laserMap = new HashMap<>();
-    private final Map<Point2D, Pit> pitMap = new HashMap<>();
-    private final Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
-    private final Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
-    private final Map<Point2D, StartPoint> startPointMap = new HashMap<>();
-    private final Map<Point2D, Wall> wallMap = new HashMap<>();
+    private Map<Point2D, Antenna> antennaMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
+    private Map<Point2D, Empty> emptyMap = new HashMap<>();
+    private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
+    private Map<Point2D, Gear> gearMap = new HashMap<>();
+    private Map<Point2D, Laser> laserMap = new HashMap<>();
+    private Map<Point2D, Pit> pitMap = new HashMap<>();
+    private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
+    private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
+    private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
+    private Map<Point2D, Wall> wallMap = new HashMap<>();
 
     public Game (Server server) {
         this.server = server;
@@ -82,6 +82,7 @@ public class Game {
 
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
+        mapName = mapName.replaceAll("\\s+", "");
         String fileName = "Maps/" + mapName + ".json";
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
