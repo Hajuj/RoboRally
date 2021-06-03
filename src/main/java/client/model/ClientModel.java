@@ -2,7 +2,6 @@ package client.model;
 
 
 import game.Game;
-import game.Player;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,7 +21,8 @@ import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
- * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
+ * ClientModel realisiert Singelton-Pattern,
+ * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
 public class ClientModel {
     private static ClientModel instance;
@@ -43,7 +43,6 @@ public class ClientModel {
     private final HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private final HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
-    private Player player;
 
     private final StringProperty chatHistory = new SimpleStringProperty("");
     private final StringProperty error = new SimpleStringProperty("");
@@ -105,7 +104,7 @@ public class ClientModel {
 
 
     public void setNewStatus(Boolean newStatus) {
-        player.setReady(newStatus);
+        clientGameModel.getPlayer().setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
     }
@@ -137,10 +136,10 @@ public class ClientModel {
                 if (message.contains(" ")) {
                     int beginMsg = message.indexOf(" ");
                     String playerPrivate = message.substring(1, beginMsg);
-                    if (getIDbyUsername(playerPrivate) != player.getPlayerID()) {
+                    if (getIDbyUsername(playerPrivate) != clientGameModel.getPlayer().getPlayerID()) {
                         if (getIDbyUsername(playerPrivate) != 0) {
-                            clientModelWriterThread.sendDirectMessage(player.getName() + " : " + message, getIDbyUsername(playerPrivate));
-                            chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
+                            clientModelWriterThread.sendDirectMessage(clientGameModel.getPlayer().getName() + " : " + message, getIDbyUsername(playerPrivate));
+                            chatHistory.setValue(chatHistory.getValue() + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                         } else {
                             this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerPrivate + " found." + "\n");
                         }
@@ -152,8 +151,8 @@ public class ClientModel {
                 }
             } else {
                 //öffentliche nachricht.
-                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
-                chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
+                clientModelWriterThread.sendChatMessage(clientGameModel.getPlayer().getName() + " : " + message);
+                chatHistory.setValue(chatHistory.getValue() + clientGameModel.getPlayer().getName() + " : " + message + "\n");
             }
         }
     }
@@ -209,13 +208,7 @@ public class ClientModel {
         return playersStatusMapProperty;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
     public MessageHandler getMessageHandler() {
         return messageHandler;

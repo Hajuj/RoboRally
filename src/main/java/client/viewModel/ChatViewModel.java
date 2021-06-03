@@ -80,10 +80,10 @@ public class ChatViewModel implements Initializable {
                 }
             });
         }
-        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
-        if (model.getPlayer().getFigure() == -1) {
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
             notReadyBtn.setVisible(false);
         }

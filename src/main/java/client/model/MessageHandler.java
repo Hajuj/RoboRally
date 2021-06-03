@@ -38,7 +38,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
-        clientmodel.setPlayer(player);
+        clientmodel.getClientGameModel().setPlayer(player);
     }
 
 
@@ -62,6 +62,7 @@ public class MessageHandler {
 
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
@@ -79,9 +80,9 @@ public class MessageHandler {
         int figure = playerAddedBody.getFigure();
 
         // The player himself has been added
-        if (clientModel.getPlayer().getPlayerID() == clientID) {
-            clientModel.getPlayer().setName(name);
-            clientModel.getPlayer().setFigure(figure);
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == clientID) {
+            clientModel.getClientGameModel().getPlayer().setName(name);
+            clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
         clientModel.getPlayersNamesMap().put(clientID, name);
         clientModel.getPlayersFigureMap().put(clientID, figure);
@@ -103,9 +104,9 @@ public class MessageHandler {
     }
 
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
-        clientModel.setSelectedMap("DizzyHighway");
+        clientModel.setSelectedMap(mapSelectedBody.getMap());
+        System.out.println(mapSelectedBody.getMap().getClass());
         //clientModel.gameOnProperty().setValue(true);
-        System.out.println("IM HERE");
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
@@ -123,7 +124,7 @@ public class MessageHandler {
         clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
         clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
 
-        if (startingPointTakenBody.getClientID() == clientModel.getPlayer().getPlayerID()) {
+        if (startingPointTakenBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             //sein robot
             clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
         }

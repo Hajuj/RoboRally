@@ -1,11 +1,21 @@
 package client.model;
 
+import game.Element;
+import game.Player;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import json.JSONMessage;
+import json.protocol.SetStartingPointBody;
+
+import java.util.ArrayList;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
     private final ClientModel clientModel = ClientModel.getInstance();
+    private Player player;
+    private ArrayList<ArrayList<ArrayList<Element>>> map;
+
+
     //TODO: Observer hier
     private final BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     //Das ist so falsch oh gott
@@ -23,6 +33,12 @@ public class ClientGameModel {
             instance = new ClientGameModel();
         }
         return instance;
+    }
+
+
+    public void sendStartingPint (int x, int y) {
+        JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
+        clientModel.sendMessage(startPointMessage);
     }
 
 
@@ -62,11 +78,27 @@ public class ClientGameModel {
         this.actualPlayerID = actualPlayerID;
     }
 
-    public int getActualPhase() {
+    public int getActualPhase () {
         return actualPhase;
     }
 
-    public void setActualPhase(int actualPhase) {
+    public void setActualPhase (int actualPhase) {
         this.actualPhase = actualPhase;
+    }
+
+    public Player getPlayer () {
+        return player;
+    }
+
+    public void setPlayer (Player player) {
+        this.player = player;
+    }
+
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
+        return map;
+    }
+
+    public void setMap (ArrayList<ArrayList<ArrayList<Element>>> map) {
+        this.map = map;
     }
 }

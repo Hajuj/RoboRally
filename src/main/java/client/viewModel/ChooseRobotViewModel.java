@@ -174,8 +174,8 @@ public class ChooseRobotViewModel implements Initializable {
     public void playButtonClicked () {
         try {
             username = nameField.getText();
-            model.getPlayer().setName(username);
-            model.getPlayer().setFigure(figureProperty.getValue());
+            model.getClientGameModel().getPlayer().setName(username);
+            model.getClientGameModel().getPlayer().setFigure(figureProperty.getValue());
             logger.info("Username " + username + " has been set.");
             model.sendUsernameAndRobot(username, figureProperty.getValue());
             Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));

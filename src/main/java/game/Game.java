@@ -82,7 +82,7 @@ public class Game {
 
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        String fileName = "Maps/DizzyHighway.json";
+        String fileName = "Maps/" + mapName + ".json";
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
         String content = new String(Files.readAllBytes(file.toPath()));
