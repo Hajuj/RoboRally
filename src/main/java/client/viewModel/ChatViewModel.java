@@ -84,7 +84,8 @@ public class ChatViewModel implements Initializable {
             model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
-                    //TODO check if synchronized block working
+                    //TODO try to implement it in ClientModel
+                    //     check if synchronized block working
                     //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
                     //     arraycopy: last destination index 78 out of bounds for byte[66]
                     //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
