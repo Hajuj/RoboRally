@@ -135,26 +135,6 @@ public class MapViewModel implements Initializable {
 
     }
 
-    private String handleLaser() {
-        String laserT="";
-        for (Point2D loc:laserMap.keySet()) {
-            if (wallMap.containsKey(loc)){
-                laserT = "OneLaser";
-            }else{
-                laserT = "OneLaserBeam";
-            }
-        }
-        return laserT;
-    }
-  /*  private String handleBelts() {
-
-    }*/
-
-
-    /*public File findPath(String element) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-    }*/
 
     public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
@@ -261,7 +241,6 @@ public class MapViewModel implements Initializable {
 
                             mapGrid.add(loadImage("RedGear",String.join(",", gear.getOrientations())), y, x);
                         }
-                        //TODO:laser 1 or two handeln und dann orientation
                         case "Laser" -> {
                             Element element = map.get(x).get(y).get(i);
                             Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
@@ -316,7 +295,6 @@ public class MapViewModel implements Initializable {
                             mapGrid.add(loadImage("normal1","null"), y, x);
                         }
 
-                        //TODO: dopple oder one wall
                         case "Wall" -> {
                             Element element = map.get(x).get(y).get(i);
                             Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
@@ -335,29 +313,6 @@ public class MapViewModel implements Initializable {
 
 
 
-    private String toString(ArrayList<String> orientations) {
-        String liste= "" ;
-        for (String s:orientations) {
-            //liste += s + " \t";
-            String.join(", ", orientations);
-           // System.out.println(liste);
-
-        }
-        System.out.println(liste);
-
-/*
-       for (int i = 0; i< orientations.size();i++ ) {
-            liste += orientations.get(i) + " \t";
-           // liste = String.join(", ", orientations);
-            //liste = orientations.get(i) ;
-            //liste += String.join(", ", orientations);
-            System.out.println(liste +" ///");
-            //System.out.println(String.join(", ", orientations.toString()));
-        }*/
-        return liste;
-    }
-
-
     public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
@@ -369,10 +324,6 @@ public class MapViewModel implements Initializable {
 
         }
     }
-    //TODO:if wall and leser gleichzeitg auf the same feld und dann kommt roboter
-    /*public void isValidReplacement(){
-        if ()
-    }*/
 
 
 
