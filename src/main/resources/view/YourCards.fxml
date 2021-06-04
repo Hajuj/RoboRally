@@ -25,14 +25,14 @@
         <Button fx:id="card8" layoutX="314.0" layoutY="135.0" mnemonicParsing="false" prefHeight="135.0"
                 prefWidth="90.0" text="card8" onAction="#chooseCard8"/>
         <Button fx:id="reg0" layoutY="273.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
-                style="-fx-background-color: black;" text="reg0" textFill="WHITE"/>
+                style="-fx-background-color: black;" text="reg0" textFill="WHITE" onAction="#chooseReg0"/>
         <Button fx:id="reg1" layoutX="90.0" layoutY="273.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
-                text="reg1" textFill="WHITE" style="-fx-background-color: black;"/>
+                text="reg1" textFill="WHITE" style="-fx-background-color: black;" onAction="#chooseReg1"/>
         <Button fx:id="reg2" layoutX="180.0" layoutY="273.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
-                text="reg2" textFill="WHITE" style="-fx-background-color: black;"/>
+                text="reg2" textFill="WHITE" style="-fx-background-color: black;" onAction="#chooseReg2"/>
         <Button fx:id="reg3" layoutX="269.0" layoutY="273.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
-                text="reg3" textFill="WHITE" style="-fx-background-color: black;"/>
+                text="reg3" textFill="WHITE" style="-fx-background-color: black;" onAction="#chooseReg3"/>
         <Button fx:id="reg4" layoutX="359.0" layoutY="273.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
-                text="reg4" textFill="WHITE" style="-fx-background-color: black;"/>
+                text="reg4" textFill="WHITE" style="-fx-background-color: black;" onAction="#chooseReg4"/>
     </children>
 </AnchorPane>

@@ -166,6 +166,7 @@ public class MessageHandler {
         int amount = notYourCardsBody.getCardsInHand();
         String playerName = clientModel.getPlayersNamesMap().get(clientID);
 
+
         //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
 
         clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "Player " + playerName +
