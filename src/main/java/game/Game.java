@@ -256,6 +256,19 @@ public class Game {
         }
     }
 
+    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+        if (object instanceof Element) {
+            int indexelement = map.get(y).get(x).indexOf(element);
+            map.get(y).get(x).remove(element);
+            map.get(y).get(x).add(indexelement, (Element) object);
+        }
+        else{
+            throw new ClassCastException(object + " is not an Element!" +
+                    "Can't cast this method on Objects other than Elements!");
+
+        }
+    }
+
 
     public int getCurrentPlayer () {
         return currentPlayer;
@@ -363,19 +376,6 @@ public class Game {
 
     public Server getServer() {
         return server;
-    }
-
-    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
-        if (object instanceof Element) {
-            int indexelement = map.get(y).get(x).indexOf(element);
-            map.get(y).get(x).remove(element);
-            map.get(y).get(x).add(indexelement, (Element) object);
-        }
-        else{
-            throw new ClassCastException(object + " is not an Element!" +
-                    "Can't cast this method on Objects other than Elements!");
-
-        }
     }
 
 }

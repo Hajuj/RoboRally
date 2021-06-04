@@ -134,10 +134,7 @@ public class MessageHandler {
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
         clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
-        if (startingPointTakenBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-            //sein robot
-            clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
-        }
+        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
