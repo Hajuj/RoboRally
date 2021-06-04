@@ -175,6 +175,7 @@ public class MessageHandler {
     }
 
     public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+        //TODO: SEND NUT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
         }
@@ -187,15 +188,30 @@ public class MessageHandler {
         int x = bodyObject.getX();
         int y = bodyObject.getY();
 
+        if (playerID == server.getCurrentGame().getCurrentPlayer()) {
 
-        //create einen neuen Robot auf (x,y) und setRobot zu dem Player
-        Player player = server.getPlayerWithID(playerID);
-        player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+            if (server.getCurrentGame().valideStartingPoint(x, y)) {
+                Player player = server.getPlayerWithID(playerID);
+                player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
 
-        for (Player otherPlayer : server.getReadyPlayer()) {
-            //sage allen wo der Spieler mit playerID started
-            JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
-            server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                for (Player otherPlayer : server.getReadyPlayer()) {
+                    //sage allen wo der Spieler mit playerID started
+                    //TODO: nur an player schicken
+                    JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
+                    server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+
+                    //TODO: methode von Mohamad hier rein
+                    server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().getPlayerList().get(1).getPlayerID());
+                    JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getPlayerList().get(1).getPlayerID()));
+                    server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+
+                }
+            }
+            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
+
+        } else {
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("notYourTurn"));
+            server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
 
     }

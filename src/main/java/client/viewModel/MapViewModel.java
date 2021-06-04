@@ -60,8 +60,7 @@ public class MapViewModel implements Initializable {
                 if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
                     Platform.runLater(() -> {
                                 setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-
-                    }
+                            }
                     );
                     clientGameModel.canSetStartingPointProperty().setValue(false);
                 }
@@ -71,6 +70,7 @@ public class MapViewModel implements Initializable {
 
 
     public void setRobot (int playerID, int x, int y) {
+        System.out.println(clientModel.getPlayersFigureMap());
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         //TODO: image hängt von figur ab
         FileInputStream input = null;
@@ -85,7 +85,7 @@ public class MapViewModel implements Initializable {
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        mapGrid.add(imageView, x, y);
+        mapGrid.add(imageView, y, x);
 
     }
 
@@ -104,20 +104,8 @@ public class MapViewModel implements Initializable {
             //Plan B wir nehemen diese Position und schauen was für ein Element drauf ist, wenn es ein Szartpotn ist
             //dann ja darf man selecten
 
-            clientModel.getClientGameModel().sendStartingPint(colIndex, rowIndex);
-//
-//            Point2D positionID = new Point2D(colIndex, rowIndex);
-//            System.out.println(positionID);
-//           /* for (Point2D startPointPosition :startPointMap.keySet()) {
-//                System.out.println(startPointMap.keySet());*/
-//            if (startPointMap.containsKey(positionID)) {
-//                System.out.println("hier ist einen startpoint " + positionID);
-//                clientGameModel.setCanSetStartingPoint(true);
-//            } else {
-//                System.out.println("hier NOT startpoint ");
-//                clientGameModel.setCanSetStartingPoint(false);
-//
-//            }
+            clientModel.getClientGameModel().sendStartingPint(rowIndex, colIndex);
+
                 /* if (startPointPosition.equals(positionID)){
                     //clientGameModel.send()
                     System.out.println("hier ist einen startpoint "+positionID);
