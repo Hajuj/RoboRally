@@ -237,6 +237,9 @@ public class Game {
     //TODO calculate distance from antenna -> method
 
 
+
+    //TODO find next wall with laser
+
     public boolean valideStartingPoint (int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {

@@ -18,8 +18,14 @@ public abstract class Deck {
         return topCard;
     }
 
-    public void removeTopCard(ArrayList<Card> Deck){
-        Deck.remove(0);
+    public void removeTopCard(){
+        this.getDeck().remove(0);
+    }
+
+    public void removeAllCards(){
+        while(this.getDeck().size() > 0){
+            this.removeTopCard();
+        }
     }
 
     protected abstract ArrayList<Card> getDeck();

@@ -14,7 +14,7 @@ public class Player implements Comparable<Player> {
     private boolean isReady;
 
     private DeckDiscard deckDiscard;
-    //    private DeckProgramming deckProgramming;
+    private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
     private DeckSpam deckSpam;
@@ -29,9 +29,9 @@ public class Player implements Comparable<Player> {
         deckDiscard.initializeDeck();
         deckDiscard.shuffleDeck();
 
-//        this.deckProgramming = new DeckProgramming();
-//        deckProgramming.initializeDeck();
-//        deckProgramming.shuffleDeck();
+        this.deckProgramming = new DeckProgramming();
+        deckProgramming.initializeDeck();
+        deckProgramming.shuffleDeck();
 
         this.deckHand = new DeckHand();
         deckHand.initializeDeck();
@@ -56,6 +56,41 @@ public class Player implements Comparable<Player> {
         this.deckWorm = new DeckWorm();
         deckWorm.initializeDeck();
         deckWorm.shuffleDeck();
+    }
+
+    //TODO shuffle cards
+    //TODO draw cards
+
+    public void drawCardsProgramming(int amount){
+        int amountLeft;
+
+        //YourCardsBody
+        if(amount <= this.deckProgramming.getDeck().size()){
+            for(int i = 0; i < amount; i++){
+                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(0));
+                this.deckProgramming.getDeck().remove(0);
+            }
+        }
+
+        //NotYourCardsBody
+        else if(amount > this.deckProgramming.getDeck().size()){
+            amountLeft = amount - (this.deckProgramming.getDeck().size());
+            for(int i = 0; i < this.deckProgramming.getDeck().size(); i++){
+                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
+                this.deckProgramming.removeTopCard();
+            }
+            shuffleDiscardIntoProgramming();
+            for(int i = 0; i < amountLeft; i++){
+                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
+                this.deckProgramming.removeTopCard();
+            }
+        }
+    }
+
+    private void shuffleDiscardIntoProgramming() {
+        this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
+        this.deckDiscard.removeAllCards();
+        this.deckProgramming.shuffleDeck();
     }
 
     @Override
