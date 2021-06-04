@@ -4,17 +4,9 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-   "messageType": "NotYourCards",
-   "messageBody": {
-      "clientID": 42,
-      "cardsInHand": 9
-   }
-}
-
+/**
+ * @author Viktoria
  */
-
 public class NotYourCardsBody implements ServerMessageAction<NotYourCardsBody> {
 
     @Expose

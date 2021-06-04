@@ -19,9 +19,9 @@ import java.util.Objects;
  * @author Mohamad, Viktoria
  */
 public class MessageHandler {
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
+    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
     /**
      * Wenn der Server ein Message HelloServer bekommt, schickt er ein Welcome-Message zu dem ClientModel mit dem ID
@@ -31,7 +31,7 @@ public class MessageHandler {
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
     public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "HalloServer Message received." + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
                 logger.info("Protocol version test succeeded");
@@ -104,7 +104,7 @@ public class MessageHandler {
 
 
     public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
 
@@ -211,7 +211,7 @@ public class MessageHandler {
             }
             //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
-            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It's not your turn!"));
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
     }
@@ -230,12 +230,14 @@ public class MessageHandler {
             currentPlayer.getDeckRegister().getDeck().set(register, null);
             JSONMessage removeCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, false));
             server.sendMessage(removeCard, clientHandler.getWriter());
+            logger.info(currentPlayer.getName() + " removed a card from the register!");
         } else {
             //Add card to register deck
             Card currentCard = currentPlayer.selectedCard(card);
             currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
             JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
             server.sendMessage(addCard, clientHandler.getWriter());
+            logger.info(currentPlayer.getName() + " added a card to the register!");
         }
     }
 

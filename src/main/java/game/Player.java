@@ -1,12 +1,15 @@
 package game;
 
 import game.decks.*;
+import json.JSONMessage;
+import json.protocol.ShuffleCodingBody;
 
 
 /**
  * @author Ilja Knis
  */
 public class Player implements Comparable<Player> {
+    Game game = Game.getInstance();
 
     private int playerID;
     private String name;
@@ -85,6 +88,8 @@ public class Player implements Comparable<Player> {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
+            JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
+            game.sendToAllPlayers(shuffleMessage);
         }
     }
 

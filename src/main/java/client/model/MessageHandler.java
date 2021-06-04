@@ -23,7 +23,7 @@ public class MessageHandler {
      * @param helloClientBody The message body of the message which is of type HelloClientBody
      */
     public void handleHelloClient (ClientModel clientmodel, HelloClientBody helloClientBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The ClientModel will be notified" + ANSI_RESET);
+        logger.info(ANSI_CYAN + "HalloClient Message received." + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
         //TODO change to notify() in class ClientModel
         clientmodel.setWaitingForServer(false);
@@ -37,7 +37,7 @@ public class MessageHandler {
      * @param welcomeBody The message body of the message which is of type {@link WelcomeBody}.
      */
     public void handleWelcome (ClientModel clientmodel, WelcomeBody welcomeBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Welcome Message received." + ANSI_RESET);
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
         clientmodel.getClientGameModel().setPlayer(player);
@@ -51,7 +51,7 @@ public class MessageHandler {
      * @param errorBody   The message body of the message which is of type {@link ErrorBody}.
      */
     public void handleError (ClientModel clientmodel, ErrorBody errorBody) {
-        logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
+        logger.warn(ANSI_CYAN + "Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
 
         switch (errorBody.getError()) {
@@ -69,12 +69,12 @@ public class MessageHandler {
     }
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Chat received." + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
@@ -153,7 +153,11 @@ public class MessageHandler {
         int clientID = cardSelectedBody.getClientID();
         int register = cardSelectedBody.getRegister();
 
-//        if (cardSelectedBody.isFilled()) {
+        if (cardSelectedBody.isFilled()) {
+            clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + register);
+        } else {
+            clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + register);
+        }
     }
 
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
@@ -170,6 +174,12 @@ public class MessageHandler {
 
         clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "Player " + playerName +
                 " has " + amount + " cards in the hand \n");
+    }
+
+    public void handleShuffleCoding(ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
+        int clientID = shuffleCodingBody.getClientID();
+
+        clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
     }
 
 

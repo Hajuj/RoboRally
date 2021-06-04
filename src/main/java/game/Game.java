@@ -24,6 +24,7 @@ import java.util.*;
  * @author Ilja Knis
  */
 public class Game {
+    private static Game instance;
 
     private DeckSpam deckSpam;
     private DeckTrojan deckTrojan;
@@ -56,6 +57,16 @@ public class Game {
     private int currentRound;
     private boolean activePhaseOn = false;
 
+    private Game() {
+
+    }
+
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
 
     public Game (Server server) {
         this.server = server;

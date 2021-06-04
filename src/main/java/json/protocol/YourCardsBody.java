@@ -1,24 +1,14 @@
 package json.protocol;
 
-/*
-{
-    "messageType": "YourCards",
-    "messageBody": {
-        "cardsInHand": [
-            "card1",
-            "..."
-        ]
-    }
-}
-
- */
-
 import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
+/**
+ * @author Viktoria
+ */
 public class YourCardsBody implements ServerMessageAction<YourCardsBody> {
 
     @Expose
