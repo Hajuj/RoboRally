@@ -149,6 +149,13 @@ public class MessageHandler {
         logger.info("Current Active Phase: " + phase);
     }
 
+    public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
+        int clientID = cardSelectedBody.getClientID();
+        int register = cardSelectedBody.getRegister();
+
+//        if (cardSelectedBody.isFilled()) {
+    }
+
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
