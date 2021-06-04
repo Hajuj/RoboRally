@@ -183,5 +183,9 @@ public class MessageHandler {
         clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
     }
 
+    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+
+    }
+
 
 }

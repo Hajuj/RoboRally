@@ -229,15 +229,25 @@ public class MessageHandler {
             currentPlayer.getDeckHand().getDeck().add(currentCard);
             currentPlayer.getDeckRegister().getDeck().set(register, null);
             JSONMessage removeCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, false));
-            server.sendMessage(removeCard, clientHandler.getWriter());
+            server.getCurrentGame().sendToAllPlayers(removeCard);
             logger.info(currentPlayer.getName() + " removed a card from the register!");
         } else {
             //Add card to register deck
             Card currentCard = currentPlayer.selectedCard(card);
             currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
             JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
-            server.sendMessage(addCard, clientHandler.getWriter());
+            server.getCurrentGame().sendToAllPlayers(addCard);
             logger.info(currentPlayer.getName() + " added a card to the register!");
+        }
+    }
+
+    public void handleTimerStarted(Server server, ClientHandler clientHandler, TimerStartedBody timerStartedBody) {
+        try {
+            //Wait 30 seconds
+            Thread.sleep(30000);
+//            server.sendMessage(new JSONMessage("TimerEnded", new TimerEndedBody()));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

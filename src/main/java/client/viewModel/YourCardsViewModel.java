@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import json.JSONMessage;
 import json.protocol.SelectedCardBody;
@@ -141,14 +142,18 @@ public class YourCardsViewModel implements Initializable {
         Button event = null;
         if (register != -1) {
             event = getCardButton(card);
+            event.setDisable(true);
+            String cardText = event.getText();
+            getRegisterButton(register).setText(cardText);
+            registerMap.replace(register, cardText);
+            regiterToCard.put(register, card);
+            JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardText, register + 1));
+            model.sendMessage(jsonMessage);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Register is full!");
+            alert.show();
         }
-        event.setDisable(true);
-        String cardText = event.getText();
-        getRegisterButton(register).setText(cardText);
-        registerMap.replace(register, cardText);
-        regiterToCard.put(register, card);
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardText, register));
-        model.sendMessage(jsonMessage);
     }
     //
 
@@ -162,7 +167,7 @@ public class YourCardsViewModel implements Initializable {
         cardButton.setText(cardText);
         registerMap.replace(register, "Null");
         cardButton.setDisable(false);
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register));
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register + 1));
         model.sendMessage(jsonMessage);
     }
 
