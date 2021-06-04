@@ -150,8 +150,20 @@ public class MessageHandler {
     }
 
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
-        //TODO: refresh the View
     }
+
+    public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
+        int clientID = notYourCardsBody.getClientID();
+        int amount = notYourCardsBody.getCardsInHand();
+        String playerName = clientModel.getPlayersNamesMap().get(clientID);
+
+        //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
+
+        clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "Player " + playerName +
+                " has " + amount + " cards in the hand \n");
+    }
+
 
 }
