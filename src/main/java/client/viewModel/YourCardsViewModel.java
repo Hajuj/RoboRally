@@ -7,6 +7,8 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import json.JSONMessage;
+import json.protocol.SelectedCardBody;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,6 +36,11 @@ public class YourCardsViewModel implements Initializable {
     public Button card7;
     @FXML
     public Button card8;
+
+    public void selectCard0() {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(card0.getText(), 2));
+        model.sendMessage(jsonMessage);
+    }
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {

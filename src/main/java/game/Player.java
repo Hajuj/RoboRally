@@ -2,6 +2,7 @@ package game;
 
 import game.decks.*;
 
+
 /**
  * @author Ilja Knis
  */
@@ -72,7 +73,7 @@ public class Player implements Comparable<Player> {
             }
         }
 
-        //NotYourCardsBody
+        //When there is no enough cards
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
@@ -91,6 +92,17 @@ public class Player implements Comparable<Player> {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
         this.deckDiscard.removeAllCards();
         this.deckProgramming.shuffleDeck();
+    }
+
+    public Card selectedCard(String card) {
+        for (Card card1 : this.deckHand.getDeck()) {
+            if (card1.getCardName().equals(card)) {
+                return card1;
+            } else if (card.equals("Null")) {
+                return card1;
+            }
+        }
+        return null;
     }
 
     @Override

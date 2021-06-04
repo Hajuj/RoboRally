@@ -218,6 +218,14 @@ public class MessageHandler {
     public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
         int register = selectedCardBody.getRegister();
+        System.out.println("HEY I GOT SELECTED");
+
+//        if (server.getPlayerWithID(clientHandler.getPlayer_id()).selectedCard(card)) {
+
+//        }
+
+//        server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().add(register, card);
+
     }
 
 }
