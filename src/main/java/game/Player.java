@@ -62,6 +62,16 @@ public class Player implements Comparable<Player> {
     //TODO shuffle cards
     //TODO draw cards
 
+    public boolean isRegisterFull () {
+        int count = 0;
+        for (Card card : this.getDeckRegister().getDeck()) {
+            if (card != null) {
+                count++;
+            }
+        }
+        return (count == 5);
+    }
+
     public void drawCardsProgramming (int amount) {
         int amountLeft;
 

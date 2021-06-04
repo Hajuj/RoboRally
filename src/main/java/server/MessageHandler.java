@@ -234,8 +234,16 @@ public class MessageHandler {
             //Add card to register deck
             Card currentCard = currentPlayer.selectedCard(card);
             currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
+
             JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
             server.sendMessage(addCard, clientHandler.getWriter());
+
+            if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
+                JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
+                server.getCurrentGame().sendToAllPlayers(selectionFinished);
+                //TODO: hier dein Timer starten
+                server.getCurrentGame().setTimerOn(true);
+            }
         }
     }
 
