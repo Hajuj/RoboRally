@@ -214,4 +214,10 @@ public class MessageHandler {
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
     }
+
+    public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+        String card = selectedCardBody.getCard();
+        int register = selectedCardBody.getRegister();
+    }
+
 }

@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
 
 /**
  * @author Mohamad, Viktoria
@@ -147,6 +148,11 @@ public class MessageHandler {
         int phase = activePhaseBody.getPhase();
         clientModel.getClientGameModel().setActualPhase(phase);
         logger.info("Current Active Phase: " + phase);
+    }
+
+    public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
+        int clientID = cardSelectedBody.getClientID();
+        int register = cardSelectedBody.getRegister();
     }
 
 }
