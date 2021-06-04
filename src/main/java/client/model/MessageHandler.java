@@ -1,6 +1,8 @@
 package client.model;
 
 import game.Player;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -56,9 +58,15 @@ public class MessageHandler {
             case "gameOn":
                 clientmodel.setCanPlay(false);
         }
+
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText(errorBody.getError());
+            a.show();
+        });
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
-
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
@@ -71,7 +79,6 @@ public class MessageHandler {
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
-
 
     //Client receive this message
     public void handleAlive (ClientModel clientModel, AliveBody aliveBody) {
@@ -89,12 +96,12 @@ public class MessageHandler {
             clientModel.getClientGameModel().getPlayer().setName(name);
             clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
+        // save client info in the Hash Maps
         clientModel.getPlayersNamesMap().put(clientID, name);
         clientModel.getPlayersFigureMap().put(clientID, figure);
         clientModel.getPlayersStatusMap().put(clientID, false);
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
-
 
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
@@ -124,14 +131,10 @@ public class MessageHandler {
         }
     }
 
-
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
         clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
-        if (startingPointTakenBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-            //sein robot
-            clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
-        }
+        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
