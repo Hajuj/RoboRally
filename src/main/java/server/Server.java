@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class Server {
     private static Server instance;
-    private final int SERVER_PORT = 501;
+    private final int SERVER_PORT = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
