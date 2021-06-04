@@ -2,24 +2,22 @@ package client.model;
 
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
+import json.protocol.SendChatBody;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import json.protocol.SendChatBody;
-import org.apache.log4j.Logger;
-
 /**
  * @author Viktoria
  */
 public class ClientModelWriterThread extends Thread {
-    private final ClientModel client;
-    private final Socket clientSocket;
-    private static final Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
-    private final MessageHandler messageHandler;
+    private ClientModel client;
+    private Socket clientSocket;
+    private static Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
+    private MessageHandler messageHandler;
     private PrintWriter writer;
 
     public ClientModelWriterThread (ClientModel client, Socket clientSocket, MessageHandler messageHandler) {

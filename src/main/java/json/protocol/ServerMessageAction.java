@@ -1,9 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
+import client.model.MessageHandler;
 
 /**
  * This interface is implemented by each class in {@link json.protocol} that represents the message body.

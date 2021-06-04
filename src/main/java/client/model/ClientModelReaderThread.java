@@ -2,15 +2,14 @@ package client.model;
 
 import json.JSONDeserializer;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.ServerMessageAction;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-
-import org.apache.log4j.Logger;
+import java.net.SocketException;
 
 /**
  * ClientModelReaderThread for reading ( only! ) of server messages
@@ -18,10 +17,10 @@ import org.apache.log4j.Logger;
  * @author Mohamad, Viktoria
  */
 public class ClientModelReaderThread extends Thread {
-    private final ClientModel client;
-    private final Socket clientSocket;
-    private static final Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
-    private final MessageHandler messageHandler;
+    private ClientModel client;
+    private Socket clientSocket;
+    private static Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
+    private MessageHandler messageHandler;
 
 
     public ClientModelReaderThread (ClientModel client, Socket clientSocket) {
@@ -61,9 +60,9 @@ public class ClientModelReaderThread extends Thread {
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, messageBody, messageHandler);
             }
-        } catch (IOException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

@@ -1,12 +1,10 @@
 package json;
 
-import json.protocol.ErrorBody;
-
 import com.google.gson.*;
+import json.protocol.ErrorBody;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
-
-import org.apache.log4j.Logger;
 
 /**
  * This class is responsible for the deserialization (JSONString -> Java) of JSON Messages being in their String representation.
@@ -16,7 +14,7 @@ import org.apache.log4j.Logger;
  * @author Mohamad, Viktoria, Ilja
  */
 public class JSONDeserializer {
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(JSONDeserializer.class.getName());
 
     /**
      * This method deserializes a JSON String into a Java Object. It makes use of a

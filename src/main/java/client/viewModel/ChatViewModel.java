@@ -1,10 +1,7 @@
 package client.viewModel;
 
-
 import client.model.ClientModel;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -13,18 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.media.AudioClip;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -54,6 +44,15 @@ public class ChatViewModel implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        chatField.setEditable(false);
+        readyDisplay.setEditable(false);
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+            readyButton.setVisible(false);
+            notReadyBtn.setVisible(false);
+        }
+        notReadyBtn.setDisable(true);
+
         //TODO check how to do it with observable pattern instead of addListener
         model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -78,22 +77,39 @@ public class ChatViewModel implements Initializable {
                 chatField.setText(t1);
             }
         });
-        model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
+        synchronized (model.playersStatusMapProperty()) {
+            model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
+                    //TODO try to implement it in ClientModel
+                    //     check if synchronized block working
+                    //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
+                    //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
+                    //     SYNCHRONIZED IS NOT WORKING LOL
+                    readyDisplay.setText(s2);
+                }
+            });
+        }
+
+
+        //TODO close the chat window when the game starts and make the chat as a button in the game window
+        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void changed (ObservableValue<? extends String> observableValue, String s1, String s2) {
-                readyDisplay.setText(s2);
+            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+
+                Platform.runLater(() -> {
+                    try {
+                        loadGameScene();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+
             }
         });
 
 
-        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
-        chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        if (model.getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -110,7 +126,6 @@ public class ChatViewModel implements Initializable {
         rootStage.setScene(new Scene(root));
         rootStage.setTitle("Game Guide");
         rootStage.show();
-
     }
 
     public void sendReadyStatus (ActionEvent event) {
@@ -121,13 +136,12 @@ public class ChatViewModel implements Initializable {
 
     public void showMaps () throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
-        Parent root1 = (Parent) fxmlLoader.load();
+        Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
     }
-
 
     public void changeStatusButton (ActionEvent event) {
         model.setNewStatus(false);
@@ -136,4 +150,12 @@ public class ChatViewModel implements Initializable {
         model.doChooseMapProperty().setValue(false);
     }
 
+    public void loadGameScene () throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
+        Parent root1 = fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("GAME");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
+    }
 }

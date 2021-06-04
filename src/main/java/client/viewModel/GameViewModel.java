@@ -16,9 +16,6 @@ public class GameViewModel implements Initializable {
     private GridPane startScreen;
     @FXML
     private GridPane chooseRobot;
-
-    @FXML
-    private ClientViewModel chatController;
     @FXML
     private ChooseRobotViewModel chooseRobotViewModel;
     @FXML

@@ -1,53 +1,49 @@
 package client.model;
 
-
 import game.Game;
-import game.Player;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import json.JSONMessage;
-import json.MessageHandler;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 import json.protocol.SetStatusBody;
-
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 /**
- * @author Mohamad, Viktoria
- * ClientModel realisiert Singelton-Pattern, damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
+ * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
+ * ClientModel realisiert Singelton-Pattern,
+ * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
+
 public class ClientModel {
     private static ClientModel instance;
+    private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
     private boolean waitingForServer = true;
 
-    private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
-    private final String protocolVersion = "Version 0.1";
-    private final String group = "BlindeBonbons";
-    private final MessageHandler messageHandler = new MessageHandler();
+    private static Logger logger = Logger.getLogger(ClientModel.class.getName());
+    private String protocolVersion = "Version 0.1";
+    private String group = "BlindeBonbons";
+    private MessageHandler messageHandler = new MessageHandler();
 
     private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
-    private Player player;
+    private boolean canPlay = true;
 
     private StringProperty chatHistory = new SimpleStringProperty("");
     private StringProperty error = new SimpleStringProperty("");
@@ -55,6 +51,8 @@ public class ClientModel {
     private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
     private ArrayList<String> availableMaps = new ArrayList<>();
+
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
     private ClientModel () {
     }
@@ -71,7 +69,7 @@ public class ClientModel {
      *
      * @return true if connection could be established.
      */
-    public boolean connectClient(String server_ip, int server_port) {
+    public boolean connectClient (String server_ip, int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
@@ -96,6 +94,7 @@ public class ClientModel {
             }
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
             return true;
+            //TODO: Caused by: java.lang.IllegalArgumentException: port out of range:502022
         } catch (ConnectException connectException) {
         } catch (IOException | InterruptedException exp) {
             exp.printStackTrace();
@@ -105,24 +104,24 @@ public class ClientModel {
     }
 
 
-    public void setNewStatus(Boolean newStatus) {
-        player.setReady(newStatus);
+    public void setNewStatus (Boolean newStatus) {
+        clientGameModel.getPlayer().setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
     }
 
 
-    public void sendMessage(JSONMessage message) {
+    public void sendMessage (JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
     }
 
 
-    public void sendUsernameAndRobot(String username, int figure) {
+    public void sendUsernameAndRobot (String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
 
-    public int getIDbyUsername(String username) {
+    public int getIDbyUsername (String username) {
         for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
             if (entry.getValue().equals(username)) {
                 return entry.getKey();
@@ -131,17 +130,17 @@ public class ClientModel {
         return 0;
     }
 
-    public void sendMsg(String message) {
+    public void sendMsg (String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
             if (message.charAt(0) == '@') {
                 if (message.contains(" ")) {
                     int beginMsg = message.indexOf(" ");
                     String playerPrivate = message.substring(1, beginMsg);
-                    if (getIDbyUsername(playerPrivate) != player.getPlayerID()) {
+                    if (getIDbyUsername(playerPrivate) != clientGameModel.getPlayer().getPlayerID()) {
                         if (getIDbyUsername(playerPrivate) != 0) {
-                            clientModelWriterThread.sendDirectMessage(player.getName() + " : " + message, getIDbyUsername(playerPrivate));
-                            chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
+                            clientModelWriterThread.sendDirectMessage(clientGameModel.getPlayer().getName() + " : " + message, getIDbyUsername(playerPrivate));
+                            chatHistory.setValue(chatHistory.getValue() + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                         } else {
                             this.chatHistory.setValue(chatHistory.getValue() + "No Player with name " + playerPrivate + " found." + "\n");
                         }
@@ -153,13 +152,13 @@ public class ClientModel {
                 }
             } else {
                 //öffentliche nachricht.
-                clientModelWriterThread.sendChatMessage(player.getName() + " : " + message);
-                chatHistory.setValue(chatHistory.getValue() + player.getName() + " : " + message + "\n");
+                clientModelWriterThread.sendChatMessage(clientGameModel.getPlayer().getName() + " : " + message);
+                chatHistory.setValue(chatHistory.getValue() + clientGameModel.getPlayer().getName() + " : " + message + "\n");
             }
         }
     }
 
-    public void receiveMessage(String message) {
+    public void receiveMessage (String message) {
         chatHistory.setValue(chatHistory.getValue() + message + "\n");
     }
 
@@ -186,6 +185,18 @@ public class ClientModel {
         playersNamesMap.remove(playerID);
     }
 
+    public boolean isGameOn () {
+        return gameOn.get();
+    }
+
+    public BooleanProperty gameOnProperty () {
+        return gameOn;
+    }
+
+    public void setGameOn (boolean gameOn) {
+        this.gameOn.set(gameOn);
+    }
+
     public String getChatHistory () {
         return chatHistory.get();
     }
@@ -198,37 +209,36 @@ public class ClientModel {
         return playersStatusMapProperty;
     }
 
-    public Player getPlayer() {
-        return player;
+    public boolean isCanPlay () {
+        return canPlay;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setCanPlay (boolean canPlay) {
+        this.canPlay = canPlay;
     }
 
-    public MessageHandler getMessageHandler() {
+    public MessageHandler getMessageHandler () {
         return messageHandler;
     }
 
-    public void setWaitingForServer(boolean waitingForServer) {
+    public void setWaitingForServer (boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
 
-    public HashMap<Integer, String> getPlayersNamesMap() {
+    public HashMap<Integer, String> getPlayersNamesMap () {
         return playersNamesMap;
     }
 
-    public HashMap<Integer, Integer> getPlayersFigureMap() {
+    public HashMap<Integer, Integer> getPlayersFigureMap () {
         return playersFigureMap;
     }
 
-    public HashMap<Integer, Boolean> getPlayersStatusMap() {
+    public HashMap<Integer, Boolean> getPlayersStatusMap () {
         return playersStatusMap;
     }
 
     public void sendError (String s) {
         error.setValue(s);
-
     }
 
     public StringProperty errorProperty () {
@@ -261,5 +271,9 @@ public class ClientModel {
 
     public void setAvailableMaps (ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;
+    }
+
+    public ClientGameModel getClientGameModel () {
+        return clientGameModel;
     }
 }

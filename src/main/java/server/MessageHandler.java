@@ -1,19 +1,17 @@
-package json;
+package server;
 
-import client.model.ClientModel;
-
-
-import server.Server;
-import server.Connection;
-import server.ClientHandler;
-
+import game.Game;
 import game.Player;
-
+import game.Robot;
+import json.JSONDeserializer;
+import json.JSONMessage;
 import json.protocol.*;
-
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Objects;
 
 /**
  * @author Mohamad, Viktoria
@@ -23,22 +21,6 @@ public class MessageHandler {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-
-    /**
-     * Wenn Client ein HalloClient Message von Server bekommt, wird die Variable waitingForServer
-     * auf false gesetzt und Client kann dem Server Nachrichten schicken.
-     *
-     * @param clientmodel             The ClientModel
-     * @param helloClientBody         The message body of the message which is of type HelloClientBody
-     */
-    public void handleHelloClient(ClientModel clientmodel, HelloClientBody helloClientBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The ClientModel will be notified" + ANSI_RESET);
-        logger.info("Server has protocol " + helloClientBody.getProtocol());
-        //TODO change to notify() in class ClientModel
-        clientmodel.setWaitingForServer(false);
-    }
-
-
     /**
      * Wenn der Server ein Message HelloServer bekommt, schickt er ein Welcome-Message zu dem ClientModel mit dem ID
      *
@@ -46,7 +28,7 @@ public class MessageHandler {
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
-    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
@@ -80,6 +62,11 @@ public class MessageHandler {
                     }
                 }
 
+                if (server.getCurrentGame().isGameOn()) {
+                    JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
+                    server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+                }
+
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
 
@@ -96,33 +83,7 @@ public class MessageHandler {
     }
 
 
-    /**
-     * In der HalloServer method wird ein Welcome-message geschickt, und dann weiss der ClientModel sein id
-     *
-     * @param clientmodel             The ClientModel itself.
-     * @param welcomeBody             The message body of the message which is of type {@link WelcomeBody}.
-     */
-    public void handleWelcome(ClientModel clientmodel, WelcomeBody welcomeBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
-        logger.info("Your PlayerID: " + welcomeBody.getClientID());
-        Player player = new Player(welcomeBody.getClientID());
-        clientmodel.setPlayer(player);
-    }
-
-
-    /**
-     * Wenn es ein Error occured bei deserialization, wird ein Message mit dem ErrorBody geschickt
-     *
-     * @param clientmodel             The ClientModel itself.
-     * @param errorBody               The message body of the message which is of type {@link ErrorBody}.
-     */
-    public void handleError(ClientModel clientmodel, ErrorBody errorBody) {
-        logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
-        logger.info("Error has occurred! " + errorBody.getError());
-        clientmodel.sendError("Error has occurred! " + errorBody.getError());
-    }
-
-    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
@@ -139,7 +100,8 @@ public class MessageHandler {
         logger.info("Alles gut, der Spieler mit ID " + clientHandler.getPlayer_id() + " heißt " + username + " und hat figur " + figure);
     }
 
-    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+
+    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
@@ -163,18 +125,8 @@ public class MessageHandler {
         }
     }
 
-    public void handleReceivedChat(ClientModel clientModel, ReceivedChatBody receivedChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
-        clientModel.receiveMessage(receivedChatBody.getMessage());
-    }
-
-    public void handleGameStarted(ClientModel client, GameStartedBody bodyObject) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
-        //TODO implement map controller and use in this method to build the map
-    }
-
     //Server receive this message
-    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -185,29 +137,7 @@ public class MessageHandler {
         }
     }
 
-    //Client receive this message
-    public void handleAlive(ClientModel clientModel, AliveBody aliveBody) {
-        //wenn client bekommt ein Alive-Message von Server, schickt er ein "Alive"-Antwort zurück
-        clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
-    }
-
-    public void handlePlayerAdded(ClientModel clientModel, PlayerAddedBody playerAddedBody) {
-        int clientID = playerAddedBody.getClientID();
-        String name = playerAddedBody.getName();
-        int figure = playerAddedBody.getFigure();
-
-        // The player himself has been added
-        if (clientModel.getPlayer().getPlayerID() == clientID) {
-            clientModel.getPlayer().setName(name);
-            clientModel.getPlayer().setFigure(figure);
-        }
-        clientModel.getPlayersNamesMap().put(clientID, name);
-        clientModel.getPlayersFigureMap().put(clientID, figure);
-        clientModel.getPlayersStatusMap().put(clientID, false);
-        logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
-    }
-
-    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
@@ -219,8 +149,14 @@ public class MessageHandler {
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
             if (server.canStartTheGame()) {
+                try {
+                    server.getCurrentGame().start(server.getReadyPlayer());
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
                 logger.info("I CAN START THE GAME");
             }
+
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
@@ -238,37 +174,44 @@ public class MessageHandler {
         logger.info("The player " + player.getName() + " is " + isReady);
     }
 
-    public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
-        clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
-    }
-
-    //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
-    public void handleSelectMap(ClientModel clientModel, SelectMapBody selectMapBody) {
-        for (String map : selectMapBody.getAvailableMaps()) {
-            clientModel.getAvailableMaps().add(map);
-        }
-        clientModel.setDoChooseMap(true);
-    }
-
-    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) {
+    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+        //TODO: SEND NOT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
         }
+        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
     }
 
-    public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
-        clientModel.setSelectedMap("DizzyHighway");
-        System.out.println("IM HERE");
-    }
+    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+        //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
+        int playerID = clientHandler.getPlayer_id();
+        int x = bodyObject.getX();
+        int y = bodyObject.getY();
 
-    public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
-        int playerID = connectionUpdateBody.getPlayerID();
-        boolean isConnected = connectionUpdateBody.isConnected();
-        String action = connectionUpdateBody.getAction();
+        if (playerID == server.getCurrentGame().getCurrentPlayer()) {
+            if (server.getCurrentGame().valideStartingPoint(x, y)) {
+                Player player = server.getPlayerWithID(playerID);
+                player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
 
-        if (action.equals("remove") && !isConnected) {
-            clientmodel.removePlayer(playerID);
+                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+                for (Player otherPlayer : server.getReadyPlayer()) {
+                    //sage allen wo der Spieler mit playerID started
+                    //TODO: nur an player schicken
+                    JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
+                    server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    if (server.getCurrentGame().getCurrentPlayer() != -1) {
+                        JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
+                        server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    } else {
+                        JSONMessage nextPhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(2));
+                        server.sendMessage(nextPhaseMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    }
+                }
+            }
+            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
+        } else {
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It's not your turn!"));
+            server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
     }
-
 }
