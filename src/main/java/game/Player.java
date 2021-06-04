@@ -96,9 +96,8 @@ public class Player implements Comparable<Player> {
 
     public Card selectedCard(String card) {
         for (Card card1 : this.deckHand.getDeck()) {
-            if (card1.getCardName().equals(card)) {
-                return card1;
-            } else if (card.equals("Null")) {
+            if (card.equals(card1.getCardName())) {
+                deckHand.getDeck().remove(card1);
                 return card1;
             }
         }

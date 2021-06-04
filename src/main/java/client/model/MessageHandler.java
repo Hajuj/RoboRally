@@ -152,6 +152,8 @@ public class MessageHandler {
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
         int clientID = cardSelectedBody.getClientID();
         int register = cardSelectedBody.getRegister();
+
+//        if (cardSelectedBody.isFilled()) {
     }
 
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {

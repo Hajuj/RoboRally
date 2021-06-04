@@ -1,5 +1,6 @@
 package server;
 
+import game.Card;
 import game.Game;
 import game.Player;
 import game.Robot;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -28,7 +30,7 @@ public class MessageHandler {
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
-    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
@@ -83,7 +85,7 @@ public class MessageHandler {
     }
 
 
-    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
@@ -101,7 +103,7 @@ public class MessageHandler {
     }
 
 
-    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
@@ -126,7 +128,7 @@ public class MessageHandler {
     }
 
     //Server receive this message
-    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -137,7 +139,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
@@ -174,7 +176,7 @@ public class MessageHandler {
         logger.info("The player " + player.getName() + " is " + isReady);
     }
 
-    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         //TODO: SEND NOT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
@@ -182,7 +184,7 @@ public class MessageHandler {
         server.getCurrentGame().selectMap(mapSelectedBody.getMap());
     }
 
-    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+    public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
         //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
         int x = bodyObject.getX();
@@ -219,12 +221,22 @@ public class MessageHandler {
         int register = selectedCardBody.getRegister();
         System.out.println("HEY I GOT SELECTED");
 
-//        if (server.getPlayerWithID(clientHandler.getPlayer_id()).selectedCard(card)) {
+        Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
 
-//        }
-
-//        server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().add(register, card);
-
+        //Remove card from register deck
+        if (card.equals("Null")) {
+            Card currentCard = currentPlayer.getDeckRegister().getDeck().get(register);
+            currentPlayer.getDeckHand().getDeck().add(currentCard);
+            currentPlayer.getDeckRegister().getDeck().set(register, null);
+            JSONMessage removeCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, false));
+            server.sendMessage(removeCard, clientHandler.getWriter());
+        } else {
+            //Add card to register deck
+            Card currentCard = currentPlayer.selectedCard(card);
+            currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
+            JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
+            server.sendMessage(addCard, clientHandler.getWriter());
+        }
     }
 
 }
