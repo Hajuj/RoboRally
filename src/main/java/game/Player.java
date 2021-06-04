@@ -5,7 +5,7 @@ import game.decks.*;
 /**
  * @author Ilja Knis
  */
-public class Player {
+public class Player implements Comparable<Player> {
 
     private int playerID;
     private String name;
@@ -21,14 +21,6 @@ public class Player {
     private DeckTrojan deckTrojan;
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
-
-    public boolean isReady () {
-        return isReady;
-    }
-
-    public void setReady (boolean ready) {
-        isReady = ready;
-    }
 
     public Player (int playerID) {
         this.playerID = playerID;
@@ -64,6 +56,16 @@ public class Player {
         this.deckWorm = new DeckWorm();
         deckWorm.initializeDeck();
         deckWorm.shuffleDeck();
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        return Integer.compare(this.getPlayerID(), o.getPlayerID());
+    }
+
+    public void pickRobot (int figure, String name) {
+        this.figure = figure;
+        this.name = name;
     }
 
     public int getPlayerID () {
@@ -122,12 +124,16 @@ public class Player {
         return robot;
     }
 
-    public void pickRobot (int figure, String name) {
-        this.figure = figure;
-        this.name = name;
-    }
-
     public void setRobot (Robot robot) {
         this.robot = robot;
     }
+
+    public boolean isReady () {
+        return isReady;
+    }
+
+    public void setReady (boolean ready) {
+        isReady = ready;
+    }
+
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class Server {
     private static Server instance;
-    private final int SERVER_PORT = 501;
+    private final int SERVER_PORT = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
@@ -99,7 +99,7 @@ public class Server {
     }
 
     public boolean canStartTheGame () {
-        //TODO boolean gameOn (when game has started no other players are allowed to join -> if)
+        //TODO more than 6 players -> one loses connection -> the one who only allowed to chat can join the the game now
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();

@@ -196,6 +196,13 @@ public class MessageHandler {
             //sage allen wo der Spieler mit playerID started
             JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
             server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+            if (server.getCurrentGame().nextPlayerID() != -1) {
+                JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().nextPlayerID()));
+                server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+            } else {
+                JSONMessage nextPhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(2));
+                server.sendMessage(nextPhaseMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+            }
         }
 
     }

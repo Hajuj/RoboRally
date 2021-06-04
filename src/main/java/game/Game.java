@@ -8,8 +8,9 @@ import game.decks.DeckWorm;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.protocol.ActivePhaseBody;
+import json.protocol.CurrentPlayerBody;
 import json.protocol.GameStartedBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -44,9 +45,10 @@ public class Game {
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
-    private String mapName;
 
+    private String mapName;
     private boolean gameOn;
+    private int currentPlayer;
 
     public Game (Server server) {
         this.server = server;
@@ -71,6 +73,7 @@ public class Game {
 
         this.playerList = players;
 
+        Collections.sort(playerList);
 
         //send an alle GameStartedMessage
         mapName = mapName.replaceAll("\\s+", "");
@@ -80,6 +83,21 @@ public class Game {
         String content = new String(Files.readAllBytes(file.toPath()));
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
+
+        JSONMessage activePhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(0));
+        sendToAllPlayers(activePhaseMessage);
+
+        currentPlayer = playerList.get(0).getPlayerID();
+        JSONMessage actualPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(currentPlayer));
+        sendToAllPlayers(actualPlayerMessage);
+    }
+
+    public int nextPlayerID() {
+        int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        if (playerList.size() == currentIndex) {
+            return -1;
+        }
+        return playerList.get(currentIndex + 1).getPlayerID();
     }
 
 

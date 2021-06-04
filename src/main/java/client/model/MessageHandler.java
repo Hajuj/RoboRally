@@ -59,7 +59,6 @@ public class MessageHandler {
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
 
-
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
@@ -71,7 +70,6 @@ public class MessageHandler {
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
-
 
     //Client receive this message
     public void handleAlive (ClientModel clientModel, AliveBody aliveBody) {
@@ -89,12 +87,12 @@ public class MessageHandler {
             clientModel.getClientGameModel().getPlayer().setName(name);
             clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
+        // save client info in the Hash Maps
         clientModel.getPlayersNamesMap().put(clientID, name);
         clientModel.getPlayersFigureMap().put(clientID, figure);
         clientModel.getPlayersStatusMap().put(clientID, false);
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
-
 
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
