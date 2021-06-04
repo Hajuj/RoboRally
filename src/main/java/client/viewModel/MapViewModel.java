@@ -68,8 +68,6 @@ public class MapViewModel implements Initializable {
                 }
             }
         });
-
-
     }
 
 
@@ -266,7 +264,7 @@ public class MapViewModel implements Initializable {
                             mapGrid.add(loadImage("Pit", "null"), y, x);
                         }
 
-                         case "PushPanel" -> {
+                        case "PushPanel" -> {
                             Element element = map.get(x).get(y).get(i);
                             PushPanel pushPanel = new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
                                     element.getRegisters());
@@ -275,14 +273,13 @@ public class MapViewModel implements Initializable {
                             mapGrid.add(loadImage("PushPanel24", String.valueOf(pushPanel.getOrientations())), y, x);
                         }
 
-                       /*   case "RestartPoint" -> {
+                        case "RestartPoint" -> {
                             Element element = map.get(x).get(y).get(i);
                             RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
-                            mapGrid.add(loadImage("reboot", toString(restartPoint.getOrientations())), x, y);
+                            mapGrid.add(loadImage("reboot", String.valueOf(restartPoint.getOrientations())), y, x);
                         }
-*/
 
 
                         case "StartPoint" -> {
@@ -310,8 +307,6 @@ public class MapViewModel implements Initializable {
                             wallMap.put(new Point2D(x, y), wall);
                             mapGrid.add(loadImage("Wall",String.valueOf(wall.getOrientations())), y, x);
                         }
-
-
                         default -> { //place for exception handling
                         }
                     }

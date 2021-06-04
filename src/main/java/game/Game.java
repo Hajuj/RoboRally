@@ -9,6 +9,7 @@ import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.GameStartedBody;
+import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -43,6 +44,7 @@ public class Game {
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
+    private String mapName;
 
     private boolean gameOn;
 
@@ -52,8 +54,8 @@ public class Game {
         availableMaps.add("One more map");
     }
 
-    public Game (ArrayList<Player> playerList, Server server) {
-        this.server = server;
+
+    public void start (ArrayList<Player> players) throws IOException {
 
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -67,11 +69,19 @@ public class Game {
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
 
-        this.map = new ArrayList<>();
-        this.playerList = playerList;
+        this.playerList = players;
 
-        this.map = new ArrayList<>();
+
+        //send an alle GameStartedMessage
+        mapName = mapName.replaceAll("\\s+", "");
+        String fileName = "Maps/" + mapName + ".json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+        sendToAllPlayers(jsonMessage);
     }
+
 
     //TODO select map
     //     if (Player player:playerList) isAI -> pickRandomMap
@@ -83,8 +93,16 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
+
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (Player player : playerList) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+        }
+    }
+
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
+        this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
         String fileName = "Maps/" + mapName + ".json";
         ClassLoader classLoader = getClass().getClassLoader();
@@ -134,7 +152,7 @@ public class Game {
                                     element.getRegisters()));
                         }
                         case "RestartPoint" -> {
-                            restartPointMap.put(new Point2D(x,y), new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations()));
+                            restartPointMap.put(new Point2D(x, y), new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations()));
                         }
                         case "StartPoint" -> {
                             startPointMap.put(new Point2D(x,y), new StartPoint(element.getType(), element.getIsOnBoard()));
@@ -149,6 +167,7 @@ public class Game {
         }
     }
 
+
     //TODO if robot moves outside the map -> check map for RestartPoint
     //     -> spawn robot at RestartPoint
 
@@ -156,6 +175,14 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
+
+    public String getMapName () {
+        return mapName;
+    }
+
+    public void setMapName (String mapName) {
+        this.mapName = mapName;
+    }
 
     public boolean isGameOn () {
         return gameOn;

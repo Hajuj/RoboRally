@@ -28,7 +28,7 @@ public class MessageHandler {
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
-    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
@@ -62,8 +62,10 @@ public class MessageHandler {
                     }
                 }
 
-                JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
-                server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+                if (server.getCurrentGame().isGameOn()) {
+                    JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
+                    server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
+                }
 
                 // Immer um eins erhöhen für den nächsten client
                 server.setClientsCounter(actual_id + 1);
@@ -81,7 +83,7 @@ public class MessageHandler {
     }
 
 
-    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
@@ -99,7 +101,7 @@ public class MessageHandler {
     }
 
 
-    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
@@ -122,8 +124,9 @@ public class MessageHandler {
             }
         }
     }
+
     //Server receive this message
-    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -134,7 +137,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
@@ -145,21 +148,15 @@ public class MessageHandler {
                 JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
-            try {
-                if (server.canStartTheGame()) {
-                    String fileName = "Maps/DizzyHighway.json";
-                    ClassLoader classLoader = getClass().getClassLoader();
-                    File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
-                    String content = new String(Files.readAllBytes(file.toPath()));
-                    JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
-                    for (Connection connection : server.getConnections()) {
-                        server.sendMessage(jsonMessage, connection.getWriter());
-                    }
-                    logger.info("I CAN START THE GAME");
+            if (server.canStartTheGame()) {
+                try {
+                    server.getCurrentGame().start(server.getReadyPlayer());
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                logger.info("I CAN START THE GAME");
             }
+
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
