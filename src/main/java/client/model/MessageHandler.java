@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
 
 /**
  * @author Mohamad, Viktoria
@@ -154,5 +153,22 @@ public class MessageHandler {
         int clientID = cardSelectedBody.getClientID();
         int register = cardSelectedBody.getRegister();
     }
+
+    public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        //speichere die Cards und refresh the View
+        clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+    }
+
+    public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
+        int clientID = notYourCardsBody.getClientID();
+        int amount = notYourCardsBody.getCardsInHand();
+        String playerName = clientModel.getPlayersNamesMap().get(clientID);
+
+        //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
+
+        clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "Player " + playerName +
+                " has " + amount + " cards in the hand \n");
+    }
+
 
 }
