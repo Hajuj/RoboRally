@@ -1,6 +1,8 @@
 package client.model;
 
 import game.Player;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -56,6 +58,13 @@ public class MessageHandler {
             case "gameOn":
                 clientmodel.setCanPlay(false);
         }
+
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText(errorBody.getError());
+            a.show();
+        });
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
 
@@ -121,7 +130,6 @@ public class MessageHandler {
             clientmodel.removePlayer(playerID);
         }
     }
-
 
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         clientModel.getClientGameModel().setX(startingPointTakenBody.getX());

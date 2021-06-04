@@ -8,9 +8,12 @@ import game.decks.DeckWorm;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.protocol.CurrentPlayerBody;
+import json.protocol.ErrorBody;
 import json.protocol.ActivePhaseBody;
 import json.protocol.CurrentPlayerBody;
 import json.protocol.GameStartedBody;
+import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -45,6 +48,7 @@ public class Game {
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
+    private Map<Point2D, Robot> robotMap = new HashMap<>();
 
     private String mapName;
     private boolean gameOn;
@@ -94,7 +98,7 @@ public class Game {
 
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
-        if (playerList.size() == currentIndex) {
+        if (playerList.size() -1 == currentIndex) {
             return -1;
         }
         return playerList.get(currentIndex + 1).getPlayerID();
@@ -193,6 +197,34 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
+
+    public boolean valideStartingPoint (int x, int y) {
+        Point2D positionID = new Point2D(x, y);
+        if (startPointMap.containsKey(positionID)) {
+            if (!robotMap.containsKey(positionID)) {
+                System.out.println("hier ist einen startpoint " + positionID);
+                //TODO: testen!!
+                robotMap.put(positionID, server.getPlayerWithID(currentPlayer).getRobot());
+                return true;
+            } else {
+                System.out.println("Das ist kein leeres Starting point");
+                return false;
+            }
+        } else {
+            //TODO: dem Spieler das auch sagen
+            System.out.println("hier NOT startpoint ");
+            return false;
+        }
+    }
+
+
+    public int getCurrentPlayer () {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer (int currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
 
     public String getMapName () {
         return mapName;
