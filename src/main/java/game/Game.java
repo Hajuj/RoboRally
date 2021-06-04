@@ -56,6 +56,7 @@ public class Game {
     private int activePhase;
     private int currentRound;
     private boolean activePhaseOn = false;
+    private boolean timerOn = false;
 
     private Game() {
 
@@ -321,6 +322,14 @@ public class Game {
             startProgrammingPhase();
             activePhaseOn = true;
         }
+    }
+
+    public boolean isTimerOn () {
+        return timerOn;
+    }
+
+    public void setTimerOn (boolean timerOn) {
+        this.timerOn = timerOn;
     }
 
     public int getCurrentRound () {

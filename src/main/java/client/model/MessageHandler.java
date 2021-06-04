@@ -188,4 +188,16 @@ public class MessageHandler {
     }
 
 
+    public void handleSelectionFinished (ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
+        int clientID = selectionFinishedBody.getClientID();
+        if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            Platform.runLater(() -> {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
+                a.show();
+            });
+        }
+    }
+
+
 }
