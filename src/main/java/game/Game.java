@@ -18,6 +18,7 @@ import server.Server;
 
 import javafx.geometry.Point2D;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -203,7 +204,7 @@ public class Game {
                         }
                         case "RestartPoint" -> {
                             Element element = map.get(y).get(x).get(i);
-                            RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard());
+                            RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
                         }
