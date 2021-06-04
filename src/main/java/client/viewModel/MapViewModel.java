@@ -87,7 +87,7 @@ public class MapViewModel implements Initializable {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         mapGrid.add(imageView, x, y);
-
+        clientGameModel.setCanSetStartingPoint(false);
     }
 
     public File findPath (String fileName) {
