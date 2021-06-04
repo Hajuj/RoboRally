@@ -175,6 +175,7 @@ public class MessageHandler {
     }
 
     public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+        //TODO: SEND NOT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
         }
@@ -187,17 +188,30 @@ public class MessageHandler {
         int x = bodyObject.getX();
         int y = bodyObject.getY();
 
+        if (playerID == server.getCurrentGame().getCurrentPlayer()) {
+            if (server.getCurrentGame().valideStartingPoint(x, y)) {
+                Player player = server.getPlayerWithID(playerID);
+                player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
 
-        //create einen neuen Robot auf (x,y) und setRobot zu dem Player
-        Player player = server.getPlayerWithID(playerID);
-        player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
-
-        for (Player otherPlayer : server.getReadyPlayer()) {
-            //sage allen wo der Spieler mit playerID started
-            JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
-            server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+                for (Player otherPlayer : server.getReadyPlayer()) {
+                    //sage allen wo der Spieler mit playerID started
+                    //TODO: nur an player schicken
+                    JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
+                    server.sendMessage(startingPointTakenMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    if (server.getCurrentGame().getCurrentPlayer() != -1) {
+                        JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
+                        server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    } else {
+                        JSONMessage nextPhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(2));
+                        server.sendMessage(nextPhaseMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                    }
+                }
+            }
+            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
+        } else {
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It's not your turn!"));
+            server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
-
     }
-
 }

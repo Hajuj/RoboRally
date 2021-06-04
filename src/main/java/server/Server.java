@@ -99,7 +99,7 @@ public class Server {
     }
 
     public boolean canStartTheGame () {
-        //TODO boolean gameOn (when game has started no other players are allowed to join -> if)
+        //TODO more than 6 players -> one loses connection -> the one who only allowed to chat can join the the game now
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();

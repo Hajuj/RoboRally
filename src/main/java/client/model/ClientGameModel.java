@@ -24,7 +24,7 @@ public class ClientGameModel {
     private int actualPlayerID;
     private int actualPhase;
 
-    //Singelton Zeug
+    //Singleton Zeug
     private ClientGameModel () {
     }
 

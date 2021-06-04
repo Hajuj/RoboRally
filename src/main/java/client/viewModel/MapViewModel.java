@@ -61,8 +61,7 @@ public class MapViewModel implements Initializable {
                 if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
                     Platform.runLater(() -> {
                                 setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-
-                    }
+                            }
                     );
                     clientGameModel.canSetStartingPointProperty().setValue(false);
                 }
@@ -72,6 +71,7 @@ public class MapViewModel implements Initializable {
 
 
     public void setRobot (int playerID, int x, int y) {
+        System.out.println(clientModel.getPlayersFigureMap());
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         //TODO: image hängt von figur ab
         FileInputStream input = null;
@@ -86,7 +86,7 @@ public class MapViewModel implements Initializable {
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        mapGrid.add(imageView, x, y);
+        mapGrid.add(imageView, y, x);
 
     }
 
