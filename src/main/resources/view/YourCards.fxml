@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="405.0" prefWidth="266.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.YourCardsViewModel">
+    <children>
+        <Button fx:id="card0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0" text="Button"/>
+        <Button fx:id="card1" layoutX="90.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0" text="Button"/>
+        <Button fx:id="card2" layoutX="179.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
+                text="Button"/>
+        <Button fx:id="card3" layoutY="135.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
+                text="Button"/>
+        <Button fx:id="card4" layoutX="90.0" layoutY="135.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
+                text="Button"/>
+        <Button fx:id="card5" layoutX="180.0" layoutY="135.0" mnemonicParsing="false" prefHeight="135.0"
+                prefWidth="90.0" text="Button"/>
+        <Button fx:id="card6" layoutY="270.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
+                text="Button"/>
+        <Button fx:id="card7" layoutX="90.0" layoutY="270.0" mnemonicParsing="false" prefHeight="135.0" prefWidth="90.0"
+                text="Button"/>
+        <Button fx:id="card8" layoutX="179.0" layoutY="270.0" mnemonicParsing="false" prefHeight="135.0"
+                prefWidth="90.0" text="Button"/>
+    </children>
+</AnchorPane>

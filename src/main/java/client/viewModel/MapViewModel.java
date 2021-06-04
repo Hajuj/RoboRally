@@ -71,7 +71,7 @@ public class MapViewModel implements Initializable {
 
 
     public void setRobot (int playerID, int x, int y) {
-        System.out.println(clientModel.getPlayersFigureMap());
+        //System.out.println(clientModel.getPlayersFigureMap());
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         //TODO: image hängt von figur ab
         FileInputStream input = null;
@@ -212,7 +212,7 @@ public class MapViewModel implements Initializable {
 //                            replaceElementInMap(map, x, y, element, antenna);
 ////                            antennaMap.put(new Point2D(x, y), antenna);
                             mapGrid.add(loadImage("priority-antenna", String.join(",", antenna.getOrientations())), x, y);
-                            System.out.println(String.join(",", antenna.getOrientations()));
+                            //System.out.println(String.join(",", antenna.getOrientations()));
 
                         }
 

@@ -4,6 +4,8 @@ import game.Element;
 import game.Player;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import json.JSONMessage;
 import json.protocol.SetStartingPointBody;
 
@@ -14,6 +16,8 @@ public class ClientGameModel {
     private ClientModel clientModel = ClientModel.getInstance();
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
+    private ArrayList<String> cardsInHand = new ArrayList();
+    private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
 
 
     //TODO: Observer hier
@@ -100,5 +104,21 @@ public class ClientGameModel {
 
     public void setMap (ArrayList<ArrayList<ArrayList<Element>>> map) {
         this.map = map;
+    }
+
+    public ArrayList<String> getCardsInHand () {
+        return cardsInHand;
+    }
+
+    public void setCardsInHand (ArrayList<String> cardsInHand) {
+        this.cardsInHand = cardsInHand;
+    }
+
+    public ObservableList getCardsInHandObservable () {
+        return cardsInHandObservable;
+    }
+
+    public void setCardsInHandObservable (ObservableList cardsInHandObservable) {
+        this.cardsInHandObservable = cardsInHandObservable;
     }
 }

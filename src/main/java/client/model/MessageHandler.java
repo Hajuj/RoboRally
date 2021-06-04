@@ -149,4 +149,9 @@ public class MessageHandler {
         logger.info("Current Active Phase: " + phase);
     }
 
+    public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+        //TODO: refresh the View
+    }
+
 }
