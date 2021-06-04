@@ -16,11 +16,19 @@ public class DeckHand extends Deck {
         this.deckHand = new ArrayList<Card>();
     }
 
-    public void shuffleDeck() {
+    public void shuffleDeck () {
         Collections.shuffle(this.getDeck());
     }
 
-    public ArrayList<Card> getDeck() {
+    public ArrayList<Card> getDeck () {
         return deckHand;
+    }
+
+    public ArrayList<String> toArrayList () {
+        ArrayList<String> nameList = new ArrayList<>();
+        for (Card card : deckHand) {
+            nameList.add(card.cardName);
+        }
+        return nameList;
     }
 }

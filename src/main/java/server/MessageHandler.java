@@ -203,8 +203,7 @@ public class MessageHandler {
                         JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
                         server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
                     } else {
-                        JSONMessage nextPhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(2));
-                        server.sendMessage(nextPhaseMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                        server.getCurrentGame().setActivePhase(2);
                     }
                 }
             }

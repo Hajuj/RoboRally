@@ -8,11 +8,8 @@ import game.decks.DeckWorm;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import json.protocol.ErrorBody;
-import json.protocol.ActivePhaseBody;
-import json.protocol.CurrentPlayerBody;
-import json.protocol.GameStartedBody;
 import server.Connection;
 import server.Server;
 
@@ -55,6 +52,10 @@ public class Game {
     private String mapName;
     private boolean gameOn;
     private int currentPlayer;
+    private int activePhase;
+    private int currentRound;
+    private boolean activePhaseOn = false;
+
 
     public Game (Server server) {
         this.server = server;
@@ -79,6 +80,10 @@ public class Game {
 
         this.playerList = players;
 
+        this.currentRound = 0;
+        this.setActivePhase(0);
+        this.setCurrentPlayer(playerList.get(0).getPlayerID());
+
         Collections.sort(playerList);
 
         //send an alle GameStartedMessage
@@ -90,22 +95,27 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
-        JSONMessage activePhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(0));
-        sendToAllPlayers(activePhaseMessage);
-
-        currentPlayer = playerList.get(0).getPlayerID();
-        JSONMessage actualPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(currentPlayer));
-        sendToAllPlayers(actualPlayerMessage);
+        informAboutActivePhase();
+        informAboutCurrentPlayer();
     }
 
-    public int nextPlayerID() {
+    public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
-        if (playerList.size() -1 == currentIndex) {
+        if (playerList.size() - 1 == currentIndex) {
             return -1;
         }
         return playerList.get(currentIndex + 1).getPlayerID();
     }
 
+    public void informAboutActivePhase () {
+        JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
+        sendToAllPlayers(currentPhase);
+    }
+
+    public void informAboutCurrentPlayer () {
+        JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
+        sendToAllPlayers(currentPlayer);
+    }
 
     //TODO select map
     //     if (Player player:playerList) isAI -> pickRandomMap
@@ -239,6 +249,24 @@ public class Game {
 
     //TODO find next wall with laser
 
+    public void startProgrammingPhase () {
+        System.out.println(playerList);
+        for (Player player : playerList) {
+            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            System.out.println("player " + player.getName() + "  has " + player.getDeckHand().getDeck().size());
+            JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+            server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+
+            for (Player otherPlayer : playerList) {
+                if (otherPlayer.getPlayerID() != player.getPlayerID()) {
+                    JSONMessage notYourCardsMessage = new JSONMessage("NotYourCards", new NotYourCardsBody(player.getPlayerID(), player.getDeckHand().getDeck().size()));
+                    server.sendMessage(notYourCardsMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                }
+            }
+        }
+    }
+
+
     public boolean valideStartingPoint (int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
@@ -263,14 +291,42 @@ public class Game {
             int indexelement = map.get(y).get(x).indexOf(element);
             map.get(y).get(x).remove(element);
             map.get(y).get(x).add(indexelement, (Element) object);
-        }
-        else{
+        } else {
             throw new ClassCastException(object + " is not an Element!" +
                     "Can't cast this method on Objects other than Elements!");
 
         }
     }
 
+
+    public int getActivePhase () {
+        return activePhase;
+    }
+
+    public void setActivePhase (int activePhase) {
+        this.activePhase = activePhase;
+        informAboutActivePhase();
+        if (activePhase == 2 && !activePhaseOn) {
+            startProgrammingPhase();
+            activePhaseOn = true;
+        }
+    }
+
+    public int getCurrentRound () {
+        return currentRound;
+    }
+
+    public void setCurrentRound (int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public boolean isActivePhaseOn () {
+        return activePhaseOn;
+    }
+
+    public void setActivePhaseOn (boolean activePhaseOn) {
+        this.activePhaseOn = activePhaseOn;
+    }
 
     public int getCurrentPlayer () {
         return currentPlayer;
