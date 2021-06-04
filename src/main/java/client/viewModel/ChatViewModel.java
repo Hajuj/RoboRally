@@ -15,8 +15,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable {
@@ -151,6 +154,11 @@ public class ChatViewModel implements Initializable {
     }
 
     public void loadGameScene () throws IOException {
+       /* ClassLoader classLoader = getClass().getClassLoader();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");
+        System.out.println(is+"True File exited");*/
+
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
