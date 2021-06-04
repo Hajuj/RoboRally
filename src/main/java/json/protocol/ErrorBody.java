@@ -1,10 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
-
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -16,16 +13,18 @@ public class ErrorBody implements ServerMessageAction<ErrorBody> {
     @Expose
     private final String error;
 
-    public ErrorBody(String error) {
+    public ErrorBody (String error) {
         this.error = error;
     }
 
-    public String getError() {
+    public String getError () {
         return error;
     }
 
     @Override
-    public void triggerAction(ClientModel clientmodel, ClientModelReaderThread readerThread, ErrorBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleError(clientmodel, readerThread, bodyObject);
+    public void triggerAction (ClientModel clientmodel, ErrorBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleError(clientmodel, bodyObject);
     }
+
+
 }

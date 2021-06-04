@@ -1,19 +1,15 @@
 package server;
 
 import game.Player;
-
 import json.JSONDeserializer;
-import json.JSONSerializer;
 import json.JSONMessage;
-import json.MessageHandler;
-import json.protocol.ClientMessageAction;
-import json.protocol.HelloClientBody;
+import json.JSONSerializer;
+import json.protocol.*;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-
-import org.apache.log4j.Logger;
 
 /**
  * Every ClientModel has its own ClientHandlerThread.
@@ -102,9 +98,32 @@ public class ClientHandler extends Thread {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + "wurde abgebrochen.");
+        logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
+        if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
+            if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
+                Player nextOne = server.getReadyPlayer().get(1);
+                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+            }
+        }
+        server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));
+        server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
+        server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
+
+        for (Connection connection : server.getConnections()) {
+            JSONMessage removeMessage = new JSONMessage("ConnectionUpdate", new ConnectionUpdateBody(this.player_id, false, "remove"));
+            server.sendMessage(removeMessage, connection.getWriter());
+        }
+
+        if (server.canStartTheGame()) {
+            for (Connection connection : server.getConnections()) {
+                JSONMessage startMessage = new JSONMessage("GameStarted", new GameStartedBody(server.getCurrentGame().getMap()));
+                server.sendMessage(startMessage, connection.getWriter());
+            }
+            logger.info("I CAN START THE GAME");
+        }
+
         try {
-            //TODO inform die anderen Clients, dass dieser Client weg ist.
             clientSocket.close();
         } catch (IOException ioException) {
             ioException.printStackTrace();

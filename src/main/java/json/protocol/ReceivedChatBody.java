@@ -1,10 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
-
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -12,28 +9,28 @@ import com.google.gson.annotations.Expose;
  */
 public class ReceivedChatBody implements ServerMessageAction<ReceivedChatBody> {
     @Expose
-    private String message;
+    private final String message;
     @Expose
-    private int from;
+    private final int from;
     @Expose
-    private boolean isPrivate;
+    private final boolean isPrivate;
 
-    public ReceivedChatBody(String message, int from, boolean isPrivate) {
+    public ReceivedChatBody (String message, int from, boolean isPrivate) {
         this.message = message;
         this.from = from;
         this.isPrivate = isPrivate;
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, ReceivedChatBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleReceivedChat(client, readerThread, bodyObject);
+    public void triggerAction (ClientModel client, ReceivedChatBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleReceivedChat(client, bodyObject);
     }
 
-    public String getMessage() {
+    public String getMessage () {
         return message;
     }
 
-    public int getFrom() {
+    public int getFrom () {
         return from;
     }
 }

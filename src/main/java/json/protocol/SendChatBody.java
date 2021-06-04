@@ -1,36 +1,34 @@
 package json.protocol;
 
-import server.Server;
-import server.ClientHandler;
-
-import json.MessageHandler;
-
 import com.google.gson.annotations.Expose;
+import server.ClientHandler;
+import server.MessageHandler;
+import server.Server;
 
 /**
  * @author Mohamad
  */
 public class SendChatBody implements ClientMessageAction<SendChatBody> {
     @Expose
-    private String message;
+    private final String message;
     @Expose
-    private int to;
+    private final int to;
 
-    public SendChatBody(String message, int to) {
+    public SendChatBody (String message, int to) {
         this.message = message;
         this.to = to;
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, SendChatBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, SendChatBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleSendChat(server, clientHandler, bodyObject);
     }
 
-    public String getMessage() {
+    public String getMessage () {
         return message;
     }
 
-    public int getTo() {
+    public int getTo () {
         return to;
     }
 }

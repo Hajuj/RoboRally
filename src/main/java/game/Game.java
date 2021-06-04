@@ -1,25 +1,26 @@
 package game;
 
+import game.boardelements.*;
 import game.decks.DeckSpam;
 import game.decks.DeckTrojan;
 import game.decks.DeckVirus;
 import game.decks.DeckWorm;
+import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.protocol.CurrentPlayerBody;
+import json.protocol.ErrorBody;
+import json.protocol.ActivePhaseBody;
+import json.protocol.CurrentPlayerBody;
 import json.protocol.GameStartedBody;
+import server.Connection;
 import server.Server;
-import game.boardelements.*;
 
 import javafx.geometry.Point2D;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Ilja Knis
@@ -33,6 +34,8 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+    private ArrayList<String> availableMaps = new ArrayList<>();
+    private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
@@ -46,9 +49,20 @@ public class Game {
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
+    private Map<Point2D, Robot> robotMap = new HashMap<>();
 
-    public Game(ArrayList<Player> playerList, Server server) {
+    private String mapName;
+    private boolean gameOn;
+    private int currentPlayer;
+
+    public Game (Server server) {
         this.server = server;
+        availableMaps.add("DizzyHighway");
+        availableMaps.add("One more map");
+    }
+
+
+    public void start (ArrayList<Player> players) throws IOException {
 
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -62,11 +76,35 @@ public class Game {
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
 
-        this.map = new ArrayList<>();
-        this.playerList = playerList;
+        this.playerList = players;
 
-        this.map = new ArrayList<>();
+        Collections.sort(playerList);
+
+        //send an alle GameStartedMessage
+        mapName = mapName.replaceAll("\\s+", "");
+        String fileName = "Maps/" + mapName + ".json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+        sendToAllPlayers(jsonMessage);
+
+        JSONMessage activePhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(0));
+        sendToAllPlayers(activePhaseMessage);
+
+        currentPlayer = playerList.get(0).getPlayerID();
+        JSONMessage actualPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(currentPlayer));
+        sendToAllPlayers(actualPlayerMessage);
     }
+
+    public int nextPlayerID() {
+        int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        if (playerList.size() -1 == currentIndex) {
+            return -1;
+        }
+        return playerList.get(currentIndex + 1).getPlayerID();
+    }
+
 
     //TODO select map
     //     if (Player player:playerList) isAI -> pickRandomMap
@@ -78,11 +116,22 @@ public class Game {
     //     map creation with elements (deserialization)
     //     phases
 
-    public void selectMap() throws IOException {
+
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (Player player : playerList) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+        }
+    }
+
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
-        Path pathToMap = Paths.get("blinde-bonbons/src/resources/Maps/DizzyHighway.json");
-        String jsonMap = Files.readString(pathToMap, StandardCharsets.UTF_8);
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(jsonMap);
+        this.mapName = mapName;
+        mapName = mapName.replaceAll("\\s+", "");
+        String fileName = "Maps/" + mapName + ".json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        String content = new String(Files.readAllBytes(file.toPath()));
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
         this.map = gameStartedBody.getGameMap();
         int mapX = map.size();
@@ -178,6 +227,7 @@ public class Game {
         }
     }
 
+
     //TODO if robot moves outside the map -> check map for RestartPoint
     //     -> spawn robot at RestartPoint
 
@@ -185,7 +235,60 @@ public class Game {
 
     //TODO calculate distance from antenna -> method
 
-    public ArrayList<Player> getPlayerList() {
+
+    public boolean valideStartingPoint (int x, int y) {
+        Point2D positionID = new Point2D(x, y);
+        if (startPointMap.containsKey(positionID)) {
+            if (!robotMap.containsKey(positionID)) {
+                System.out.println("hier ist einen startpoint " + positionID);
+                //TODO: testen!!
+                robotMap.put(positionID, server.getPlayerWithID(currentPlayer).getRobot());
+                return true;
+            } else {
+                System.out.println("Das ist kein leeres Starting point");
+                return false;
+            }
+        } else {
+            //TODO: dem Spieler das auch sagen
+            System.out.println("hier NOT startpoint ");
+            return false;
+        }
+    }
+
+
+    public int getCurrentPlayer () {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer (int currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public String getMapName () {
+        return mapName;
+    }
+
+    public void setMapName (String mapName) {
+        this.mapName = mapName;
+    }
+
+    public boolean isGameOn () {
+        return gameOn;
+    }
+
+    public void setGameOn (boolean gameOn) {
+        this.gameOn = gameOn;
+    }
+
+    public ArrayList<String> getAvailableMaps () {
+        return availableMaps;
+    }
+
+    public static ArrayList<String> getRobotNames () {
+        return robotNames;
+    }
+
+    public ArrayList<Player> getPlayerList () {
         return playerList;
     }
 

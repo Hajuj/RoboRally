@@ -1,11 +1,9 @@
 package json.protocol;
 
-import server.Server;
-import server.ClientHandler;
-
-import json.MessageHandler;
-
 import com.google.gson.annotations.Expose;
+import server.ClientHandler;
+import server.MessageHandler;
+import server.Server;
 
 /**
  * This is the wrapper class for the message body of the 'HelloServer' protocol JSON message.
@@ -14,24 +12,24 @@ import com.google.gson.annotations.Expose;
  */
 public class HelloServerBody implements ClientMessageAction<HelloServerBody> {
     @Expose
-    private String group;
+    private final String group;
     @Expose
-    private Boolean isAI;
+    private final Boolean isAI;
     @Expose
-    private String protocol;
+    private final String protocol;
 
-    public HelloServerBody(String group, Boolean isAI, String protocol) {
+    public HelloServerBody (String group, Boolean isAI, String protocol) {
         this.group = group;
         this.isAI = isAI;
         this.protocol = protocol;
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, HelloServerBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, HelloServerBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleHelloServer(server, clientHandler, bodyObject);
     }
 
-    public String getProtocol() {
+    public String getProtocol () {
         return this.protocol;
     }
 }

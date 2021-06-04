@@ -1,9 +1,8 @@
 package json.protocol;
 
-import server.Server;
 import server.ClientHandler;
-
-import json.MessageHandler;
+import server.MessageHandler;
+import server.Server;
 
 /**
  * This interface is implemented by each class in {@link json.protocol} that represents the message body.
@@ -13,5 +12,5 @@ import json.MessageHandler;
  * @author Mohamad, Viktoria
  */
 public interface ClientMessageAction<T> {
-    void triggerAction(Server server, ClientHandler clientHandler, T bodyObject, MessageHandler messageHandler);
+    void triggerAction (Server server, ClientHandler clientHandler, T bodyObject, MessageHandler messageHandler);
 }

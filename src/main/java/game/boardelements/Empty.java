@@ -9,9 +9,9 @@ import game.Element;
 public class Empty extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
 
     public Empty(String type, String isOnBoard) {
         this.type = type;

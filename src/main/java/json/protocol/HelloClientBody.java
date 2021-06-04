@@ -1,10 +1,7 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import json.MessageHandler;
-
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -16,16 +13,16 @@ public class HelloClientBody implements ServerMessageAction<HelloClientBody> {
     @Expose
     String protocol;
 
-    public HelloClientBody(String protocol) {
+    public HelloClientBody (String protocol) {
         this.protocol = protocol;
     }
 
     @Override
-    public void triggerAction(ClientModel client, ClientModelReaderThread readerThread, HelloClientBody message, MessageHandler messageHandler) {
-        messageHandler.handleHelloClient(client, readerThread, message);
+    public void triggerAction (ClientModel client, HelloClientBody message, MessageHandler messageHandler) {
+        messageHandler.handleHelloClient(client, message);
     }
 
-    public String getProtocol() {
+    public String getProtocol () {
         return protocol;
     }
 }

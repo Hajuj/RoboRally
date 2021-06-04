@@ -1,14 +1,9 @@
 package json.protocol;
 
-import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
-
-import server.ClientHandler;
-import server.Server;
-
-import json.MessageHandler;
-
 import com.google.gson.annotations.Expose;
+import server.ClientHandler;
+import server.MessageHandler;
+import server.Server;
 
 /*
 {
@@ -30,21 +25,21 @@ public class PlayerValuesBody implements ClientMessageAction<PlayerValuesBody> {
     @Expose
     private final int figure;
 
-    public String getName() {
+    public String getName () {
         return name;
     }
 
-    public int getFigure() {
+    public int getFigure () {
         return figure;
     }
 
-    public PlayerValuesBody(String name, int figure) {
+    public PlayerValuesBody (String name, int figure) {
         this.name = name;
         this.figure = figure;
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody, MessageHandler messageHandler) {
+    public void triggerAction (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody, MessageHandler messageHandler) {
         messageHandler.handlePlayerValues(server, clientHandler, playerValuesBody);
 
     }

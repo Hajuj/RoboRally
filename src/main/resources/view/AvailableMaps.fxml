@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0"
+            prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.viewModel.AvailableMapsViewModel">
+    <center>
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="DizzyHighwayButton" layoutX="156.0" layoutY="285.0" mnemonicParsing="false"
+                        onAction="#selectDizzyHighway" prefHeight="26.0" prefWidth="176.0" text="DIZZY HIGHWAY"/>
+                <ChoiceBox fx:id="choiseBox" layoutX="169.0" layoutY="111.0" prefWidth="150.0"/>
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>

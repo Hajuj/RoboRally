@@ -1,9 +1,8 @@
 package json.protocol;
 
 import client.model.ClientModel;
-import client.model.ClientModelReaderThread;
+import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
-import json.MessageHandler;
 
 /*
 {
@@ -18,9 +17,9 @@ import json.MessageHandler;
 public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
 
     @Expose
-    private int clientID;
+    private final int clientID;
     @Expose
-    private boolean ready;
+    private final boolean ready;
 
     public PlayerStatusBody (int clientID, boolean ready) {
         this.clientID = clientID;
@@ -29,8 +28,8 @@ public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
 
 
     @Override
-    public void triggerAction (ClientModel client, ClientModelReaderThread readerThread, PlayerStatusBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handlePlayerStatus(client, readerThread, bodyObject);
+    public void triggerAction (ClientModel client, PlayerStatusBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handlePlayerStatus(client, bodyObject);
     }
 
     public int getClientID () {

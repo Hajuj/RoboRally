@@ -1,10 +1,8 @@
 package client.viewModel;
 
 
-
-import javafx.fxml.FXML;
-
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -14,8 +12,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,10 +38,9 @@ public class StartScreenViewModel implements Initializable {
           //for Audio_Music
           @Override
     public void initialize(URL location, ResourceBundle resources) {
-      /*  sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
-        sound.setCycleCount(AudioClip.INDEFINITE);
-        sound.play();
-*/
+//        sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
+//        sound.setCycleCount(AudioClip.INDEFINITE);
+//        sound.play();
     }
 
         @FXML
@@ -71,7 +66,7 @@ public class StartScreenViewModel implements Initializable {
                 Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                 stage.close();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ServerIpStage.fxml"));
-                Parent root1 = (Parent) fxmlLoader.load();
+                Parent root1 = fxmlLoader.load();
                 Stage newStage = new Stage();
                 newStage.setTitle("Connect");
                 newStage.setScene(new Scene(root1));

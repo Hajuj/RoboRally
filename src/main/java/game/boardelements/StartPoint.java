@@ -9,9 +9,9 @@ import game.Element;
 public class StartPoint extends Element {
 
     @Expose
-    private String type;
+    private final String type;
     @Expose
-    private String isOnBoard;
+    private final String isOnBoard;
 
     public StartPoint(String type, String isOnBoard){
         this.type = type;

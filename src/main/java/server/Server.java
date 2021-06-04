@@ -1,20 +1,16 @@
 package server;
 
-import client.model.ClientModel;
+import game.Game;
 import game.Player;
-
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.MessageHandler;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -30,6 +26,8 @@ public class Server {
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 0.1";
     private final ArrayList<Player> waitingPlayer = new ArrayList<>();
+    private final ArrayList<Player> readyPlayer = new ArrayList<>();
+    private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
     private final ArrayList<Connection> connections = new ArrayList<>();
@@ -64,7 +62,6 @@ public class Server {
         }
 
         logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
-        boolean isWaitingForClients = true;
 
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");
@@ -95,9 +92,17 @@ public class Server {
         }
     }
 
+
     public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
+    }
+
+    public boolean canStartTheGame () {
+        //TODO more than 6 players -> one loses connection -> the one who only allowed to chat can join the the game now
+        if (getReadyPlayer().size() < 2) return false;
+        if (getReadyPlayer().size() == 6) return true;
+        return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
     public Player getPlayerWithID (int ID) {
@@ -116,6 +121,18 @@ public class Server {
             }
         }
         return null;
+    }
+
+    public Game getCurrentGame () {
+        return currentGame;
+    }
+
+    public void setCurrentGame (Game currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public ArrayList<Player> getReadyPlayer () {
+        return readyPlayer;
     }
 
     public ArrayList<Player> getWaitingPlayer () {
