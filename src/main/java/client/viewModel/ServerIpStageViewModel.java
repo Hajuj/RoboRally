@@ -86,9 +86,7 @@ public class ServerIpStageViewModel implements Initializable {
                 if (model.connectClient(serverIP, serverPort)) {
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
-                    //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/GameStage.fxml"));
-
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
                     Parent root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
                     newStage.setTitle("RoboRally");

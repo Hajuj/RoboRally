@@ -1,4 +1,4 @@
-package client.viewModel;
+/*package client.viewModel;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
@@ -12,7 +12,7 @@ public class FxmlLoader {
 
     public Pane getPage(String fileName) {
         try {
-            URL fileUrl = GameViewModel.class.getResource("/viewModel/" + fileName + "fxml");
+            URL fileUrl = FxmlLoader.class.getResource("resources/view/" + fileName + ".fxml");
             if (fileUrl == null) {
                 throw new java.io.FileNotFoundException("File Fxml was not found");
             }
@@ -23,5 +23,5 @@ public class FxmlLoader {
         }
 
         return view;
-    }
-}
+    }*/
+//}

@@ -11,10 +11,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,12 +57,14 @@ public class MapViewModel implements Initializable {
             ioException.printStackTrace();
         }
 
+
         clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
                     Platform.runLater(() -> {
                                 setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+
                             }
                     );
                     clientGameModel.canSetStartingPointProperty().setValue(false);
@@ -206,7 +210,7 @@ public class MapViewModel implements Initializable {
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
 //                            replaceElementInMap(map, x, y, element, energySpace);
 //                            energySpaceMap.put(new Point2D(x, y), energySpace);
-                            mapGrid.add(loadImage("RedEnergySpace","null"), x, y);
+                            mapGrid.add(loadImage("GreenEnergySpace","null"), x, y);
                         }
 
                         case "Gear" -> {
