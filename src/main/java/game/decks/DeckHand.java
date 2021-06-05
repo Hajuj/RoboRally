@@ -27,7 +27,7 @@ public class DeckHand extends Deck {
     public ArrayList<String> toArrayList () {
         ArrayList<String> nameList = new ArrayList<>();
         for (Card card : deckHand) {
-            nameList.add(card.cardName);
+            nameList.add(card.getCardName());
         }
         return nameList;
     }

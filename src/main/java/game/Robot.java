@@ -10,7 +10,7 @@ public class Robot {
     private int xPosition;
     private int yPosition;
     private String name;
-    private ArrayList<String> orientation = new ArrayList<>();
+    private String orientation;
     private int schadenPunkte = 0;
 
 
@@ -19,7 +19,7 @@ public class Robot {
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        orientation.add("Right");
+        orientation = "right";
     }
 
     public int getSchadenPunkte () {
@@ -54,4 +54,11 @@ public class Robot {
         this.name = name;
     }
 
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
+    }
 }

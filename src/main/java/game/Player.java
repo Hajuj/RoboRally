@@ -2,10 +2,9 @@ package game;
 
 import game.decks.*;
 import json.JSONMessage;
-import json.protocol.ShuffleCodingBody;
+import json.protocol.*;
 
 import java.util.ArrayList;
-
 
 /**
  * @author Ilja Knis
@@ -66,7 +65,6 @@ public class Player implements Comparable<Player> {
 
     //TODO shuffle cards
     //TODO draw cards
-
     public boolean isRegisterFull() {
         int count = 0;
         for (Card card : this.getDeckRegister().getDeck()) {
@@ -78,49 +76,49 @@ public class Player implements Comparable<Player> {
     }
 
     public ArrayList<String> drawBlind() {
+        //TODO check when cards are discarded
+        discardCards();
         ArrayList<String> newCard = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                newCard.add(card.cardName);
+                newCard.add(card.getCardName());
                 this.getDeckRegister().getDeck().set(i, card);
             }
         }
         return newCard;
     }
 
+    //TODO fix method -> not working correctly?
     public Card drawRegisterCards() {
-        int amount = 1;
-
         //YourCardsBody
-        if (amount <= this.deckProgramming.getDeck().size()) {
-            for (int i = 0; i < amount; i++) {
-                this.deckProgramming.getDeck().remove(0);
-                return this.deckProgramming.getDeck().get(0);
-            }
+        if (this.deckProgramming.getDeck().size() > 0) {
+            Card card = this.deckProgramming.getDeck().get(0);
+            this.deckProgramming.getDeck().remove(0);
+            return card;
         }
 
         //When there is no enough cards
         else {
             shuffleDiscardIntoProgramming();
-            for (int i = 0; i < amount; i++) {
-                this.deckProgramming.getDeck().remove(0);
-                return this.deckProgramming.getDeck().get(0);
-            }
+            Card card = this.deckProgramming.getDeck().get(0);
+            this.deckProgramming.getDeck().remove(0);
+
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
             game.sendToAllPlayers(shuffleMessage);
+
+            return card;
         }
-        return null;
     }
 
-    public void discardCards () {
+    public void discardCards() {
         for (Card card : this.deckHand.getDeck()) {
             this.deckDiscard.getDeck().add(card);
             this.deckHand.getDeck().remove(card);
         }
     }
 
-    public void drawCardsProgramming (int amount) {
+    public void drawCardsProgramming(int amount) {
         int amountLeft;
 
         //YourCardsBody
@@ -131,7 +129,7 @@ public class Player implements Comparable<Player> {
             }
         }
 
-        //When there is no enough cards
+        //ShuffleCodingBody
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
@@ -148,7 +146,7 @@ public class Player implements Comparable<Player> {
         }
     }
 
-    private void shuffleDiscardIntoProgramming () {
+    private void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
         this.deckDiscard.removeAllCards();
         this.deckProgramming.shuffleDeck();
@@ -165,24 +163,24 @@ public class Player implements Comparable<Player> {
     }
 
     @Override
-    public int compareTo (Player o) {
+    public int compareTo(Player o) {
         return Integer.compare(this.getPlayerID(), o.getPlayerID());
     }
 
-    public void pickRobot (int figure, String name) {
+    public void pickRobot(int figure, String name) {
         this.figure = figure;
         this.name = name;
     }
 
-    public int getPlayerID () {
+    public int getPlayerID() {
         return playerID;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 
@@ -194,9 +192,9 @@ public class Player implements Comparable<Player> {
         return deckHand;
     }
 
-//    public DeckProgramming getDeckProgramming() {
-//        return deckProgramming;
-//    }
+    public DeckProgramming getDeckProgramming() {
+        return deckProgramming;
+    }
 
     public DeckRegister getDeckRegister() {
         return deckRegister;
@@ -226,19 +224,19 @@ public class Player implements Comparable<Player> {
         this.figure = figure;
     }
 
-    public Robot getRobot () {
+    public Robot getRobot() {
         return robot;
     }
 
-    public void setRobot (Robot robot) {
+    public void setRobot(Robot robot) {
         this.robot = robot;
     }
 
-    public boolean isReady () {
+    public boolean isReady() {
         return isReady;
     }
 
-    public void setReady (boolean ready) {
+    public void setReady(boolean ready) {
         isReady = ready;
     }
 

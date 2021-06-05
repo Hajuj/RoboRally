@@ -8,7 +8,7 @@ import game.Card;
 public class Again extends Card {
 
     public Again(){
-        cardName = "Again";
+        this.cardName = "Again";
     }
 
     public void activateCard() {

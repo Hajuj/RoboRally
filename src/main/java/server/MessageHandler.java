@@ -266,4 +266,9 @@ public class MessageHandler {
         }
     }
 
+    public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody){
+        String card = playCardBody.getCard();
+    }
+
+
 }
