@@ -1,20 +1,11 @@
 package json.protocol;
 
-/*
-{
-"messageType": "ConnectionUpdate",
-"messageBody": {
-    "playerID": 9001,
-    "isConnected": false,
-    "action": "AIControl"
-    }
-}
-
- */
-
 import client.model.ClientModel;
 import client.model.MessageHandler;
 
+/**
+ * @author Viktoria
+ */
 public class ConnectionUpdateBody implements ServerMessageAction<ConnectionUpdateBody> {
 
     private final int playerID;

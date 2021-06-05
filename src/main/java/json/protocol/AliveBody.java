@@ -4,6 +4,9 @@ import client.model.ClientModel;
 import server.ClientHandler;
 import server.Server;
 
+/**
+ * @author Mohamad, Viktoria
+ */
 public class AliveBody implements ServerMessageAction<AliveBody>, ClientMessageAction<AliveBody> {
 
     public AliveBody () {

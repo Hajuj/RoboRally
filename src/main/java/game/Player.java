@@ -10,6 +10,7 @@ import java.util.ArrayList;
  * @author Ilja Knis
  */
 public class Player implements Comparable<Player> {
+    Game game = Game.getInstance();
 
     private int playerID;
     private String name;
@@ -26,7 +27,7 @@ public class Player implements Comparable<Player> {
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
 
-    public Player (int playerID) {
+    public Player(int playerID) {
         this.playerID = playerID;
         this.isReady = false;
         this.deckDiscard = new DeckDiscard();
@@ -145,6 +146,8 @@ public class Player implements Comparable<Player> {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
+            JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
+            game.sendToAllPlayers(shuffleMessage);
         }
     }
 
@@ -154,8 +157,18 @@ public class Player implements Comparable<Player> {
         this.deckProgramming.shuffleDeck();
     }
 
+    public Card selectedCard(String card) {
+        for (Card card1 : this.deckHand.getDeck()) {
+            if (card.equals(card1.getCardName())) {
+                deckHand.getDeck().remove(card1);
+                return card1;
+            }
+        }
+        return null;
+    }
+
     @Override
-    public int compareTo(Player o) {
+    public int compareTo (Player o) {
         return Integer.compare(this.getPlayerID(), o.getPlayerID());
     }
 

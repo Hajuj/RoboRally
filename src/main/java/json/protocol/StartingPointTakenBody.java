@@ -1,21 +1,12 @@
 package json.protocol;
 
-/*
-{
-    "messageType": "StartingPointTaken",
-    "messageBody": {
-        "x": 4,
-        "y": 2,
-        "clientID": 42
-    }
-}
-
- */
-
 import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
+/**
+ * @author Viktoria
+ */
 public class StartingPointTakenBody implements ServerMessageAction<StartingPointTakenBody> {
 
     @Expose

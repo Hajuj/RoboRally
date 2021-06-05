@@ -10,7 +10,7 @@ import java.util.Collections;
  */
 public class DeckDiscard extends Deck {
 
-    public ArrayList<Card> deckDiscard;
+    private ArrayList<Card> deckDiscard;
 
     public void initializeDeck() {
         this.deckDiscard = new ArrayList<Card>();
@@ -23,6 +23,7 @@ public class DeckDiscard extends Deck {
     public ArrayList<Card> getDeck() {
         return deckDiscard;
     }
+
 
     //TODO implement method to draw from discard deck
 }

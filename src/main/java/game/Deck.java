@@ -9,11 +9,11 @@ public abstract class Deck {
 
     private Card topCard;
 
-    public abstract void initializeDeck();
+    public abstract void initializeDeck ();
 
-    public abstract void shuffleDeck();
+    public abstract void shuffleDeck ();
 
-    public Card getTopCard(){
+    public Card getTopCard () {
         topCard = this.getDeck().get(0);
         return topCard;
     }
@@ -26,7 +26,15 @@ public abstract class Deck {
         while(this.getDeck().size() > 0){
             this.removeTopCard();
         }
+    public void removeTopCard () {
+        this.getDeck().remove(0);
     }
 
-    protected abstract ArrayList<Card> getDeck();
+    public void removeAllCards () {
+        while (this.getDeck().size() > 0) {
+            this.removeTopCard();
+        }
+    }
+
+    public abstract ArrayList<Card> getDeck();
 }
