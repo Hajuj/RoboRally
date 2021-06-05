@@ -8,10 +8,10 @@ import com.google.gson.annotations.Expose;
 public abstract class Card{
 
     @Expose
-    private String cardName;
+    public String cardName;
 
     public Card() {
-        cardName = "Card";
+        this.cardName = "Card";
     }
 
     //TODO: implement input types
