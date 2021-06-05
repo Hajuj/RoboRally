@@ -89,6 +89,7 @@ public class Player implements Comparable<Player> {
         return newCard;
     }
 
+    //TODO fix method -> not working correctly?
     public Card drawRegisterCards() {
         //YourCardsBody
         if (this.deckProgramming.getDeck().size() > 0) {
