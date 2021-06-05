@@ -341,6 +341,9 @@ public class Game {
         }
     }
 
+    //TODO activateCard() method with switch
+    //     check discard consistency
+
 
     public int getCurrentPlayer () {
         return currentPlayer;
