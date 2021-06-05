@@ -6,7 +6,10 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
 
+import java.util.ArrayList;
 
 import java.util.ArrayList;
 
@@ -197,6 +200,7 @@ public class MessageHandler {
         }
     }
 
+<<<<<<<<< Temporary merge branch 1
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
