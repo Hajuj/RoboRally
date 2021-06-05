@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 public abstract class Card{
 
     @Expose
-    public String cardName;
+    private String cardName;
 
     public Card() {
         cardName = "Card";
@@ -20,6 +20,6 @@ public abstract class Card{
     public abstract boolean isDamageCard();
 
     public String getCardName(){
-        return cardName;
+        return this.cardName;
     }
 }

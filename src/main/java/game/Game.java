@@ -260,7 +260,27 @@ public class Game {
         }
     }
 
-    //TODO: expand method for laser hits robot
+    //TODO messageBodies verwenden
+    public void activateCardEffect(Robot robot, Card card){
+        switch(card.getCardName()){
+            case "Again" -> {
+            }
+            case "BackUp" -> {}
+            case "MoveI" -> {}
+            case "MoveII" -> {}
+            case "MoveIII" -> {}
+            case "PowerUp" -> {}
+            case "TurnLeft" -> {}
+            case "TurnRight" -> {}
+            case "UTurn" -> {}
+            case "Spam" -> {}
+            case "Trojan" -> {}
+            case "Virus" -> {}
+            case "Worm" -> {}
+        }
+    }
+
+    //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition){
