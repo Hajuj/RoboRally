@@ -1,5 +1,6 @@
 package server;
 
+import client.model.ClientModel;
 import game.Card;
 import game.Game;
 import game.Player;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -238,25 +240,24 @@ public class MessageHandler {
 
             JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
             server.sendMessage(addCard, clientHandler.getWriter());
+            server.getCurrentGame().sendToAllPlayers(addCard);
+            logger.info(currentPlayer.getName() + " added a card to the register!");
 
             if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
                 JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
                 server.getCurrentGame().sendToAllPlayers(selectionFinished);
-                //TODO: hier dein Timer starten
-                server.getCurrentGame().setTimerOn(true);
-            }
-            server.getCurrentGame().sendToAllPlayers(addCard);
-            logger.info(currentPlayer.getName() + " added a card to the register!");
-        }
-    }
 
-    public void handleTimerStarted(Server server, ClientHandler clientHandler, TimerStartedBody timerStartedBody) {
-        try {
-            //Wait 30 seconds
-            Thread.sleep(30000);
-//            server.sendMessage(new JSONMessage("TimerEnded", new TimerEndedBody()));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerStarted", new TimerStartedBody()));
+                server.getCurrentGame().setTimerOn(true);
+
+                try {
+                    //Wait 30 seconds
+                    Thread.sleep(30000);
+                    server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
