@@ -6,15 +6,8 @@ import server.ClientHandler;
 import server.MessageHandler;
 import server.Server;
 
-/*
-{
-    "messageType": "SetStartingPoint",
-    "messageBody": {
-        "x": 4,
-        "y": 2
-    }
-}
-
+/**
+ * @author Viktoria
  */
 public class SetStartingPointBody implements ClientMessageAction<SetStartingPointBody> {
 

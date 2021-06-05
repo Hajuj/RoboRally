@@ -1,6 +1,8 @@
 package client.viewModel;
 
 import client.model.ClientModel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,6 +30,13 @@ public class AvailableMapsViewModel implements Initializable {
         for (String m : model.getAvailableMaps()) {
             choiseBox.getItems().add(m);
         }
+
+        choiseBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                //TODO:
+            }
+        });
     }
 
     //TODO it should be in ClientModel
