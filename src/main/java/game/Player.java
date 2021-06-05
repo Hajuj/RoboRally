@@ -75,6 +75,13 @@ public class Player implements Comparable<Player> {
         return (count == 5);
     }
 
+    public void discardCards () {
+        for (Card card : this.deckHand.getDeck()) {
+            this.deckDiscard.getDeck().add(card);
+            this.deckHand.getDeck().remove(card);
+        }
+    }
+
     public void drawCardsProgramming (int amount) {
         int amountLeft;
 
