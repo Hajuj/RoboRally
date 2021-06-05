@@ -260,6 +260,113 @@ public class Game {
         }
     }
 
+    /*
+    Antenna priority;
+    Register 1:
+    List<Player> turnOrder;
+    for(int i = 0; i < playersList.size; i++){
+        turnOrder[i].getPlayer.activateCardEffect();
+    }
+    triggerBoardElements();
+        -> for(Element element : map.get(y).get(x))
+               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
+
+
+     */
+
+
+    //TODO messageBodies verwenden
+    public void activateCardEffect(Robot robot, Card card){
+        switch(card.getCardName()){
+            case "Again" -> {
+                //aktuelles Register -> if 0 -> error
+                //                      else player.getDeckRegister
+            }
+            case "BackUp" -> {
+            }
+            case "MoveI" -> {}
+            case "MoveII" -> {}
+            case "MoveIII" -> {}
+            case "PowerUp" -> {}
+            case "TurnLeft" -> {}
+            case "TurnRight" -> {}
+            case "UTurn" -> {}
+            case "Spam" -> {}
+            case "Trojan" -> {}
+            case "Virus" -> {}
+            case "Worm" -> {}
+        }
+    }
+
+    //TODO: expand method for laser hits robot (robotMap)
+    //      check for coordination consistency
+    //      check for possible exception handling
+    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition){
+        ArrayList<Point2D> laserPath = new ArrayList<>();
+        laserPath.add(laserPosition);
+        boolean foundBlocker = false;
+        double tempPosition;
+        switch(laser.getOrientations().get(0)){
+            case "top" -> {
+                tempPosition = laserPosition.getY();
+                while(!foundBlocker){
+                    tempPosition--;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "bottom" -> {
+                tempPosition = laserPosition.getY();
+                while(!foundBlocker){
+                    tempPosition++;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "left" -> {
+                tempPosition = laserPosition.getX();
+                while(!foundBlocker){
+                    tempPosition--;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "right" -> {
+                tempPosition = laserPosition.getX();
+                while(!foundBlocker){
+                    tempPosition++;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            default -> {
+                //Place for exception handling
+            }
+        }
+
+        return laserPath;
+    }
+
 
     //TODO if robot moves outside the map -> check map for RestartPoint
     //     -> spawn robot at RestartPoint
@@ -319,6 +426,9 @@ public class Game {
 
         }
     }
+
+    //TODO activateCard() method with switch
+    //     check discard consistency
 
 
     public int getActivePhase () {
