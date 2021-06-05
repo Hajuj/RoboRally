@@ -238,8 +238,8 @@ public class Game {
         double tempPosition;
         switch(laser.getOrientations().get(0)){
             case "top" -> {
+                tempPosition = laserPosition.getY();
                 while(!foundBlocker){
-                    tempPosition = laserPosition.getY();
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
@@ -251,8 +251,8 @@ public class Game {
                 }
             }
             case "bottom" -> {
+                tempPosition = laserPosition.getY();
                 while(!foundBlocker){
-                    tempPosition = laserPosition.getY();
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
@@ -264,8 +264,8 @@ public class Game {
                 }
             }
             case "left" -> {
+                tempPosition = laserPosition.getX();
                 while(!foundBlocker){
-                    tempPosition = laserPosition.getX();
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
@@ -277,8 +277,8 @@ public class Game {
                 }
             }
             case "right" -> {
+                tempPosition = laserPosition.getX();
                 while(!foundBlocker){
-                    tempPosition = laserPosition.getX();
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
