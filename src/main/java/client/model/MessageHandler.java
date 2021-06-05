@@ -7,6 +7,8 @@ import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+
 /**
  * @author Mohamad, Viktoria
  */
@@ -177,13 +179,13 @@ public class MessageHandler {
                 " has " + amount + " cards in the hand \n");
     }
 
-    public void handleShuffleCoding(ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
+    public void handleShuffleCoding (ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
         int clientID = shuffleCodingBody.getClientID();
 
         clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
     }
 
-    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+    public void handleTimerEnded (ClientModel clientModel, TimerEndedBody timerEndedBody) {
 
     }
 
@@ -199,5 +201,12 @@ public class MessageHandler {
         }
     }
 
+    public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
+        ArrayList<String> cards = cardsYouGotNowBody.getCards();
+        //TODO: put the cards in leere Felder in Register
+        for (String card : cards) {
+            clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "You new Card is " + card + "\n");
+        }
+    }
 
 }
