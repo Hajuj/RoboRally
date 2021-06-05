@@ -6,6 +6,10 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
+
+import java.util.ArrayList;
 
 /**
  * @author Mohamad, Viktoria
@@ -173,8 +177,7 @@ public class MessageHandler {
 
         //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
 
-        clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "Player " + playerName +
-                " has " + amount + " cards in the hand \n");
+        clientModel.receiveMessage("Player " + playerName + " has " + amount + " cards in the hand!");
     }
 
     public void handleShuffleCoding(ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
@@ -183,21 +186,24 @@ public class MessageHandler {
         clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
     }
 
-    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
-
-    }
-
-
     public void handleSelectionFinished (ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
         int clientID = selectionFinishedBody.getClientID();
         if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-            Platform.runLater(() -> {
-                Alert a = new Alert(Alert.AlertType.INFORMATION);
-                a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
-                a.show();
-            });
+                clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
         }
     }
 
+    public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
+            a.show();
+        });
+    }
+
+    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+        ArrayList<Integer> lateClient = timerEndedBody.getClientIDs();
+
+    }
 
 }

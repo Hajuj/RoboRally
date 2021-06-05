@@ -111,6 +111,16 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    public ArrayList<Integer> tooLateClients() {
+        ArrayList<Integer> tooLateClients = new ArrayList<>();
+        for (Player player : this.playerList) {
+            if (!player.isRegisterFull()) {
+                tooLateClients.add(player.getPlayerID());
+            }
+        }
+        return tooLateClients;
+    }
+
     public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         if (playerList.size() - 1 == currentIndex) {

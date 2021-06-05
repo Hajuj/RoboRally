@@ -1,20 +1,18 @@
 package json.protocol;
 
-import server.ClientHandler;
-import server.MessageHandler;
-import server.Server;
+import client.model.ClientModel;
 
 /**
  * @author Mohamad
  */
-public class TimerStartedBody implements ClientMessageAction<TimerStartedBody> {
+public class TimerStartedBody implements ServerMessageAction<TimerStartedBody> {
 
     public TimerStartedBody() {
 
     }
 
     @Override
-    public void triggerAction(Server server, ClientHandler clientHandler, TimerStartedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleTimerStarted(server, clientHandler, bodyObject);
+    public void triggerAction(ClientModel client, TimerStartedBody bodyObject, client.model.MessageHandler messageHandler) {
+        messageHandler.handleTimerStarted(client, bodyObject);
     }
 }
