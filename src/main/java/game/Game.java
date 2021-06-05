@@ -260,12 +260,30 @@ public class Game {
         }
     }
 
+    /*
+    Antenna priority;
+    Register 1:
+    List<Player> turnOrder;
+    for(int i = 0; i < playersList.size; i++){
+        turnOrder[i].getPlayer.activateCardEffect();
+    }
+    triggerBoardElements();
+        -> for(Element element : map.get(y).get(x))
+               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
+
+
+     */
+
+
     //TODO messageBodies verwenden
     public void activateCardEffect(Robot robot, Card card){
         switch(card.getCardName()){
             case "Again" -> {
+                //aktuelles Register -> if 0 -> error
+                //                      else player.getDeckRegister
             }
-            case "BackUp" -> {}
+            case "BackUp" -> {
+            }
             case "MoveI" -> {}
             case "MoveII" -> {}
             case "MoveIII" -> {}
