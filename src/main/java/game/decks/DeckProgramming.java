@@ -11,7 +11,7 @@ import java.util.Collections;
  * @author Ilja Knis
  */
 public class DeckProgramming extends Deck {
-    private ArrayList<Card> deckProgramming;
+    private ArrayList<Card> deckProgramming = new ArrayList<>();
 
     public void initializeDeck() {
 
