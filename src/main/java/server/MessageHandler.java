@@ -254,6 +254,11 @@ public class MessageHandler {
                     //Wait 30 seconds
                     Thread.sleep(30000);
                     server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
+                    for (int i : server.getCurrentGame().tooLateClients()) {
+                        Player player = server.getPlayerWithID(i);
+                        JSONMessage jsonMessage = new JSONMessage("CardsYouGotNow", new CardsYouGotNowBody(player.drawBlind()));
+                        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

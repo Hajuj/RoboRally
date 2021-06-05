@@ -212,13 +212,14 @@ public class MessageHandler {
     public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
         ArrayList<Integer> lateClient = timerEndedBody.getClientIDs();
 
+        clientModel.receiveMessage("Late client IDs are: " + lateClient);
     }
 
     public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
         for (String card : cards) {
-            clientModel.chatHistoryProperty().setValue(clientModel.getChatHistory() + "You new Card is " + card + "\n");
+            clientModel.receiveMessage("Your new Card is " + card);
         }
     }
 

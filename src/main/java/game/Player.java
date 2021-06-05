@@ -4,6 +4,8 @@ import game.decks.*;
 import json.JSONMessage;
 import json.protocol.ShuffleCodingBody;
 
+import java.util.ArrayList;
+
 
 /**
  * @author Ilja Knis
@@ -26,7 +28,7 @@ public class Player implements Comparable<Player> {
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
 
-    public Player (int playerID) {
+    public Player(int playerID) {
         this.playerID = playerID;
         this.isReady = false;
         this.deckDiscard = new DeckDiscard();
@@ -65,7 +67,7 @@ public class Player implements Comparable<Player> {
     //TODO shuffle cards
     //TODO draw cards
 
-    public boolean isRegisterFull () {
+    public boolean isRegisterFull() {
         int count = 0;
         for (Card card : this.getDeckRegister().getDeck()) {
             if (card != null) {
@@ -73,6 +75,42 @@ public class Player implements Comparable<Player> {
             }
         }
         return (count == 5);
+    }
+
+    public ArrayList<String> drawBlind() {
+        ArrayList<String> newCard = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            if (this.getDeckRegister().getDeck().get(i) == null) {
+                Card card = drawRegisterCards();
+                newCard.add(card.cardName);
+                this.getDeckRegister().getDeck().set(i, card);
+            }
+        }
+        return newCard;
+    }
+
+    public Card drawRegisterCards() {
+        int amount = 1;
+
+        //YourCardsBody
+        if (amount <= this.deckProgramming.getDeck().size()) {
+            for (int i = 0; i < amount; i++) {
+                this.deckProgramming.getDeck().remove(0);
+                return this.deckProgramming.getDeck().get(0);
+            }
+        }
+
+        //When there is no enough cards
+        else {
+            shuffleDiscardIntoProgramming();
+            for (int i = 0; i < amount; i++) {
+                this.deckProgramming.getDeck().remove(0);
+                return this.deckProgramming.getDeck().get(0);
+            }
+            JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
+            game.sendToAllPlayers(shuffleMessage);
+        }
+        return null;
     }
 
     public void discardCards () {
