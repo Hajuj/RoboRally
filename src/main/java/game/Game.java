@@ -242,7 +242,7 @@ public class Game {
                 while(!foundBlocker){
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
@@ -255,7 +255,7 @@ public class Game {
                 while(!foundBlocker){
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;

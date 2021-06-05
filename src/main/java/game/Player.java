@@ -72,7 +72,7 @@ public class Player implements Comparable<Player> {
             }
         }
 
-        //NotYourCardsBody
+        //ShuffleCodingBody
         else if(amount > this.deckProgramming.getDeck().size()){
             amountLeft = amount - (this.deckProgramming.getDeck().size());
             for(int i = 0; i < this.deckProgramming.getDeck().size(); i++){
