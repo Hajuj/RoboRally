@@ -13,7 +13,7 @@ import java.util.Collections;
 public class DeckProgramming extends Deck {
     private ArrayList<Card> deckProgramming = new ArrayList<>();
 
-    public void initializeDeck () {
+    public void initializeDeck() {
 
         for (int i = 0; i < 5; i++) {
             this.deckProgramming.add(new MoveI());
@@ -35,11 +35,11 @@ public class DeckProgramming extends Deck {
         this.deckProgramming.add(new PowerUp());
     }
 
-    public void shuffleDeck () {
+    public void shuffleDeck() {
         Collections.shuffle(this.getDeck());
     }
 
-    public ArrayList<Card> getDeck () {
+    public ArrayList<Card> getDeck() {
         return this.deckProgramming;
     }
 }
