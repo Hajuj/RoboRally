@@ -89,14 +89,16 @@ public class Player implements Comparable<Player> {
         return newCard;
     }
 
+    //TODO fix method -> not working correctly?
     public Card drawRegisterCards() {
         int amount = 1;
 
         //YourCardsBody
         if (amount <= this.deckProgramming.getDeck().size()) {
             for (int i = 0; i < amount; i++) {
+                this.deckRegister.getDeck().add(deckProgramming.getTopCard());
                 this.deckProgramming.getDeck().remove(0);
-                return this.deckProgramming.getDeck().get(0);
+                return this.deckRegister.getDeck().get(this.deckRegister.getDeck().size()-1);
             }
         }
 
@@ -104,8 +106,9 @@ public class Player implements Comparable<Player> {
         else {
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amount; i++) {
+                this.deckRegister.getDeck().add(deckProgramming.getTopCard());
                 this.deckProgramming.getDeck().remove(0);
-                return this.deckProgramming.getDeck().get(0);
+                return this.deckRegister.getDeck().get(this.deckRegister.getDeck().size()-1);
             }
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
             game.sendToAllPlayers(shuffleMessage);

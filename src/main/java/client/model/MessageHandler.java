@@ -215,4 +215,19 @@ public class MessageHandler {
         }
     }
 
+    public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+
+    }
+
+    public void handleReplaceCard(ClientModel clientModel, ReplaceCardBody replaceCardBody) {
+
+    }
+
+    public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody){
+        int clientID = cardPlayedBody.getClientID();
+        String card = cardPlayedBody.getCard();
+
+    }
+
+
 }
