@@ -303,15 +303,12 @@ public class Game {
             }
             case "MoveI" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
-
             }
             case "MoveII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
-
             }
             case "MoveIII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
-
             }
             case "PowerUp" -> {
                 playerList.get(indexCurrentPlayer).increaseEnergy(1);
@@ -353,10 +350,10 @@ public class Game {
         }
     }
 
-    public ArrayList<Player> getPlayersInRadius(Player currentplayer, int radius){
+    public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius){
         ArrayList<Player> playersInRadius = new ArrayList<>();
-        int robotXPosition = currentplayer.getRobot().getxPosition();
-        int robotYPosition = currentplayer.getRobot().getyPosition();
+        int robotXPosition = currentPlayer.getRobot().getxPosition();
+        int robotYPosition = currentPlayer.getRobot().getyPosition();
         int lowerXCap, upperXCap, lowerYCap, upperYCap;
 
         //Calculate boundaries within radius span
@@ -366,7 +363,7 @@ public class Game {
         else {
             lowerXCap = robotXPosition - radius;
         }
-        if(robotYPosition - radius < 0){
+        if(robotYPosition - radius > 0){
             lowerYCap = 0;
         }
         else {
@@ -393,7 +390,7 @@ public class Game {
                 playersInRadius.add(player);
             }
         }
-        playersInRadius.remove(currentplayer);
+        playersInRadius.remove(currentPlayer);
 
         return playersInRadius;
     }
