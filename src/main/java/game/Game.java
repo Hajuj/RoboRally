@@ -363,19 +363,19 @@ public class Game {
         else {
             lowerXCap = robotXPosition - radius;
         }
-        if(robotYPosition - radius > 0){
+        if(robotYPosition - radius < 0){
             lowerYCap = 0;
         }
         else {
             lowerYCap = robotYPosition - radius;
         }
-        if(robotXPosition + radius > map.get(0).size()){
+        if(robotXPosition + radius >= map.get(0).size()){
             upperXCap = map.get(0).size();
         }
         else {
             upperXCap = robotXPosition + radius;
         }
-        if(robotYPosition + radius > map.size()){
+        if(robotYPosition + radius >= map.size()){
             upperYCap = map.size();
         }
         else {
@@ -400,16 +400,96 @@ public class Game {
         int robotYPosition = robot.getyPosition();
         switch (orientation){
             case "top" -> {
-                robot.setyPosition(robotYPosition+movement);
+                for(int i = 0; i < movement; i++) {
+                    for(Element element : map.get(robotYPosition-1).get(robotXPosition)) {
+                        switch (element.getType()) {
+                            case "Wall" -> {
+                                for(String orient : element.getOrientations()) {
+                                    if (!orient.equals("bottom")) {
+                                        robot.setyPosition(robotYPosition-1);
+                                    }
+                                }
+                            }
+                            default -> {
+                                if(robotYPosition-1 < 0) {
+                                    //TODO: Get RestartPoint and start Reboot routine
+                                }
+                                else {
+                                    robot.setyPosition(robotYPosition-1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             case "bottom" -> {
-                robot.setyPosition(robotYPosition-movement);
+                for(int i = 0; i < movement; i++) {
+                    for(Element element : map.get(robotYPosition+1).get(robotXPosition)) {
+                        switch (element.getType()) {
+                            case "Wall" -> {
+                                for(String orient : element.getOrientations()) {
+                                    if (!orient.equals("bottom")) {
+                                        robot.setyPosition(robotYPosition+1);
+                                    }
+                                }
+                            }
+                            default -> {
+                                if(robotYPosition+1 >= map.size()) {
+                                    //TODO: Get RestartPoint and start Reboot routine
+                                }
+                                else {
+                                    robot.setyPosition(robotYPosition+1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             case "left" -> {
-                robot.setxPosition(robotXPosition-movement);
+                for(int i = 0; i < movement; i++) {
+                    for(Element element : map.get(robotYPosition).get(robotXPosition-1)) {
+                        switch (element.getType()) {
+                            case "Wall" -> {
+                                for(String orient : element.getOrientations()) {
+                                    if (!orient.equals("bottom")) {
+                                        robot.setxPosition(robotXPosition-1);
+                                    }
+                                }
+                            }
+                            default -> {
+                                if(robotXPosition-1 < 0) {
+                                    //TODO: Get RestartPoint and start Reboot routine
+                                }
+                                else {
+                                    robot.setxPosition(robotXPosition-1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             case "right" -> {
-                robot.setxPosition(robotXPosition+movement);
+                for(int i = 0; i < movement; i++) {
+                    for(Element element : map.get(robotYPosition).get(robotXPosition+1)) {
+                        switch (element.getType()) {
+                            case "Wall" -> {
+                                for(String orient : element.getOrientations()) {
+                                    if (!orient.equals("bottom")) {
+                                        robot.setxPosition(robotXPosition+1);
+                                    }
+                                }
+                            }
+                            default -> {
+                                if(robotXPosition+1 >= map.get(0).size()) {
+                                    //TODO: Get RestartPoint and start Reboot routine
+                                }
+                                else {
+                                    robot.setxPosition(robotXPosition+1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
