@@ -6,17 +6,10 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
+/**
+ * @author Viktoria
+ */
 public class CardsYouGotNowBody implements ServerMessageAction<CardsYouGotNowBody> {
-
-//    {
-//        "messageType":"CardsYouGotNow",
-//            "messageBody":{
-//        "cards": ["card1",
-//                "..."
-//]
-//    }
-//    }
-
     @Expose
     private ArrayList<String> cards;
 

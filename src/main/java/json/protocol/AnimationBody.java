@@ -4,14 +4,8 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-"messageType": "Animation",
-"messageBody": {
-"type": "PlayerShooting"
-}
-}
-
+/**
+ * @author Viktoria
  */
 public class AnimationBody implements ServerMessageAction<AnimationBody> {
 

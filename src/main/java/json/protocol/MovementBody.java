@@ -4,16 +4,8 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-"messageType": "Movement",
-"messageBody": {
-"clientID": 42,
-"x": 4,
-"y": 2
-}
-}
-
+/**
+ * @author Viktoria
  */
 public class MovementBody implements ServerMessageAction<MovementBody> {
 
