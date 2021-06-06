@@ -428,7 +428,7 @@ public class Game {
                         switch (element.getType()) {
                             case "Wall" -> {
                                 for(String orient : element.getOrientations()) {
-                                    if (!orient.equals("bottom")) {
+                                    if (!orient.equals("top")) {
                                         robot.setyPosition(robotYPosition+1);
                                     }
                                 }
@@ -451,7 +451,7 @@ public class Game {
                         switch (element.getType()) {
                             case "Wall" -> {
                                 for(String orient : element.getOrientations()) {
-                                    if (!orient.equals("bottom")) {
+                                    if (!orient.equals("right")) {
                                         robot.setxPosition(robotXPosition-1);
                                     }
                                 }
@@ -474,7 +474,7 @@ public class Game {
                         switch (element.getType()) {
                             case "Wall" -> {
                                 for(String orient : element.getOrientations()) {
-                                    if (!orient.equals("bottom")) {
+                                    if (!orient.equals("left")) {
                                         robot.setxPosition(robotXPosition+1);
                                     }
                                 }
