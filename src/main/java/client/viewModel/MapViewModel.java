@@ -3,10 +3,13 @@ package client.viewModel;
 import client.model.ClientGameModel;
 import client.model.ClientModel;
 import game.Element;
+import game.Game;
+import game.Robot;
 import game.boardelements.*;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -29,7 +32,6 @@ public class MapViewModel implements Initializable {
     public GridPane mapGrid;
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
-
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
@@ -55,18 +57,35 @@ public class MapViewModel implements Initializable {
             ioException.printStackTrace();
         }
 
-        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
+        clientGameModel.getRobotMapObservable().addListener(new MapChangeListener<Robot, Point2D>() {
             @Override
-            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
-                    Platform.runLater(() -> {
-                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
+
+                Platform.runLater(() -> {
+                            for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+                                if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())))) {
+                                    setRobot(clientGameModel.getActualPlayerID(), (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                                }
                             }
-                    );
-                    clientGameModel.canSetStartingPointProperty().setValue(false);
-                }
+                        }
+                );
+                //setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+
             }
         });
+
+//        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+//                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
+//                    Platform.runLater(() -> {
+//                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+//                            }
+//                    );
+//                    clientGameModel.canSetStartingPointProperty().setValue(false);
+//                }
+//            }
+//        });
     }
 
 
@@ -87,7 +106,37 @@ public class MapViewModel implements Initializable {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         mapGrid.add(imageView, x, y);
+        input = null;
+        try {
+            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image = new Image(input);
+        imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(60);
+        imageView.setFitHeight(60);
+        imageView.setRotate(-90);
+        mapGrid.add(imageView, x, y);
         clientGameModel.setCanSetStartingPoint(false);
+    }
+
+    public void refreshOrientation () {
+        FileInputStream input = null;
+        Image image;
+        try {
+            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image = new Image(input);
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+
+        mapGrid.add(imageView, clientGameModel.getPlayer().getRobot().getxPosition(), clientGameModel.getPlayer().getRobot().getxPosition());
     }
 
     public File findPath (String fileName) {
@@ -96,7 +145,7 @@ public class MapViewModel implements Initializable {
     }
 
     //die MEthode mit Eleemtn als Parametre schicekn
-    public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
+    public ImageView loadImage (String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));

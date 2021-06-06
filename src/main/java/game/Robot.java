@@ -19,7 +19,7 @@ public class Robot {
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        orientation = "right";
+        this.orientation = "right";
     }
 
     public int getSchadenPunkte () {

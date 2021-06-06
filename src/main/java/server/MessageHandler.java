@@ -1,21 +1,14 @@
 package server;
 
-import client.model.ClientModel;
 import game.Card;
 import game.Game;
 import game.Player;
 import game.Robot;
-import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * @author Mohamad, Viktoria
@@ -220,7 +213,7 @@ public class MessageHandler {
 
     public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
-        int register = selectedCardBody.getRegister();
+        int register = selectedCardBody.getRegister() - 1;
         System.out.println("HEY I GOT SELECTED");
 
         Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
@@ -235,8 +228,8 @@ public class MessageHandler {
             logger.info(currentPlayer.getName() + " removed a card from the register!");
         } else {
             //Add card to register deck
-            Card currentCard = currentPlayer.selectedCard(card);
-            currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
+            Card currentCard = currentPlayer.removeSelectedCard(card);
+            currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
 
             JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
             server.sendMessage(addCard, clientHandler.getWriter());
@@ -259,6 +252,8 @@ public class MessageHandler {
                         JSONMessage jsonMessage = new JSONMessage("CardsYouGotNow", new CardsYouGotNowBody(player.drawBlind()));
                         server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
                     }
+                    server.getCurrentGame().setActivePhaseOn(false);
+                    server.getCurrentGame().setActivePhase(3);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
