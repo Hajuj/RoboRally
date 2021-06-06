@@ -328,26 +328,35 @@ public class Game {
             case "Spam" -> {}
             case "Trojan" -> {
                 for(int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().add(deckSpam.getTopCard());
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                     deckSpam.removeTopCard();
                 }
                 //TODO access current register and play top card from deckProgramming
             }
             case "Virus" -> {
-                ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer).getRobot(), 6);
+                ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for(Player player : playersWithinRadius){
-                    player.getDeckProgramming().getDeck().add(deckSpam.getTopCard());
+                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                     deckSpam.removeTopCard();
                 }
             }
-            case "Worm" -> {}
+            case "Worm" -> {
+                for(int i = 0; i < 2; i++) {
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+
+                //TODO: set Robot to RestartPoint
+                //      cancel remaining registers
+                //      discard remaining registers
+            }
         }
     }
 
-    public ArrayList<Player> getPlayersInRadius(Robot robot, int radius){
+    public ArrayList<Player> getPlayersInRadius(Player currentplayer, int radius){
         ArrayList<Player> playersInRadius = new ArrayList<>();
-        int robotXPosition = robot.getxPosition();
-        int robotYPosition = robot.getyPosition();
+        int robotXPosition = currentplayer.getRobot().getxPosition();
+        int robotYPosition = currentplayer.getRobot().getyPosition();
         int lowerXCap, upperXCap, lowerYCap, upperYCap;
 
         //Calculate boundaries within radius span
@@ -384,6 +393,7 @@ public class Game {
                 playersInRadius.add(player);
             }
         }
+        playersInRadius.remove(currentplayer);
 
         return playersInRadius;
     }
