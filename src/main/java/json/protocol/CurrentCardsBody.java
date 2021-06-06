@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CurrentCardsBody implements ServerMessageAction<CurrentCardsBody> {
     @Expose
-    private ArrayList<Object> activeCards = new ArrayList<Object>();
+    private ArrayList<Object> activeCards;
 
 
     public CurrentCardsBody(ArrayList<Object> activeCards) {
