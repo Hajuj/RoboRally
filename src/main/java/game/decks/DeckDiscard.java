@@ -24,6 +24,4 @@ public class DeckDiscard extends Deck {
         return deckDiscard;
     }
 
-
-    //TODO implement method to draw from discard deck
 }

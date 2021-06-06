@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import json.JSONMessage;
+import json.protocol.PlayCardBody;
 import json.protocol.SelectedCardBody;
 
 
@@ -50,6 +51,8 @@ public class YourCardsViewModel implements Initializable {
     public Button reg3;
     @FXML
     public Button reg4;
+    @FXML
+    public Button send;
 
 
     public HashMap<Integer, String> registerMap = new HashMap<>();
@@ -134,6 +137,11 @@ public class YourCardsViewModel implements Initializable {
             }
         }
         return event;
+    }
+
+    public void playCard () {
+        JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
+        model.sendMessage(playCardm);
     }
 
 
