@@ -81,6 +81,7 @@ public class MessageHandler {
 
 
     public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+        logger.info(ANSI_CYAN + "PlayerValues Message received." + ANSI_RESET);
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
@@ -135,6 +136,7 @@ public class MessageHandler {
     }
 
     public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+        logger.info(ANSI_CYAN + "SetStatus Message received." + ANSI_RESET);
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
@@ -172,6 +174,7 @@ public class MessageHandler {
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+        logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         //TODO: SEND NOT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
@@ -180,6 +183,7 @@ public class MessageHandler {
     }
 
     public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+        logger.info(ANSI_CYAN + "SetStartingPoint Message received." + ANSI_RESET);
         //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
         int x = bodyObject.getX();
@@ -212,6 +216,7 @@ public class MessageHandler {
     }
 
     public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+        logger.info(ANSI_CYAN + "SelectedCard Message received." + ANSI_RESET);
         String card = selectedCardBody.getCard();
         int register = selectedCardBody.getRegister() - 1;
         System.out.println("HEY I GOT SELECTED");
@@ -240,7 +245,8 @@ public class MessageHandler {
                 JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
                 server.getCurrentGame().sendToAllPlayers(selectionFinished);
 
-                server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerStarted", new TimerStartedBody()));
+//                server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerStarted", new TimerStartedBody()));
+
                 server.getCurrentGame().setTimerOn(true);
 
                 try {
@@ -262,6 +268,7 @@ public class MessageHandler {
     }
 
     public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody){
+        logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
     }
 

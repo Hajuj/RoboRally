@@ -33,6 +33,7 @@ public class Game {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
+    private GameTimer gameTimer;
     private ArrayList<String> availableMaps = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
@@ -652,8 +653,8 @@ public class Game {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
             ArrayList<Object> array1 = new ArrayList<>();
-            array1.add(player.getPlayerID());
-            array1.add(player.getDeckRegister().getDeck().get(0).getCardName());
+            array1.add("clientID=" + player.getPlayerID() + ".0");
+            array1.add("card=" + player.getDeckRegister().getDeck().get(0).getCardName());
             currentCards.add(array1);
         }
         JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
@@ -713,6 +714,9 @@ public class Game {
     }
 
 
+    public GameTimer getGameTimer() {
+        return gameTimer;
+    }
 
     public boolean isTimerOn () {
         return timerOn;
