@@ -17,6 +17,7 @@ public class Player implements Comparable<Player> {
     private Robot robot;
     private int figure;
     private boolean isReady;
+    private int energy;
 
     private DeckDiscard deckDiscard;
     private DeckProgramming deckProgramming;
@@ -240,4 +241,21 @@ public class Player implements Comparable<Player> {
         isReady = ready;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void increaseEnergy(int amount){
+        this.energy += amount;
+    }
+
+    public void decreaseEnergy(int amount){
+        if(this.energy < amount){
+            //TODO can't use if not enough energy
+            this.energy = 0;
+        }
+        else {
+            this.energy -= amount;
+        }
+    }
 }

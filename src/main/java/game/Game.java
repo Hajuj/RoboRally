@@ -276,25 +276,198 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(Robot robot, Card card){
+    public void activateCardEffect(Card card){
+        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
+
         switch(card.getCardName()){
             case "Again" -> {
                 //aktuelles Register -> if 0 -> error
                 //                      else player.getDeckRegister
             }
             case "BackUp" -> {
+                switch(robotOrientation){
+                    case "top" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
+                    }
+                    case "bottom" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "top", 1);
+                    }
+                    case "left" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "right", 1);
+                    }
+                    case "right" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "left", 1);
+                    }
+                }
             }
-            case "MoveI" -> {}
-            case "MoveII" -> {}
-            case "MoveIII" -> {}
-            case "PowerUp" -> {}
-            case "TurnLeft" -> {}
-            case "TurnRight" -> {}
-            case "UTurn" -> {}
+            case "MoveI" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
+            }
+            case "MoveII" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
+            }
+            case "MoveIII" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
+            }
+            case "PowerUp" -> {
+                playerList.get(indexCurrentPlayer).increaseEnergy(1);
+            }
+            case "TurnLeft" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "left");
+            }
+            case "TurnRight" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "right");
+            }
+            case "UTurn" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
+            }
             case "Spam" -> {}
-            case "Trojan" -> {}
-            case "Virus" -> {}
-            case "Worm" -> {}
+            case "Trojan" -> {
+                for(int i = 0; i < 2; i++) {
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+                //TODO access current register and play top card from deckProgramming
+            }
+            case "Virus" -> {
+                ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
+                for(Player player : playersWithinRadius){
+                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+            }
+            case "Worm" -> {
+                for(int i = 0; i < 2; i++) {
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+
+                //TODO: set Robot to RestartPoint
+                //      cancel remaining registers
+                //      discard remaining registers
+            }
+        }
+    }
+
+    public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius){
+        ArrayList<Player> playersInRadius = new ArrayList<>();
+        int robotXPosition = currentPlayer.getRobot().getxPosition();
+        int robotYPosition = currentPlayer.getRobot().getyPosition();
+        int lowerXCap, upperXCap, lowerYCap, upperYCap;
+
+        //Calculate boundaries within radius span
+        if(robotXPosition - radius < 0){
+            lowerXCap = 0;
+        }
+        else {
+            lowerXCap = robotXPosition - radius;
+        }
+        if(robotYPosition - radius > 0){
+            lowerYCap = 0;
+        }
+        else {
+            lowerYCap = robotYPosition - radius;
+        }
+        if(robotXPosition + radius > map.get(0).size()){
+            upperXCap = map.get(0).size();
+        }
+        else {
+            upperXCap = robotXPosition + radius;
+        }
+        if(robotYPosition + radius > map.size()){
+            upperYCap = map.size();
+        }
+        else {
+            upperYCap = robotYPosition + radius;
+        }
+
+        //TODO what about the player that uses the virus card?
+        for(Player player : playerList){
+            int robotX = player.getRobot().getxPosition();
+            int robotY = player.getRobot().getyPosition();
+            if(robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap){
+                playersInRadius.add(player);
+            }
+        }
+        playersInRadius.remove(currentPlayer);
+
+        return playersInRadius;
+    }
+
+    public void moveRobot(Robot robot, String orientation, int movement){
+        int robotXPosition = robot.getxPosition();
+        int robotYPosition = robot.getyPosition();
+        switch (orientation){
+            case "top" -> {
+                robot.setyPosition(robotYPosition+movement);
+            }
+            case "bottom" -> {
+                robot.setyPosition(robotYPosition-movement);
+            }
+            case "left" -> {
+                robot.setxPosition(robotXPosition-movement);
+            }
+            case "right" -> {
+                robot.setxPosition(robotXPosition+movement);
+            }
+        }
+    }
+
+    public void changeOrientation(Robot robot, String direction){
+        switch (robot.getOrientation()){
+            case "top" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("left");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("right");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("bottom");
+                    }
+                }
+            }
+            case "bottom" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("right");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("left");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("top");
+                    }
+                }
+            }
+            case "left" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("bottom");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("top");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("right");
+                    }
+                }
+            }
+            case "right" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("top");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("bottom");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("left");
+                    }
+                }
+            }
         }
     }
 
