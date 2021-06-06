@@ -152,7 +152,7 @@ public class Player implements Comparable<Player> {
         this.deckProgramming.shuffleDeck();
     }
 
-    public Card selectedCard(String card) {
+    public Card removeSelectedCard(String card) {
         for (Card card1 : this.deckHand.getDeck()) {
             if (card.equals(card1.getCardName())) {
                 deckHand.getDeck().remove(card1);

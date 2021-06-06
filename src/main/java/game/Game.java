@@ -379,7 +379,6 @@ public class Game {
     //TODO find next wall with laser
 
     public void startProgrammingPhase () {
-        System.out.println(playerList);
         for (Player player : playerList) {
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             System.out.println("player " + player.getName() + "  has " + player.getDeckHand().getDeck().size());
@@ -393,6 +392,19 @@ public class Game {
                 }
             }
         }
+    }
+
+    //TODO change get(0)
+    public void startActivationPhase() {
+        ArrayList<Object> currentCards = new ArrayList<>();
+        for (Player player : playerList) {
+            ArrayList<Object> array1 = new ArrayList<>();
+            array1.add(player.getPlayerID());
+            array1.add(player.getDeckRegister().getDeck().get(0).getCardName());
+            currentCards.add(array1);
+        }
+        JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
+        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -441,8 +453,13 @@ public class Game {
         if (activePhase == 2 && !activePhaseOn) {
             startProgrammingPhase();
             activePhaseOn = true;
+        } else if (activePhase == 3 && !activePhaseOn) {
+            startActivationPhase();
+            activePhaseOn = true;
         }
     }
+
+
 
     public boolean isTimerOn () {
         return timerOn;

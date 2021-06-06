@@ -10,6 +10,8 @@ import server.ClientHandler;
 import server.Server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -216,10 +218,20 @@ public class MessageHandler {
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+        ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
+        for (Object currentCard : currentCards) {
+            String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
+            String userNameDelimiter = ".0, card=";
+            String[] split = message.split(userNameDelimiter);
+            int playerID = Integer.parseInt(split[0]);
+            String card = split[1];
+            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card);
+        }
     }
 
     public void handleReplaceCard(ClientModel clientModel, ReplaceCardBody replaceCardBody) {
+
 
     }
 
