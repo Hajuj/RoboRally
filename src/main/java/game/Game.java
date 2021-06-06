@@ -276,25 +276,133 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(Robot robot, Card card){
+    public void activateCardEffect(Card card){
+        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
+
         switch(card.getCardName()){
             case "Again" -> {
                 //aktuelles Register -> if 0 -> error
                 //                      else player.getDeckRegister
             }
             case "BackUp" -> {
+                switch(robotOrientation){
+                    case "top" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
+                    }
+                    case "bottom" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "top", 1);
+                    }
+                    case "left" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "right", 1);
+                    }
+                    case "right" -> {
+                        moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "left", 1);
+                    }
+                }
             }
-            case "MoveI" -> {}
-            case "MoveII" -> {}
-            case "MoveIII" -> {}
+            case "MoveI" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
+
+            }
+            case "MoveII" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
+
+            }
+            case "MoveIII" -> {
+                moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
+
+            }
             case "PowerUp" -> {}
-            case "TurnLeft" -> {}
-            case "TurnRight" -> {}
-            case "UTurn" -> {}
+            case "TurnLeft" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "left");
+            }
+            case "TurnRight" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "right");
+            }
+            case "UTurn" -> {
+                changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
+            }
             case "Spam" -> {}
             case "Trojan" -> {}
             case "Virus" -> {}
             case "Worm" -> {}
+        }
+    }
+
+    public void moveRobot(Robot robot, String orientation, int movement){
+        int robotXPosition = robot.getxPosition();
+        int robotYPosition = robot.getyPosition();
+        switch (orientation){
+            case "top" -> {
+                robot.setyPosition(robotYPosition+movement);
+            }
+            case "bottom" -> {
+                robot.setyPosition(robotYPosition-movement);
+            }
+            case "left" -> {
+                robot.setxPosition(robotXPosition-movement);
+            }
+            case "right" -> {
+                robot.setxPosition(robotXPosition+movement);
+            }
+        }
+    }
+
+    public void changeOrientation(Robot robot, String direction){
+        switch (robot.getOrientation()){
+            case "top" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("left");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("right");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("bottom");
+                    }
+                }
+            }
+            case "bottom" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("right");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("left");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("top");
+                    }
+                }
+            }
+            case "left" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("bottom");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("top");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("right");
+                    }
+                }
+            }
+            case "right" -> {
+                switch (direction){
+                    case "left" -> {
+                        robot.setOrientation("top");
+                    }
+                    case "right" -> {
+                        robot.setOrientation("bottom");
+                    }
+                    case "uturn" -> {
+                        robot.setOrientation("left");
+                    }
+                }
+            }
         }
     }
 
