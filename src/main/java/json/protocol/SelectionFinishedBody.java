@@ -4,12 +4,8 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-"messageType": "SelectionFinishedBody",
-"messageBody": {
-"clientID": 42
-}
+/**
+ * @author Viktoria
  */
 public class SelectionFinishedBody implements ServerMessageAction<SelectionFinishedBody> {
 

@@ -4,15 +4,8 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-"messageType": "PlayerTurning",
-"messageBody": {
-"clientID": 42,
-"rotation": "counterclockwise"
-}
-}
-
+/**
+ * @author Viktoria
  */
 public class PlayerTurningBody implements ServerMessageAction<PlayerTurningBody> {
 
