@@ -1,5 +1,7 @@
 package server;
 
+import client.model.ClientModel;
+import game.Card;
 import game.Game;
 import game.Player;
 import game.Robot;
@@ -11,15 +13,17 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * @author Mohamad, Viktoria
  */
 public class MessageHandler {
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
+    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
     /**
      * Wenn der Server ein Message HelloServer bekommt, schickt er ein Welcome-Message zu dem ClientModel mit dem ID
@@ -28,8 +32,8 @@ public class MessageHandler {
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
-    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloServer Message received. " + ANSI_RESET);
+    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+        logger.info(ANSI_CYAN + "HalloServer Message received." + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
                 logger.info("Protocol version test succeeded");
@@ -83,7 +87,7 @@ public class MessageHandler {
     }
 
 
-    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
 
@@ -101,8 +105,8 @@ public class MessageHandler {
     }
 
 
-    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: SendChat Message received. " + ANSI_RESET);
+    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+        logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
 
@@ -126,7 +130,7 @@ public class MessageHandler {
     }
 
     //Server receive this message
-    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -137,7 +141,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
@@ -174,7 +178,7 @@ public class MessageHandler {
         logger.info("The player " + player.getName() + " is " + isReady);
     }
 
-    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         //TODO: SEND NOT ZU DEN SPIELER
         for (Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
@@ -182,7 +186,7 @@ public class MessageHandler {
         server.getCurrentGame().selectMap(mapSelectedBody.getMap());
     }
 
-    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+    public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
         //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
         int x = bodyObject.getX();
@@ -203,15 +207,68 @@ public class MessageHandler {
                         JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
                         server.sendMessage(currentPlayerMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
                     } else {
-                        JSONMessage nextPhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(2));
-                        server.sendMessage(nextPhaseMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                        server.getCurrentGame().setActivePhase(2);
                     }
                 }
             }
             //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
-            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It's not your turn!"));
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
     }
+
+    public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+        String card = selectedCardBody.getCard();
+        int register = selectedCardBody.getRegister();
+        System.out.println("HEY I GOT SELECTED");
+
+        Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        //Remove card from register deck
+        if (card.equals("Null")) {
+            Card currentCard = currentPlayer.getDeckRegister().getDeck().get(register);
+            currentPlayer.getDeckHand().getDeck().add(currentCard);
+            currentPlayer.getDeckRegister().getDeck().set(register, null);
+            JSONMessage removeCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, false));
+            server.getCurrentGame().sendToAllPlayers(removeCard);
+            logger.info(currentPlayer.getName() + " removed a card from the register!");
+        } else {
+            //Add card to register deck
+            Card currentCard = currentPlayer.selectedCard(card);
+            currentPlayer.getDeckRegister().getDeck().add(register, currentCard);
+
+            JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
+            server.sendMessage(addCard, clientHandler.getWriter());
+            server.getCurrentGame().sendToAllPlayers(addCard);
+            logger.info(currentPlayer.getName() + " added a card to the register!");
+
+            if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
+                JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
+                server.getCurrentGame().sendToAllPlayers(selectionFinished);
+
+                server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerStarted", new TimerStartedBody()));
+                server.getCurrentGame().setTimerOn(true);
+
+                try {
+                    //Wait 30 seconds
+                    Thread.sleep(30000);
+                    server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
+                    for (int i : server.getCurrentGame().tooLateClients()) {
+                        Player player = server.getPlayerWithID(i);
+                        JSONMessage jsonMessage = new JSONMessage("CardsYouGotNow", new CardsYouGotNowBody(player.drawBlind()));
+                        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody){
+        String card = playCardBody.getCard();
+    }
+
+
 }

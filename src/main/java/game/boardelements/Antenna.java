@@ -48,8 +48,7 @@ public class Antenna extends Element {
         *//**
      * Sort two points by destination distance, descendant.
      *
-     * @param p1 the first point
-     * @param p2 the second point
+     *
      *//*
         @Override
         public int compare(Point2D p1, Point2D p2) {    //hier kann man das statt 2 punkte ein for schleife für jedes Punkte

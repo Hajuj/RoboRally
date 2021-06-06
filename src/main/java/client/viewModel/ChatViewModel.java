@@ -165,5 +165,12 @@ public class ChatViewModel implements Initializable {
         newStage.setTitle("GAME");
         newStage.setScene(new Scene(root1));
         newStage.show();
+
+        FXMLLoader fxmlLoader2 = new FXMLLoader(getClass().getResource("/view/YourCards.fxml"));
+        Parent root2 = fxmlLoader2.load();
+        Stage newStage2 = new Stage();
+        newStage2.setTitle("CARDS");
+        newStage2.setScene(new Scene(root2));
+        newStage2.show();
     }
 }

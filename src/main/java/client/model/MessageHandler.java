@@ -1,11 +1,22 @@
 package client.model;
 
+import game.Game;
 import game.Player;
+import game.Robot;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
+
+import javax.swing.text.Position;
+import java.util.ArrayList;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -23,7 +34,7 @@ public class MessageHandler {
      * @param helloClientBody The message body of the message which is of type HelloClientBody
      */
     public void handleHelloClient (ClientModel clientmodel, HelloClientBody helloClientBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The ClientModel will be notified" + ANSI_RESET);
+        logger.info(ANSI_CYAN + "HalloClient Message received." + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
         //TODO change to notify() in class ClientModel
         clientmodel.setWaitingForServer(false);
@@ -37,7 +48,7 @@ public class MessageHandler {
      * @param welcomeBody The message body of the message which is of type {@link WelcomeBody}.
      */
     public void handleWelcome (ClientModel clientmodel, WelcomeBody welcomeBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Welcome Message received." + ANSI_RESET);
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
         clientmodel.getClientGameModel().setPlayer(player);
@@ -51,7 +62,7 @@ public class MessageHandler {
      * @param errorBody   The message body of the message which is of type {@link ErrorBody}.
      */
     public void handleError (ClientModel clientmodel, ErrorBody errorBody) {
-        logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
+        logger.warn(ANSI_CYAN + "Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
 
         switch (errorBody.getError()) {
@@ -69,12 +80,12 @@ public class MessageHandler {
     }
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Chat received." + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
@@ -100,6 +111,7 @@ public class MessageHandler {
         clientModel.getPlayersNamesMap().put(clientID, name);
         clientModel.getPlayersFigureMap().put(clientID, figure);
         clientModel.getPlayersStatusMap().put(clientID, false);
+
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
 
@@ -132,9 +144,17 @@ public class MessageHandler {
     }
 
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
-        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
-        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
-        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
+
+        Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
+        int playerID = clientModel.getClientGameModel().getActualPlayerID();
+        String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
+
+        Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
+        clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
+
+//        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
+//        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
+//        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
@@ -148,5 +168,138 @@ public class MessageHandler {
         clientModel.getClientGameModel().setActualPhase(phase);
         logger.info("Current Active Phase: " + phase);
     }
+
+    public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
+        int clientID = cardSelectedBody.getClientID();
+        int register = cardSelectedBody.getRegister();
+
+        if (cardSelectedBody.isFilled()) {
+            clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + register);
+        } else {
+            clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + register);
+        }
+    }
+
+    public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        //speichere die Cards und refresh the View
+        clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+    }
+
+    public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
+        int clientID = notYourCardsBody.getClientID();
+        int amount = notYourCardsBody.getCardsInHand();
+        String playerName = clientModel.getPlayersNamesMap().get(clientID);
+
+
+        //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
+
+        clientModel.receiveMessage("Player " + playerName + " has " + amount + " cards in the hand!");
+    }
+
+    public void handleShuffleCoding (ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
+        int clientID = shuffleCodingBody.getClientID();
+
+        clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
+    }
+
+
+    public void handleSelectionFinished (ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
+        int clientID = selectionFinishedBody.getClientID();
+        if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+                clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
+        }
+    }
+
+    public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
+            a.show();
+        });
+    }
+
+    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+        ArrayList<Integer> lateClient = timerEndedBody.getClientIDs();
+
+        clientModel.receiveMessage("Late client IDs are: " + lateClient);
+    }
+
+    public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
+        ArrayList<String> cards = cardsYouGotNowBody.getCards();
+        //TODO: put the cards in leere Felder in Register
+        for (String card : cards) {
+            clientModel.receiveMessage("Your new Card is " + card);
+        }
+    }
+
+    public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+
+    }
+
+    public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {
+
+    }
+
+    public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
+        int clientID = cardPlayedBody.getClientID();
+        String card = cardPlayedBody.getCard();
+
+    }
+
+    public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
+
+    }
+
+    public void handleMovement (ClientModel clientModel, MovementBody movementBody) {
+        int clientID = movementBody.getClientID();
+        int newX = movementBody.getX();
+        int newY = movementBody.getY();
+        Robot robot = null;
+        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
+                robot = entry.getKey();
+            }
+        }
+        clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
+    }
+
+    public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {
+        String type = animationBody.getType();
+        switch (type) {
+            case "BlueConveyorBelt": {
+                //animation für BlueConveyorBelt
+                break;
+            }
+            case "GreenConveyorBelt": {
+                //animation für GreenConveyorBelt
+                break;
+            }
+            case "PushPanel": {
+                //animation für PushPanel
+                break;
+            }
+            case "Gear": {
+                //animation für Gear
+                break;
+            }
+            case "CheckPoint": {
+                //animation für CheckPoint
+                break;
+            }
+            case "PlayerShooting": {
+                //animation für PlayerShooting
+                break;
+            }
+            case "WallShooting": {
+                //animation für WallShooting
+                break;
+            }
+            case "EnergySpace": {
+                //animation für EnergySpace
+                break;
+            }
+        }
+    }
+
 
 }

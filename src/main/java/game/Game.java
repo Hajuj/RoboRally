@@ -8,11 +8,8 @@ import game.decks.DeckWorm;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
+import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import json.protocol.ErrorBody;
-import json.protocol.ActivePhaseBody;
-import json.protocol.CurrentPlayerBody;
-import json.protocol.GameStartedBody;
 import server.Connection;
 import server.Server;
 
@@ -27,6 +24,7 @@ import java.util.*;
  * @author Ilja Knis
  */
 public class Game {
+    private static Game instance;
 
     private DeckSpam deckSpam;
     private DeckTrojan deckTrojan;
@@ -55,6 +53,21 @@ public class Game {
     private String mapName;
     private boolean gameOn;
     private int currentPlayer;
+    private int activePhase;
+    private int currentRound;
+    private boolean activePhaseOn = false;
+    private boolean timerOn = false;
+
+    private Game() {
+
+    }
+
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
 
     public Game (Server server) {
         this.server = server;
@@ -79,6 +92,10 @@ public class Game {
 
         this.playerList = players;
 
+        this.currentRound = 0;
+        this.setActivePhase(0);
+        this.setCurrentPlayer(playerList.get(0).getPlayerID());
+
         Collections.sort(playerList);
 
         //send an alle GameStartedMessage
@@ -90,22 +107,37 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
-        JSONMessage activePhaseMessage = new JSONMessage("ActivePhase", new ActivePhaseBody(0));
-        sendToAllPlayers(activePhaseMessage);
-
-        currentPlayer = playerList.get(0).getPlayerID();
-        JSONMessage actualPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(currentPlayer));
-        sendToAllPlayers(actualPlayerMessage);
+        informAboutActivePhase();
+        informAboutCurrentPlayer();
     }
 
-    public int nextPlayerID() {
+    public ArrayList<Integer> tooLateClients() {
+        ArrayList<Integer> tooLateClients = new ArrayList<>();
+        for (Player player : this.playerList) {
+            if (!player.isRegisterFull()) {
+                tooLateClients.add(player.getPlayerID());
+            }
+        }
+        return tooLateClients;
+    }
+
+    public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
-        if (playerList.size() -1 == currentIndex) {
+        if (playerList.size() - 1 == currentIndex) {
             return -1;
         }
         return playerList.get(currentIndex + 1).getPlayerID();
     }
 
+    public void informAboutActivePhase () {
+        JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
+        sendToAllPlayers(currentPhase);
+    }
+
+    public void informAboutCurrentPlayer () {
+        JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
+        sendToAllPlayers(currentPlayer);
+    }
 
     //TODO select map
     //     if (Player player:playerList) isAI -> pickRandomMap
@@ -228,6 +260,113 @@ public class Game {
         }
     }
 
+    /*
+    Antenna priority;
+    Register 1:
+    List<Player> turnOrder;
+    for(int i = 0; i < playersList.size; i++){
+        turnOrder[i].getPlayer.activateCardEffect();
+    }
+    triggerBoardElements();
+        -> for(Element element : map.get(y).get(x))
+               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
+
+
+     */
+
+
+    //TODO messageBodies verwenden
+    public void activateCardEffect(Robot robot, Card card){
+        switch(card.getCardName()){
+            case "Again" -> {
+                //aktuelles Register -> if 0 -> error
+                //                      else player.getDeckRegister
+            }
+            case "BackUp" -> {
+            }
+            case "MoveI" -> {}
+            case "MoveII" -> {}
+            case "MoveIII" -> {}
+            case "PowerUp" -> {}
+            case "TurnLeft" -> {}
+            case "TurnRight" -> {}
+            case "UTurn" -> {}
+            case "Spam" -> {}
+            case "Trojan" -> {}
+            case "Virus" -> {}
+            case "Worm" -> {}
+        }
+    }
+
+    //TODO: expand method for laser hits robot (robotMap)
+    //      check for coordination consistency
+    //      check for possible exception handling
+    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition){
+        ArrayList<Point2D> laserPath = new ArrayList<>();
+        laserPath.add(laserPosition);
+        boolean foundBlocker = false;
+        double tempPosition;
+        switch(laser.getOrientations().get(0)){
+            case "top" -> {
+                tempPosition = laserPosition.getY();
+                while(!foundBlocker){
+                    tempPosition--;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "bottom" -> {
+                tempPosition = laserPosition.getY();
+                while(!foundBlocker){
+                    tempPosition++;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "left" -> {
+                tempPosition = laserPosition.getX();
+                while(!foundBlocker){
+                    tempPosition--;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            case "right" -> {
+                tempPosition = laserPosition.getX();
+                while(!foundBlocker){
+                    tempPosition++;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            default -> {
+                //Place for exception handling
+            }
+        }
+
+        return laserPath;
+    }
+
 
     //TODO if robot moves outside the map -> check map for RestartPoint
     //     -> spawn robot at RestartPoint
@@ -235,6 +374,26 @@ public class Game {
     //TODO element instanceOf Laser -> player draw Spam from DeckSpam
 
     //TODO calculate distance from antenna -> method
+
+
+    //TODO find next wall with laser
+
+    public void startProgrammingPhase () {
+        System.out.println(playerList);
+        for (Player player : playerList) {
+            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            System.out.println("player " + player.getName() + "  has " + player.getDeckHand().getDeck().size());
+            JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+            server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+
+            for (Player otherPlayer : playerList) {
+                if (otherPlayer.getPlayerID() != player.getPlayerID()) {
+                    JSONMessage notYourCardsMessage = new JSONMessage("NotYourCards", new NotYourCardsBody(player.getPlayerID(), player.getDeckHand().getDeck().size()));
+                    server.sendMessage(notYourCardsMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
+                }
+            }
+        }
+    }
 
 
     public boolean valideStartingPoint (int x, int y) {
@@ -261,14 +420,53 @@ public class Game {
             int indexelement = map.get(y).get(x).indexOf(element);
             map.get(y).get(x).remove(element);
             map.get(y).get(x).add(indexelement, (Element) object);
-        }
-        else{
+        } else {
             throw new ClassCastException(object + " is not an Element!" +
                     "Can't cast this method on Objects other than Elements!");
 
         }
     }
 
+    //TODO activateCard() method with switch
+    //     check discard consistency
+
+
+    public int getActivePhase () {
+        return activePhase;
+    }
+
+    public void setActivePhase (int activePhase) {
+        this.activePhase = activePhase;
+        informAboutActivePhase();
+        if (activePhase == 2 && !activePhaseOn) {
+            startProgrammingPhase();
+            activePhaseOn = true;
+        }
+    }
+
+    public boolean isTimerOn () {
+        return timerOn;
+    }
+
+    public void setTimerOn (boolean timerOn) {
+        this.timerOn = timerOn;
+    }
+
+    public int getCurrentRound () {
+        return currentRound;
+    }
+
+    public void setCurrentRound (int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public boolean isActivePhaseOn () {
+        return activePhaseOn;
+    }
+
+    public void setActivePhaseOn (boolean activePhaseOn) {
+        this.activePhaseOn = activePhaseOn;
+    }
 
     public int getCurrentPlayer () {
         return currentPlayer;

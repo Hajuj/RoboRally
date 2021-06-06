@@ -5,6 +5,9 @@ import client.model.MessageHandler;
 
 import java.util.ArrayList;
 
+/**
+ * @author Viktoria
+ */
 public class SelectMapBody implements ServerMessageAction<SelectMapBody> {
 
     ArrayList<String> availableMaps;

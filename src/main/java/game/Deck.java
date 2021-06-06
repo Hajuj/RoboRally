@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Ilja Knis
@@ -13,14 +14,20 @@ public abstract class Deck {
 
     public abstract void shuffleDeck();
 
-    public Card getTopCard(){
+    public Card getTopCard() {
         topCard = this.getDeck().get(0);
         return topCard;
     }
 
-    public void removeTopCard(ArrayList<Card> Deck){
-        Deck.remove(0);
+    protected abstract ArrayList<Card> getDeck();
+
+    public void removeTopCard() {
+        this.getDeck().remove(0);
     }
 
-    protected abstract ArrayList<Card> getDeck();
+    public void removeAllCards() {
+        while (this.getDeck().size() > 0) {
+            this.removeTopCard();
+        }
+    }
 }
