@@ -313,7 +313,9 @@ public class Game {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
 
             }
-            case "PowerUp" -> {}
+            case "PowerUp" -> {
+                playerList.get(indexCurrentPlayer).increaseEnergy(1);
+            }
             case "TurnLeft" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "left");
             }
@@ -324,10 +326,66 @@ public class Game {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
             }
             case "Spam" -> {}
-            case "Trojan" -> {}
-            case "Virus" -> {}
+            case "Trojan" -> {
+                for(int i = 0; i < 2; i++) {
+                    playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+                //TODO access current register and play top card from deckProgramming
+            }
+            case "Virus" -> {
+                ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer).getRobot(), 6);
+                for(Player player : playersWithinRadius){
+                    player.getDeckProgramming().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
+                }
+            }
             case "Worm" -> {}
         }
+    }
+
+    public ArrayList<Player> getPlayersInRadius(Robot robot, int radius){
+        ArrayList<Player> playersInRadius = new ArrayList<>();
+        int robotXPosition = robot.getxPosition();
+        int robotYPosition = robot.getyPosition();
+        int lowerXCap, upperXCap, lowerYCap, upperYCap;
+
+        //Calculate boundaries within radius span
+        if(robotXPosition - radius < 0){
+            lowerXCap = 0;
+        }
+        else {
+            lowerXCap = robotXPosition - radius;
+        }
+        if(robotYPosition - radius < 0){
+            lowerYCap = 0;
+        }
+        else {
+            lowerYCap = robotYPosition - radius;
+        }
+        if(robotXPosition + radius > map.get(0).size()){
+            upperXCap = map.get(0).size();
+        }
+        else {
+            upperXCap = robotXPosition + radius;
+        }
+        if(robotYPosition + radius > map.size()){
+            upperYCap = map.size();
+        }
+        else {
+            upperYCap = robotYPosition + radius;
+        }
+
+        //TODO what about the player that uses the virus card?
+        for(Player player : playerList){
+            int robotX = player.getRobot().getxPosition();
+            int robotY = player.getRobot().getyPosition();
+            if(robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap){
+                playersInRadius.add(player);
+            }
+        }
+
+        return playersInRadius;
     }
 
     public void moveRobot(Robot robot, String orientation, int movement){
