@@ -2,14 +2,19 @@ package client.model;
 
 import game.Element;
 import game.Player;
+import game.Robot;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.SetStartingPointBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
@@ -18,15 +23,19 @@ public class ClientGameModel {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<String> cardsInHand = new ArrayList();
     private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
+    private HashMap<Robot, Point2D> robotMap = new HashMap<>();
+    private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
 
 
     //TODO: Observer hier
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
+
     //Das ist so falsch oh gott
     private int x;
     private int y;
     private int actualPlayerID;
     private int actualPhase;
+
 
     //Singleton Zeug
     private ClientGameModel () {
@@ -120,5 +129,18 @@ public class ClientGameModel {
 
     public void setCardsInHandObservable (ObservableList cardsInHandObservable) {
         this.cardsInHandObservable = cardsInHandObservable;
+    }
+
+    public HashMap<Robot, Point2D> getRobotMap () {
+        return robotMap;
+    }
+
+
+    public ObservableMap<Robot, Point2D> getRobotMapObservable () {
+        return robotMapObservable;
+    }
+
+    public void setRobotMapObservable (ObservableMap<Robot, Point2D> robotMapObservable) {
+        this.robotMapObservable = robotMapObservable;
     }
 }

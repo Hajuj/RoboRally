@@ -8,6 +8,7 @@ import server.Server;
 /**
  * @author altug
  */
+
 public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
 
     @Expose
