@@ -508,6 +508,7 @@ public class Game {
                                 for(String orient : element.getOrientations()) {
                                     if (!orient.equals("left")) {
                                         robot.setxPosition(robotXPosition+1);
+                                        robotXPosition++;
                                     }
                                 }
                             }
@@ -517,6 +518,7 @@ public class Game {
                                 }
                                 else {
                                     robot.setxPosition(robotXPosition+1);
+                                    robotXPosition++;
                                 }
                             }
                         }
