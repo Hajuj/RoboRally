@@ -23,10 +23,6 @@ public class Player implements Comparable<Player> {
     private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
-    private DeckSpam deckSpam;
-    private DeckTrojan deckTrojan;
-    private DeckVirus deckVirus;
-    private DeckWorm deckWorm;
 
     public Player(int playerID) {
         this.playerID = playerID;
@@ -46,22 +42,6 @@ public class Player implements Comparable<Player> {
         this.deckRegister = new DeckRegister();
         deckRegister.initializeDeck();
         deckRegister.shuffleDeck();
-
-        this.deckSpam = new DeckSpam();
-        deckSpam.initializeDeck();
-        deckSpam.shuffleDeck();
-
-        this.deckTrojan = new DeckTrojan();
-        deckTrojan.initializeDeck();
-        deckTrojan.shuffleDeck();
-
-        this.deckVirus = new DeckVirus();
-        deckVirus.initializeDeck();
-        deckVirus.shuffleDeck();
-
-        this.deckWorm = new DeckWorm();
-        deckWorm.initializeDeck();
-        deckWorm.shuffleDeck();
     }
 
     //TODO shuffle cards
@@ -199,22 +179,6 @@ public class Player implements Comparable<Player> {
 
     public DeckRegister getDeckRegister() {
         return deckRegister;
-    }
-
-    public DeckSpam getDeckSpam() {
-        return deckSpam;
-    }
-
-    public DeckTrojan getDeckTrojan() {
-        return deckTrojan;
-    }
-
-    public DeckVirus getDeckVirus() {
-        return deckVirus;
-    }
-
-    public DeckWorm getDeckWorm() {
-        return deckWorm;
     }
 
     public int getFigure() {
