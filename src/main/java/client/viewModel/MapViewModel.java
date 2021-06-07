@@ -30,10 +30,11 @@ import java.util.*;
 
 public class MapViewModel implements Initializable {
 
-    @FXML
-    public GridPane mapGrid;
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
+
+    @FXML
+    public GridPane mapGrid;
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();

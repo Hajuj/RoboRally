@@ -100,6 +100,7 @@ public class MessageHandler {
     }
 
     public void handlePlayerAdded (ClientModel clientModel, PlayerAddedBody playerAddedBody) {
+        logger.info(ANSI_CYAN + "PlayerAdded Message received." + ANSI_RESET);
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -118,11 +119,13 @@ public class MessageHandler {
     }
 
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
+        logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
+        logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
         for (String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
@@ -130,12 +133,14 @@ public class MessageHandler {
     }
 
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
+        logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         clientModel.setSelectedMap(mapSelectedBody.getMap());
         System.out.println(mapSelectedBody.getMap().getClass());
         //clientModel.gameOnProperty().setValue(true);
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
+        logger.info(ANSI_CYAN + "ConnectionUpdate Message received." + ANSI_RESET);
         int playerID = connectionUpdateBody.getPlayerID();
         boolean isConnected = connectionUpdateBody.isConnected();
         String action = connectionUpdateBody.getAction();
@@ -146,6 +151,7 @@ public class MessageHandler {
     }
 
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
+        logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
 
         Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
         int playerID = clientModel.getClientGameModel().getActualPlayerID();
@@ -153,6 +159,7 @@ public class MessageHandler {
 
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
         clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
+       //BraucheIch das noch
         clientModel.getClientGameModel().setProgrammingPhase(true);
 
 //        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
@@ -161,12 +168,14 @@ public class MessageHandler {
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+        logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         logger.info("Current Player: " + playerID);
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
+        logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         //TODO: swizch cases für die Phasen, programming phase ist 2
         int phase = activePhaseBody.getPhase();
         clientModel.getClientGameModel().setActualPhase(phase);
@@ -179,6 +188,7 @@ public class MessageHandler {
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
+        logger.info(ANSI_CYAN + "CardSelected Message received." + ANSI_RESET);
         int clientID = cardSelectedBody.getClientID();
         int register = cardSelectedBody.getRegister();
 
@@ -190,13 +200,13 @@ public class MessageHandler {
     }
 
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
-
-
     }
 
     public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
+        logger.info(ANSI_CYAN + "NotYourCards Message received." + ANSI_RESET);
         int clientID = notYourCardsBody.getClientID();
         int amount = notYourCardsBody.getCardsInHand();
         String playerName = clientModel.getPlayersNamesMap().get(clientID);
@@ -208,6 +218,7 @@ public class MessageHandler {
     }
 
     public void handleShuffleCoding (ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
+        logger.info(ANSI_CYAN + "ShuffleCoding Message received." + ANSI_RESET);
         int clientID = shuffleCodingBody.getClientID();
 
         clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
@@ -215,6 +226,7 @@ public class MessageHandler {
 
 
     public void handleSelectionFinished (ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
+        logger.info(ANSI_CYAN + "SelectionFinished Message received." + ANSI_RESET);
         int clientID = selectionFinishedBody.getClientID();
         if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
                 clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
@@ -222,6 +234,7 @@ public class MessageHandler {
     }
 
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
+        logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
@@ -230,12 +243,14 @@ public class MessageHandler {
     }
 
     public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+        logger.info(ANSI_CYAN + "TimerEnded Message received." + ANSI_RESET);
         ArrayList<Integer> lateClient = timerEndedBody.getClientIDs();
 
         clientModel.receiveMessage("Late client IDs are: " + lateClient);
     }
 
     public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
+        logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
         for (String card : cards) {
@@ -244,6 +259,7 @@ public class MessageHandler {
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+        logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
         for (Object currentCard : currentCards) {
@@ -257,21 +273,25 @@ public class MessageHandler {
     }
 
     public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {
+        logger.info(ANSI_CYAN + "ReplaceCard Message received." + ANSI_RESET);
 
 
     }
 
     public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
+        logger.info(ANSI_CYAN + "CardPlayed Message received." + ANSI_RESET);
         int clientID = cardPlayedBody.getClientID();
         String card = cardPlayedBody.getCard();
 
     }
 
     public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
+        logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
 
     }
 
     public void handleMovement (ClientModel clientModel, MovementBody movementBody) {
+        logger.info(ANSI_CYAN + "Movement Message received." + ANSI_RESET);
         int clientID = movementBody.getClientID();
         int newX = movementBody.getX();
         int newY = movementBody.getY();
@@ -285,6 +305,7 @@ public class MessageHandler {
     }
 
     public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {
+        logger.info(ANSI_CYAN + "Animation Message received." + ANSI_RESET);
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {

@@ -36,17 +36,17 @@ public class ChooseRobotViewModel implements Initializable {
 
 
     @FXML
-    private ImageView robot0;
+    public ImageView robot0;
     @FXML
-    private ImageView robot1;
+    public ImageView robot1;
     @FXML
-    private ImageView robot2;
+    public ImageView robot2;
     @FXML
-    private ImageView robot3;
+    public ImageView robot3;
     @FXML
-    private ImageView robot4;
+    public ImageView robot4;
     @FXML
-    private ImageView robot5;
+    public ImageView robot5;
 
 
     @Override

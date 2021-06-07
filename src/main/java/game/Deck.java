@@ -15,6 +15,7 @@ public abstract class Deck {
     public abstract void shuffleDeck();
 
     public Card getTopCard() {
+        //TODO Index 0 out of bounds for length 0 -> Ilja please help us :(
         topCard = this.getDeck().get(0);
         return topCard;
     }

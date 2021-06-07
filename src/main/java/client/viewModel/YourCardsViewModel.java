@@ -140,8 +140,8 @@ public class YourCardsViewModel implements Initializable {
     }
 
     public void playCard () {
-        JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
-        model.sendMessage(playCardm);
+        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
+        model.sendMessage(playCard);
     }
 
     //TODO:WICHTIG
