@@ -21,14 +21,15 @@ import java.util.ResourceBundle;
 public class StartScreenViewModel implements Initializable {
 
     @FXML
-    private Button StartGameButton;
+    public Button StartGameButton;
     @FXML
-    private Button GameGuidButton;
+    public Button GameGuidButton;
     @FXML
-    private Button ExitButton;
+    public Button ExitButton;
     @FXML
-    private AnchorPane StartscreenPane;
-    private AudioClip sound;
+    public AnchorPane StartscreenPane;
+    @FXML
+    public AudioClip sound;
 
 
     @FXML

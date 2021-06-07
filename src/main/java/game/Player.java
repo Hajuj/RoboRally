@@ -1,15 +1,20 @@
 package game;
 
+import game.boardelements.Antenna;
 import game.decks.*;
+import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
 
+//import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Ilja Knis
  */
-public class Player implements Comparable<Player> {
+public class Player {
     Game game = Game.getInstance();
 
     private int playerID;
@@ -161,11 +166,6 @@ public class Player implements Comparable<Player> {
             }
         }
         return null;
-    }
-
-    @Override
-    public int compareTo(Player o) {
-        return Integer.compare(this.getPlayerID(), o.getPlayerID());
     }
 
     public void pickRobot(int figure, String name) {

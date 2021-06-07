@@ -20,10 +20,9 @@ public class AvailableMapsViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
     @FXML
-    private Button DizzyHighwayButton;
-
+    public Button DizzyHighwayButton;
     @FXML
-    ChoiceBox choiseBox;
+    public ChoiceBox choiseBox;
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {

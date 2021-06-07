@@ -27,19 +27,19 @@ public class ChatViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
     @FXML
-    private TextArea readyDisplay = new TextArea("");
+    public TextArea readyDisplay = new TextArea("");
     @FXML
-    private Button readyButton;
+    public Button readyButton;
     @FXML
-    private Button gameGuideBtn;
+    public Button gameGuideBtn;
     @FXML
-    private TextArea chatField = new TextArea("");
+    public TextArea chatField = new TextArea("");
     @FXML
-    private TextField messageField;
+    public TextField messageField;
     @FXML
-    private Button sendButton;
+    public Button sendButton;
     @FXML
-    private Button notReadyBtn;
+    public Button notReadyBtn;
 
     private String message;
 
@@ -90,6 +90,7 @@ public class ChatViewModel implements Initializable {
                     //     arraycopy: last destination index 78 out of bounds for byte[66]
                     //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
                     //     SYNCHRONIZED IS NOT WORKING LOL
+                    //     Cannot read field "glyphs" because "this.layoutCache" is null
                     readyDisplay.setText(s2);
                 }
             });

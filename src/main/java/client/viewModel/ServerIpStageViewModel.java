@@ -27,26 +27,23 @@ import java.util.regex.Pattern;
 
 public class ServerIpStageViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
+
     private int serverPort;
     private String serverIP;
-    @FXML
-    private TextField serverAddressField;
-    @FXML
-    private TextField serverPortField;
-
     private StringProperty serverAddress;
 
     @FXML
-    private Button connectButton;
-
+    public TextField serverAddressField;
     @FXML
-    ImageView logo;
-
+    public TextField serverPortField;
     @FXML
-    private Button LMUButton;
-
+    public Button connectButton;
     @FXML
-    private Button BButton;
+    public ImageView logo;
+    @FXML
+    public Button LMUButton;
+    @FXML
+    public Button BButton;
 
 
     @Override
