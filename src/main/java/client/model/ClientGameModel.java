@@ -10,6 +10,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
+import json.protocol.PlayCardBody;
+import json.protocol.SelectedCardBody;
 import json.protocol.SetStartingPointBody;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class ClientGameModel {
 
     //TODO: Observer hier
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
+    private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
 
     //Das ist so falsch oh gott
     private int x;
@@ -53,7 +56,19 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
-
+  /*  public void playCard (String cardName) {
+      //  JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
+     //   clientModel.sendMessage(playCardm);
+    }
+    public void chooseCard (String cardName,int card) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, ));
+        clientModel.sendMessage(jsonMessage);
+    }
+    public void chooseReg (int register) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register + 1));
+        clientModel.sendMessage(jsonMessage);
+    }
+*/
 
     public boolean getCanSetStartingPoint () {
         return canSetStartingPoint.get();
@@ -97,7 +112,18 @@ public class ClientGameModel {
 
     public void setActualPhase (int actualPhase) {
         this.actualPhase = actualPhase;
+
     }
+    public void setProgrammingPhase(boolean b) {
+       /* if (this.actualPhase == 2)*/
+        this.programmingPhaseProperty.set(b);
+
+    }
+
+    public BooleanProperty getProgrammingPhaseProperty () {
+        return programmingPhaseProperty;
+    }
+
 
     public Player getPlayer () {
         return player;

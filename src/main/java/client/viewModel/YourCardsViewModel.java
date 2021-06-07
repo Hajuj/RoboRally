@@ -144,7 +144,7 @@ public class YourCardsViewModel implements Initializable {
         model.sendMessage(playCardm);
     }
 
-
+    //TODO:WICHTIG
     public void chooseCard (int card) {
         int register = firstAvailableRegister();
         Button event = null;
@@ -245,7 +245,7 @@ public class YourCardsViewModel implements Initializable {
         registerMap.put(2, "Null");
         registerMap.put(3, "Null");
         registerMap.put(4, "Null");
-
+        //ARRAY FOR PROGRAMMING CARDS
         clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
             @Override
             public void onChanged (Change change) {

@@ -151,6 +151,7 @@ public class MessageHandler {
 
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
         clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
+        clientModel.getClientGameModel().setProgrammingPhase(true);
 
 //        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
 //        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
@@ -164,9 +165,15 @@ public class MessageHandler {
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
+        //TODO: swizch cases für die Phasen, programming phase ist 2
         int phase = activePhaseBody.getPhase();
         clientModel.getClientGameModel().setActualPhase(phase);
-        logger.info("Current Active Phase: " + phase);
+        /*switch (phase){
+            case 2 -> {clientModel.getClientGameModel().setActualPhase(phase);
+            logger.info("Current Active Phase: " + phase);
+            }
+
+        }*/
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
@@ -183,6 +190,8 @@ public class MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+
+
     }
 
     public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {

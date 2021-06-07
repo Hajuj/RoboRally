@@ -146,7 +146,7 @@ public class MapViewModel implements Initializable {
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
-    //die MEthode mit Eleemtn als Parametre schicekn
+
     public ImageView loadImage (String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
@@ -188,6 +188,7 @@ public class MapViewModel implements Initializable {
             //dann ja darf man selecten
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
+
 //
 //            Point2D positionID = new Point2D(colIndex, rowIndex);
 
@@ -338,49 +339,5 @@ public class MapViewModel implements Initializable {
             }
         }
     }
-
-
-
-    private String toString(ArrayList<String> orientations) {
-        String liste= "" ;
-        for (String s:orientations) {
-            //liste += s + " \t";
-            String.join(", ", orientations);
-           // System.out.println(liste);
-
-        }
-        System.out.println(liste);
-
-/*
-       for (int i = 0; i< orientations.size();i++ ) {
-            liste += orientations.get(i) + " \t";
-           // liste = String.join(", ", orientations);
-            //liste = orientations.get(i) ;
-            //liste += String.join(", ", orientations);
-            System.out.println(liste +" ///");
-            //System.out.println(String.join(", ", orientations.toString()));
-        }*/
-        return liste;
-    }
-
-
-//    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
-//        if (object instanceof Element) {
-//            int indexelement = map.get(x).get(y).indexOf(element);
-//            map.get(x).get(y).remove(element);
-//            map.get(x).get(y).add(indexelement, (Element) object);
-//        } else {
-//            throw new ClassCastException(object + " is not an Element!" +
-//                    "Can't cast this method on Objects other than Elements!");
-//
-//        }
-//    }
-    //TODO:if wall and leser gleichzeitg auf the same feld und dann kommt roboter
-    /*public void isValidReplacement(){
-        if ()
-    }*/
-
-
-
 }
 
