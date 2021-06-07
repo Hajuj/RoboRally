@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="405.0" prefWidth="266.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.YourCardsViewModel">
+    <children>
+        <Button fx:id="card0" mnemonicParsing="false" onAction="#chooseCard0" prefHeight="135.0" prefWidth="90.0"
+                text="card0"/>
+        <Button fx:id="card1" layoutX="90.0" mnemonicParsing="false" onAction="#chooseCard1" prefHeight="135.0"
+                prefWidth="90.0" text="card1"/>
+        <Button fx:id="card2" layoutX="179.0" mnemonicParsing="false" onAction="#chooseCard2" prefHeight="135.0"
+                prefWidth="90.0" text="card2"/>
+        <Button fx:id="card3" layoutX="269.0" mnemonicParsing="false" onAction="#chooseCard3" prefHeight="135.0"
+                prefWidth="90.0" text="card3"/>
+        <Button fx:id="card4" layoutX="359.0" mnemonicParsing="false" onAction="#chooseCard4" prefHeight="135.0"
+                prefWidth="90.0" text="card4"/>
+        <Button fx:id="card5" layoutX="45.0" layoutY="135.0" mnemonicParsing="false" onAction="#chooseCard5"
+                prefHeight="135.0" prefWidth="90.0" text="card5"/>
+        <Button fx:id="card6" layoutX="135.0" layoutY="135.0" mnemonicParsing="false" onAction="#chooseCard6"
+                prefHeight="135.0" prefWidth="90.0" text="card6"/>
+        <Button fx:id="card7" layoutX="225.0" layoutY="135.0" mnemonicParsing="false" onAction="#chooseCard7"
+                prefHeight="135.0" prefWidth="90.0" text="card7"/>
+        <Button fx:id="card8" layoutX="314.0" layoutY="135.0" mnemonicParsing="false" onAction="#chooseCard8"
+                prefHeight="135.0" prefWidth="90.0" text="card8"/>
+        <Button fx:id="reg0" layoutY="273.0" mnemonicParsing="false" onAction="#chooseReg0" prefHeight="135.0"
+                prefWidth="90.0" style="-fx-background-color: black;" text="reg0" textFill="WHITE"/>
+        <Button fx:id="reg1" layoutX="90.0" layoutY="273.0" mnemonicParsing="false" onAction="#chooseReg1"
+                prefHeight="135.0" prefWidth="90.0" style="-fx-background-color: black;" text="reg1" textFill="WHITE"/>
+        <Button fx:id="reg2" layoutX="180.0" layoutY="273.0" mnemonicParsing="false" onAction="#chooseReg2"
+                prefHeight="135.0" prefWidth="90.0" style="-fx-background-color: black;" text="reg2" textFill="WHITE"/>
+        <Button fx:id="reg3" layoutX="269.0" layoutY="273.0" mnemonicParsing="false" onAction="#chooseReg3"
+                prefHeight="135.0" prefWidth="90.0" style="-fx-background-color: black;" text="reg3" textFill="WHITE"/>
+        <Button fx:id="reg4" layoutX="359.0" layoutY="273.0" mnemonicParsing="false" onAction="#chooseReg4"
+                prefHeight="135.0" prefWidth="90.0" style="-fx-background-color: black;" text="reg4" textFill="WHITE"/>
+        <Button fx:id="send" layoutX="449.0" layoutY="179.0" mnemonicParsing="false" text="SEND 1.REG" textFill="RED"
+                onAction="#playCard"/>
+    </children>
+</AnchorPane>

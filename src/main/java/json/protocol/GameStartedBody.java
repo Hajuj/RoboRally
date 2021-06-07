@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class GameStartedBody implements ServerMessageAction<GameStartedBody> {
 
     @Expose
-    private final ArrayList<ArrayList<ArrayList<Element>>> gameMap;
+    private ArrayList<ArrayList<ArrayList<Element>>> gameMap;
 
     public GameStartedBody (ArrayList<ArrayList<ArrayList<Element>>> map) {
         this.gameMap = map;

@@ -5,17 +5,6 @@ import server.ClientHandler;
 import server.MessageHandler;
 import server.Server;
 
-/*
-{
-   "messageType": "PlayerValues",
-   "messageBody": {
-       "name": "Nr. 5",
-       "figure": 5
-   }
-}
-
- */
-
 /**
  * @author Viktoria
  */

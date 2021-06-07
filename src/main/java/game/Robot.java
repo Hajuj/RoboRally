@@ -10,7 +10,8 @@ public class Robot {
     private int xPosition;
     private int yPosition;
     private String name;
-    private ArrayList<String> orientation;
+    private String orientation;
+    private int schadenPunkte = 0;
 
 
     //TODO: Orientation immer nach rechts am Anfang? Oder da, wo die Antenne schaut? keine Ahnung
@@ -18,18 +19,26 @@ public class Robot {
         this.name = name;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        orientation.add("Right");
+        this.orientation = "right";
+    }
+
+    public int getSchadenPunkte () {
+        return schadenPunkte;
+    }
+
+    public void setSchadenPunkte (int schadenPunkte) {
+        this.schadenPunkte = schadenPunkte;
     }
 
     public int getxPosition () {
         return xPosition;
     }
 
-    public int getyPosition() {
+    public int getyPosition () {
         return yPosition;
     }
 
-    public String getName() {
+    public String getName () {
         return name;
     }
 
@@ -45,4 +54,11 @@ public class Robot {
         this.name = name;
     }
 
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
+    }
 }

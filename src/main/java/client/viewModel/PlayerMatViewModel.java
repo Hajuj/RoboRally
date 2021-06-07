@@ -7,17 +7,17 @@ import javafx.scene.layout.HBox;
 public class PlayerMatViewModel {
     //5 Registern für die jeweiligen ausgewählten ProgrammierKarten
     @FXML
-    private HBox playerRegister;
+    public HBox playerRegister;
     @FXML
-    private ImageView register1;
+    public ImageView register1;
     @FXML
-    private ImageView register2;
+    public ImageView register2;
     @FXML
-    private ImageView register3;
+    public ImageView register3;
     @FXML
-    private ImageView register4;
+    public ImageView register4;
     @FXML
-    private ImageView register5;
+    public ImageView register5;
 
 
     public HBox getPlayerRegister () {

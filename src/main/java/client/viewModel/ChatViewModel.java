@@ -15,8 +15,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable {
@@ -24,25 +27,34 @@ public class ChatViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 
     @FXML
-    private final TextArea readyDisplay = new TextArea("");
+    public TextArea readyDisplay = new TextArea("");
     @FXML
-    private Button readyButton;
+    public Button readyButton;
     @FXML
-    private Button gameGuideBtn;
+    public Button gameGuideBtn;
     @FXML
-    private final TextArea chatField = new TextArea("");
+    public TextArea chatField = new TextArea("");
     @FXML
-    private TextField messageField;
+    public TextField messageField;
     @FXML
-    private Button sendButton;
+    public Button sendButton;
     @FXML
-    private Button notReadyBtn;
+    public Button notReadyBtn;
 
     private String message;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        chatField.setEditable(false);
+        readyDisplay.setEditable(false);
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+            readyButton.setVisible(false);
+            notReadyBtn.setVisible(false);
+        }
+        notReadyBtn.setDisable(true);
 
         //TODO check how to do it with observable pattern instead of addListener
         model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
@@ -72,22 +84,18 @@ public class ChatViewModel implements Initializable {
             model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
-                    //TODO check if synchronized block working
+                    //TODO try to implement it in ClientModel
+                    //     check if synchronized block working
                     //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
                     //     arraycopy: last destination index 78 out of bounds for byte[66]
+                    //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
                     //     SYNCHRONIZED IS NOT WORKING LOL
+                    //     Cannot read field "glyphs" because "this.layoutCache" is null
                     readyDisplay.setText(s2);
                 }
             });
         }
-        model.refreshPlayerStatus(model.getPlayer().getPlayerID(), false);
-        chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        if (model.getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
+
 
         //TODO close the chat window when the game starts and make the chat as a button in the game window
         model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
@@ -104,6 +112,8 @@ public class ChatViewModel implements Initializable {
 
             }
         });
+
+
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -145,11 +155,23 @@ public class ChatViewModel implements Initializable {
     }
 
     public void loadGameScene () throws IOException {
+       /* ClassLoader classLoader = getClass().getClassLoader();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");
+        System.out.println(is+"True File exited");*/
+
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("GAME");
         newStage.setScene(new Scene(root1));
         newStage.show();
+
+        FXMLLoader fxmlLoader2 = new FXMLLoader(getClass().getResource("/view/YourCards.fxml"));
+        Parent root2 = fxmlLoader2.load();
+        Stage newStage2 = new Stage();
+        newStage2.setTitle("CARDS");
+        newStage2.setScene(new Scene(root2));
+        newStage2.show();
     }
 }

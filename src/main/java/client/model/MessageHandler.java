@@ -1,9 +1,24 @@
 package client.model;
 
+import game.Game;
 import game.Player;
+import game.Robot;
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
+
+import javax.swing.text.Position;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -21,7 +36,7 @@ public class MessageHandler {
      * @param helloClientBody The message body of the message which is of type HelloClientBody
      */
     public void handleHelloClient (ClientModel clientmodel, HelloClientBody helloClientBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: HalloClient Message received. The ClientModel will be notified" + ANSI_RESET);
+        logger.info(ANSI_CYAN + "HalloClient Message received." + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
         //TODO change to notify() in class ClientModel
         clientmodel.setWaitingForServer(false);
@@ -35,10 +50,10 @@ public class MessageHandler {
      * @param welcomeBody The message body of the message which is of type {@link WelcomeBody}.
      */
     public void handleWelcome (ClientModel clientmodel, WelcomeBody welcomeBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Welcome Message received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Welcome Message received." + ANSI_RESET);
         logger.info("Your PlayerID: " + welcomeBody.getClientID());
         Player player = new Player(welcomeBody.getClientID());
-        clientmodel.setPlayer(player);
+        clientmodel.getClientGameModel().setPlayer(player);
     }
 
 
@@ -49,23 +64,34 @@ public class MessageHandler {
      * @param errorBody   The message body of the message which is of type {@link ErrorBody}.
      */
     public void handleError (ClientModel clientmodel, ErrorBody errorBody) {
-        logger.warn(ANSI_CYAN + "[MessageHandler]: Error has occurred! " + ANSI_RESET);
+        logger.warn(ANSI_CYAN + "Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
+
+        switch (errorBody.getError()) {
+            case "gameOn":
+                clientmodel.setCanPlay(false);
+        }
+
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText(errorBody.getError());
+            a.show();
+        });
         clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
 
-
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Chat received. " + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Chat received." + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
-        logger.info(ANSI_CYAN + "[MessageHandler]: Game Started received." + ANSI_RESET);
+        logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
+        client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
-
 
     //Client receive this message
     public void handleAlive (ClientModel clientModel, AliveBody aliveBody) {
@@ -74,28 +100,32 @@ public class MessageHandler {
     }
 
     public void handlePlayerAdded (ClientModel clientModel, PlayerAddedBody playerAddedBody) {
+        logger.info(ANSI_CYAN + "PlayerAdded Message received." + ANSI_RESET);
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
 
         // The player himself has been added
-        if (clientModel.getPlayer().getPlayerID() == clientID) {
-            clientModel.getPlayer().setName(name);
-            clientModel.getPlayer().setFigure(figure);
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == clientID) {
+            clientModel.getClientGameModel().getPlayer().setName(name);
+            clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
+        // save client info in the Hash Maps
         clientModel.getPlayersNamesMap().put(clientID, name);
         clientModel.getPlayersFigureMap().put(clientID, figure);
         clientModel.getPlayersStatusMap().put(clientID, false);
+
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
 
-
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
+        logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
+        logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
         for (String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
@@ -103,12 +133,14 @@ public class MessageHandler {
     }
 
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
-        clientModel.setSelectedMap("DizzyHighway");
+        logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
+        clientModel.setSelectedMap(mapSelectedBody.getMap());
+        System.out.println(mapSelectedBody.getMap().getClass());
         //clientModel.gameOnProperty().setValue(true);
-        System.out.println("IM HERE");
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
+        logger.info(ANSI_CYAN + "ConnectionUpdate Message received." + ANSI_RESET);
         int playerID = connectionUpdateBody.getPlayerID();
         boolean isConnected = connectionUpdateBody.isConnected();
         String action = connectionUpdateBody.getAction();
@@ -118,27 +150,189 @@ public class MessageHandler {
         }
     }
 
-
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
-        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
-        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
+        logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
 
-        if (startingPointTakenBody.getClientID() == clientModel.getPlayer().getPlayerID()) {
-            //sein robot
-            clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
-        }
+        Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
+        int playerID = clientModel.getClientGameModel().getActualPlayerID();
+        String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
+
+        Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
+        clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
+
+//        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
+//        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
+//        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+        logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         logger.info("Current Player: " + playerID);
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
+        logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         int phase = activePhaseBody.getPhase();
         clientModel.getClientGameModel().setActualPhase(phase);
         logger.info("Current Active Phase: " + phase);
+    }
+
+    public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
+        logger.info(ANSI_CYAN + "CardSelected Message received." + ANSI_RESET);
+        int clientID = cardSelectedBody.getClientID();
+        int register = cardSelectedBody.getRegister();
+
+        if (cardSelectedBody.isFilled()) {
+            clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + register);
+        } else {
+            clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + register);
+        }
+    }
+
+    public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
+        logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
+        //speichere die Cards und refresh the View
+        clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+    }
+
+    public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
+        logger.info(ANSI_CYAN + "NotYourCards Message received." + ANSI_RESET);
+        int clientID = notYourCardsBody.getClientID();
+        int amount = notYourCardsBody.getCardsInHand();
+        String playerName = clientModel.getPlayersNamesMap().get(clientID);
+
+
+        //TODO: benachrichtige den Client (schön in View, wie viele Karten derjenige Spieler hat)
+
+        clientModel.receiveMessage("Player " + playerName + " has " + amount + " cards in the hand!");
+    }
+
+    public void handleShuffleCoding (ClientModel clientModel, ShuffleCodingBody shuffleCodingBody) {
+        logger.info(ANSI_CYAN + "ShuffleCoding Message received." + ANSI_RESET);
+        int clientID = shuffleCodingBody.getClientID();
+
+        clientModel.receiveMessage("Player with ID: " + clientID + " shuffled the card!");
+    }
+
+
+    public void handleSelectionFinished (ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
+        logger.info(ANSI_CYAN + "SelectionFinished Message received." + ANSI_RESET);
+        int clientID = selectionFinishedBody.getClientID();
+        if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+                clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
+        }
+    }
+
+    public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
+        logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
+            a.show();
+        });
+    }
+
+    public void handleTimerEnded(ClientModel clientModel, TimerEndedBody timerEndedBody) {
+        logger.info(ANSI_CYAN + "TimerEnded Message received." + ANSI_RESET);
+        ArrayList<Integer> lateClient = timerEndedBody.getClientIDs();
+
+        clientModel.receiveMessage("Late client IDs are: " + lateClient);
+    }
+
+    public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
+        logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
+        ArrayList<String> cards = cardsYouGotNowBody.getCards();
+        //TODO: put the cards in leere Felder in Register
+        for (String card : cards) {
+            clientModel.receiveMessage("Your new Card is " + card);
+        }
+    }
+
+    public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+        logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
+        ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
+
+        for (Object currentCard : currentCards) {
+            String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
+            String userNameDelimiter = ".0, card=";
+            String[] split = message.split(userNameDelimiter);
+            int playerID = Integer.parseInt(split[0]);
+            String card = split[1];
+            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card);
+        }
+    }
+
+    public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {
+        logger.info(ANSI_CYAN + "ReplaceCard Message received." + ANSI_RESET);
+
+
+    }
+
+    public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
+        logger.info(ANSI_CYAN + "CardPlayed Message received." + ANSI_RESET);
+        int clientID = cardPlayedBody.getClientID();
+        String card = cardPlayedBody.getCard();
+
+    }
+
+    public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
+        logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
+
+    }
+
+    public void handleMovement (ClientModel clientModel, MovementBody movementBody) {
+        logger.info(ANSI_CYAN + "Movement Message received." + ANSI_RESET);
+        int clientID = movementBody.getClientID();
+        int newX = movementBody.getX();
+        int newY = movementBody.getY();
+        Robot robot = null;
+        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
+                robot = entry.getKey();
+            }
+        }
+        clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
+    }
+
+    public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {
+        logger.info(ANSI_CYAN + "Animation Message received." + ANSI_RESET);
+        String type = animationBody.getType();
+        switch (type) {
+            case "BlueConveyorBelt": {
+                //animation für BlueConveyorBelt
+                break;
+            }
+            case "GreenConveyorBelt": {
+                //animation für GreenConveyorBelt
+                break;
+            }
+            case "PushPanel": {
+                //animation für PushPanel
+                break;
+            }
+            case "Gear": {
+                //animation für Gear
+                break;
+            }
+            case "CheckPoint": {
+                //animation für CheckPoint
+                break;
+            }
+            case "PlayerShooting": {
+                //animation für PlayerShooting
+                break;
+            }
+            case "WallShooting": {
+                //animation für WallShooting
+                break;
+            }
+            case "EnergySpace": {
+                //animation für EnergySpace
+                break;
+            }
+        }
     }
 
 

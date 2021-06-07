@@ -17,10 +17,10 @@ import java.net.SocketException;
  * @author Mohamad, Viktoria
  */
 public class ClientModelReaderThread extends Thread {
-    private final ClientModel client;
-    private final Socket clientSocket;
-    private static final Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
-    private final MessageHandler messageHandler;
+    private ClientModel client;
+    private Socket clientSocket;
+    private static Logger logger = Logger.getLogger(ClientModelReaderThread.class.getName());
+    private MessageHandler messageHandler;
 
 
     public ClientModelReaderThread (ClientModel client, Socket clientSocket) {

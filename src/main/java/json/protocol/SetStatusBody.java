@@ -5,16 +5,9 @@ import server.ClientHandler;
 import server.MessageHandler;
 import server.Server;
 
-/*
-{
-   "messageType": "SetStatus",
-   "messageBody": {
-      "ready": true
-   }
-}
-
+/**
+ * @author Viktoria
  */
-
 public class SetStatusBody implements ClientMessageAction<SetStatusBody> {
 
     @Expose

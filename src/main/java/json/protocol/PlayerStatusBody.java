@@ -4,15 +4,8 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
-/*
-{
-"messageType": "PlayerStatusBody",
-   "messageBody": {
-      "clientID": 42,
-      "ready": true
-   }
-}
-
+/**
+ * @author Viktoria
  */
 public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
 

@@ -11,7 +11,7 @@ public abstract class Card{
     public String cardName;
 
     public Card() {
-        cardName = "Card";
+        this.cardName = "Card";
     }
 
     //TODO: implement input types
@@ -20,6 +20,6 @@ public abstract class Card{
     public abstract boolean isDamageCard();
 
     public String getCardName(){
-        return cardName;
+        return this.cardName;
     }
 }

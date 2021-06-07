@@ -4,10 +4,7 @@ import game.Player;
 import json.JSONDeserializer;
 import json.JSONMessage;
 import json.JSONSerializer;
-import json.protocol.ClientMessageAction;
-import json.protocol.ConnectionUpdateBody;
-import json.protocol.HelloClientBody;
-import json.protocol.SelectMapBody;
+import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -119,6 +116,10 @@ public class ClientHandler extends Thread {
         }
 
         if (server.canStartTheGame()) {
+            for (Connection connection : server.getConnections()) {
+                JSONMessage startMessage = new JSONMessage("GameStarted", new GameStartedBody(server.getCurrentGame().getMap()));
+                server.sendMessage(startMessage, connection.getWriter());
+            }
             logger.info("I CAN START THE GAME");
         }
 

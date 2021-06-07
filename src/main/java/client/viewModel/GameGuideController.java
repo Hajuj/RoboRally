@@ -11,19 +11,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GameGuideController {
-    private Stage rootStage;
+    public Stage rootStage;
 
     @FXML
-    private Button buttonCards;
-
+    public Button buttonCards;
     @FXML
-    private Button buttonRobots;
-
+    public Button buttonRobots;
     @FXML
-    private Button buttonRules;
-
+    public Button buttonRules;
     @FXML
-    private Button buttonCourses;
+    public Button buttonCourses;
+
 
     @FXML
     public void buttonClicked (ActionEvent event) throws IOException {
