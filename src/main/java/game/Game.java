@@ -23,13 +23,19 @@ import java.util.*;
 /**
  * @author Ilja Knis
  */
+
+    //TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
+    //     IT DIDN'T WORK LOOOOOOL
+    //     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
+    //     search in the link for -> PauseTransition
+
 public class Game {
     private static Game instance;
 
-    private DeckSpam deckSpam;
-    private DeckTrojan deckTrojan;
-    private DeckVirus deckVirus;
-    private DeckWorm deckWorm;
+//    private DeckSpam deckSpam;
+//    private DeckTrojan deckTrojan;
+//    private DeckVirus deckVirus;
+//    private DeckWorm deckWorm;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
@@ -56,8 +62,10 @@ public class Game {
     private int currentPlayer;
     private int activePhase;
     private int currentRound;
+    private int currentRegister;
     private boolean activePhaseOn = false;
     private boolean timerOn = false;
+    private Comparator<Player> comparator = new Helper(this);
 
     private Game() {
 
@@ -72,32 +80,34 @@ public class Game {
 
     public Game (Server server) {
         this.server = server;
+        gameTimer = new GameTimer(server);
         availableMaps.add("DizzyHighway");
         availableMaps.add("One more map");
     }
 
 
-    public void start (ArrayList<Player> players) throws IOException {
-
-        this.deckSpam = new DeckSpam();
-        this.deckSpam.initializeDeck();
-
-        this.deckTrojan = new DeckTrojan();
-        this.deckTrojan.initializeDeck();
-
-        this.deckVirus = new DeckVirus();
-        this.deckVirus.initializeDeck();
-
-        this.deckWorm = new DeckWorm();
-        this.deckWorm.initializeDeck();
+    public void startGame (ArrayList<Player> players) throws IOException {
+        //TODO why do we need to initialize the decks here? @Ilja
+//        this.deckSpam = new DeckSpam();
+//        this.deckSpam.initializeDeck();
+//
+//        this.deckTrojan = new DeckTrojan();
+//        this.deckTrojan.initializeDeck();
+//
+//        this.deckVirus = new DeckVirus();
+//        this.deckVirus.initializeDeck();
+//
+//        this.deckWorm = new DeckWorm();
+//        this.deckWorm.initializeDeck();
 
         this.playerList = players;
 
         this.currentRound = 0;
         this.setActivePhase(0);
-        this.setCurrentPlayer(playerList.get(0).getPlayerID());
 
-        Collections.sort(playerList);
+        //Sort list by IDs
+        playerList.sort(comparator);
+        this.setCurrentPlayer(playerList.get(0).getPlayerID());
 
         //send an alle GameStartedMessage
         mapName = mapName.replaceAll("\\s+", "");
@@ -277,11 +287,11 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(Card card){
+    public void activateCardEffect(String card){
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
-        switch(card.getCardName()){
+        switch(card){
             case "Again" -> {
                 //aktuelles Register -> if 0 -> error
                 //                      else player.getDeckRegister
@@ -290,26 +300,40 @@ public class Game {
                 switch(robotOrientation){
                     case "top" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
+                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                        sendToAllPlayers(jsonMessage);
                     }
                     case "bottom" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "top", 1);
+                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                        sendToAllPlayers(jsonMessage);
                     }
                     case "left" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "right", 1);
+                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                        sendToAllPlayers(jsonMessage);
                     }
                     case "right" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "left", 1);
+                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
             case "MoveI" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
+                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                sendToAllPlayers(jsonMessage);
             }
             case "MoveII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
+                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                sendToAllPlayers(jsonMessage);
             }
             case "MoveIII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
+                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
+                sendToAllPlayers(jsonMessage);
             }
             case "PowerUp" -> {
                 playerList.get(indexCurrentPlayer).increaseEnergy(1);
@@ -326,22 +350,23 @@ public class Game {
             case "Spam" -> {}
             case "Trojan" -> {
                 for(int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+                    //TODO why not -> playerList.get(indexCurrentPlayer).getDeckSpam().getTopCard() ?
+//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+//                    deckSpam.removeTopCard();
                 }
                 //TODO access current register and play top card from deckProgramming
             }
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for(Player player : playersWithinRadius){
-                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+//                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+//                    deckSpam.removeTopCard();
                 }
             }
             case "Worm" -> {
                 for(int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+//                    deckSpam.removeTopCard();
                 }
 
                 //TODO: set Robot to RestartPoint
@@ -635,7 +660,6 @@ public class Game {
     public void startProgrammingPhase () {
         for (Player player : playerList) {
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
-            System.out.println("player " + player.getName() + "  has " + player.getDeckHand().getDeck().size());
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
@@ -647,20 +671,6 @@ public class Game {
             }
         }
     }
-
-    //TODO change get(0)
-    public void startActivationPhase() {
-        ArrayList<Object> currentCards = new ArrayList<>();
-        for (Player player : playerList) {
-            ArrayList<Object> array1 = new ArrayList<>();
-            array1.add("clientID=" + player.getPlayerID() + ".0");
-            array1.add("card=" + player.getDeckRegister().getDeck().get(0).getCardName());
-            currentCards.add(array1);
-        }
-        JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
-        sendToAllPlayers(jsonMessage);
-    }
-
 
     public boolean valideStartingPoint (int x, int y) {
         Point2D positionID = new Point2D(x, y);
@@ -696,23 +706,86 @@ public class Game {
     //TODO activateCard() method with switch
     //     check discard consistency
 
-
-    public int getActivePhase () {
-        return activePhase;
-    }
-
     public void setActivePhase (int activePhase) {
         this.activePhase = activePhase;
-        informAboutActivePhase();
         if (activePhase == 2 && !activePhaseOn) {
+            informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
         } else if (activePhase == 3 && !activePhaseOn) {
+            informAboutActivePhase();
             startActivationPhase();
             activePhaseOn = true;
         }
     }
 
+    //TODO change get(0)
+    public void startActivationPhase() {
+        playerList.sort(comparator);        //Sort list by distance to the Antenna
+        currentPlayer = playerList.get(0).getPlayerID();
+        currentRegister = 0;
+        sendCurrentCards(currentRegister);
+        informAboutCurrentPlayer();
+    }
+
+    public void sendCurrentCards(int register) {
+        ArrayList<Object> currentCards = new ArrayList<>();
+        for (Player player : playerList) {
+            ArrayList<Object> array1 = new ArrayList<>();
+            array1.add("clientID=" + player.getPlayerID() + ".0");
+            array1.add("card=" + player.getDeckRegister().getDeck().get(register).getCardName());
+            currentCards.add(array1);
+        }
+        JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
+        sendToAllPlayers(jsonMessage);
+    }
+
+    public int getActivePhase () {
+        return activePhase;
+    }
+
+    public static class Helper implements java.util.Comparator<Player> {
+        private Game game;
+
+        private Helper(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        public int compare(Player o1, Player o2) {
+            // Compare Player IDs
+            if (game.getActivePhase() == 0) {
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            } else {
+                // Compare distance to Antenna
+                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if (entry.getValue() != null) {
+                        int antennaX = (int) entry.getKey().getX();
+                        int antennaY = (int) entry.getKey().getY();
+
+                        int robotX = o1.getRobot().getxPosition();
+                        int robotY = o1.getRobot().getyPosition();
+
+                        int oRobotX = o2.getRobot().getxPosition();
+                        int oRobotY = o2.getRobot().getyPosition();
+
+                        int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
+                        int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        return Integer.compare(distance, oDistance);
+                    }
+                }
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            }
+        }
+    }
+
+    public int getCurrentRegister() {
+        return currentRegister;
+    }
+
+    public void setCurrentRegister(int currentRegister) {
+        this.currentRegister = currentRegister;
+    }
 
     public GameTimer getGameTimer() {
         return gameTimer;
@@ -790,21 +863,21 @@ public class Game {
         return antennaMap;
     }
 
-    public DeckWorm getDeckWorm() {
-        return deckWorm;
-    }
-
-    public DeckVirus getDeckVirus() {
-        return deckVirus;
-    }
-
-    public DeckTrojan getDeckTrojan() {
-        return deckTrojan;
-    }
-
-    public DeckSpam getDeckSpam() {
-        return deckSpam;
-    }
+//    public DeckWorm getDeckWorm() {
+//        return deckWorm;
+//    }
+//
+//    public DeckVirus getDeckVirus() {
+//        return deckVirus;
+//    }
+//
+//    public DeckTrojan getDeckTrojan() {
+//        return deckTrojan;
+//    }
+//
+//    public DeckSpam getDeckSpam() {
+//        return deckSpam;
+//    }
 
     public Map<Point2D, CheckPoint> getCheckPointMap() {
         return checkPointMap;
