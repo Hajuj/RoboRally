@@ -32,10 +32,10 @@ import java.util.*;
 public class Game {
     private static Game instance;
 
-//    private DeckSpam deckSpam;
-//    private DeckTrojan deckTrojan;
-//    private DeckVirus deckVirus;
-//    private DeckWorm deckWorm;
+    private DeckSpam deckSpam;
+    private DeckTrojan deckTrojan;
+    private DeckVirus deckVirus;
+    private DeckWorm deckWorm;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
@@ -88,17 +88,17 @@ public class Game {
 
     public void startGame (ArrayList<Player> players) throws IOException {
         //TODO why do we need to initialize the decks here? @Ilja
-//        this.deckSpam = new DeckSpam();
-//        this.deckSpam.initializeDeck();
-//
-//        this.deckTrojan = new DeckTrojan();
-//        this.deckTrojan.initializeDeck();
-//
-//        this.deckVirus = new DeckVirus();
-//        this.deckVirus.initializeDeck();
-//
-//        this.deckWorm = new DeckWorm();
-//        this.deckWorm.initializeDeck();
+        this.deckSpam = new DeckSpam();
+        this.deckSpam.initializeDeck();
+
+        this.deckTrojan = new DeckTrojan();
+        this.deckTrojan.initializeDeck();
+
+        this.deckVirus = new DeckVirus();
+        this.deckVirus.initializeDeck();
+
+        this.deckWorm = new DeckWorm();
+        this.deckWorm.initializeDeck();
 
         this.playerList = players;
 
@@ -350,23 +350,22 @@ public class Game {
             case "Spam" -> {}
             case "Trojan" -> {
                 for(int i = 0; i < 2; i++) {
-                    //TODO why not -> playerList.get(indexCurrentPlayer).getDeckSpam().getTopCard() ?
-//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-//                    deckSpam.removeTopCard();
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
                 }
                 //TODO access current register and play top card from deckProgramming
             }
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for(Player player : playersWithinRadius){
-//                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-//                    deckSpam.removeTopCard();
+                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
                 }
             }
             case "Worm" -> {
                 for(int i = 0; i < 2; i++) {
-//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-//                    deckSpam.removeTopCard();
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                    deckSpam.removeTopCard();
                 }
 
                 //TODO: set Robot to RestartPoint
@@ -433,6 +432,7 @@ public class Game {
                                 for(String orient : element.getOrientations()) {
                                     if (!orient.equals("bottom")) {
                                         robot.setyPosition(robotYPosition-1);
+                                        robotYPosition--;
                                     }
                                 }
                             }
@@ -442,6 +442,7 @@ public class Game {
                                 }
                                 else {
                                     robot.setyPosition(robotYPosition-1);
+                                    robotYPosition--;
                                 }
                             }
                         }
@@ -456,6 +457,7 @@ public class Game {
                                 for(String orient : element.getOrientations()) {
                                     if (!orient.equals("top")) {
                                         robot.setyPosition(robotYPosition+1);
+                                        robotYPosition++;
                                     }
                                 }
                             }
@@ -465,6 +467,7 @@ public class Game {
                                 }
                                 else {
                                     robot.setyPosition(robotYPosition+1);
+                                    robotYPosition++;
                                 }
                             }
                         }
@@ -479,6 +482,7 @@ public class Game {
                                 for(String orient : element.getOrientations()) {
                                     if (!orient.equals("right")) {
                                         robot.setxPosition(robotXPosition-1);
+                                        robotXPosition--;
                                     }
                                 }
                             }
@@ -488,6 +492,7 @@ public class Game {
                                 }
                                 else {
                                     robot.setxPosition(robotXPosition-1);
+                                    robotXPosition--;
                                 }
                             }
                         }
@@ -502,6 +507,7 @@ public class Game {
                                 for(String orient : element.getOrientations()) {
                                     if (!orient.equals("left")) {
                                         robot.setxPosition(robotXPosition+1);
+                                        robotXPosition++;
                                     }
                                 }
                             }
@@ -511,6 +517,7 @@ public class Game {
                                 }
                                 else {
                                     robot.setxPosition(robotXPosition+1);
+                                    robotXPosition++;
                                 }
                             }
                         }
@@ -863,21 +870,21 @@ public class Game {
         return antennaMap;
     }
 
-//    public DeckWorm getDeckWorm() {
-//        return deckWorm;
-//    }
-//
-//    public DeckVirus getDeckVirus() {
-//        return deckVirus;
-//    }
-//
-//    public DeckTrojan getDeckTrojan() {
-//        return deckTrojan;
-//    }
-//
-//    public DeckSpam getDeckSpam() {
-//        return deckSpam;
-//    }
+    public DeckWorm getDeckWorm() {
+        return deckWorm;
+    }
+
+    public DeckVirus getDeckVirus() {
+        return deckVirus;
+    }
+
+    public DeckTrojan getDeckTrojan() {
+        return deckTrojan;
+    }
+
+    public DeckSpam getDeckSpam() {
+        return deckSpam;
+    }
 
     public Map<Point2D, CheckPoint> getCheckPointMap() {
         return checkPointMap;
