@@ -169,4 +169,9 @@ public class ClientGameModel {
     public void setRobotMapObservable (ObservableMap<Robot, Point2D> robotMapObservable) {
         this.robotMapObservable = robotMapObservable;
     }
+
+    public void sendSelectedCards(int registerNum, String cardName) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum+1));
+        clientModel.sendMessage(jsonMessage);
+    }
 }
