@@ -48,6 +48,7 @@ public class ServerIpStageViewModel implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        connectButton.setDefaultButton(true);
         serverAddress = new SimpleStringProperty();
         LMUButton = new Button();
         BButton = new Button();

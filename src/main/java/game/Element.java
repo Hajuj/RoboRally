@@ -21,10 +21,10 @@ public class Element {
     public Element(){
     }
 
-    public applyOrientation(){
+    //public String applyOrientation(){
 
 
-    }
+    //}
 
 
     public String getType(){

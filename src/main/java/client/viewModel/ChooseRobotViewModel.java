@@ -52,6 +52,7 @@ public class ChooseRobotViewModel implements Initializable {
     @Override
     public void initialize (URL location, ResourceBundle resources) {
         playButton.setDisable(true);
+        playButton.setDefaultButton(true);
 
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override

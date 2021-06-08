@@ -50,6 +50,8 @@ public class ChatViewModel implements Initializable {
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
+        sendButton.setDefaultButton(true);
+        messageField.requestFocus();
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
             notReadyBtn.setVisible(false);
