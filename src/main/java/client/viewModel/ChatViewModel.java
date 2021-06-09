@@ -80,6 +80,7 @@ public class ChatViewModel implements Initializable {
                 chatField.setText(t1);
             }
         });
+
         synchronized (model.playersStatusMapProperty()) {
             model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
                 @Override

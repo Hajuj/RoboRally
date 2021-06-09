@@ -23,10 +23,12 @@
       </ImageView>
       <VBox layoutX="260.0" layoutY="190.0" prefHeight="344.0" prefWidth="226.0">
          <children>
-            <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="61.0" prefWidth="229.0" text="Start game" underline="true">
-               <font>
-                  <Font name="Franklin Gothic Heavy" size="27.0" />
-               </font></Button>
+            <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="61.0"
+                    prefWidth="229.0" text="Start game" underline="true">
+                <font>
+                    <Font name="Franklin Gothic Heavy" size="27.0"/>
+                </font>
+            </Button>
             <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="234.0" text="How to play" underline="true">
                <font>
                   <Font name="Franklin Gothic Heavy" size="27.0" />

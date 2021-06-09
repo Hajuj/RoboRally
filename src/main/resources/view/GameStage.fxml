@@ -5,18 +5,21 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
-   <children>
-      <ImageView fitHeight="562.0" fitWidth="1374.0" pickOnBounds="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <image>
-            <Image url="@../images/mapElements/Elements/2016Board.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="495.0" fitWidth="1374.0" layoutY="563.0" pickOnBounds="true" preserveRatio="true" AnchorPane.topAnchor="563.0">
-         <image>
-            <Image url="@../images/mapElements/Elements/2016Board.png" />
-         </image>
-      </ImageView>
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.viewModel.GameViewModel">
+    <children>
+        <ImageView fitHeight="562.0" fitWidth="1374.0" pickOnBounds="true" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0">
+            <image>
+                <Image url="@../images/mapElements/Elements/2016Board.png"/>
+            </image>
+        </ImageView>
+        <ImageView fitHeight="495.0" fitWidth="1374.0" layoutY="560.0" pickOnBounds="true" preserveRatio="true"
+                   AnchorPane.topAnchor="560.0">
+            <image>
+                <Image url="@../images/mapElements/Elements/2016Board.png"/>
+            </image>
+        </ImageView>
       <BorderPane fx:id="pane" layoutX="20.0" prefHeight="800.0" prefWidth="1000.0">
          <bottom>
             <HBox prefHeight="198.0" prefWidth="1344.0" BorderPane.alignment="CENTER">
@@ -185,6 +188,6 @@
             </VBox>
          </left>
       </BorderPane>
-      <Button layoutX="140.0" layoutY="884.0" mnemonicParsing="false" onAction="#collectingCards" text="Button" />
+        <Button layoutX="140.0" layoutY="592.0" mnemonicParsing="false" onAction="#playCard" text="Button"/>
    </children>
 </AnchorPane>

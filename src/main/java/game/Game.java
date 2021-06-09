@@ -10,11 +10,7 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
-
-import javafx.geometry.Point2D;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -167,6 +163,7 @@ public class Game {
         }
     }
 
+
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
@@ -270,20 +267,6 @@ public class Game {
             }
         }
     }
-
-    /*
-    Antenna priority;
-    Register 1:
-    List<Player> turnOrder;
-    for(int i = 0; i < playersList.size; i++){
-        turnOrder[i].getPlayer.activateCardEffect();
-    }
-    triggerBoardElements();
-        -> for(Element element : map.get(y).get(x))
-               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
-
-
-     */
 
 
     //TODO messageBodies verwenden
