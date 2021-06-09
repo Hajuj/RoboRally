@@ -49,6 +49,7 @@ public class Player {
         deckRegister.shuffleDeck();
     }
 
+
     //TODO shuffle cards
     //TODO draw cards
     public boolean isRegisterFull() {
