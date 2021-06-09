@@ -100,7 +100,7 @@ public class ChatViewModel implements Initializable {
 
 
         //TODO close the chat window when the game starts and make the chat as a button in the game window
-        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
+        /*model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
 
@@ -114,7 +114,7 @@ public class ChatViewModel implements Initializable {
 
             }
         });
-
+*/
 
     }
 

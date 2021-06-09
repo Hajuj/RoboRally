@@ -54,6 +54,8 @@ public class ClientModel {
 
     private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
+   //private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
+
     private ClientModel () {
     }
 
@@ -276,4 +278,10 @@ public class ClientModel {
     public ClientGameModel getClientGameModel () {
         return clientGameModel;
     }
+
+
+    /*public BooleanProperty getProgrammingPhaseProperty () {
+        return programmingPhaseProperty;
+    }*/
+
 }
