@@ -170,7 +170,13 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().setActualPlayerTurn(playerID);
         logger.info("Current Player: " + playerID);
     }
 
@@ -178,6 +184,11 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         //TODO: swizch cases für die Phasen, programming phase ist 2
         int phase = activePhaseBody.getPhase();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         clientModel.getClientGameModel().setActualPhase(phase);
         /*switch (phase){
             case 2 -> {clientModel.getClientGameModel().setActualPhase(phase);
@@ -301,6 +312,9 @@ public class MessageHandler {
                 robot = entry.getKey();
             }
         }
+        clientModel.getClientGameModel().setX(newX);
+        clientModel.getClientGameModel().setY(newY);
+        clientModel.setMove(true);
         clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
     }
 

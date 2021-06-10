@@ -1,10 +1,13 @@
 package client.model;
 
 import game.Element;
+import game.Game;
 import game.Player;
 import game.Robot;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -24,14 +27,19 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<String> cardsInHand = new ArrayList();
+
+    private Point2D oldPosition;
+
     private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
     private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
 
 
+
     //TODO: Observer hier
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
+    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
     //Das ist so falsch oh gott
     private int x;
@@ -98,8 +106,17 @@ public class ClientGameModel {
         this.y = y;
     }
 
+    //TODO SHADOW
     public int getActualPlayerID () {
         return actualPlayerID;
+    }
+
+    public IntegerProperty actualPlayerTurnProperty() {
+        return actualPlayerTurn;
+    }
+
+    public void setActualPlayerTurn(int actualPlayerTurn) {
+        this.actualPlayerTurn.set(actualPlayerTurn);
     }
 
     public void setActualPlayerID (int actualPlayerID) {
@@ -119,6 +136,22 @@ public class ClientGameModel {
         this.programmingPhaseProperty.set(b);
 
     }
+
+
+    public Point2D getOldPosition () {
+        return oldPosition;
+    }
+    public void saveOldPosition () {
+        for (HashMap.Entry<Robot, Point2D> entry : getRobotMapObservable().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(getActualPlayerID())))) {
+                this.oldPosition = new Point2D((int) entry.getValue().getX(), (int) entry.getValue().getY());
+                break;
+            }
+        }
+    }
+
+
+
 
     public BooleanProperty getProgrammingPhaseProperty () {
         return programmingPhaseProperty;
@@ -169,6 +202,8 @@ public class ClientGameModel {
     public void setRobotMapObservable (ObservableMap<Robot, Point2D> robotMapObservable) {
         this.robotMapObservable = robotMapObservable;
     }
+
+
 
     public void sendSelectedCards(int registerNum, String cardName) {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum+1));

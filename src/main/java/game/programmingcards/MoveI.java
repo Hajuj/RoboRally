@@ -8,7 +8,7 @@ import game.Card;
 public class MoveI extends Card {
 
     public MoveI(){
-        cardName = "MoveI";
+        cardName  = "MoveI";
     }
 
     public void activateCard() {

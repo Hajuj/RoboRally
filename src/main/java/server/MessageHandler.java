@@ -152,6 +152,7 @@ public class MessageHandler {
             }
             if (server.canStartTheGame()) {
                 try {
+                    server.getCurrentGame().setGameOn(true);
                     server.getCurrentGame().startGame(server.getReadyPlayer());
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -263,6 +264,7 @@ public class MessageHandler {
                     JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
                     server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
                     //TODO send also all Movement and Animations
+
                 }
             }
             server.getCurrentGame().activateCardEffect(card);
