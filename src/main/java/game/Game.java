@@ -726,7 +726,6 @@ public class Game {
         currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
-        informAboutCurrentPlayer();
     }
 
     public void sendCurrentCards(int register) {
@@ -739,6 +738,8 @@ public class Game {
         }
         JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
         sendToAllPlayers(jsonMessage);
+        currentPlayer = playerList.get(0).getPlayerID();
+        informAboutCurrentPlayer();
     }
 
     public int getActivePhase () {

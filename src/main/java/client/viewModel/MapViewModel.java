@@ -64,14 +64,11 @@ public class MapViewModel implements Initializable {
             @Override
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
                 Platform.runLater(() -> {
-                    System.out.println("Queue Size: " + clientGameModel.getMoveQueue().size());
                     for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                        System.out.println(entry.getKey().getName());
                         int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                         moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                         clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
                         clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-                        //DIESE REMOVE TRIGGERT DIE QUEUE NOCH MAL
                     }
                 });
             }
@@ -82,7 +79,6 @@ public class MapViewModel implements Initializable {
             @Override
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
                 Platform.runLater(() -> {
-                            System.out.println("Queue Size: " + clientGameModel.getStartingPointQueue().size());
                             for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
                                 int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                                 setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
@@ -98,7 +94,6 @@ public class MapViewModel implements Initializable {
 
     //startings points
     public void setRobot (int playerID, int x, int y) {
-        System.out.println("babe");
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
         Image image;
@@ -215,7 +210,6 @@ public class MapViewModel implements Initializable {
         if (clickedNode != mapGrid) {
             Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
             Integer rowIndex = GridPane.getRowIndex(clickedNode.getParent());
-            System.out.println(colIndex + "  " + rowIndex);
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
         }
@@ -227,15 +221,21 @@ public class MapViewModel implements Initializable {
         for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
                 robot = entry.getKey();
+                break;
             }
         }
-
         Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
         Point2D newPosition = new Point2D(x, y);
         Group imageGroup = fieldMap.get(oldPosition);
+        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
         ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
-        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 2);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
         fieldMap.get(newPosition).getChildren().add(robotV);
+        fieldMap.get(newPosition).getChildren().add(robotOrientation);
+
+        clientGameModel.getRobotMap().replace(robot, newPosition);
+
     }
 
 

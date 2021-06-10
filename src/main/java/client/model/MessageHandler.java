@@ -21,6 +21,7 @@ public class MessageHandler {
     public static final String ANSI_RESET = "\u001B[0m";
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
+
     /**
      * Wenn Client ein HalloClient Message von Server bekommt, wird die Variable waitingForServer
      * auf false gesetzt und Client kann dem Server Nachrichten schicken.
@@ -71,7 +72,7 @@ public class MessageHandler {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText(errorBody.getError());
+            a.setContentText(errorBody.getError() + clientmodel.getClientGameModel().getActualPlayerID());
             a.show();
         });
     }
@@ -305,8 +306,6 @@ public class MessageHandler {
                 robot = entry.getKey();
             }
         }
-
-        System.out.println();
         clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
 
     }
