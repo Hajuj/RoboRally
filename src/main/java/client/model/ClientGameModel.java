@@ -4,7 +4,9 @@ import game.Element;
 import game.Player;
 import game.Robot;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -21,23 +23,35 @@ import java.util.Map;
 public class ClientGameModel {
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
+
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
+
     private ArrayList<String> cardsInHand = new ArrayList();
     private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
+
+    private Point2D oldPosition;
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
-    private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
+
+    private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
+    private ObservableMap<Robot, Point2D> startingPointQueueObservable = FXCollections.observableMap(startingPointQueue);
+
+
+    private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
+    private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
+
+    private BooleanProperty canMove = new SimpleBooleanProperty(false);
+
 
 
     //TODO: Observer hier
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
+    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
-    //Das ist so falsch oh gott
-    private int x;
-    private int y;
-    private int actualPlayerID;
-    private int actualPhase;
+    private int actualRegister = -1;
+    private volatile int actualPlayerID;
+    private volatile int actualPhase;
 
 
     //Singleton Zeug
@@ -82,24 +96,16 @@ public class ClientGameModel {
         this.canSetStartingPoint.set(canSetStartingPoint);
     }
 
-    public int getX () {
-        return x;
-    }
-
-    public void setX (int x) {
-        this.x = x;
-    }
-
-    public int getY () {
-        return y;
-    }
-
-    public void setY (int y) {
-        this.y = y;
-    }
-
     public int getActualPlayerID () {
         return actualPlayerID;
+    }
+
+    public IntegerProperty actualPlayerTurnProperty() {
+        return actualPlayerTurn;
+    }
+
+    public void setActualPlayerTurn(int actualPlayerTurn) {
+        this.actualPlayerTurn.set(actualPlayerTurn);
     }
 
     public void setActualPlayerID (int actualPlayerID) {
@@ -118,6 +124,32 @@ public class ClientGameModel {
        /* if (this.actualPhase == 2)*/
         this.programmingPhaseProperty.set(b);
 
+    }
+
+
+    public Point2D getOldPosition () {
+        return oldPosition;
+    }
+
+//    public void saveOldPosition () {
+//        for (HashMap.Entry<Robot, Point2D> entry : getRobotMapObservable().entrySet()) {
+//            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(getActualPlayerID())))) {
+//                this.oldPosition = new Point2D((int) entry.getValue().getX(), (int) entry.getValue().getY());
+//                break;
+//            }
+//        }
+//    }
+
+    public boolean isCanMove () {
+        return canMove.get();
+    }
+
+    public BooleanProperty canMoveProperty () {
+        return canMove;
+    }
+
+    public void setCanMove (boolean canMove) {
+        this.canMove.set(canMove);
     }
 
     public BooleanProperty getProgrammingPhaseProperty () {
@@ -161,17 +193,48 @@ public class ClientGameModel {
         return robotMap;
     }
 
-
-    public ObservableMap<Robot, Point2D> getRobotMapObservable () {
-        return robotMapObservable;
+    public ObservableMap<Robot, Point2D> getStartingPointQueueObservable () {
+        return startingPointQueueObservable;
     }
 
-    public void setRobotMapObservable (ObservableMap<Robot, Point2D> robotMapObservable) {
-        this.robotMapObservable = robotMapObservable;
+    public void setStartingPointQueueObservable (ObservableMap<Robot, Point2D> startingPointQueueObservable) {
+        this.startingPointQueueObservable = startingPointQueueObservable;
     }
 
-    public void sendSelectedCards(int registerNum, String cardName) {
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum+1));
+    public void sendSelectedCards (int registerNum, String cardName) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
+    }
+
+    public int getActualRegister() {
+        return actualRegister;
+    }
+
+    public void setActualRegister(int actualRegister) {
+        this.actualRegister = actualRegister;
+    }
+
+    public HashMap<Robot, Point2D> getStartingPointQueue () {
+        return startingPointQueue;
+    }
+
+    public void setStartingPointQueue (HashMap<Robot, Point2D> startingPointQueue) {
+        this.startingPointQueue = startingPointQueue;
+    }
+
+    public HashMap<Robot, Point2D> getMoveQueue () {
+        return moveQueue;
+    }
+
+    public void setMoveQueue (HashMap<Robot, Point2D> moveQueue) {
+        this.moveQueue = moveQueue;
+    }
+
+    public ObservableMap<Robot, Point2D> getMoveQueueObservable () {
+        return moveQueueObservable;
+    }
+
+    public void setMoveQueueObservable (ObservableMap<Robot, Point2D> moveQueueObservable) {
+        this.moveQueueObservable = moveQueueObservable;
     }
 }

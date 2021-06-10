@@ -103,7 +103,6 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
-
         String message = sendChatBody.getMessage();
         int to = sendChatBody.getTo();
 
@@ -152,6 +151,7 @@ public class MessageHandler {
             }
             if (server.canStartTheGame()) {
                 try {
+                    server.getCurrentGame().setGameOn(true);
                     server.getCurrentGame().startGame(server.getReadyPlayer());
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -258,36 +258,44 @@ public class MessageHandler {
 
         //When it's the turn of the player himself
         if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
-            for (Player player : server.getCurrentGame().getPlayerList()) {
-                if (player.getPlayerID() != clientHandler.getPlayer_id()) {
-                    JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
-                    server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
-                    //TODO send also all Movement and Animations
+            if (card.equals(server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().get(server.getCurrentGame().getCurrentRegister()).getCardName())) {
+                for (Player player : server.getCurrentGame().getPlayerList()) {
+                    if (player.getPlayerID() != clientHandler.getPlayer_id()) {
+                        JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
+                        server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                        //TODO send also all Movement and Animations
+                    }
                 }
-            }
-            server.getCurrentGame().activateCardEffect(card);
-            //TODO call activateCard() method from Ilja :)
-            //inform everyone about next player
-            int nextPlayer = server.getCurrentGame().nextPlayerID();
-            if (nextPlayer != -1) {
-                server.getCurrentGame().setCurrentPlayer(nextPlayer);
-                JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
-                server.getCurrentGame().sendToAllPlayers(jsonMessage);
-            } else {
-                //Get new register
-                int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
-                server.getCurrentGame().setCurrentRegister(newRegister);
-                if (server.getCurrentGame().getCurrentRegister() != 5) {
-                    server.getCurrentGame().sendCurrentCards(newRegister);
+                server.getCurrentGame().activateCardEffect(card);
+                //TODO call activateCard() method from Ilja :)
+                //inform everyone about next player
+                int nextPlayer = server.getCurrentGame().nextPlayerID();
+                if (nextPlayer != -1) {
+                    server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                    JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
+                    server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
-                    //New Round
-                    server.getCurrentGame().setActivePhaseOn(false);
-                    server.getCurrentGame().setActivePhase(2);
-                    server.getCurrentGame().setCurrentRegister(0);
-                    //TODO when does the game stops? -> Ilja
+                    //Get new register
+                    int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
+                    server.getCurrentGame().setCurrentRegister(newRegister);
+                    if (server.getCurrentGame().getCurrentRegister() != 5) {
+                        server.getCurrentGame().sendCurrentCards(newRegister);
+                    } else {
+                        //New Round
+                        for (Player player : server.getCurrentGame().getPlayerList()) {
+                            player.discardCards();
+                        }
+                        server.getCurrentGame().setActivePhaseOn(false);
+                        server.getCurrentGame().setActivePhase(2);
+                        server.getCurrentGame().setCurrentRegister(0);
+                        //TODO when does the game stops? -> Ilja
+                    }
                 }
+                logger.info("IM PLAYING MY CARD LOL");
+            } else {
+                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
+                server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
             }
-            logger.info("IM PLAYING MY CARD LOL");
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
