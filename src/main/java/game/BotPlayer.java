@@ -49,7 +49,7 @@ public class BotPlayer {
         deckRegister.shuffleDeck();
     }
 
-    public playRandomCard(){
+    //public playRandomCard(){
 
-    }
+    //}
 }
