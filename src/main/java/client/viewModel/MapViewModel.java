@@ -14,10 +14,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,7 +147,7 @@ public class MapViewModel implements Initializable {
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
-    //die MEthode mit Eleemtn als Parametre schicekn
+
     public ImageView loadImage (String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
@@ -169,44 +171,14 @@ public class MapViewModel implements Initializable {
                 case "right,bottom,left"->{imageView.setScaleX(-1);
                                             imageView.setRotate(-90); }
                 case "null" ->{ imageView.setImage(image);}
-
-               /* case "top", "left,right,bottom", "right,left"->{ imageView.setRotate(90);
-                imageView.setImage(image);}
-                case "left", "left,right", "bottom,top,right"->{imageView.setRotate(0);
-                    imageView.setImage(image);}
-                case "right" ->{imageView.setRotate(180);
-                    imageView.setImage(image);}
-                case "bottom" ,"left,top,right"->{imageView.setRotate(-90);
-                    imageView.setImage(image);}
-                case "null" ->{ imageView.setImage(image);}*/
             }
             return imageView;
 
 
     }
 
-    private String handleLaser() {
-        String laserT="";
-        for (Point2D loc:laserMap.keySet()) {
-            if (wallMap.containsKey(loc)){
-                laserT = "OneLaser";
-            }else{
-                laserT = "OneLaserBeam";
-            }
-        }
-        return laserT;
-    }
-  /*  private String handleBelts() {
 
-    }*/
-
-
-    /*public File findPath(String element) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-    }*/
-
-    public void clickGrid (MouseEvent event) {
+    public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
             Integer colIndex = GridPane.getColumnIndex(clickedNode);
@@ -217,36 +189,13 @@ public class MapViewModel implements Initializable {
             //dann ja darf man selecten
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
+
 //
 //            Point2D positionID = new Point2D(colIndex, rowIndex);
-//            System.out.println(positionID);
-//           /* for (Point2D startPointPosition :startPointMap.keySet()) {
-//                System.out.println(startPointMap.keySet());*/
-//            if (startPointMap.containsKey(positionID)) {
-//                System.out.println("hier ist einen startpoint " + positionID);
-//                clientGameModel.setCanSetStartingPoint(true);
-//            } else {
-//                System.out.println("hier NOT startpoint ");
-//                clientGameModel.setCanSetStartingPoint(false);
-//
-//            }
-                /* if (startPointPosition.equals(positionID)){
-                    //clientGameModel.send()
-                    System.out.println("hier ist einen startpoint "+positionID);
-                }*/
-                    /*Alert a = new Alert(Alert.AlertType.NONE);
-                    a.setAlertType(Alert.AlertType.ERROR);
-                    a.setContentText("this is not a starting point");
-                    a.show();
-                }*/
 
             // }
         }
-
     }
-
-
-
 
     //sep21.dbs.ifi.lmu.de
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
@@ -290,22 +239,12 @@ public class MapViewModel implements Initializable {
                                     mapGrid.add(loadImage("GreenBelt",String.join(",", conveyorBelt.getOrientations())), x, y);
                                 }
                             }
-                            //System.out.println(String.valueOf(toString(conveyorBelt.getOrientations()).split(", ")));
-                            //System.out.println(String.valueOf(conveyorBelt.getOrientations()));
 
                             if (conveyorBelt.getOrientations().size() == 3) {
                                 if (conveyorBelt.getSpeed() == 2) {
                                     //String rotation =conveyorBelt.getOrientations().get(2);
                                     //String mirror_rot = conveyorBelt.getOrientations().get(3);
                                     mapGrid.add(loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations())), x, y);
-
-                               /*     if (conveyorBelt.getOrientations().get(2).equals("right")) {
-                                        mapGrid.add(loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations())), y, x);
-                                    }
-                                    if (conveyorBelt.getOrientations().get(2).equals("bottom")) {
-                                        mapGrid.add(loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations())), y, x);
-
-                                    }*/
                                 }else{
                                     mapGrid.add(loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations())), x, y);
 
@@ -320,7 +259,7 @@ public class MapViewModel implements Initializable {
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
 //                            replaceElementInMap(map, x, y, element, energySpace);
 //                            energySpaceMap.put(new Point2D(x, y), energySpace);
-                            mapGrid.add(loadImage("RedEnergySpace","null"), x, y);
+                            mapGrid.add(loadImage("GreenEnergySpace","null"), x, y);
                         }
 
                         case "Gear" -> {
@@ -331,7 +270,6 @@ public class MapViewModel implements Initializable {
 
                             mapGrid.add(loadImage("RedGear",String.join(",", gear.getOrientations())), x, y);
                         }
-                        //TODO:laser 1 or two handeln und dann orientation
                         case "Laser" -> {
                             Element element = map.get(y).get(x).get(i);
                             Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
@@ -402,49 +340,5 @@ public class MapViewModel implements Initializable {
             }
         }
     }
-
-
-
-    private String toString(ArrayList<String> orientations) {
-        String liste= "" ;
-        for (String s:orientations) {
-            //liste += s + " \t";
-            String.join(", ", orientations);
-           // System.out.println(liste);
-
-        }
-        System.out.println(liste);
-
-/*
-       for (int i = 0; i< orientations.size();i++ ) {
-            liste += orientations.get(i) + " \t";
-           // liste = String.join(", ", orientations);
-            //liste = orientations.get(i) ;
-            //liste += String.join(", ", orientations);
-            System.out.println(liste +" ///");
-            //System.out.println(String.join(", ", orientations.toString()));
-        }*/
-        return liste;
-    }
-
-
-//    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
-//        if (object instanceof Element) {
-//            int indexelement = map.get(x).get(y).indexOf(element);
-//            map.get(x).get(y).remove(element);
-//            map.get(x).get(y).add(indexelement, (Element) object);
-//        } else {
-//            throw new ClassCastException(object + " is not an Element!" +
-//                    "Can't cast this method on Objects other than Elements!");
-//
-//        }
-//    }
-    //TODO:if wall and leser gleichzeitg auf the same feld und dann kommt roboter
-    /*public void isValidReplacement(){
-        if ()
-    }*/
-
-
-
 }
 
