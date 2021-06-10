@@ -151,6 +151,7 @@ public class MessageHandler {
             }
             if (server.canStartTheGame()) {
                 try {
+                    server.getCurrentGame().setGameOn(true);
                     server.getCurrentGame().startGame(server.getReadyPlayer());
                 } catch (IOException ioException) {
                     ioException.printStackTrace();

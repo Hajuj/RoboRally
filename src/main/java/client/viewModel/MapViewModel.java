@@ -64,13 +64,14 @@ public class MapViewModel implements Initializable {
             @Override
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
                 Platform.runLater(() -> {
-                    System.out.println("Queue Size: " + clientGameModel.getStartingPointQueue().size());
+                    System.out.println("Queue Size: " + clientGameModel.getMoveQueue().size());
                     for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
                         System.out.println(entry.getKey().getName());
                         int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                         moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                         clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
                         clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+                        //DIESE REMOVE TRIGGERT DIE QUEUE NOCH MAL
                     }
                 });
             }

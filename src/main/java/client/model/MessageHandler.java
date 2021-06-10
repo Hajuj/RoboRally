@@ -306,12 +306,9 @@ public class MessageHandler {
             }
         }
 
+        System.out.println();
         clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
 
-        //clientModel.getClientGameModel().saveOldPosition();
-
-        //clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
-        //System.out.println("2 ==?== " + clientModel.getClientGameModel().getRobotMapObservable().size());
     }
 
     public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {
