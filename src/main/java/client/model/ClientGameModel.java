@@ -4,7 +4,9 @@ import game.Element;
 import game.Player;
 import game.Robot;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -37,9 +39,6 @@ public class ClientGameModel {
 
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
     private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
-
-
-    //private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
 
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
@@ -96,22 +95,6 @@ public class ClientGameModel {
 
     public void setCanSetStartingPoint (boolean canSetStartingPoint) {
         this.canSetStartingPoint.set(canSetStartingPoint);
-    }
-
-    public int getX () {
-        return x;
-    }
-
-    public void setX (int x) {
-        this.x = x;
-    }
-
-    public int getY () {
-        return y;
-    }
-
-    public void setY (int y) {
-        this.y = y;
     }
 
     public int getActualPlayerID () {

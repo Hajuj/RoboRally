@@ -56,7 +56,6 @@ public class MapViewModel implements Initializable {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     int oldX;
     int oldY;
-    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
 
 
     @Override
@@ -144,8 +143,8 @@ public class MapViewModel implements Initializable {
         Image image2 = new Image(input);
         imageView = new ImageView();
         imageView.setImage(image2);
-        imageView.setFitWidth(60);
-        imageView.setFitHeight(60);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
         imageView.setRotate(-90);
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
@@ -183,32 +182,50 @@ public class MapViewModel implements Initializable {
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-            switch (orientations){
-                case "top", "bottom,top,left"->{imageView.setRotate(0);}
-                case "right", "right,left", "left,right,bottom" ->{imageView.setRotate(90);}
-                case "left", "right,left,top"->{imageView.setRotate(-90);}
-                case "bottom","top,bottom,left" ->{imageView.setRotate(180);}
-                case "left,top,right" -> {imageView.setScaleX(-1);
-                                            imageView.setRotate(90);}
-                case "bottom,left,top" -> {imageView.setScaleX(-1);
-                                            imageView.setRotate(0);}
-                case "top,right,bottom" ->{imageView.setScaleX(-1);
-                                            imageView.setRotate(180); }
-                case "right,bottom,left"->{imageView.setScaleX(-1);
-                                            imageView.setRotate(-90); }
-                case "null" ->{ imageView.setImage(image);}
+        switch (orientations) {
+            case "top", "bottom,top,left" -> {
+                imageView.setRotate(0);
             }
-            return imageView;
+            case "right", "right,left", "left,right,bottom" -> {
+                imageView.setRotate(90);
+            }
+            case "left", "right,left,top" -> {
+                imageView.setRotate(-90);
+            }
+            case "bottom", "top,bottom,left" -> {
+                imageView.setRotate(180);
+            }
+            case "left,top,right" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(90);
+            }
+            case "bottom,left,top" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(0);
+            }
+            case "top,right,bottom" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(180);
+            }
+            case "right,bottom,left" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(-90);
+            }
+            case "null" -> {
+                imageView.setImage(image);
+            }
+        }
+        return imageView;
 
 
     }
 
-    private String handleLaser() {
-        String laserT="";
-        for (Point2D loc:laserMap.keySet()) {
-            if (wallMap.containsKey(loc)){
+    private String handleLaser () {
+        String laserT = "";
+        for (Point2D loc : laserMap.keySet()) {
+            if (wallMap.containsKey(loc)) {
                 laserT = "OneLaser";
-            }else{
+            } else {
                 laserT = "OneLaserBeam";
             }
         }
@@ -224,19 +241,18 @@ public class MapViewModel implements Initializable {
         return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
     }*/
 
+
     public void clickGrid (MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
-            Integer colIndex = GridPane.getColumnIndex(clickedNode);
-            Integer rowIndex = GridPane.getRowIndex(clickedNode);
+            Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
+            Integer rowIndex = GridPane.getRowIndex(clickedNode.getParent());
             System.out.println(colIndex + "  " + rowIndex);
-            //hier sollte er alle Map Elemente durch gehenn und diese 2 Point2D wo sine sind und dann  testen
-            //Plan B wir nehemen diese Position und schauen was für ein Element drauf ist, wenn es ein Szartpotn ist
-            //dann ja darf man selecten
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
         }
     }
+
 
 //
 //            Point2D positionID = new Point2D(colIndex, rowIndex);
@@ -310,7 +326,7 @@ public class MapViewModel implements Initializable {
                                 if (conveyorBelt.getSpeed() == 2) {
                                     ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
-                                }else {
+                                } else {
                                     ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
 
@@ -397,4 +413,5 @@ public class MapViewModel implements Initializable {
             }
         }
     }
+}
 

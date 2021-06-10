@@ -82,7 +82,6 @@ public class MessageHandler {
             a.setContentText(errorBody.getError() + clientmodel.getClientGameModel().getActualPlayerID());
             a.show();
         });
-        clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
