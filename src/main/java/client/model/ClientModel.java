@@ -34,7 +34,7 @@ public class ClientModel {
     private boolean waitingForServer = true;
 
     private static Logger logger = Logger.getLogger(ClientModel.class.getName());
-    private String protocolVersion = "Version 0.1";
+    private String protocolVersion = "Version 1.0";
     private String group = "BlindeBonbons";
     private boolean isAI = false;
     private MessageHandler messageHandler = new MessageHandler();

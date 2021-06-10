@@ -289,6 +289,7 @@ public class MessageHandler {
         int newY = movementBody.getY();
         Robot robot = null;
 
+        clientModel.getClientGameModel().setActualPlayerID(clientID);
         for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMapObservable().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
                 robot = entry.getKey();

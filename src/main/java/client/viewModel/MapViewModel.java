@@ -220,14 +220,12 @@ public class MapViewModel implements Initializable {
 
         for (int y = 0; y < mapX; y++) {
             for (int x = 0; x < mapY; x++) {
-                //System.out.println(x + "   " + y);
                 Group imageGroup = new Group();
                 ImageView imageView = loadImage("normal1", "null");
                 imageGroup.getChildren().add(imageView);
 
                 // ImageView imageView2 = new ImageView();
                 for (int i = 0; i < map.get(y).get(x).size(); i++) {
-                    System.out.println(map.get(y).get(x).get(i).getType());
                     switch (map.get(y).get(x).get(i).getType()) {
                         case "Antenna" -> {
                             Element element = map.get(y).get(x).get(i);
