@@ -82,7 +82,9 @@ public class Game {
         this.server = server;
         gameTimer = new GameTimer(server);
         availableMaps.add("DizzyHighway");
-        availableMaps.add("One more map");
+        availableMaps.add("DeathTrap");
+        availableMaps.add("ExtraCrispy");
+        availableMaps.add("LostBearings");
     }
 
 
