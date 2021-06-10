@@ -55,6 +55,8 @@ public class ClientModel {
     private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
 
+    private BooleanProperty move = new SimpleBooleanProperty(false);
+
     private ClientModel () {
     }
 
@@ -289,6 +291,15 @@ public class ClientModel {
     public ClientGameModel getClientGameModel () {
         return clientGameModel;
     }
+
+    public BooleanProperty moveProperty() {
+        return move;
+    }
+
+    public void setMove(boolean move) {
+        this.move.set(move);
+    }
+
 
 
     /*public BooleanProperty getProgrammingPhaseProperty () {

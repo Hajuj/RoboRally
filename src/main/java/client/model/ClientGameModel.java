@@ -10,11 +10,13 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
+import json.protocol.PlayCardBody;
 import json.protocol.SelectedCardBody;
 import json.protocol.SetStartingPointBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
@@ -42,7 +44,11 @@ public class ClientGameModel {
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
 
+
+    //TODO: Observer hier
+    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
+    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
     private int actuellRegister = 0;
 
@@ -66,11 +72,58 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+  /*  public void playCard (String cardName) {
+      //  JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
+     //   clientModel.sendMessage(playCardm);
+    }
+    public void chooseCard (String cardName,int card) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, ));
+        clientModel.sendMessage(jsonMessage);
+    }
+    public void chooseReg (int register) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register + 1));
+        clientModel.sendMessage(jsonMessage);
+    }
+*/
 
+    public boolean getCanSetStartingPoint () {
+        return canSetStartingPoint.get();
+    }
 
+    public BooleanProperty canSetStartingPointProperty () {
+        return canSetStartingPoint;
+    }
+
+    public void setCanSetStartingPoint (boolean canSetStartingPoint) {
+        this.canSetStartingPoint.set(canSetStartingPoint);
+    }
+
+    public int getX () {
+        return x;
+    }
+
+    public void setX (int x) {
+        this.x = x;
+    }
+
+    public int getY () {
+        return y;
+    }
+
+    public void setY (int y) {
+        this.y = y;
+    }
 
     public int getActualPlayerID () {
         return actualPlayerID;
+    }
+
+    public IntegerProperty actualPlayerTurnProperty() {
+        return actualPlayerTurn;
+    }
+
+    public void setActualPlayerTurn(int actualPlayerTurn) {
+        this.actualPlayerTurn.set(actualPlayerTurn);
     }
 
     public void setActualPlayerID (int actualPlayerID) {
@@ -85,9 +138,8 @@ public class ClientGameModel {
         this.actualPhase = actualPhase;
 
     }
-
-    public void setProgrammingPhase (boolean b) {
-        /* if (this.actualPhase == 2)*/
+    public void setProgrammingPhase(boolean b) {
+       /* if (this.actualPhase == 2)*/
         this.programmingPhaseProperty.set(b);
 
     }

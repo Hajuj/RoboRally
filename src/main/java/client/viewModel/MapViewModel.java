@@ -4,12 +4,15 @@ import client.model.ClientGameModel;
 import client.model.ClientModel;
 import game.Element;
 import game.Game;
+import game.Player;
 import game.Robot;
 import game.boardelements.*;
+import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -17,6 +20,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.transform.Translate;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,9 +54,14 @@ public class MapViewModel implements Initializable {
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private ArrayList<ArrayList<ArrayList<Element>>> map;
+    int oldX;
+    int oldY;
+    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
+
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+
         int mapX = clientGameModel.getMap().size();
         int mapY = clientGameModel.getMap().get(0).size();
         try {
@@ -87,8 +98,23 @@ public class MapViewModel implements Initializable {
                             }
                         }
                 );
+                //setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+
             }
         });
+
+//        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+//                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
+//                    Platform.runLater(() -> {
+//                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
+//                            }
+//                    );
+//                    clientGameModel.canSetStartingPointProperty().setValue(false);
+//                }
+//            }
+//        });
     }
 
 
@@ -124,6 +150,7 @@ public class MapViewModel implements Initializable {
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
 
+
     public void refreshOrientation () {
         FileInputStream input = null;
         Image image;
@@ -156,65 +183,63 @@ public class MapViewModel implements Initializable {
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        switch (orientations) {
-            case "top", "bottom,top,left" -> {
-                imageView.setRotate(0);
+            switch (orientations){
+                case "top", "bottom,top,left"->{imageView.setRotate(0);}
+                case "right", "right,left", "left,right,bottom" ->{imageView.setRotate(90);}
+                case "left", "right,left,top"->{imageView.setRotate(-90);}
+                case "bottom","top,bottom,left" ->{imageView.setRotate(180);}
+                case "left,top,right" -> {imageView.setScaleX(-1);
+                                            imageView.setRotate(90);}
+                case "bottom,left,top" -> {imageView.setScaleX(-1);
+                                            imageView.setRotate(0);}
+                case "top,right,bottom" ->{imageView.setScaleX(-1);
+                                            imageView.setRotate(180); }
+                case "right,bottom,left"->{imageView.setScaleX(-1);
+                                            imageView.setRotate(-90); }
+                case "null" ->{ imageView.setImage(image);}
             }
-            case "right", "right,left", "left,right,bottom" -> {
-                imageView.setRotate(90);
-            }
-            case "left", "right,left,top" -> {
-                imageView.setRotate(-90);
-            }
-            case "bottom", "top,bottom,left" -> {
-                imageView.setRotate(180);
-            }
-            case "left,top,right" -> {
-                imageView.setScaleX(-1);
-                imageView.setRotate(90);
-            }
-            case "bottom,left,top" -> {
-                imageView.setScaleX(-1);
-                imageView.setRotate(0);
-            }
-            case "top,right,bottom" -> {
-                imageView.setScaleX(-1);
-                imageView.setRotate(180);
-            }
-            case "right,bottom,left" -> {
-                imageView.setScaleX(-1);
-                imageView.setRotate(-90);
-            }
-            case "null" -> {
-                imageView.setImage(image);
-            }
-        }
-        return imageView;
+            return imageView;
+
+
     }
 
-    private String handleLaser () {
-        String laserT = "";
-        for (Point2D loc : laserMap.keySet()) {
-            if (wallMap.containsKey(loc)) {
+    private String handleLaser() {
+        String laserT="";
+        for (Point2D loc:laserMap.keySet()) {
+            if (wallMap.containsKey(loc)){
                 laserT = "OneLaser";
-            } else {
+            }else{
                 laserT = "OneLaserBeam";
             }
         }
         return laserT;
     }
+  /*  private String handleBelts() {
 
+    }*/
+
+
+    /*public File findPath(String element) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
+    }*/
 
     public void clickGrid (MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
-            Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
-            Integer rowIndex = GridPane.getRowIndex(clickedNode.getParent());
+            Integer colIndex = GridPane.getColumnIndex(clickedNode);
+            Integer rowIndex = GridPane.getRowIndex(clickedNode);
+            System.out.println(colIndex + "  " + rowIndex);
+            //hier sollte er alle Map Elemente durch gehenn und diese 2 Point2D wo sine sind und dann  testen
+            //Plan B wir nehemen diese Position und schauen was für ein Element drauf ist, wenn es ein Szartpotn ist
+            //dann ja darf man selecten
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
         }
     }
 
+//
+//            Point2D positionID = new Point2D(colIndex, rowIndex);
 
     public void moveRobot (int playerID, int x, int y) {
         Robot robot = null;
@@ -372,19 +397,4 @@ public class MapViewModel implements Initializable {
             }
         }
     }
-
-
-    private String toString (ArrayList<String> orientations) {
-        String liste = "";
-        for (String s : orientations) {
-            //liste += s + " \t";
-            String.join(", ", orientations);
-
-        }
-        return liste;
-    }
-
-
-
-}
 

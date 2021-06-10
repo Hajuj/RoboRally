@@ -8,24 +8,23 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="348.0" stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
+   <center>
+        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="353.0" BorderPane.alignment="CENTER">
 
-<BorderPane prefHeight="660.0" prefWidth="463.0" stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
-   <right>
-        <AnchorPane BorderPane.alignment="CENTER">
-
-                  <TextField fx:id="messageField" layoutX="24.0" layoutY="581.0" prefHeight="27.0" prefWidth="315.0" />
-            <Button fx:id="sendButton" layoutX="352.0" layoutY="579.0" mnemonicParsing="false" onAction="#sendMessageButton" prefHeight="31.0" prefWidth="77.0" style="-fx-background-color: grey;" text="send" />
-            <Button fx:id="gameGuideBtn" layoutX="23.0" layoutY="69.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToGameGuide" prefHeight="43.0" prefWidth="215.0" style="-fx-background-color: grey;" text="Game Guide" />
-            <TextArea fx:id="chatField" layoutX="23.0" layoutY="325.0" prefHeight="238.0" prefWidth="396.0" />
-            <Label fx:id="chatLabel" layoutX="24.0" layoutY="302.0" text="Chat:" />
-            <Button fx:id="readyButton" layoutX="23.0" layoutY="148.0" mnemonicParsing="false" onAction="#sendReadyStatus" prefHeight="46.0" prefWidth="217.0" style="-fx-background-color: green;" text="Ready" />
-            <TextArea fx:id="readyDisplay" layoutX="248.0" layoutY="47.0" prefHeight="249.0" prefWidth="173.0" />
-            <Label fx:id="playersLabel" layoutX="248.0" layoutY="14.0" prefHeight="31.0" prefWidth="216.0" text="PLAYERS ONLINE">
+                  <TextField fx:id="messageField" layoutX="33.0" layoutY="471.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="227.0" />
+            <Button fx:id="sendButton" layoutX="269.0" layoutY="472.0" mnemonicParsing="false" onAction="#sendMessageButton" prefHeight="35.0" prefWidth="72.0" style="-fx-background-color: grey;" text="send" />
+            <Button fx:id="gameGuideBtn" layoutX="24.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToGameGuide" prefHeight="30.0" prefWidth="132.0" style="-fx-background-color: grey;" text="Game Guide" />
+            <TextArea fx:id="chatField" layoutX="28.0" layoutY="302.0" prefHeight="162.0" prefWidth="308.0" />
+            <Label fx:id="chatLabel" layoutX="33.0" layoutY="270.0" text="Chat:" />
+            <Button fx:id="readyButton" layoutX="25.0" layoutY="115.0" mnemonicParsing="false" onAction="#sendReadyStatus" prefHeight="28.0" prefWidth="131.0" style="-fx-background-color: green;" text="Ready" />
+            <TextArea fx:id="readyDisplay" layoutX="169.0" layoutY="53.0" prefHeight="236.0" prefWidth="168.0" />
+            <Label fx:id="playersLabel" layoutX="146.0" layoutY="14.0" prefHeight="39.0" prefWidth="173.0" text="PLAYERS ONLINE">
                 <font>
                     <Font size="15.0" />
                 </font>
             </Label>
-            <Button fx:id="notReadyBtn" layoutX="23.0" layoutY="232.0" mnemonicParsing="false" onAction="#changeStatusButton" prefHeight="45.0" prefWidth="217.0" style="-fx-background-color: red;" text="  Not Ready" />
+            <Button fx:id="notReadyBtn" layoutX="23.0" layoutY="164.0" mnemonicParsing="false" onAction="#changeStatusButton" prefHeight="27.0" prefWidth="136.0" style="-fx-background-color: red;" text="  Not Ready" />
         </AnchorPane>
-   </right>
+   </center>
 </BorderPane>
