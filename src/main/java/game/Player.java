@@ -98,9 +98,9 @@ public class Player {
     }
 
     public void discardCards() {
-        for (Card card : this.deckHand.getDeck()) {
-            this.deckDiscard.getDeck().add(card);
-            this.deckHand.getDeck().remove(card);
+        for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
+            this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
+            this.deckHand.getDeck().remove(this.deckHand.getDeck().get(i));
         }
     }
 

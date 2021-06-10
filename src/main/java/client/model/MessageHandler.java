@@ -1,5 +1,6 @@
 package client.model;
 
+import com.google.gson.annotations.Expose;
 import game.Game;
 import game.Player;
 import game.Robot;
@@ -63,9 +64,8 @@ public class MessageHandler {
         logger.warn(ANSI_CYAN + "Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
 
-        switch (errorBody.getError()) {
-            case "gameOn":
-                clientmodel.setCanPlay(false);
+        if ("gameOn".equals(errorBody.getError())) {
+            clientmodel.setCanPlay(false);
         }
 
 
@@ -109,7 +109,6 @@ public class MessageHandler {
             clientModel.getClientGameModel().getPlayer().setName(name);
             clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
-
         // save client info in the Hash Maps
         clientModel.addPlayer(clientID, name, figure);
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
@@ -153,7 +152,6 @@ public class MessageHandler {
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
         int playerID = startingPointTakenBody.getClientID();
-        //clientModel.getClientGameModel().setActualPlayerID(playerID);
 
         String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
@@ -196,9 +194,9 @@ public class MessageHandler {
         int register = cardSelectedBody.getRegister();
 
         if (cardSelectedBody.isFilled()) {
-            clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + register);
+            clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + (register + 1));
         } else {
-            clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + register);
+            clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + (register + 1));
         }
     }
 
@@ -265,20 +263,28 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
+        if (clientModel.getClientGameModel().getActualRegister() != 4) {
+            clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getActualRegister() + 1);
+        } else {
+            clientModel.getClientGameModel().setActualRegister(0);
+        }
         for (Object currentCard : currentCards) {
             String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
             String userNameDelimiter = ".0, card=";
             String[] split = message.split(userNameDelimiter);
             int playerID = Integer.parseInt(split[0]);
             String card = split[1];
-            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card);
+            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card + " in register: " + (clientModel.getClientGameModel().getActualRegister() + 1));
         }
     }
 
     public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {
         logger.info(ANSI_CYAN + "ReplaceCard Message received." + ANSI_RESET);
+        int register = replaceCardBody.getRegister();
+        String newCard = replaceCardBody.getNewCard();
+        int clientID = replaceCardBody.getClientID();
 
-
+        clientModel.receiveMessage("Player with ID: " + clientID + " replaced a card in register: " + (register + 1) + " new card is: " + newCard);
     }
 
     public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {

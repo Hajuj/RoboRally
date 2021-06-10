@@ -198,7 +198,7 @@ public class GameViewModel implements Initializable {
 
 
     public void playCard () {
-        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody("MoveI"));
+        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody("Spam"));
         model.sendMessage(playCard);
     }
 

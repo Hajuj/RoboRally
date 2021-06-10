@@ -44,8 +44,7 @@ public class ClientGameModel {
 
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
 
-    private int actuellRegister = 0;
-
+    private int actualRegister = -1;
     private volatile int actualPlayerID;
     private volatile int actualPhase;
 
@@ -172,12 +171,12 @@ public class ClientGameModel {
         clientModel.sendMessage(jsonMessage);
     }
 
-    public int getActuellRegister () {
-        return actuellRegister;
+    public int getActualRegister() {
+        return actualRegister;
     }
 
-    public void setActuellRegister (int actuellRegister) {
-        this.actuellRegister = actuellRegister;
+    public void setActualRegister(int actualRegister) {
+        this.actualRegister = actualRegister;
     }
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {

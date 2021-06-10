@@ -347,7 +347,19 @@ public class Game {
             case "UTurn" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
             }
-            case "Spam" -> {}
+            case "Spam" -> {
+                Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
+                deckSpam.getDeck().add(spam);
+                Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
+                playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
+                playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().set(currentRegister, top);
+                JSONMessage jsonMessage = new JSONMessage("ReplaceCard", new ReplaceCardBody(currentRegister, top.cardName, currentPlayer));
+                sendToAllPlayers(jsonMessage);
+                activateCardEffect(top.cardName);
+                JSONMessage jsonMessage1 = new JSONMessage("CardPlayed", new PlayCardBody(top.cardName));
+                sendToAllPlayers(jsonMessage1);
+            }
+            //TODO Trojan, Virus and Worm are not called correctly (card effects should be called)
             case "Trojan" -> {
                 for(int i = 0; i < 2; i++) {
                     playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
