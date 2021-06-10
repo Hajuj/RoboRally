@@ -4,17 +4,21 @@ import game.Element;
 import game.Player;
 import game.Robot;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
+import json.protocol.PlayCardBody;
 import json.protocol.SelectedCardBody;
 import json.protocol.SetStartingPointBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClientGameModel {
     private static ClientGameModel instance;
@@ -36,13 +40,14 @@ public class ClientGameModel {
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
     private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
 
-
-    //private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
-
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
 
+
+    //TODO: Observer hier
+    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
+    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
     private int actualRegister = -1;
     private volatile int actualPlayerID;
@@ -65,11 +70,42 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+  /*  public void playCard (String cardName) {
+      //  JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
+     //   clientModel.sendMessage(playCardm);
+    }
+    public void chooseCard (String cardName,int card) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, ));
+        clientModel.sendMessage(jsonMessage);
+    }
+    public void chooseReg (int register) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register + 1));
+        clientModel.sendMessage(jsonMessage);
+    }
+*/
 
+    public boolean getCanSetStartingPoint () {
+        return canSetStartingPoint.get();
+    }
 
+    public BooleanProperty canSetStartingPointProperty () {
+        return canSetStartingPoint;
+    }
+
+    public void setCanSetStartingPoint (boolean canSetStartingPoint) {
+        this.canSetStartingPoint.set(canSetStartingPoint);
+    }
 
     public int getActualPlayerID () {
         return actualPlayerID;
+    }
+
+    public IntegerProperty actualPlayerTurnProperty() {
+        return actualPlayerTurn;
+    }
+
+    public void setActualPlayerTurn(int actualPlayerTurn) {
+        this.actualPlayerTurn.set(actualPlayerTurn);
     }
 
     public void setActualPlayerID (int actualPlayerID) {
@@ -84,9 +120,8 @@ public class ClientGameModel {
         this.actualPhase = actualPhase;
 
     }
-
-    public void setProgrammingPhase (boolean b) {
-        /* if (this.actualPhase == 2)*/
+    public void setProgrammingPhase(boolean b) {
+       /* if (this.actualPhase == 2)*/
         this.programmingPhaseProperty.set(b);
 
     }

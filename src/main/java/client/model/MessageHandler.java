@@ -10,6 +10,13 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
+import server.ClientHandler;
+import server.Server;
+
+import javax.swing.text.Position;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,6 +28,7 @@ public class MessageHandler {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
+
 
     /**
      * Wenn Client ein HalloClient Message von Server bekommt, wird die Variable waitingForServer
@@ -71,24 +79,22 @@ public class MessageHandler {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText(errorBody.getError());
+            a.setContentText(errorBody.getError() + clientmodel.getClientGameModel().getActualPlayerID());
             a.show();
         });
     }
-
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "Chat received." + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
-
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
+        //TODO implement map controller and use in this method to build the map
     }
-
 
     //Client receive this message
     public void handleAlive (ClientModel clientModel, AliveBody aliveBody) {
@@ -96,10 +102,8 @@ public class MessageHandler {
         clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
     }
 
-
     public void handlePlayerAdded (ClientModel clientModel, PlayerAddedBody playerAddedBody) {
         logger.info(ANSI_CYAN + "PlayerAdded Message received." + ANSI_RESET);
-
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -114,13 +118,12 @@ public class MessageHandler {
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
 
-
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
-
+    //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
         logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
         for (String map : selectMapBody.getAvailableMaps()) {
@@ -129,12 +132,12 @@ public class MessageHandler {
         clientModel.setDoChooseMap(true);
     }
 
-
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         clientModel.setSelectedMap(mapSelectedBody.getMap());
+        System.out.println(mapSelectedBody.getMap().getClass());
+        //clientModel.gameOnProperty().setValue(true);
     }
-
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
         logger.info(ANSI_CYAN + "ConnectionUpdate Message received." + ANSI_RESET);
@@ -144,10 +147,8 @@ public class MessageHandler {
 
         if (action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
-            //TODO: remove Robot aus dem clientGameModel.robotMap
         }
     }
-
 
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
@@ -230,7 +231,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "SelectionFinished Message received." + ANSI_RESET);
         int clientID = selectionFinishedBody.getClientID();
         if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-                clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
+            clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
         }
     }
 
@@ -311,8 +312,6 @@ public class MessageHandler {
                 robot = entry.getKey();
             }
         }
-
-        System.out.println();
         clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
 
     }
@@ -358,3 +357,4 @@ public class MessageHandler {
 
 
 }
+
