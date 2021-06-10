@@ -258,7 +258,7 @@ public class MessageHandler {
 
         //When it's the turn of the player himself
         if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
-//            if (card.equals(server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().get(server.getCurrentGame().getCurrentRegister()).getCardName())) {
+            if (card.equals(server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().get(server.getCurrentGame().getCurrentRegister()).getCardName())) {
                 for (Player player : server.getCurrentGame().getPlayerList()) {
                     if (player.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
@@ -292,10 +292,10 @@ public class MessageHandler {
                     }
                 }
                 logger.info("IM PLAYING MY CARD LOL");
-//            } else {
-//                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
-//                server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
-//            }
+            } else {
+                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
+                server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
+            }
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
