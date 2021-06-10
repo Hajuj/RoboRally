@@ -24,10 +24,10 @@ import java.util.*;
  * @author Ilja Knis
  */
 
-    //TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
-    //     IT DIDN'T WORK LOOOOOOL
-    //     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
-    //     search in the link for -> PauseTransition
+//TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
+//     IT DIDN'T WORK LOOOOOOL
+//     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
+//     search in the link for -> PauseTransition
 
 public class Game {
     private static Game instance;
@@ -287,11 +287,11 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(String card){
+    public void activateCardEffect (String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
-        switch(card){
+        switch (card) {
             case "Again" -> {
                 //aktuelles Register -> if 0 -> error
                 //                      else player.getDeckRegister
@@ -384,34 +384,30 @@ public class Game {
         //Calculate boundaries within radius span
         if(robotXPosition - radius < 0){
             lowerXCap = 0;
-        }
-        else {
+        } else {
             lowerXCap = robotXPosition - radius;
         }
-        if(robotYPosition - radius < 0){
+        if (robotYPosition - radius < 0) {
             lowerYCap = 0;
-        }
-        else {
+        } else {
             lowerYCap = robotYPosition - radius;
         }
-        if(robotXPosition + radius >= map.size()){
+        if (robotXPosition + radius >= map.size()) {
             upperXCap = map.size();
-        }
-        else {
+        } else {
             upperXCap = robotXPosition + radius;
         }
-        if(robotYPosition + radius >= map.get(0).size()){
+        if (robotYPosition + radius >= map.get(0).size()) {
             upperYCap = map.get(0).size();
-        }
-        else {
+        } else {
             upperYCap = robotYPosition + radius;
         }
 
         //TODO what about the player that uses the virus card?
-        for(Player player : playerList){
+        for (Player player : playerList) {
             int robotX = player.getRobot().getxPosition();
             int robotY = player.getRobot().getyPosition();
-            if(robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap){
+            if (robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap) {
                 playersInRadius.add(player);
             }
         }
@@ -426,12 +422,12 @@ public class Game {
         switch (orientation){
             case "top" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotXPosition).get(robotYPosition-1)) {
+                    for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("bottom")) {
-                                        robot.setyPosition(robotYPosition-1);
+                                        robot.setyPosition(robotYPosition - 1);
                                         robotYPosition--;
                                     }
                                 }
@@ -451,22 +447,21 @@ public class Game {
             }
             case "bottom" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotXPosition).get(robotYPosition+1)) {
+                    for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("top")) {
-                                        robot.setyPosition(robotYPosition+1);
+                                        robot.setyPosition(robotYPosition + 1);
                                         robotYPosition++;
                                     }
                                 }
                             }
                             default -> {
-                                if(robotYPosition+1 >= map.get(0).size()) {
+                                if (robotYPosition + 1 >= map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
-                                }
-                                else {
-                                    robot.setyPosition(robotYPosition+1);
+                                } else {
+                                    robot.setyPosition(robotYPosition + 1);
                                     robotYPosition++;
                                 }
                             }
@@ -476,12 +471,12 @@ public class Game {
             }
             case "left" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotXPosition-1).get(robotYPosition)) {
+                    for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("right")) {
-                                        robot.setxPosition(robotXPosition-1);
+                                        robot.setxPosition(robotXPosition - 1);
                                         robotXPosition--;
                                     }
                                 }
@@ -501,22 +496,21 @@ public class Game {
             }
             case "right" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotXPosition+1).get(robotYPosition)) {
+                    for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("left")) {
-                                        robot.setxPosition(robotXPosition+1);
+                                        robot.setxPosition(robotXPosition + 1);
                                         robotXPosition++;
                                     }
                                 }
                             }
                             default -> {
-                                if(robotXPosition+1 >= map.size()) {
+                                if (robotXPosition + 1 >= map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
-                                }
-                                else {
-                                    robot.setxPosition(robotXPosition+1);
+                                } else {
+                                    robot.setxPosition(robotXPosition + 1);
                                     robotXPosition++;
                                 }
                             }
@@ -595,10 +589,10 @@ public class Game {
         switch(laser.getOrientations().get(0)){
             case "top" -> {
                 tempPosition = laserPosition.getY();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition--;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
-                    for(int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
@@ -608,10 +602,10 @@ public class Game {
             }
             case "bottom" -> {
                 tempPosition = laserPosition.getY();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition++;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
-                    for(int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
@@ -621,10 +615,10 @@ public class Game {
             }
             case "left" -> {
                 tempPosition = laserPosition.getX();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
@@ -634,10 +628,10 @@ public class Game {
             }
             case "right" -> {
                 tempPosition = laserPosition.getX();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;

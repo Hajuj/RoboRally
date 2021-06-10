@@ -15,6 +15,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import json.JSONMessage;
+import json.protocol.PlayCardBody;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -90,7 +92,6 @@ public class GameViewModel implements Initializable {
                             Platform.runLater(() -> {
                                 try {
                                     for (int j = 0; j < cards.size(); j++) {
-
                                         cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
                                         cards.get(j).setImage(loadImage(cardName));
                                         cards.get(j).setId(cardName);
@@ -191,16 +192,25 @@ public class GameViewModel implements Initializable {
         db.setContent(content);
     }
 
-    public void handlewithdraw(ImageView target, Image image) {
+    public void handlewithdraw (ImageView target, Image image) {
         target.setImage(image);
-   }
-    public void collectingCards(){
+    }
+
+
+    public void playCard () {
+        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody("MoveI"));
+        model.sendMessage(playCard);
+    }
+
+
+    public void collectingCards () {
 
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
-        clientGameModel.sendSelectedCards(registerNum,cardName);
+        clientGameModel.sendSelectedCards(registerNum, cardName);
 
     }
-    public void setCardName(String cardName) {
+
+    public void setCardName (String cardName) {
         this.cardName = cardName;
     }
 

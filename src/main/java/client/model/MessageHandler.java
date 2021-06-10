@@ -9,13 +9,6 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
-import server.Server;
-
-import javax.swing.text.Position;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,8 +31,11 @@ public class MessageHandler {
     public void handleHelloClient (ClientModel clientmodel, HelloClientBody helloClientBody) {
         logger.info(ANSI_CYAN + "HalloClient Message received." + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
-        //TODO change to notify() in class ClientModel
-        clientmodel.setWaitingForServer(false);
+
+        synchronized (clientmodel) {
+            clientmodel.setWaitingForServer(false);
+            clientmodel.notifyAll();
+        }
     }
 
 
@@ -78,20 +74,21 @@ public class MessageHandler {
             a.setContentText(errorBody.getError());
             a.show();
         });
-        clientmodel.sendError("Error has occurred! " + errorBody.getError());
     }
+
 
     public void handleReceivedChat (ClientModel clientModel, ReceivedChatBody receivedChatBody) {
         logger.info(ANSI_CYAN + "Chat received." + ANSI_RESET);
         clientModel.receiveMessage(receivedChatBody.getMessage());
     }
 
+
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
         client.gameOnProperty().setValue(true);
-        //TODO implement map controller and use in this method to build the map
     }
+
 
     //Client receive this message
     public void handleAlive (ClientModel clientModel, AliveBody aliveBody) {
@@ -99,8 +96,10 @@ public class MessageHandler {
         clientModel.sendMessage(new JSONMessage("Alive", new AliveBody()));
     }
 
+
     public void handlePlayerAdded (ClientModel clientModel, PlayerAddedBody playerAddedBody) {
         logger.info(ANSI_CYAN + "PlayerAdded Message received." + ANSI_RESET);
+
         int clientID = playerAddedBody.getClientID();
         String name = playerAddedBody.getName();
         int figure = playerAddedBody.getFigure();
@@ -110,20 +109,19 @@ public class MessageHandler {
             clientModel.getClientGameModel().getPlayer().setName(name);
             clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
-        // save client info in the Hash Maps
-        clientModel.getPlayersNamesMap().put(clientID, name);
-        clientModel.getPlayersFigureMap().put(clientID, figure);
-        clientModel.getPlayersStatusMap().put(clientID, false);
 
+        // save client info in the Hash Maps
+        clientModel.addPlayer(clientID, name, figure);
         logger.info("A new player has been added. Name: " + name + ", ID: " + clientID + ", Figure: " + figure);
     }
+
 
     public void handlePlayerStatus (ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
     }
 
-    //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
+
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
         logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
         for (String map : selectMapBody.getAvailableMaps()) {
@@ -132,12 +130,12 @@ public class MessageHandler {
         clientModel.setDoChooseMap(true);
     }
 
+
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         clientModel.setSelectedMap(mapSelectedBody.getMap());
-        System.out.println(mapSelectedBody.getMap().getClass());
-        //clientModel.gameOnProperty().setValue(true);
     }
+
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
         logger.info(ANSI_CYAN + "ConnectionUpdate Message received." + ANSI_RESET);
@@ -147,44 +145,49 @@ public class MessageHandler {
 
         if (action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
+            //TODO: remove Robot aus dem clientGameModel.robotMap
         }
     }
 
+
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
+        int playerID = startingPointTakenBody.getClientID();
+        //clientModel.getClientGameModel().setActualPlayerID(playerID);
+
+        String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
+        Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
 
         Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
-        int playerID = clientModel.getClientGameModel().getActualPlayerID();
-        String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
 
-        Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
-        clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
-       //BraucheIch das noch
+        clientModel.getClientGameModel().getStartingPointQueueObservable().put(robot, position);
+
+        //BraucheIch das noch
         clientModel.getClientGameModel().setProgrammingPhase(true);
 
-//        clientModel.getClientGameModel().setX(startingPointTakenBody.getX());
-//        clientModel.getClientGameModel().setY(startingPointTakenBody.getY());
-//        clientModel.getClientGameModel().canSetStartingPointProperty().setValue(true);
     }
 
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         logger.info("Current Player: " + playerID);
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
-        //TODO: swizch cases für die Phasen, programming phase ist 2
         int phase = activePhaseBody.getPhase();
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         clientModel.getClientGameModel().setActualPhase(phase);
-        /*switch (phase){
-            case 2 -> {clientModel.getClientGameModel().setActualPhase(phase);
-            logger.info("Current Active Phase: " + phase);
-            }
-
-        }*/
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
@@ -296,12 +299,16 @@ public class MessageHandler {
         int newX = movementBody.getX();
         int newY = movementBody.getY();
         Robot robot = null;
+
         for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
                 robot = entry.getKey();
             }
         }
-        clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
+
+        System.out.println();
+        clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
+
     }
 
     public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {

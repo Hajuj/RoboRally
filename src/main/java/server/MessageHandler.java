@@ -103,7 +103,6 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
-
         String message = sendChatBody.getMessage();
         int to = sendChatBody.getTo();
 
@@ -152,6 +151,7 @@ public class MessageHandler {
             }
             if (server.canStartTheGame()) {
                 try {
+                    server.getCurrentGame().setGameOn(true);
                     server.getCurrentGame().startGame(server.getReadyPlayer());
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
