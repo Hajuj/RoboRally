@@ -1,7 +1,6 @@
 package client.model;
 
 import game.Element;
-import game.Game;
 import game.Player;
 import game.Robot;
 import javafx.beans.property.BooleanProperty;
@@ -29,7 +28,16 @@ public class ClientGameModel {
 
     private Point2D oldPosition;
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
-    private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
+
+    private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
+    private ObservableMap<Robot, Point2D> startingPointQueueObservable = FXCollections.observableMap(startingPointQueue);
+
+
+    private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
+    private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
+
+
+    //private ObservableMap<Robot, Point2D> robotMapObservable = FXCollections.observableMap(robotMap);
 
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
@@ -38,8 +46,8 @@ public class ClientGameModel {
 
     private int actuellRegister = 0;
 
-    private int actualPlayerID;
-    private int actualPhase;
+    private volatile int actualPlayerID;
+    private volatile int actualPhase;
 
 
     //Singleton Zeug
@@ -89,14 +97,14 @@ public class ClientGameModel {
         return oldPosition;
     }
 
-    public void saveOldPosition () {
-        for (HashMap.Entry<Robot, Point2D> entry : getRobotMapObservable().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(getActualPlayerID())))) {
-                this.oldPosition = new Point2D((int) entry.getValue().getX(), (int) entry.getValue().getY());
-                break;
-            }
-        }
-    }
+//    public void saveOldPosition () {
+//        for (HashMap.Entry<Robot, Point2D> entry : getRobotMapObservable().entrySet()) {
+//            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(getActualPlayerID())))) {
+//                this.oldPosition = new Point2D((int) entry.getValue().getX(), (int) entry.getValue().getY());
+//                break;
+//            }
+//        }
+//    }
 
     public boolean isCanMove () {
         return canMove.get();
@@ -151,13 +159,12 @@ public class ClientGameModel {
         return robotMap;
     }
 
-
-    public ObservableMap<Robot, Point2D> getRobotMapObservable () {
-        return robotMapObservable;
+    public ObservableMap<Robot, Point2D> getStartingPointQueueObservable () {
+        return startingPointQueueObservable;
     }
 
-    public void setRobotMapObservable (ObservableMap<Robot, Point2D> robotMapObservable) {
-        this.robotMapObservable = robotMapObservable;
+    public void setStartingPointQueueObservable (ObservableMap<Robot, Point2D> startingPointQueueObservable) {
+        this.startingPointQueueObservable = startingPointQueueObservable;
     }
 
     public void sendSelectedCards (int registerNum, String cardName) {
@@ -171,5 +178,29 @@ public class ClientGameModel {
 
     public void setActuellRegister (int actuellRegister) {
         this.actuellRegister = actuellRegister;
+    }
+
+    public HashMap<Robot, Point2D> getStartingPointQueue () {
+        return startingPointQueue;
+    }
+
+    public void setStartingPointQueue (HashMap<Robot, Point2D> startingPointQueue) {
+        this.startingPointQueue = startingPointQueue;
+    }
+
+    public HashMap<Robot, Point2D> getMoveQueue () {
+        return moveQueue;
+    }
+
+    public void setMoveQueue (HashMap<Robot, Point2D> moveQueue) {
+        this.moveQueue = moveQueue;
+    }
+
+    public ObservableMap<Robot, Point2D> getMoveQueueObservable () {
+        return moveQueueObservable;
+    }
+
+    public void setMoveQueueObservable (ObservableMap<Robot, Point2D> moveQueueObservable) {
+        this.moveQueueObservable = moveQueueObservable;
     }
 }

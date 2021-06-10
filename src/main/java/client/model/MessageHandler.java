@@ -152,14 +152,15 @@ public class MessageHandler {
 
     public void handleStartingPointTaken (ClientModel clientModel, StartingPointTakenBody startingPointTakenBody) {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
+        int playerID = startingPointTakenBody.getClientID();
+        //clientModel.getClientGameModel().setActualPlayerID(playerID);
 
-        int playerID = clientModel.getClientGameModel().getActualPlayerID();
         String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
 
         Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
-        //clientModel.getClientGameModel().getRobotMap().put(robot, position);
-        clientModel.getClientGameModel().getRobotMapObservable().put(robot, position);
+
+        clientModel.getClientGameModel().getStartingPointQueueObservable().put(robot, position);
 
         //BraucheIch das noch
         clientModel.getClientGameModel().setProgrammingPhase(true);
@@ -169,6 +170,11 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         logger.info("Current Player: " + playerID);
     }
@@ -176,6 +182,11 @@ public class MessageHandler {
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         int phase = activePhaseBody.getPhase();
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         clientModel.getClientGameModel().setActualPhase(phase);
     }
 
@@ -289,16 +300,18 @@ public class MessageHandler {
         int newY = movementBody.getY();
         Robot robot = null;
 
-        clientModel.getClientGameModel().setActualPlayerID(clientID);
-        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMapObservable().entrySet()) {
+        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
                 robot = entry.getKey();
             }
         }
-        clientModel.getClientGameModel().saveOldPosition();
 
-        clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
-        System.out.println("2 ==?== " + clientModel.getClientGameModel().getRobotMapObservable().size());
+        clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
+
+        //clientModel.getClientGameModel().saveOldPosition();
+
+        //clientModel.getClientGameModel().getRobotMapObservable().replace(robot, new Point2D(newX, newY));
+        //System.out.println("2 ==?== " + clientModel.getClientGameModel().getRobotMapObservable().size());
     }
 
     public void handleAnimation (ClientModel clientModel, AnimationBody animationBody) {

@@ -65,6 +65,16 @@ public class ClientModel {
         return instance;
     }
 
+
+    public int getIDfromRobotName (String name) {
+        for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
+            if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return -1;
+    }
+
     /**
      * This method is responsible for connecting the client to the specified server.
      *

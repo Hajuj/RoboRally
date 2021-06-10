@@ -10,7 +10,11 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
+import server.Connection;
 import server.Server;
+
+import javafx.geometry.Point2D;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,10 +24,10 @@ import java.util.*;
  * @author Ilja Knis
  */
 
-    //TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
-    //     IT DIDN'T WORK LOOOOOOL
-    //     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
-    //     search in the link for -> PauseTransition
+//TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
+//     IT DIDN'T WORK LOOOOOOL
+//     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
+//     search in the link for -> PauseTransition
 
 public class Game {
     private static Game instance;
@@ -163,7 +167,6 @@ public class Game {
         }
     }
 
-
     public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
@@ -181,81 +184,81 @@ public class Game {
     }
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
-        for (int y = 0; y < mapX; y++) {
-            for (int x = 0; x < mapY; x++) {
-                for (int i = 0; i < map.get(y).get(x).size(); i++) {
-                    switch (map.get(y).get(x).get(i).getType()) {
+        for (int x = 0; x < mapX; x++) {
+            for (int y = 0; y < mapY; y++) {
+                for (int i = 0; i < map.get(x).get(y).size(); i++) {
+                    switch (map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, antenna);
                             antennaMap.put(new Point2D(x, y), antenna);
                         }
                         case "ConveyorBelt" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, conveyorBelt);
                             conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
                         }
                         case "CheckPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, checkPoint);
                             checkPointMap.put(new Point2D(x, y), checkPoint);
                         }
                         case "Empty" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Empty empty = new Empty(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, empty);
                             emptyMap.put(new Point2D(x, y), empty);
                         }
                         case "EnergySpace" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
                             replaceElementInMap(map, x, y, element, energySpace);
                             energySpaceMap.put(new Point2D(x, y), energySpace);
                         }
                         case "Gear" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, gear);
                             gearMap.put(new Point2D(x, y), gear);
                         }
                         case "Laser" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
                                     element.getOrientations(), element.getCount());
                             replaceElementInMap(map, x, y, element, laser);
                             laserMap.put(new Point2D(x, y), laser);
                         }
                         case "Pit" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Pit pit = new Pit(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, pit);
                             pitMap.put(new Point2D(x, y), pit);
                         }
                         case "PushPanel" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             PushPanel pushPanel = new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
                                     element.getRegisters());
                             replaceElementInMap(map, x, y, element, pushPanel);
                             pushPanelMap.put(new Point2D(x, y), pushPanel);
                         }
                         case "RestartPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, restartPoint);
                             restartPointMap.put(new Point2D(x, y), restartPoint);
                         }
                         case "StartPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
                             replaceElementInMap(map, x, y, element, startPoint);
                             startPointMap.put(new Point2D(x, y), startPoint);
                         }
                         case "Wall" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             replaceElementInMap(map, x, y, element, wall);
                             wallMap.put(new Point2D(x, y), wall);
@@ -268,13 +271,27 @@ public class Game {
         }
     }
 
+    /*
+    Antenna priority;
+    Register 1:
+    List<Player> turnOrder;
+    for(int i = 0; i < playersList.size; i++){
+        turnOrder[i].getPlayer.activateCardEffect();
+    }
+    triggerBoardElements();
+        -> for(Element element : map.get(y).get(x))
+               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
+
+
+     */
+
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(String card){
+    public void activateCardEffect (String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
-        switch(card){
+        switch (card) {
             case "Again" -> {
                 //aktuelles Register -> if 0 -> error
                 //                      else player.getDeckRegister
@@ -367,34 +384,30 @@ public class Game {
         //Calculate boundaries within radius span
         if(robotXPosition - radius < 0){
             lowerXCap = 0;
-        }
-        else {
+        } else {
             lowerXCap = robotXPosition - radius;
         }
-        if(robotYPosition - radius < 0){
+        if (robotYPosition - radius < 0) {
             lowerYCap = 0;
-        }
-        else {
+        } else {
             lowerYCap = robotYPosition - radius;
         }
-        if(robotXPosition + radius >= map.get(0).size()){
-            upperXCap = map.get(0).size();
-        }
-        else {
+        if (robotXPosition + radius >= map.size()) {
+            upperXCap = map.size();
+        } else {
             upperXCap = robotXPosition + radius;
         }
-        if(robotYPosition + radius >= map.size()){
-            upperYCap = map.size();
-        }
-        else {
+        if (robotYPosition + radius >= map.get(0).size()) {
+            upperYCap = map.get(0).size();
+        } else {
             upperYCap = robotYPosition + radius;
         }
 
         //TODO what about the player that uses the virus card?
-        for(Player player : playerList){
+        for (Player player : playerList) {
             int robotX = player.getRobot().getxPosition();
             int robotY = player.getRobot().getyPosition();
-            if(robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap){
+            if (robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap) {
                 playersInRadius.add(player);
             }
         }
@@ -409,12 +422,12 @@ public class Game {
         switch (orientation){
             case "top" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotYPosition-1).get(robotXPosition)) {
+                    for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("bottom")) {
-                                        robot.setyPosition(robotYPosition-1);
+                                        robot.setyPosition(robotYPosition - 1);
                                         robotYPosition--;
                                     }
                                 }
@@ -434,22 +447,21 @@ public class Game {
             }
             case "bottom" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotYPosition+1).get(robotXPosition)) {
+                    for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("top")) {
-                                        robot.setyPosition(robotYPosition+1);
+                                        robot.setyPosition(robotYPosition + 1);
                                         robotYPosition++;
                                     }
                                 }
                             }
                             default -> {
-                                if(robotYPosition+1 >= map.size()) {
+                                if (robotYPosition + 1 >= map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
-                                }
-                                else {
-                                    robot.setyPosition(robotYPosition+1);
+                                } else {
+                                    robot.setyPosition(robotYPosition + 1);
                                     robotYPosition++;
                                 }
                             }
@@ -459,12 +471,12 @@ public class Game {
             }
             case "left" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotYPosition).get(robotXPosition-1)) {
+                    for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("right")) {
-                                        robot.setxPosition(robotXPosition-1);
+                                        robot.setxPosition(robotXPosition - 1);
                                         robotXPosition--;
                                     }
                                 }
@@ -484,22 +496,21 @@ public class Game {
             }
             case "right" -> {
                 for(int i = 0; i < movement; i++) {
-                    for(Element element : map.get(robotYPosition).get(robotXPosition+1)) {
+                    for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                         switch (element.getType()) {
                             case "Wall" -> {
-                                for(String orient : element.getOrientations()) {
+                                for (String orient : element.getOrientations()) {
                                     if (!orient.equals("left")) {
-                                        robot.setxPosition(robotXPosition+1);
+                                        robot.setxPosition(robotXPosition + 1);
                                         robotXPosition++;
                                     }
                                 }
                             }
                             default -> {
-                                if(robotXPosition+1 >= map.get(0).size()) {
+                                if (robotXPosition + 1 >= map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
-                                }
-                                else {
-                                    robot.setxPosition(robotXPosition+1);
+                                } else {
+                                    robot.setxPosition(robotXPosition + 1);
                                     robotXPosition++;
                                 }
                             }
@@ -578,11 +589,11 @@ public class Game {
         switch(laser.getOrientations().get(0)){
             case "top" -> {
                 tempPosition = laserPosition.getY();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition--;
-                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                    laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
+                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
@@ -591,11 +602,11 @@ public class Game {
             }
             case "bottom" -> {
                 tempPosition = laserPosition.getY();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition++;
-                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getX()).size(); i++) {
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                    laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
+                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
@@ -604,11 +615,11 @@ public class Game {
             }
             case "left" -> {
                 tempPosition = laserPosition.getX();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
-                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
@@ -617,11 +628,11 @@ public class Game {
             }
             case "right" -> {
                 tempPosition = laserPosition.getX();
-                while(!foundBlocker){
+                while(!foundBlocker) {
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for(int i = 0; i < map.get((int) laserPosition.getY()).get((int) tempPosition).size(); i++) {
-                        if (map.get((int) laserPosition.getY()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
@@ -683,9 +694,9 @@ public class Game {
 
     public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
-            int indexelement = map.get(y).get(x).indexOf(element);
-            map.get(y).get(x).remove(element);
-            map.get(y).get(x).add(indexelement, (Element) object);
+            int indexelement = map.get(x).get(y).indexOf(element);
+            map.get(x).get(y).remove(element);
+            map.get(x).get(y).add(indexelement, (Element) object);
         } else {
             throw new ClassCastException(object + " is not an Element!" +
                     "Can't cast this method on Objects other than Elements!");
