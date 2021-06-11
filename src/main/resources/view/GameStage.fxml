@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#dragDroppedPane" onDragExited="#drgExited"  prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
    <children>
       <ImageView fitHeight="422.0" fitWidth="1100.0" layoutY="-1.0" pickOnBounds="true">
          <image>
@@ -174,7 +174,7 @@
                         </VBox>
                         <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
                            <children>
-                              <ImageView fx:id="card_7" fitHeight="93.0" fitWidth="66.0" onDragDetected="#handle" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="card_7" fitHeight="93.0" fitWidth="66.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
                            <HBox.margin>
                               <Insets left="13.0" />
@@ -189,7 +189,7 @@
                      <children>
                         <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
                            <children>
-                              <ImageView fx:id="card_8" fitHeight="92.0" fitWidth="68.0" onDragDetected="#handle" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="card_8" fitHeight="92.0" fitWidth="68.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </VBox>
                      </children>

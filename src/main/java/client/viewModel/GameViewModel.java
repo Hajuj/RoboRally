@@ -2,24 +2,35 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import json.JSONMessage;
 import json.protocol.PlayCardBody;
 
+import java.awt.*;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,9 +91,16 @@ public class GameViewModel implements Initializable {
 
 
     ObservableList<ImageView> cards ;
+    ObservableList<ImageView> registers ;
+    Dragboard db = null;
+    ImageView returnSource;
+    boolean paneDropped=false;
+
+
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        registers = FXCollections.observableArrayList(reg_0,reg_1,reg_2,reg_3,reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
@@ -103,7 +121,11 @@ public class GameViewModel implements Initializable {
             //TODO:Boolean Checkk dass es auf True gesetzt ist
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
                 Platform.runLater(() -> {
+
+                        showPopup("Programming Phase has begin","please choose your Programming Cards");
+
                     clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
                         @Override
                         public void onChanged(Change change) {
@@ -123,6 +145,7 @@ public class GameViewModel implements Initializable {
                             });
                         }
                     });
+
                 });
             }
         });
@@ -142,9 +165,34 @@ public class GameViewModel implements Initializable {
         });
     }
 
-    public Image yourRobot (){
+    private void showPopup(String popupText, String contentText) {
+        Text text = new Text (popupText);
+        Text content = new Text(contentText);
+        text.setFill(Color.RED);
+        text.setStroke(Color.BLACK);
+        ScaleTransition scaleTransition = new ScaleTransition();
+        scaleTransition.setDuration(Duration.seconds(2));
+        scaleTransition.setNode(text);
+        scaleTransition.setByY(1.0);
+        scaleTransition.setByX(1.0);
+        scaleTransition.setCycleCount(-1);
+        scaleTransition.setAutoReverse(true);
+        scaleTransition.play();
+        StackPane root = new StackPane();
+        root.getChildren().addAll(text);
+        root.getChildren().addAll(content);
+        Scene scene = new Scene(root, 400, 200);
+        Stage not = new Stage();
+        scene.setFill(Color.DARKGRAY);
+        not.setTitle("Player Notification");
+        not.setScene(scene);
+        not.show();
+        //not.wait(2);
+        not.close();
 
-        //int player = model.getPlayersFigureMap().get(playerId);
+}
+
+    public Image yourRobot (){
 
         int figure = clientGameModel.getPlayer().getFigure();
         FileInputStream input = null;
@@ -187,6 +235,7 @@ public class GameViewModel implements Initializable {
      /* allow any transfer mode **/
     public void handle(MouseEvent event) {
         ImageView source = (ImageView) event.getSource();
+        returnSource = source;
         if(source.getId().equals(reg_0.getId())||source.getId().equals(reg_1.getId())
                 ||source.getId().equals(reg_2.getId())||source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())){
             this.cardName = "Null";
@@ -195,6 +244,8 @@ public class GameViewModel implements Initializable {
         }else {
             this.cardName = source.getId();
         }
+
+        event.consume();
         handleSource(source);
 
 
@@ -210,11 +261,12 @@ public class GameViewModel implements Initializable {
            // System.out.println(event.getTarget());
 
         }
+        event.consume();
 
     }
 
     private void handleSource(ImageView source) {
-        Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+         db = source.startDragAndDrop(TransferMode.ANY);
         ClipboardContent content = new ClipboardContent();
         content.putImage(source.getImage());
         source.setImage(null);
@@ -225,13 +277,31 @@ public class GameViewModel implements Initializable {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
         //TODO TargetId nehemn und überprüfen
+
+/*
+        if (dragEvent.getGestureTarget().equals(reg_0)||dragEvent.getGestureTarget().equals(reg_1)||
+                dragEvent.getGestureTarget().equals(reg_2)||dragEvent.getGestureTarget().equals(reg_3)||dragEvent.getGestureTarget().equals(reg_4)||target.equals(null)){*/
+ //           if (paneDropped==false) {
+                this.register = target.getId();
+                handlewithdraw(target, image);
+                collectingCards();
+  //          }
+
+
+
+
+//        } else {
+           /* System.out.println("NOT ACCEPTED TARGET");
+            ImageView source = (ImageView) dragEvent.getSource();
+            System.out.println(dragEvent.getSource());
+            source.setImage(image);
+            System.out.println(dragEvent.getDragboard().getImage());
+//        }*/
         //TODO 2 Karten auf einem Register
         //if (((ImageView) dragEvent.getTarget()).getImage(null))
-        this.register = target.getId();
-        handlewithdraw(target, image);
-        collectingCards();
 
     }
+
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
@@ -257,4 +327,27 @@ public class GameViewModel implements Initializable {
     public String getCardName() {
         return cardName;
     }
+
+    public void dragDroppedPane(DragEvent dragEvent) {
+        System.out.println("you dropped on me Pane");
+    }
+
+
+    public void drgExited(DragEvent dragEvent) {
+        System.out.println("you exited on me Pane");
+       returnSource.setImage(db.getImage());
+    }
+
+/*   public void drgExited(DragEvent dragEvent) {
+     this.paneDropped=true;
+        returnCard();
+        dragEvent.consume();
+   }
+
+   public void returnCard (){
+       returnSource.setImage(db.getImage());
+       this.paneDropped=false;
+
+   }*/
+
 }
