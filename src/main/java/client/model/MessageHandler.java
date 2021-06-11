@@ -135,8 +135,6 @@ public class MessageHandler {
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         clientModel.setSelectedMap(mapSelectedBody.getMap());
-        System.out.println(mapSelectedBody.getMap().getClass());
-        //clientModel.gameOnProperty().setValue(true);
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
