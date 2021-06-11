@@ -297,6 +297,17 @@ public class MessageHandler {
     }
 
     public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
+        int clientID = playerTurningBody.getClientID();
+        String rotation = playerTurningBody.getRotation();
+        Robot robot = null;
+        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
+                robot = entry.getKey();
+            }
+        }
+        clientModel.getClientGameModel().getTurningQueueObservable().put(robot, rotation);
+
+
         logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
 
     }

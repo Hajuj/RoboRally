@@ -273,6 +273,7 @@ public class GameViewModel implements Initializable {
 
     public void playCard () {
         int currentRegister = clientGameModel.getActualRegister();
+        //TODO:  java.lang.reflect.InvocationTargetException?
         String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(card));
         model.sendMessage(playCard);

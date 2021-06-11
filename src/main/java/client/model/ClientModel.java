@@ -69,8 +69,10 @@ public class ClientModel {
 
 
     public int getIDfromRobotName (String name) {
+        System.out.println("Suche name " + name);
         for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
             if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
+                System.out.println("Finde name " + Game.getRobotNames().get(entry.getValue()));
                 return entry.getKey();
             }
         }

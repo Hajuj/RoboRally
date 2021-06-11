@@ -349,12 +349,20 @@ public class Game {
             }
             case "TurnLeft" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "left");
+                JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "counterclockwise"));
+                sendToAllPlayers(jsonMessage);
             }
             case "TurnRight" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "right");
+                JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage);
             }
             case "UTurn" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
+                JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage);
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
@@ -478,7 +486,7 @@ public class Game {
                                 }
                             }
                             default -> {
-                                if (robotYPosition + 1 >= map.get(0).size()) {
+                                if (robotYPosition + 1 > map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
                                     robot.setyPosition(robotYPosition + 1);
@@ -526,7 +534,7 @@ public class Game {
                                 }
                             }
                             default -> {
-                                if (robotXPosition + 1 >= map.size()) {
+                                if (robotXPosition + 1 > map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
                                     robot.setxPosition(robotXPosition + 1);

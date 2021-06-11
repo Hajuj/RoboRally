@@ -75,6 +75,7 @@ public class MapViewModel implements Initializable {
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
                 Platform.runLater(() -> {
                     for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
+                        //nullpointer hier. warum=
                         int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                         moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                         clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
@@ -85,15 +86,30 @@ public class MapViewModel implements Initializable {
         });
 
 
+        clientGameModel.getTurningQueueObservable().addListener(new MapChangeListener<Robot, String>() {
+
+            @Override
+            public void onChanged (Change<? extends Robot, ? extends String> change) {
+                Platform.runLater(() -> {
+                    for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
+                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                        turnRobot(playerID, entry.getValue());
+                        //TODO: wo muss ich die orientation ändern in ClientGameModel?
+                        clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                    }
+                });
+            }
+        });
+
         clientGameModel.getStartingPointQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
             @Override
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
                 Platform.runLater(() -> {
-                            for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-                                int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                                setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                                clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                                clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                        setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                        clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                        clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                             }
                         }
                 );
@@ -130,21 +146,21 @@ public class MapViewModel implements Initializable {
         image = new Image(input);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(46);
+        imageView.setFitHeight(46);
 
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
 
         try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
+            input = new FileInputStream(findPath("images/TransparentElements/RobotDirectionArrowHUGE.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         Image image2 = new Image(input);
         imageView = new ImageView();
         imageView.setImage(image2);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(46);
+        imageView.setFitHeight(46);
         imageView.setRotate(-90);
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
@@ -254,8 +270,30 @@ public class MapViewModel implements Initializable {
     }
 
 
-//
-//            Point2D positionID = new Point2D(colIndex, rowIndex);
+    public void turnRobot (int playerID, String rotation) {
+        Robot robot = null;
+        for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
+                robot = entry.getKey();
+                break;
+            }
+        }
+
+        Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
+        double angle = 0;
+        if (rotation.equals("clockwise")) {
+            angle = 90;
+        } else if (rotation.equals("counterclockwise")) {
+            angle = -90;
+        }
+
+        Group imageGroup = fieldMap.get(oldPosition);
+        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+        robotOrientation.setRotate(robotOrientation.getRotate() + angle);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+        fieldMap.get(oldPosition).getChildren().add(robotOrientation);
+    }
+
 
     public void moveRobot (int playerID, int x, int y) {
         Robot robot = null;

@@ -40,6 +40,10 @@ public class ClientGameModel {
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
     private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
 
+    private HashMap<Robot, String> turningQueue = new HashMap<>();
+    private ObservableMap<Robot, String> turningQueueObservable = FXCollections.observableMap(turningQueue);
+
+
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
 
@@ -117,6 +121,22 @@ public class ClientGameModel {
 
     }
 
+
+    public HashMap<Robot, String> getTurningQueue () {
+        return turningQueue;
+    }
+
+    public void setTurningQueue (HashMap<Robot, String> turningQueue) {
+        this.turningQueue = turningQueue;
+    }
+
+    public ObservableMap<Robot, String> getTurningQueueObservable () {
+        return turningQueueObservable;
+    }
+
+    public void setTurningQueueObservable (ObservableMap<Robot, String> turningQueueObservable) {
+        this.turningQueueObservable = turningQueueObservable;
+    }
 
     public int getActualRegisterProperty () {
         return actualRegisterProperty.get();
