@@ -478,7 +478,7 @@ public class Game {
                                 }
                             }
                             default -> {
-                                if (robotYPosition + 1 >= map.get(0).size()) {
+                                if (robotYPosition + 1 > map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
                                     robot.setyPosition(robotYPosition + 1);
@@ -526,7 +526,7 @@ public class Game {
                                 }
                             }
                             default -> {
-                                if (robotXPosition + 1 >= map.size()) {
+                                if (robotXPosition + 1 > map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
                                     robot.setxPosition(robotXPosition + 1);
