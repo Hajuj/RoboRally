@@ -19,4 +19,17 @@ public class PlayerTurningBody implements ServerMessageAction<PlayerTurningBody>
     public void triggerAction (ClientModel client, PlayerTurningBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handlePlayerTurning(client, bodyObject);
     }
+
+    public PlayerTurningBody (int clientID, String rotation) {
+        this.clientID = clientID;
+        this.rotation = rotation;
+    }
+
+    public int getClientID () {
+        return clientID;
+    }
+
+    public String getRotation () {
+        return rotation;
+    }
 }

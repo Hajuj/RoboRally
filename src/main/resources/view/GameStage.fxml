@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#dragDroppedPane" onDragExited="#drgExited"  prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
    <children>
@@ -66,11 +63,15 @@
                         <ImageView fx:id="reg_4" fitHeight="147.0" fitWidth="113.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="88.0" prefWidth="91.0" text="Button">
-                     <HBox.margin>
-                        <Insets left="39.0" top="42.0" />
-                     </HBox.margin>
-                  </Button>
+                   <Button fx:id="dummesButton" mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="88.0"
+                           prefWidth="91.0">
+                       <HBox.margin>
+                           <Insets left="50.0" top="0.0"/>
+                       </HBox.margin>
+                       <font>
+                           <Font name="System Bold" size="32.0"/>
+                       </font>
+                   </Button>
                </children>
                <opaqueInsets>
                   <Insets />

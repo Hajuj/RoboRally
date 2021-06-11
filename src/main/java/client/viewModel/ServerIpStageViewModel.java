@@ -51,17 +51,6 @@ public class ServerIpStageViewModel implements Initializable {
         serverAddress = new SimpleStringProperty();
         LMUButton = new Button();
         BButton = new Button();
-        Image image;
-        FileInputStream input = null;
-        try {
-            input = new FileInputStream(findPath("robo_rally_logo.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-        logo = new ImageView();
-        logo.setImage(image);
-        logo.setVisible(true);
     }
 
     public File findPath (String fileName) {
@@ -97,14 +86,6 @@ public class ServerIpStageViewModel implements Initializable {
                     serverAddressField.clear();
                     serverPortField.clear();
                 }
-//            } else {
-//                serverAddressField.clear();
-//                serverPortField.clear();
-//                Alert a = new Alert(Alert.AlertType.NONE);
-//                a.setAlertType(Alert.AlertType.ERROR);
-//                a.setContentText("Non-valide-Daten, srry");
-//                a.show();
-//            }
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -121,17 +102,12 @@ public class ServerIpStageViewModel implements Initializable {
     public void LMUButtonAction (ActionEvent event) {
         serverAddressField.setText("sep21.dbs.ifi.lmu.de");
         serverPortField.setText("52021");
-        LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: chartreuse;");
-        BButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
     }
 
     @FXML
     public void BBButtonAction (ActionEvent event) {
         serverAddressField.setText("127.0.0.1");
         serverPortField.setText("500");
-        BButton.setStyle("-fx-background-radius: 180; -fx-background-color: chartreuse;");
-        LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
-        // LMUButton.setStyle("-fx-background-radius: 180; -fx-background-color: gray;");
     }
 
 

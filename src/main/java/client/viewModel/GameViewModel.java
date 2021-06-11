@@ -4,6 +4,7 @@ import client.model.ClientGameModel;
 import client.model.ClientModel;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
+import game.programmingcards.BackUp;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -64,6 +66,9 @@ public class GameViewModel implements Initializable {
 
 
     @FXML
+    public Button dummesButton;
+
+    @FXML
     public BorderPane pane;
 
     @FXML
@@ -89,6 +94,7 @@ public class GameViewModel implements Initializable {
     private String cardName;
     private String register;
 
+    private HashMap<Integer, Integer> regToCard = new HashMap<>();
 
     ObservableList<ImageView> cards ;
     ObservableList<ImageView> registers ;
@@ -100,10 +106,26 @@ public class GameViewModel implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        regToCard.put(0, null);
+        regToCard.put(1, null);
+        regToCard.put(2, null);
+        regToCard.put(3, null);
+        regToCard.put(4, null);
+        dummesButton.setText(Integer.toString(1));
+
         registers = FXCollections.observableArrayList(reg_0,reg_1,reg_2,reg_3,reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
+        });
+
+        clientGameModel.actualRegisterPropertyProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                Platform.runLater(() -> {
+                    dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegisterProperty()));
+                });
+            }
         });
 
       /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
@@ -134,10 +156,9 @@ public class GameViewModel implements Initializable {
                             Platform.runLater(() -> {
                                 try {
                                     for (int j = 0; j < cards.size(); j++) {
-
                                         cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
                                         cards.get(j).setImage(loadImage(cardName));
-                                        cards.get(j).setId(cardName);
+                                        cards.get(j).setId(Integer.toString(j));
                                     }
                                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                                     e.printStackTrace();
@@ -237,12 +258,14 @@ public class GameViewModel implements Initializable {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
         if(source.getId().equals(reg_0.getId())||source.getId().equals(reg_1.getId())
-                ||source.getId().equals(reg_2.getId())||source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())){
+                ||source.getId().equals(reg_2.getId())||source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
             this.cardName = "Null";
-            System.out.println(this.cardName);
+            int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
+            regToCard.replace(reg, null);
             collectingCards();
         }else {
             this.cardName = source.getId();
+            System.out.println(this.cardName);
         }
 
         event.consume();
@@ -307,16 +330,22 @@ public class GameViewModel implements Initializable {
         target.setImage(image);
    }
 
-    public void collectingCards(){
-
+    public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
-        clientGameModel.sendSelectedCards(registerNum,cardName);
+        if (!cardName.equals("Null")) {
+            regToCard.replace(registerNum, Integer.parseInt(cardName));
+            clientGameModel.sendSelectedCards(registerNum, (String) clientGameModel.getCardsInHandObservable().get(Integer.parseInt(cardName)));
+        } else {
+            clientGameModel.sendSelectedCards(registerNum, "Null");
+        }
 
     }
 
     public void playCard () {
-
-        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody("MoveI"));
+        int currentRegister = clientGameModel.getActualRegister();
+        //TODO:  java.lang.reflect.InvocationTargetException?
+        String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
+        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(card));
         model.sendMessage(playCard);
 
     }

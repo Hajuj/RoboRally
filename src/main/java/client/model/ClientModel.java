@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Mohamad, Viktoria sep21.dbs.ifi.lmu.de
+ * @author Mohamad, Viktoria
  * ClientModel realisiert Singelton-Pattern,
  * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
  */
@@ -36,6 +36,7 @@ public class ClientModel {
     private static Logger logger = Logger.getLogger(ClientModel.class.getName());
     private String protocolVersion = "Version 1.0";
     private String group = "BlindeBonbons";
+    private boolean isAI = false;
     private MessageHandler messageHandler = new MessageHandler();
 
     private StringProperty playersStatusMapProperty = new SimpleStringProperty("");
@@ -46,7 +47,6 @@ public class ClientModel {
     private boolean canPlay = true;
 
     private StringProperty chatHistory = new SimpleStringProperty("");
-    private StringProperty error = new SimpleStringProperty("");
 
     private BooleanProperty doChooseMap = new SimpleBooleanProperty(false);
     private String selectedMap;
@@ -54,7 +54,6 @@ public class ClientModel {
 
     private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
-   //private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
 
     private BooleanProperty move = new SimpleBooleanProperty(false);
 
@@ -66,6 +65,18 @@ public class ClientModel {
             instance = new ClientModel();
         }
         return instance;
+    }
+
+
+    public int getIDfromRobotName (String name) {
+        System.out.println("Suche name " + name);
+        for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
+            if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
+                System.out.println("Finde name " + Game.getRobotNames().get(entry.getValue()));
+                return entry.getKey();
+            }
+        }
+        return -1;
     }
 
     /**
@@ -81,30 +92,34 @@ public class ClientModel {
 
             //Start new Threads for reading/writing messages from/to the server
             clientModelReaderThread = new ClientModelReaderThread(this, socket);
-            clientModelWriterThread = new ClientModelWriterThread(this, socket, messageHandler);
-            Thread readerThread = new Thread(clientModelReaderThread);
+            clientModelWriterThread = new ClientModelWriterThread(this, socket);
 
+            Thread readerThread = new Thread(clientModelReaderThread);
             readerThread.start();
+
             Thread writerTread = new Thread(clientModelWriterThread);
             writerTread.start();
 
-            //TODO: kann es sein, dass Client sehr lange hier in der While-Schleife wartet ohne dass ConnectException passiert? -> THOMAS
-            //TODO kein Busy-Waiting, change to notify()
-            //waiting for server response - waitingForHelloClient is changed wenn die clientThread bekommt
-            //ein JSONMessage mit dem type HelloClient
-            while (waitingForServer) {
-                logger.info("Waiting for the server answer...");
-                Thread.sleep(1000);
+            //waiting for server response
+            synchronized (this) {
+                while (waitingForServer) {
+                    logger.info("Waiting for the server answer...");
+                    this.wait();
+                }
             }
-            sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, false, protocolVersion)));
+
+            sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, isAI, protocolVersion)));
             return true;
-            //TODO: Caused by: java.lang.IllegalArgumentException: port out of range:502022
+
         } catch (ConnectException connectException) {
-        } catch (IOException | InterruptedException exp) {
-            exp.printStackTrace();
+            return false;
+        } catch (IllegalArgumentException connectException) {
+            return false;
+        } catch (IOException connectException) {
+            return false;
+        } catch (InterruptedException connectException) {
+            return false;
         }
-        logger.info("Something went wrong..");
-        return false;
     }
 
 
@@ -112,6 +127,12 @@ public class ClientModel {
         clientGameModel.getPlayer().setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
+    }
+
+    public void addPlayer (int clientID, String name, int figure) {
+        getPlayersNamesMap().put(clientID, name);
+        getPlayersFigureMap().put(clientID, figure);
+        getPlayersStatusMap().put(clientID, false);
     }
 
 
@@ -170,7 +191,6 @@ public class ClientModel {
         playersStatusMap.replace(playerID, newPlayerStatus);
         playersStatusMapProperty.setValue("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
-            //TODO change Game.getRobotNames().get(playersFigureMap.get(p.getKey())) for -1 and unknown
             String robotName = "**chat only**";
             String isReady = "               ";
             if (playersFigureMap.get(p.getKey()) != -1) {
@@ -241,13 +261,6 @@ public class ClientModel {
         return playersStatusMap;
     }
 
-    public void sendError (String s) {
-        error.setValue(s);
-    }
-
-    public StringProperty errorProperty () {
-        return error;
-    }
 
     public String getSelectedMap () {
         return selectedMap;

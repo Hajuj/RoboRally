@@ -38,7 +38,7 @@ public class ClientApplication extends Application {
     }
 
     /**
-     * Design of the Stage including the set of the scene with fxml-File and CSS-File
+     * Design of the Stage including the set of the scene with fxml-File
      *
      * @param stage the window of the application
      */

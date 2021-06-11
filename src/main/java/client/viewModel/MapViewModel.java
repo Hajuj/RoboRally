@@ -9,8 +9,6 @@ import game.Robot;
 import game.boardelements.*;
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,6 +39,8 @@ public class MapViewModel implements Initializable {
     @FXML
     public GridPane mapGrid;
 
+    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
+
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
@@ -56,7 +56,6 @@ public class MapViewModel implements Initializable {
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     int oldX;
     int oldY;
-    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
 
 
     @Override
@@ -70,22 +69,47 @@ public class MapViewModel implements Initializable {
             ioException.printStackTrace();
         }
 
-        clientModel.moveProperty().addListener(new ChangeListener<Boolean>() {
+        clientGameModel.getMoveQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
+
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                robotMove(clientGameModel.getX(),clientGameModel.getY());
+            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
+                Platform.runLater(() -> {
+                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
+                        //nullpointer hier. warum=
+                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                        moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                        clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
+                        clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+                    }
+                });
             }
         });
 
-        clientGameModel.getRobotMapObservable().addListener(new MapChangeListener<Robot, Point2D>() {
+
+        clientGameModel.getTurningQueueObservable().addListener(new MapChangeListener<Robot, String>() {
+
+            @Override
+            public void onChanged (Change<? extends Robot, ? extends String> change) {
+                Platform.runLater(() -> {
+                    for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
+                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                        turnRobot(playerID, entry.getValue());
+                        //TODO: wo muss ich die orientation ändern in ClientGameModel?
+                        clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                    }
+                });
+            }
+        });
+
+        clientGameModel.getStartingPointQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
             @Override
             public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-
                 Platform.runLater(() -> {
-                            for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
-                                if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())))) {
-                                    setRobot(clientGameModel.getActualPlayerID(), (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                                }
+                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                        setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                        clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                        clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                             }
                         }
                 );
@@ -108,92 +132,8 @@ public class MapViewModel implements Initializable {
 //        });
     }
 
-    public void robotMove ( int newX, int newY){
-        Point2D oldPosition = new Point2D(oldX,oldY);
-        //Group imageGroup = fieldMap.get(oldPosition);
-        Path path = new Path();
-        path.getElements().add(new MoveTo(newX,newY));
-        PathTransition pathTransition = new PathTransition();
-        pathTransition.setPath(path);
-        pathTransition.setNode(fieldMap.get(oldPosition));
-        pathTransition.play();
 
-       /* Point2D oldPosition = new Point2D(oldX,oldY);
-        Group imageGroup = fieldMap.get(oldPosition);
-        ImageView robot = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
-        ImageView robotDi = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-        robot.imageProperty().setValue(null);
-        robotDi.imageProperty().setValue(null);
-        robot.relocate(newX,newY);*/
-
-
-         /*   Point2D oldPosition = new Point2D(oldX,oldY);
-            Point2D newPosition = new Point2D(newX, newY);
-            Group imageGroup = fieldMap.get(oldPosition);
-
-            ImageView robot = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);*/
-            //robot.xProperty().set(newX);
-            //robot.yProperty().setValue(newY);
-
-
-        //robot.setLayoutX(newX);
-            //robot.setLayoutY(newY);*/
-
-
-          //  robot.setTranslateX(newX);
-            //robot.setTranslateY(newY);
-
-            //fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 2);
-            //fieldMap.get(newPosition).getChildren().add(robot);
-
-
-
-
-        //Node oldRobotPosition = fieldMap.get(new Point2D(oldX, oldY)).getChildren().get(2).get;
-       // fieldMap.remove(oldX, oldY), ((Group) oldRobotPosition).getChildren().indexOf(2));
-
-
-
-       // oldRobotPosition.localToScene(newX,newY);
-/*        oldRobotPosition.lo*/
-        //oldRobotPosition.relocate(newX,newY);
-       // Group oldRobot = (Group) fieldMap.get(new Point2D(oldX, oldY)).getChildren().get(1);
-       // (oldRobot.getChildren().get(2).relocate(newX,newY);
-       // oldRobot.getChildren().remove(oldRobot.getChildren().get(2));
-        //ImageView oldRobot = (ImageView) oldRobotPosition;
-        //ImageView robotImageView = (ImageView) fieldMap.get(new Point2D(oldX, oldY)).getChildren().get(fieldMap.get(new Point2D(oldX, oldY)).getChildren().size() - 2);
-
-       // oldRobot.relocate(newX,newY);
-       // oldRobotPosition.relocate(newX,newY);
-
-        /*Translate translate = new Translate();
-        translate.setX(newX);
-        translate.setY(newY);
-        oldRobotPosition.getTransforms().add(translate);*/
-
-        //
-
-        // ImageView robotImageView = (ImageView) fieldMap.get(oldPosition).getChildren().get(fieldMap.get(oldPosition).getChildren().size() - 1);
-        //fieldMap.get(new Point2D(oldX, oldY)).getChildren().remove(oldRobot);
-        //fieldMap.get(new Point2D(oldX, oldY)).getChildren().remove(oldRobot.getParent());
-        //fieldMap.get(new Point2D(oldX, oldY)).getChildren().remove(oldRobotPosition.getParent() );
-
-
-        //translate.inverseTransform(newX,newY);
-        //oldRobotPosition.getParent().relocate(newX,newY);
-        //oldRobot.getParent().relocate(newX,newY);
-        //fieldMap.get(new Point2D(oldX, oldY)).getParent().relocate(newX,newY);
-        //fieldMap.get(new Point2D(oldX, oldY)).getChildren().remove(oldRobot.getImage());
-
-       // fieldMap.get(new Point2D(oldX, oldY)).getChildren().remove(fieldMap.get(new Point2D(oldX, oldY)).getChildren().size()-1);
-       /*Group newRobotPosition = fieldMap.put(new Point2D( (newX,newY));
-       fieldMap.replace(oldRobotPosition,newRobotPosition);
-       fieldMap.
-        oldY= newY;
-        oldX=newX;*/
-
-    }
-
+    //startings points
     public void setRobot (int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
@@ -206,39 +146,25 @@ public class MapViewModel implements Initializable {
         image = new Image(input);
         ImageView imageView = new ImageView();
         imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(46);
+        imageView.setFitHeight(46);
 
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
 
-        setOldPosX(x);
-        setOldPosY(y);
-
-        input = null;
         try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
+            input = new FileInputStream(findPath("images/TransparentElements/RobotDirectionArrowHUGE.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        image = new Image(input);
+        Image image2 = new Image(input);
         imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setImage(image2);
+        imageView.setFitWidth(46);
+        imageView.setFitHeight(46);
         imageView.setRotate(-90);
-   //     mapGrid.add(imageView, x, y);
-        clientGameModel.setCanSetStartingPoint(false);
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
-
-
     }
 
-    private void setOldPosX(int x) {
-        this.oldX= x;
-    }
-    private void setOldPosY(int y) {
-        this.oldY= y;
-    }
 
     public void refreshOrientation () {
         FileInputStream input = null;
@@ -262,7 +188,7 @@ public class MapViewModel implements Initializable {
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
-    //die MEthode mit Eleemtn als Parametre schicekn
+
     public ImageView loadImage (String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
@@ -272,42 +198,50 @@ public class MapViewModel implements Initializable {
         imageView.setImage(image);
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
-        switch (orientations){
-            case "top", "bottom,top,left"->{imageView.setRotate(0);}
-            case "right", "right,left", "left,right,bottom" ->{imageView.setRotate(90);}
-            case "left", "right,left,top"->{imageView.setRotate(-90);}
-            case "bottom","top,bottom,left" ->{imageView.setRotate(180);}
-            case "left,top,right" -> {imageView.setScaleX(-1);
-                imageView.setRotate(90);}
-            case "bottom,left,top" -> {imageView.setScaleX(-1);
-                imageView.setRotate(0);}
-            case "top,right,bottom" ->{imageView.setScaleX(-1);
-                imageView.setRotate(180); }
-            case "right,bottom,left"->{imageView.setScaleX(-1);
-                imageView.setRotate(-90); }
-            case "null" ->{ imageView.setImage(image);}
-
-               /* case "top", "left,right,bottom", "right,left"->{ imageView.setRotate(90);
-                imageView.setImage(image);}
-                case "left", "left,right", "bottom,top,right"->{imageView.setRotate(0);
-                    imageView.setImage(image);}
-                case "right" ->{imageView.setRotate(180);
-                    imageView.setImage(image);}
-                case "bottom" ,"left,top,right"->{imageView.setRotate(-90);
-                    imageView.setImage(image);}
-                case "null" ->{ imageView.setImage(image);}*/
+        switch (orientations) {
+            case "top", "bottom,top,left" -> {
+                imageView.setRotate(0);
+            }
+            case "right", "right,left", "left,right,bottom" -> {
+                imageView.setRotate(90);
+            }
+            case "left", "right,left,top" -> {
+                imageView.setRotate(-90);
+            }
+            case "bottom", "top,bottom,left" -> {
+                imageView.setRotate(180);
+            }
+            case "left,top,right" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(90);
+            }
+            case "bottom,left,top" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(0);
+            }
+            case "top,right,bottom" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(180);
+            }
+            case "right,bottom,left" -> {
+                imageView.setScaleX(-1);
+                imageView.setRotate(-90);
+            }
+            case "null" -> {
+                imageView.setImage(image);
+            }
         }
         return imageView;
 
 
     }
 
-    private String handleLaser() {
-        String laserT="";
-        for (Point2D loc:laserMap.keySet()) {
-            if (wallMap.containsKey(loc)){
+    private String handleLaser () {
+        String laserT = "";
+        for (Point2D loc : laserMap.keySet()) {
+            if (wallMap.containsKey(loc)) {
                 laserT = "OneLaser";
-            }else{
+            } else {
                 laserT = "OneLaserBeam";
             }
         }
@@ -323,53 +257,94 @@ public class MapViewModel implements Initializable {
         return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
     }*/
 
+
     public void clickGrid (MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
             Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
             Integer rowIndex = GridPane.getRowIndex(clickedNode.getParent());
             System.out.println(colIndex + "  " + rowIndex);
-            //hier sollte er alle Map Elemente durch gehenn und diese 2 Point2D wo sine sind und dann  testen
-            //Plan B wir nehemen diese Position und schauen was fÃ¼r ein Element drauf ist, wenn es ein Szartpotn ist
-            //dann ja darf man selecten
 
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
         }
     }
 
 
+    public void turnRobot (int playerID, String rotation) {
+        Robot robot = null;
+        for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
+                robot = entry.getKey();
+                break;
+            }
+        }
+
+        Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
+        double angle = 0;
+        if (rotation.equals("clockwise")) {
+            angle = 90;
+        } else if (rotation.equals("counterclockwise")) {
+            angle = -90;
+        }
+
+        Group imageGroup = fieldMap.get(oldPosition);
+        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+        robotOrientation.setRotate(robotOrientation.getRotate() + angle);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+        fieldMap.get(oldPosition).getChildren().add(robotOrientation);
+    }
 
 
-    //sep21.dbs.ifi.lmu.de
-    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
+    public void moveRobot (int playerID, int x, int y) {
+        Robot robot = null;
+        for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
+                robot = entry.getKey();
+                break;
+            }
+        }
+        Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
+        Point2D newPosition = new Point2D(x, y);
+        Group imageGroup = fieldMap.get(oldPosition);
+        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+        ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+        fieldMap.get(newPosition).getChildren().add(robotV);
+        fieldMap.get(newPosition).getChildren().add(robotOrientation);
 
-        for (int y = 0; y < mapX; y++) {
-            for (int x = 0; x < mapY; x++) {
-                //System.out.println(x + "   " + y);
+        clientGameModel.getRobotMap().replace(robot, newPosition);
+
+    }
+
+
+    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
+
+        for (int x = 0; x < mapX; x++) {
+            for (int y = 0; y < mapY; y++) {
                 Group imageGroup = new Group();
-                ImageView imageView = loadImage("normal1","null");
+                ImageView imageView = loadImage("normal1", "null");
                 imageGroup.getChildren().add(imageView);
 
                 // ImageView imageView2 = new ImageView();
-                for (int i = 0; i < map.get(y).get(x).size(); i++) {
-                    System.out.println(map.get(y).get(x).get(i).getType());
-                    switch (map.get(y).get(x).get(i).getType()) {
+                for (int i = 0; i < map.get(x).get(y).size(); i++) {
+                    switch (map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             ImageView imageView2 = loadImage("priority-antenna", String.join(",", antenna.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
 
                         case "CheckPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
                             ImageView imageView2 = loadImage("victory-counter", "null");
                             imageGroup.getChildren().add(imageView2);
 
                         }
                         case "ConveyorBelt" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
 
@@ -389,7 +364,7 @@ public class MapViewModel implements Initializable {
                                 if (conveyorBelt.getSpeed() == 2) {
                                     ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
-                                }else{
+                                } else {
                                     ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
 
@@ -400,70 +375,69 @@ public class MapViewModel implements Initializable {
                         }
 
                         case "EnergySpace" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
-                            ImageView imageView2 = loadImage("RedEnergySpace","null");
+                            ImageView imageView2 = loadImage("RedEnergySpace", "null");
                             imageGroup.getChildren().add(imageView2);
                         }
 
                         case "Gear" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
-                            ImageView imageView2 = loadImage("RedGear",String.join(",", gear.getOrientations()));
+                            ImageView imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
                         //TODO:laser 1 or two handeln und dann orientation
                         case "Laser" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
                                     element.getOrientations(), element.getCount());
-                            ImageView imageView2 = loadImage("OneLaser",String.join(",", laser.getOrientations()));
+                            ImageView imageView2 = loadImage("OneLaser", String.join(",", laser.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
                         case "Pit" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Pit pit = new Pit(element.getType(), element.getIsOnBoard());
                             ImageView imageView2 = loadImage("Pit", "null");
                             imageGroup.getChildren().add(imageView2);
                         }
 
                         case "PushPanel" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             PushPanel pushPanel = new PushPanel(element.getType(), element.getIsOnBoard(), element.getOrientations(),
                                     element.getRegisters());
-                            ImageView imageView2 =  loadImage("PushPanel24", String.join(",", pushPanel.getOrientations()));
+                            ImageView imageView2 = loadImage("PushPanel24", String.join(",", pushPanel.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
 
                         case "RestartPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             RestartPoint restartPoint = new RestartPoint(element.getType(), element.getIsOnBoard(), element.getOrientations());
-                            ImageView imageView2 =  loadImage("reboot", String.join(",", restartPoint.getOrientations()));
+                            ImageView imageView2 = loadImage("reboot", String.join(",", restartPoint.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
 
 
                         case "StartPoint" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             StartPoint startPoint = new StartPoint(element.getType(), element.getIsOnBoard());
-                            ImageView imageView2 = loadImage("StartingPoint","null");
+                            ImageView imageView2 = loadImage("StartingPoint", "null");
                             imageGroup.getChildren().add(imageView2);
                         }
 
 
                         case "Empty" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Empty empty = new Empty(element.getType(), element.getIsOnBoard());
-                            ImageView imageView2 = loadImage("normal1","null");
+                            ImageView imageView2 = loadImage("normal1", "null");
                             imageGroup.getChildren().add(imageView2);
                         }
 
                         //TODO: dopple oder one wall
                         case "Wall" -> {
-                            Element element = map.get(y).get(x).get(i);
+                            Element element = map.get(x).get(y).get(i);
                             Wall wall = new Wall(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             ImageView imageView2 = loadImage("Wall", String.join(",", wall.getOrientations()));
-                            System.out.println(String.join(",", wall.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
                         default -> { //place for exception handling
@@ -477,48 +451,5 @@ public class MapViewModel implements Initializable {
             }
         }
     }
-
-
-
-    private String toString(ArrayList<String> orientations) {
-        String liste= "" ;
-        for (String s:orientations) {
-            //liste += s + " \t";
-            String.join(", ", orientations);
-            // System.out.println(liste);
-
-        }
-        System.out.println(liste);
-
-/*
-       for (int i = 0; i< orientations.size();i++ ) {
-            liste += orientations.get(i) + " \t";
-           // liste = String.join(", ", orientations);
-            //liste = orientations.get(i) ;
-            //liste += String.join(", ", orientations);
-            System.out.println(liste +" ///");
-            //System.out.println(String.join(", ", orientations.toString()));
-        }*/
-        return liste;
-    }
-
-
-//    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
-//        if (object instanceof Element) {
-//            int indexelement = map.get(x).get(y).indexOf(element);
-//            map.get(x).get(y).remove(element);
-//            map.get(x).get(y).add(indexelement, (Element) object);
-//        } else {
-//            throw new ClassCastException(object + " is not an Element!" +
-//                    "Can't cast this method on Objects other than Elements!");
-//
-//        }
-//    }
-    //TODO:if wall and leser gleichzeitg auf the same feld und dann kommt roboter
-    /*public void isValidReplacement(){
-        if ()
-    }*/
-
-
-
 }
+
