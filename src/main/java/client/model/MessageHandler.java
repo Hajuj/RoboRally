@@ -79,7 +79,7 @@ public class MessageHandler {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText(errorBody.getError() + clientmodel.getClientGameModel().getActualPlayerID());
+            a.setContentText(errorBody.getError());
             a.show();
         });
     }
@@ -261,6 +261,7 @@ public class MessageHandler {
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
+        //clientModel.getClientGameModel().actualRegisterPropertyProperty().setValue(clientModel.getClientGameModel().getActualRegister());
         logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 

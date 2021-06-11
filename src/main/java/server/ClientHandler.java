@@ -32,27 +32,27 @@ public class ClientHandler extends Thread {
     private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
 
-    public ClientHandler (Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
+    public ClientHandler(Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.messageHandler = messageHandler;
         this.protocolVersion = protocolVersion;
     }
 
-    public int getPlayer_id () {
+    public int getPlayer_id() {
         return player_id;
     }
 
-    public void setPlayer_id (int player_id) {
+    public void setPlayer_id(int player_id) {
         this.player_id = player_id;
     }
 
-    public Socket getClientSocket () {
+    public Socket getClientSocket() {
         return clientSocket;
     }
 
     @Override
-    public void run () {
+    public void run() {
         try {
             // output and input Streams of the Clientsocket
             OutputStreamWriter out = new OutputStreamWriter(clientSocket.getOutputStream());
@@ -99,6 +99,7 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         }
         logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
+
         if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
             if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
@@ -107,6 +108,31 @@ public class ClientHandler extends Thread {
             }
         }
         server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));
+        //If there are two players in the game, and one goes out
+        if (server.getCurrentGame().getPlayerList().size() == 2) {
+            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
+            server.getCurrentGame().setGameOn(false);
+            for (Player player : server.getCurrentGame().getPlayerList()) {
+                if (player.getPlayerID() != this.getPlayer_id()) {
+                    JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("YOU WON!"));
+                    server.sendMessage(errorNotYourTurn, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                    //TODO change the error to game finished message
+                    //TODO add winner player
+                    //TODO finish the game
+                }
+            }
+        } //More than 2 players, and the current player got out
+        else if (server.getCurrentGame().getCurrentPlayer() == this.player_id) {
+            //If the player was the last one
+            if (server.getCurrentGame().nextPlayerID() == -1) {
+                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().getPlayerList().get(0).getPlayerID());
+            } else {
+                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+            }
+            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
+        } else {
+            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
+        }
         server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
         server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
 
@@ -115,7 +141,7 @@ public class ClientHandler extends Thread {
             server.sendMessage(removeMessage, connection.getWriter());
         }
 
-        if (server.canStartTheGame()) {
+        if (server.canStartTheGame() && !server.getCurrentGame().isGameOn()) {
             for (Connection connection : server.getConnections()) {
                 JSONMessage startMessage = new JSONMessage("GameStarted", new GameStartedBody(server.getCurrentGame().getMap()));
                 server.sendMessage(startMessage, connection.getWriter());
@@ -130,7 +156,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public PrintWriter getWriter () {
+    public PrintWriter getWriter() {
         return writer;
     }
 }

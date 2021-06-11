@@ -30,7 +30,7 @@ public class ClientGameModel {
     private ArrayList<String> cardsInHand = new ArrayList();
     private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
 
-    private Point2D oldPosition;
+
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
     private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
@@ -43,11 +43,13 @@ public class ClientGameModel {
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
 
 
-
     //TODO: Observer hier
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
     private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
+
+
+    private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
 
     private int actualRegister = -1;
     private volatile int actualPlayerID;
@@ -70,19 +72,7 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
-  /*  public void playCard (String cardName) {
-      //  JSONMessage playCardm = new JSONMessage("PlayCard", new PlayCardBody(reg0.getText()));
-     //   clientModel.sendMessage(playCardm);
-    }
-    public void chooseCard (String cardName,int card) {
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, ));
-        clientModel.sendMessage(jsonMessage);
-    }
-    public void chooseReg (int register) {
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody("Null", register + 1));
-        clientModel.sendMessage(jsonMessage);
-    }
-*/
+
 
     public boolean getCanSetStartingPoint () {
         return canSetStartingPoint.get();
@@ -120,25 +110,25 @@ public class ClientGameModel {
         this.actualPhase = actualPhase;
 
     }
-    public void setProgrammingPhase(boolean b) {
-       /* if (this.actualPhase == 2)*/
+
+    public void setProgrammingPhase (boolean b) {
+        /* if (this.actualPhase == 2)*/
         this.programmingPhaseProperty.set(b);
 
     }
 
 
-    public Point2D getOldPosition () {
-        return oldPosition;
+    public int getActualRegisterProperty () {
+        return actualRegisterProperty.get();
     }
 
-//    public void saveOldPosition () {
-//        for (HashMap.Entry<Robot, Point2D> entry : getRobotMapObservable().entrySet()) {
-//            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(getActualPlayerID())))) {
-//                this.oldPosition = new Point2D((int) entry.getValue().getX(), (int) entry.getValue().getY());
-//                break;
-//            }
-//        }
-//    }
+    public IntegerProperty actualRegisterPropertyProperty () {
+        return actualRegisterProperty;
+    }
+
+    public void setActualRegisterProperty (int actualRegisterProperty) {
+        this.actualRegisterProperty.set(actualRegisterProperty);
+    }
 
     public boolean isCanMove () {
         return canMove.get();
@@ -212,6 +202,7 @@ public class ClientGameModel {
 
     public void setActualRegister(int actualRegister) {
         this.actualRegister = actualRegister;
+        this.actualRegisterPropertyProperty().setValue(actualRegister);
     }
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {

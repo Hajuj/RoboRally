@@ -230,23 +230,31 @@ public class MessageHandler {
             logger.info(currentPlayer.getName() + " removed a card from the register!");
         } else {
             //Add card to register deck
-            Card currentCard = currentPlayer.removeSelectedCard(card);
-            currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
+            if (card.equals("Again") && register == 0) {
+                Card againCard = currentPlayer.getDeckRegister().getDeck().get(0);
+                currentPlayer.getDeckHand().getDeck().add(againCard);
+                currentPlayer.getDeckRegister().getDeck().set(0, null);
+                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Again card can not be in the first register!"));
+                server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
+            } else {
+                Card currentCard = currentPlayer.removeSelectedCard(card);
+                currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
 
-            JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
-            server.getCurrentGame().sendToAllPlayers(addCard);
-            logger.info(currentPlayer.getName() + " added a card to the register!");
+                JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
+                server.getCurrentGame().sendToAllPlayers(addCard);
+                logger.info(currentPlayer.getName() + " added a card to the register!");
 
-            if (currentPlayer.isRegisterFull()) {
-                JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
-                server.getCurrentGame().sendToAllPlayers(selectionFinished);
-            }
+                if (currentPlayer.isRegisterFull()) {
+                    JSONMessage selectionFinished = new JSONMessage("SelectionFinished", new SelectionFinishedBody(currentPlayer.getPlayerID()));
+                    server.getCurrentGame().sendToAllPlayers(selectionFinished);
+                }
 
-            if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
-                server.getCurrentGame().getGameTimer().startTimer();
-            } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().isTimerOn()) {
-                if (server.getCurrentGame().tooLateClients().size() == 0) {
-                    server.getCurrentGame().getGameTimer().timerEnded();
+                if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
+                    server.getCurrentGame().getGameTimer().startTimer();
+                } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().isTimerOn()) {
+                    if (server.getCurrentGame().tooLateClients().size() == 0) {
+                        server.getCurrentGame().getGameTimer().timerEnded();
+                    }
                 }
             }
         }
