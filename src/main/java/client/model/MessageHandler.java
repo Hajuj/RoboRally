@@ -79,7 +79,7 @@ public class MessageHandler {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText(errorBody.getError() + clientmodel.getClientGameModel().getActualPlayerID());
+            a.setContentText(errorBody.getError());
             a.show();
         });
     }

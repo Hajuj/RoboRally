@@ -295,8 +295,8 @@ public class Game {
 
         switch (card) {
             case "Again" -> {
-                //aktuelles Register -> if 0 -> error
-                //                      else player.getDeckRegister
+                Card lastCard = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get((currentRegister - 1));
+                activateCardEffect(lastCard.cardName);
             }
             case "BackUp" -> {
                 switch(robotOrientation){
