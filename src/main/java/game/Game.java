@@ -554,27 +554,9 @@ public class Game {
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
             if ("Wall".equals(element.getType())) {
                 for (String orient : element.getOrientations()) {
-                    switch (orientation) {
-                        case "top" -> {
-                            if (orient.equals("bottom")){
-                                canPass = false;
-                            }
-                        }
-                        case "bottom" -> {
-                            if (orient.equals("top")){
-                                canPass = false;
-                            }
-                        }
-                        case "left" -> {
-                            if (orient.equals("right")){
-                                canPass = false;
-                            }
-                        }
-                        case "right" -> {
-                            if ( orient.equals("left")){
-                                canPass = false;
-                            }
-                        }
+                    if (orientation.equals(orient)) {
+                        canPass = false;
+                        break;
                     }
                 }
             }
