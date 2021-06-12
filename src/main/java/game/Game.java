@@ -287,6 +287,47 @@ public class Game {
 
      */
 
+    public void activateBlueBelts(){
+        for(Point2D position : conveyorBeltMap.keySet()){
+            if(conveyorBeltMap.get(position).getColour().equals("blue")){
+                for(Robot robot : getRobotsOnFields(position)){
+                    //first move on the belt
+                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+
+                    //second move: need to find new position and new orientation first
+                    double xRobotPos = robot.getxPosition();
+                    double yRobotPos = robot.getyPosition();
+                    Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                    String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                    moveRobot(robot, newOrientation, 1);
+                }
+            }
+        }
+    }
+
+    public void activateGreenBelts(){
+        for(Point2D position : conveyorBeltMap.keySet()){
+            if(conveyorBeltMap.get(position).getColour().equals("green")){
+                for(Robot robot : getRobotsOnFields(position)){
+                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Robot> getRobotsOnFields(Point2D position){
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+
+        for(Player player : playerList){
+            if(player.getRobot().getxPosition() == (int) position.getX() &&
+                    player.getRobot().getyPosition() == (int) position.getY()){
+                robotsOnFields.add(player.getRobot());
+            }
+        }
+
+        return robotsOnFields;
+    }
+
 
     //TODO messageBodies verwenden
     public void activateCardEffect(String card) {
@@ -470,8 +511,10 @@ public class Game {
                                 if (robotYPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setyPosition(robotYPosition - 1);
-                                    robotYPosition--;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setyPosition(robotYPosition - 1);
+                                        robotYPosition--;
+                                    }
                                 }
                             }
                         }
@@ -494,8 +537,10 @@ public class Game {
                                 if (robotYPosition + 1 > map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setyPosition(robotYPosition + 1);
-                                    robotYPosition++;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setyPosition(robotYPosition + 1);
+                                        robotYPosition++;
+                                    }
                                 }
                             }
                         }
@@ -518,8 +563,10 @@ public class Game {
                                 if (robotXPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setxPosition(robotXPosition - 1);
-                                    robotXPosition--;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setxPosition(robotXPosition - 1);
+                                        robotXPosition--;
+                                    }
                                 }
                             }
                         }
@@ -542,8 +589,10 @@ public class Game {
                                 if (robotXPosition + 1 > map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setxPosition(robotXPosition + 1);
-                                    robotXPosition++;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setxPosition(robotXPosition + 1);
+                                        robotXPosition++;
+                                    }
                                 }
                             }
                         }
@@ -551,6 +600,22 @@ public class Game {
                 }
             }
         }
+    }
+
+    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
+        boolean canPass = true;
+
+        for (Element element : map.get(robotXPosition).get(robotYPosition)) {
+            if ("Wall".equals(element.getType())) {
+                for (String orient : element.getOrientations()) {
+                    if (orientation.equals(orient)) {
+                        canPass = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return canPass;
     }
 
     public void changeOrientation(Robot robot, String direction) {
@@ -759,6 +824,18 @@ public class Game {
         currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
+    }
+
+    public String getInverseOrientation(String orientation){
+        String inverseOrientation;
+        switch(orientation){
+            case "top" -> inverseOrientation = "bottom";
+            case "bottom" -> inverseOrientation = "top";
+            case "left" -> inverseOrientation = "right";
+            case "right" -> inverseOrientation = "left";
+            default -> throw new IllegalStateException("Unexpected value: " + orientation);
+        }
+        return inverseOrientation;
     }
 
     public void sendCurrentCards(int register) {

@@ -54,7 +54,7 @@ public class JSONDeserializer {
                 reflection = Class.forName("json.protocol." + messageType + "Body");
             } catch (ClassNotFoundException e) {
                 logger.warn("Something went wrong while deserializing.");
-                return new JSONMessage("Error", new ErrorBody("Something went wrong while deserializing."));
+                return new JSONMessage("Error", new ErrorBody("Something went wrong while deserializing. Hier sollte " + messageType + " message sein!"));
             }
 
             Gson gson = new Gson();

@@ -1,6 +1,5 @@
 package client.model;
 
-import com.google.gson.annotations.Expose;
 import game.Game;
 import game.Player;
 import game.Robot;
@@ -10,16 +9,11 @@ import javafx.scene.control.Alert;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
-import server.Server;
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -205,6 +199,8 @@ public class MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
         //speichere die Cards und refresh the View
+        clientModel.getClientGameModel().getCardsInHand().clear();
+        clientModel.getClientGameModel().getCardsInHandObservable().clear();
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
     }
 

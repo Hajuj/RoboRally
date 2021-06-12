@@ -21,9 +21,9 @@ import json.protocol.SetStartingPointBody;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ClientGameModel {
+
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
 
@@ -55,7 +55,7 @@ public class ClientGameModel {
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
     private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
-
+    //TODO:mut dem button verbinden
     private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
 
 
@@ -180,6 +180,7 @@ public class ClientGameModel {
             }
         }
     }
+
 
 
     public boolean getCanSetStartingPoint () {

@@ -37,6 +37,7 @@ public class ClientApplication extends Application {
         System.exit(0);
     }
 
+
     /**
      * Design of the Stage including the set of the scene with fxml-File
      *
@@ -51,4 +52,6 @@ public class ClientApplication extends Application {
         stage.show();
         logger.info("Start!");
     }
+
+
 }
