@@ -55,7 +55,7 @@ public class ClientGameModel {
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
     private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
-
+    //TODO:mut dem button verbinden
     private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
 
 
@@ -180,6 +180,7 @@ public class ClientGameModel {
             }
         }
     }
+
 
 
     public boolean getCanSetStartingPoint () {
