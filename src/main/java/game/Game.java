@@ -367,6 +367,7 @@ public class Game {
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
                 deckSpam.getDeck().add(spam);
+                //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
                 playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
                 playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().set(currentRegister, top);
@@ -376,13 +377,14 @@ public class Game {
                 JSONMessage jsonMessage1 = new JSONMessage("CardPlayed", new PlayCardBody(top.cardName));
                 sendToAllPlayers(jsonMessage1);
             }
-            //TODO Trojan, Virus and Worm are not called correctly (card effects should be called)
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
                     playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                     deckSpam.removeTopCard();
                 }
                 //TODO access current register and play top card from deckProgramming
+                //     JSON Messages senden
+
             }
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
@@ -390,14 +392,17 @@ public class Game {
                     player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                     deckSpam.removeTopCard();
                 }
+                //TODO access current register and play top card from deckProgramming
+                //     JSON Messages senden
             }
             case "Worm" -> {
-                for (int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
-                }
+//                for (int i = 0; i < 2; i++) {
+//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+//                    deckSpam.removeTopCard();
+//                }
 
-                //TODO: set Robot to RestartPoint
+                //TODO: Call Reboot method
+                //      set Robot to RestartPoint
                 //      cancel remaining registers
                 //      discard remaining registers
             }

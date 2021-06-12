@@ -291,7 +291,9 @@ public class MessageHandler {
                     } else {
                         //New Round
                         for (Player player : server.getCurrentGame().getPlayerList()) {
-                            player.discardCards();
+                            player.discardHandCards();
+                            player.discardRegisterCards();
+                            //TODO test if the cards get really discarded
                         }
                         server.getCurrentGame().setActivePhaseOn(false);
                         server.getCurrentGame().setActivePhase(2);
