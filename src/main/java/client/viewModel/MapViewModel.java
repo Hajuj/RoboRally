@@ -199,23 +199,23 @@ public class MapViewModel implements Initializable {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         switch (orientations) {
-            case "top", "bottom,top,left" -> {
+            case "top", "bottom,top,left", "left,bottom"-> {
                 imageView.setRotate(0);
             }
-            case "right", "right,left", "left,right,bottom" -> {
+            case "right", "right,left", "left,right,bottom", "top,left" -> {
                 imageView.setRotate(90);
             }
-            case "left", "right,left,top" -> {
+            case "left", "right,left,top", "bottom,right" -> {
                 imageView.setRotate(-90);
             }
-            case "bottom", "top,bottom,left" -> {
+            case "bottom", "top,bottom,left", "right,top" -> {
                 imageView.setRotate(180);
             }
             case "left,top,right" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(90);
             }
-            case "bottom,left,top" -> {
+            case "bottom,left,top", "left,top" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(0);
             }
@@ -378,7 +378,12 @@ public class MapViewModel implements Initializable {
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                     case 2 ->{
-                                        ImageView imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
+                                        ImageView imageView2;
+                                        if(conveyorBelt.getIsOnBoard().equals("Start A")) {
+                                            imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        }else{
+                                            imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
+                                        }
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                     /*case 3 ->{

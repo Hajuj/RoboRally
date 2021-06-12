@@ -85,6 +85,7 @@ public class ClientGameModel {
     }
 
 
+
     public boolean getCanSetStartingPoint () {
         return canSetStartingPoint.get();
     }
