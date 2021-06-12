@@ -92,6 +92,9 @@ public class MessageHandler {
     public void handleGameStarted (ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
+        int mapX = bodyObject.getGameMap().size();
+        int mapY = bodyObject.getGameMap().get(0).size();
+        client.getClientGameModel().createMapObjects(bodyObject.getGameMap(), mapX, mapY);
         client.gameOnProperty().setValue(true);
         //TODO implement map controller and use in this method to build the map
     }
@@ -135,8 +138,6 @@ public class MessageHandler {
     public void handleMapSelected (ClientModel clientModel, MapSelectedBody mapSelectedBody) {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         clientModel.setSelectedMap(mapSelectedBody.getMap());
-        System.out.println(mapSelectedBody.getMap().getClass());
-        //clientModel.gameOnProperty().setValue(true);
     }
 
     public void handleConnectionUpdate (ClientModel clientmodel, ConnectionUpdateBody connectionUpdateBody) {
@@ -297,6 +298,17 @@ public class MessageHandler {
     }
 
     public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
+        int clientID = playerTurningBody.getClientID();
+        String rotation = playerTurningBody.getRotation();
+        Robot robot = null;
+        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
+            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
+                robot = entry.getKey();
+            }
+        }
+        clientModel.getClientGameModel().getTurningQueueObservable().put(robot, rotation);
+
+
         logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
 
     }

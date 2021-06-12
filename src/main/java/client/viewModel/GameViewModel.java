@@ -216,7 +216,6 @@ public class GameViewModel implements Initializable {
             collectingCards();
         }else {
             this.cardName = source.getId();
-            System.out.println(this.cardName);
         }
         handleSource(source);
 
@@ -230,7 +229,6 @@ public class GameViewModel implements Initializable {
 
         if (event.getDragboard().hasImage()) {
             event.acceptTransferModes(TransferMode.MOVE);
-           // System.out.println(event.getTarget());
 
         }
 
@@ -273,9 +271,9 @@ public class GameViewModel implements Initializable {
 
     public void playCard () {
         int currentRegister = clientGameModel.getActualRegister();
+        //TODO:  java.lang.reflect.InvocationTargetException?
         String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
-        JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(card));
-        model.sendMessage(playCard);
+        clientGameModel.sendPlayCard(card);
 
     }
     public void setCardName(String cardName) {

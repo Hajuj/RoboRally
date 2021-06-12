@@ -10,7 +10,6 @@ import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
@@ -120,6 +119,18 @@ public class ClientModel {
         }
     }
 
+
+    public void setMessageHandler (MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    public boolean isAI () {
+        return isAI;
+    }
+
+    public void setAI (boolean AI) {
+        isAI = AI;
+    }
 
     public void setNewStatus (Boolean newStatus) {
         clientGameModel.getPlayer().setReady(newStatus);
