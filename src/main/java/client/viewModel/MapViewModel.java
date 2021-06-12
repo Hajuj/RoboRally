@@ -348,8 +348,48 @@ public class MapViewModel implements Initializable {
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
 
+                          /*  switch (conveyorBelt.getSpeed()){
+                                case 1 -> handleGreenBelt();
+                                case 2 -> handleBlueBelt();
 
-                            if (conveyorBelt.getOrientations().size() == 1 || conveyorBelt.getOrientations().size() == 2) {
+                            }*/
+
+                            if (conveyorBelt.getSpeed()==2){
+                                switch (conveyorBelt.getOrientations().size()){
+                                    case 1 ->{
+                                        ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 2 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 3 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                }
+                            }
+
+                            if(conveyorBelt.getSpeed()==1){
+                                switch (conveyorBelt.getOrientations().size()){
+                                    case 1 ->{
+                                        ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 2 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    /*case 3 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }*/
+                                }
+
+                            }
+
+                          /*  if (conveyorBelt.getOrientations().size() == 1 || conveyorBelt.getOrientations().size() == 2) {
                                 if (conveyorBelt.getSpeed() == 2) {
                                     ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
@@ -370,7 +410,7 @@ public class MapViewModel implements Initializable {
 
                                 }
 
-                            }
+                            }*/
 
                         }
 
@@ -451,5 +491,15 @@ public class MapViewModel implements Initializable {
             }
         }
     }
+
+
+
+   /* private void handleGreenBelt() {
+        switch (conveyorBelt.getOrientations().size())
+    }
+
+    private void handleBlueBelt(){
+
+    }*/
 }
 

@@ -79,6 +79,7 @@ public class ChatViewModel implements Initializable {
             public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
                 //System.out.println("VALUE CHANGED");
                 chatField.setText(t1);
+                chatField.appendText("");
             }
         });
 
@@ -95,7 +96,15 @@ public class ChatViewModel implements Initializable {
                     readyDisplay.setText(s2);
                 }
             });
+        //Automatic scroll for the ChatField
+        chatField.textProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue,
+                                Object newValue) {
+                chatField.setScrollTop(Double.MAX_VALUE); //this will scroll to the bottom
 
+            }
+        });
 
         //TODO close the chat window when the game starts and make the chat as a button in the game window
         /*model.gameOnProperty().addListener(new ChangeListener<Boolean>() {

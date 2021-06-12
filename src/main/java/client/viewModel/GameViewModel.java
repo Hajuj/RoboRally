@@ -2,24 +2,20 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
+
 import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
-import game.programmingcards.BackUp;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -28,17 +24,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import json.JSONMessage;
-import json.protocol.PlayCardBody;
 
-import java.awt.*;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+
+import json.JSONMessage;
+import json.protocol.PlayCardBody;
 
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
@@ -85,8 +79,11 @@ public class GameViewModel implements Initializable {
     @FXML
     public ImageView reg_4;
     @FXML
-    public HBox hand;
     public ImageView yourRobot;
+    @FXML
+    public AnchorPane paneA;
+    @FXML
+    public Label playerInfo;
 
 
     private ClientModel model = ClientModel.getInstance();
@@ -96,16 +93,15 @@ public class GameViewModel implements Initializable {
 
     private HashMap<Integer, Integer> regToCard = new HashMap<>();
 
-    ObservableList<ImageView> cards ;
-    ObservableList<ImageView> registers ;
-    Dragboard db = null;
+    ObservableList<ImageView> cards;
+    ObservableList<ImageView> registers;
+    Dragboard dbImage = null;
     ImageView returnSource;
-    boolean paneDropped=false;
 
 
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         regToCard.put(0, null);
         regToCard.put(1, null);
         regToCard.put(2, null);
@@ -113,15 +109,15 @@ public class GameViewModel implements Initializable {
         regToCard.put(4, null);
         dummesButton.setText(Integer.toString(1));
 
-        registers = FXCollections.observableArrayList(reg_0,reg_1,reg_2,reg_3,reg_4);
+        registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
-
+        //TODO BINDINGS
         clientGameModel.actualRegisterPropertyProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 Platform.runLater(() -> {
                     dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegisterProperty()));
                 });
@@ -145,9 +141,6 @@ public class GameViewModel implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
                 Platform.runLater(() -> {
-
-                        showPopup("Programming Phase has begin","please choose your Programming Cards");
-
                     clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
                         @Override
                         public void onChanged(Change change) {
@@ -166,6 +159,8 @@ public class GameViewModel implements Initializable {
                             });
                         }
                     });
+                    showPopup("Programming Phase has begin");
+                    playerInfo.setText("please choose your Programming Cards");
 
                 });
             }
@@ -174,10 +169,12 @@ public class GameViewModel implements Initializable {
 
         model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 Platform.runLater(() -> {
                     try {
-                        loadScene("Map");
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
+
+                        pane.setCenter(fxmlLoader.load());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -186,9 +183,8 @@ public class GameViewModel implements Initializable {
         });
     }
 
-    private void showPopup(String popupText, String contentText) {
-        Text text = new Text (popupText);
-        Text content = new Text(contentText);
+    private void showPopup(String popupText) {
+        Text text = new Text(popupText);
         text.setFill(Color.RED);
         text.setStroke(Color.BLACK);
         ScaleTransition scaleTransition = new ScaleTransition();
@@ -201,24 +197,27 @@ public class GameViewModel implements Initializable {
         scaleTransition.play();
         StackPane root = new StackPane();
         root.getChildren().addAll(text);
-        root.getChildren().addAll(content);
-        Scene scene = new Scene(root, 400, 200);
+        Scene scene = new Scene(root, 200, 200);
         Stage not = new Stage();
         scene.setFill(Color.DARKGRAY);
         not.setTitle("Player Notification");
         not.setScene(scene);
         not.show();
-        //not.wait(2);
-        not.close();
+     /*   try {
+            not.wait(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        not.close();*/
 
-}
+    }
 
-    public Image yourRobot (){
+    public Image yourRobot() {
 
         int figure = clientGameModel.getPlayer().getFigure();
         FileInputStream input = null;
         Image image;
-        //TODO FIGURE -1, hat keine Figur
+        //TODO: FIGURE -1, hat keine Figur
         try {
             input = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("Robots/YourRobots/robot" + figure + ".png"))).getFile());
         } catch (FileNotFoundException e) {
@@ -238,97 +237,82 @@ public class GameViewModel implements Initializable {
 
     }
 
-    private void loadScene(String scene) throws IOException {
+    /*private void loadScene(String scene) throws IOException {
         if (scene.equals("Map")) {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
 
             pane.setCenter(fxmlLoader.load());
 
         }
-        if(scene.equals("PlayerMat")){
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PlayerMat.fxml"));
-            pane.setLeft(fxmlLoader.load());
-        }
-    }
+    }*/
 
 
-    /** drag was detected, start a drag-and-drop gesture
-     /* allow any transfer mode **/
+    /**
+     * drag was detected, start a drag-and-drop gesture
+     * /* allow any transfer mode
+     **/
     public void handle(MouseEvent event) {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
-        if(source.getId().equals(reg_0.getId())||source.getId().equals(reg_1.getId())
-                ||source.getId().equals(reg_2.getId())||source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
+        if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
+                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
             this.cardName = "Null";
             int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
             regToCard.replace(reg, null);
             collectingCards();
-        }else {
+        } else {
             this.cardName = source.getId();
             System.out.println(this.cardName);
         }
-
         event.consume();
         handleSource(source);
-
-
     }
-    /** data is dragged over the target
-    /* accept it only if it is not dragged from the same node
+
+    /**
+     * data is dragged over the target
+     * /* accept it only if it is not dragged from the same node
      * and if it has a image data
-    /* allow for moving **/
+     * /* allow for moving
+     **/
     public void handleTarget(DragEvent event) {
 
         if (event.getDragboard().hasImage()) {
             event.acceptTransferModes(TransferMode.MOVE);
-           // System.out.println(event.getTarget());
-
+            // System.out.println(event.getTarget());
         }
-        event.consume();
 
     }
 
     private void handleSource(ImageView source) {
-         db = source.startDragAndDrop(TransferMode.ANY);
+        Dragboard db = source.startDragAndDrop(TransferMode.MOVE);
+        dbImage=source.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putImage(source.getImage());
         source.setImage(null);
         db.setContent(content);
+        dbImage.setContent(content);
+
     }
 
     public void handledropped(DragEvent dragEvent) {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
-        //TODO TargetId nehemn und überprüfen
-
-/*
-        if (dragEvent.getGestureTarget().equals(reg_0)||dragEvent.getGestureTarget().equals(reg_1)||
-                dragEvent.getGestureTarget().equals(reg_2)||dragEvent.getGestureTarget().equals(reg_3)||dragEvent.getGestureTarget().equals(reg_4)||target.equals(null)){*/
- //           if (paneDropped==false) {
-                this.register = target.getId();
-                handlewithdraw(target, image);
-                collectingCards();
-  //          }
-
-
-
-
-//        } else {
-           /* System.out.println("NOT ACCEPTED TARGET");
-            ImageView source = (ImageView) dragEvent.getSource();
-            System.out.println(dragEvent.getSource());
-            source.setImage(image);
-            System.out.println(dragEvent.getDragboard().getImage());
-//        }*/
         //TODO 2 Karten auf einem Register
-        //if (((ImageView) dragEvent.getTarget()).getImage(null))
+        //TODO TargetId nehemn und überprüfen
+        this.register = target.getId();
+        if (target.getImage() != null){
+            returnSource.setImage(target.getImage());
+            target.setImage(dbImage.getImage());
 
+        }else {
+            handlewithdraw(target, image);
+            collectingCards();
+        }
     }
-
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
-   }
+    }
 
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
@@ -338,10 +322,9 @@ public class GameViewModel implements Initializable {
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
-
     }
 
-    public void playCard () {
+    public void playCard() {
         int currentRegister = clientGameModel.getActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
@@ -349,6 +332,7 @@ public class GameViewModel implements Initializable {
         model.sendMessage(playCard);
 
     }
+
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
@@ -357,26 +341,19 @@ public class GameViewModel implements Initializable {
         return cardName;
     }
 
-    public void dragDroppedPane(DragEvent dragEvent) {
-        System.out.println("you dropped on me Pane");
+
+
+    public void dragExited(DragEvent dragEvent) {
+        if (dragEvent.getTarget()==null ||dragEvent.getGestureTarget()==null) {
+            returnSource.setImage(dbImage.getImage());
+        }
     }
 
+    public void clearRegisters(){
+        for (ImageView register:registers) {
+            register.setImage(null);
 
-    public void drgExited(DragEvent dragEvent) {
-        System.out.println("you exited on me Pane");
-       returnSource.setImage(db.getImage());
+        }
+
     }
-
-/*   public void drgExited(DragEvent dragEvent) {
-     this.paneDropped=true;
-        returnCard();
-        dragEvent.consume();
-   }
-
-   public void returnCard (){
-       returnSource.setImage(db.getImage());
-       this.paneDropped=false;
-
-   }*/
-
 }

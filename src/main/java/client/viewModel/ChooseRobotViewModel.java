@@ -204,7 +204,7 @@ public class ChooseRobotViewModel implements Initializable {
             model.sendUsernameAndRobot(username, figureProperty.getValue());
             Parent root = FXMLLoader.load(getClass().getResource("/view/GameStage.fxml"));
             Stage window = (Stage) playButton.getScene().getWindow();
-            window.setScene(new Scene(root, 1100, 800));
+            window.setScene(new Scene(root, 1100, 750));
         } catch (
                 IOException e) {
             e.printStackTrace();

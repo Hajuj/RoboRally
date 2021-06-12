@@ -52,7 +52,7 @@ public class ClientGameModel {
     private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
     private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
-
+    //TODO:mut dem button verbinden
     private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
 
     private int actualRegister = -1;
