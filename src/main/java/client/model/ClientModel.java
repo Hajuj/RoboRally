@@ -10,7 +10,6 @@ import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
 import json.protocol.SetStatusBody;
 import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;

@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
+import json.protocol.MapSelectedBody;
 import json.protocol.PlayCardBody;
 import json.protocol.SelectedCardBody;
 import json.protocol.SetStartingPointBody;
@@ -75,6 +76,12 @@ public class ClientGameModel {
     public void sendStartingPoint (int x, int y) {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
+    }
+
+
+    public void chooseMap (String mapName) {
+        JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
+        clientModel.sendMessage(jsonMessage);
     }
 
 
