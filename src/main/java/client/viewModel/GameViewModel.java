@@ -102,11 +102,6 @@ public class GameViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        regToCard.put(0, null);
-        regToCard.put(1, null);
-        regToCard.put(2, null);
-        regToCard.put(3, null);
-        regToCard.put(4, null);
         dummesButton.setText(Integer.toString(1));
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
@@ -144,6 +139,14 @@ public class GameViewModel implements Initializable {
                     clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
                         @Override
                         public void onChanged(Change change) {
+                            regToCard.put(0, null);
+                            regToCard.put(1, null);
+                            regToCard.put(2, null);
+                            regToCard.put(3, null);
+                            regToCard.put(4, null);
+                            for (ImageView register : registers) {
+                                register.setImage(null);
+                            }
                             cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
                                     card_6, card_7, card_8);
                             Platform.runLater(() -> {

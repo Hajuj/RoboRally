@@ -205,6 +205,8 @@ public class MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
         //speichere die Cards und refresh the View
+        clientModel.getClientGameModel().getCardsInHand().clear();
+        clientModel.getClientGameModel().getCardsInHandObservable().clear();
         clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
     }
 

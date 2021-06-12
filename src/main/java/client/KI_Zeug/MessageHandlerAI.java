@@ -62,6 +62,9 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
+        for (int i = 0; i < 5; i++) {
+            simpleAIModel.getCardsInRegister().replace(i, null);
+        }
         if (clientModel.getClientGameModel().getActualPhase() == 2) {
             simpleAIModel.chooseCardsRoutine();
         }

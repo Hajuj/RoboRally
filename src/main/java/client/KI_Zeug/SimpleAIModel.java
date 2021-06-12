@@ -81,6 +81,11 @@ public class SimpleAIModel {
         clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
     }
 
+
+    public static HashMap<Integer, String> getCardsInRegister () {
+        return cardsInRegister;
+    }
+
     public void setStartingPointCounter (int startingPointCounter) {
         this.startingPointCounter = startingPointCounter;
     }
@@ -96,6 +101,7 @@ public class SimpleAIModel {
     public void setHasPlayerValues (boolean hasPlayerValues) {
         this.hasPlayerValues = hasPlayerValues;
     }
+
 
     public int getFigureCounter () {
         return figureCounter;
