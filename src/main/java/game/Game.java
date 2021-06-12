@@ -465,8 +465,10 @@ public class Game {
                                 if (robotYPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setyPosition(robotYPosition - 1);
-                                    robotYPosition--;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setyPosition(robotYPosition - 1);
+                                        robotYPosition--;
+                                    }
                                 }
                             }
                         }
@@ -489,8 +491,10 @@ public class Game {
                                 if (robotYPosition + 1 > map.get(0).size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setyPosition(robotYPosition + 1);
-                                    robotYPosition++;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setyPosition(robotYPosition + 1);
+                                        robotYPosition++;
+                                    }
                                 }
                             }
                         }
@@ -513,8 +517,10 @@ public class Game {
                                 if (robotXPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setxPosition(robotXPosition - 1);
-                                    robotXPosition--;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setxPosition(robotXPosition - 1);
+                                        robotXPosition--;
+                                    }
                                 }
                             }
                         }
@@ -537,8 +543,10 @@ public class Game {
                                 if (robotXPosition + 1 > map.size()) {
                                     //TODO: Get RestartPoint and start Reboot routine
                                 } else {
-                                    robot.setxPosition(robotXPosition + 1);
-                                    robotXPosition++;
+                                    if(canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                                        robot.setxPosition(robotXPosition + 1);
+                                        robotXPosition++;
+                                    }
                                 }
                             }
                         }
@@ -546,6 +554,22 @@ public class Game {
                 }
             }
         }
+    }
+
+    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
+        boolean canPass = true;
+
+        for (Element element : map.get(robotXPosition).get(robotYPosition)) {
+            if ("Wall".equals(element.getType())) {
+                for (String orient : element.getOrientations()) {
+                    if (orientation.equals(orient)) {
+                        canPass = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return canPass;
     }
 
     public void changeOrientation(Robot robot, String direction) {
