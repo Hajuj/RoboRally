@@ -48,6 +48,7 @@ public class ChatViewModel implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        readyDisplay.setText(model.playersStatusMapProperty().getValue());
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
         sendButton.setDefaultButton(true);
@@ -82,7 +83,7 @@ public class ChatViewModel implements Initializable {
                 chatField.setText(t1);
             }
         });
-        synchronized (model.playersStatusMapProperty()) {
+
             model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
@@ -96,7 +97,6 @@ public class ChatViewModel implements Initializable {
                     readyDisplay.setText(s2);
                 }
             });
-        }
 
 
         //TODO close the chat window when the game starts and make the chat as a button in the game window

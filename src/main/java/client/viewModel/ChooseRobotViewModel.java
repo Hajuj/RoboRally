@@ -203,10 +203,9 @@ public class ChooseRobotViewModel implements Initializable {
             model.getClientGameModel().getPlayer().setFigure(figureProperty.getValue());
             logger.info("Username " + username + " has been set.");
             model.sendUsernameAndRobot(username, figureProperty.getValue());
-           // Parent root = FXMLLoader.load(getClass().getResource("/view/RoboChat.fxml"));
             Parent root = FXMLLoader.load(getClass().getResource("/view/GameStage.fxml"));
             Stage window = (Stage) playButton.getScene().getWindow();
-            window.setScene(new Scene(root, 1000.0, 1000.0));
+            window.setScene(new Scene(root, 1100, 800));
         } catch (
                 IOException e) {
             e.printStackTrace();
