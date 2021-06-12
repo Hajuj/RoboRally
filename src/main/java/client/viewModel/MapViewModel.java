@@ -41,22 +41,6 @@ public class MapViewModel implements Initializable {
 
     private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
 
-    private Map<Point2D, Antenna> antennaMap = new HashMap<>();
-    private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
-    private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
-    private Map<Point2D, Empty> emptyMap = new HashMap<>();
-    private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
-    private Map<Point2D, Gear> gearMap = new HashMap<>();
-    private Map<Point2D, Laser> laserMap = new HashMap<>();
-    private Map<Point2D, Pit> pitMap = new HashMap<>();
-    private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
-    private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
-    private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
-    private Map<Point2D, Wall> wallMap = new HashMap<>();
-    private ArrayList<ArrayList<ArrayList<Element>>> map;
-    int oldX;
-    int oldY;
-
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
@@ -113,23 +97,8 @@ public class MapViewModel implements Initializable {
                             }
                         }
                 );
-                //setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-
             }
         });
-
-//        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
-//            @Override
-//            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-//                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
-//                    Platform.runLater(() -> {
-//                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-//                            }
-//                    );
-//                    clientGameModel.canSetStartingPointProperty().setValue(false);
-//                }
-//            }
-//        });
     }
 
 
@@ -236,17 +205,17 @@ public class MapViewModel implements Initializable {
 
     }
 
-    private String handleLaser () {
-        String laserT = "";
-        for (Point2D loc : laserMap.keySet()) {
-            if (wallMap.containsKey(loc)) {
-                laserT = "OneLaser";
-            } else {
-                laserT = "OneLaserBeam";
-            }
-        }
-        return laserT;
-    }
+//    private String handleLaser () {
+//        String laserT = "";
+//        for (Point2D loc : laserMap.keySet()) {
+//            if (wallMap.containsKey(loc)) {
+//                laserT = "OneLaser";
+//            } else {
+//                laserT = "OneLaserBeam";
+//            }
+//        }
+//        return laserT;
+//    }
   /*  private String handleBelts() {
 
     }*/
@@ -263,8 +232,6 @@ public class MapViewModel implements Initializable {
         if (clickedNode != mapGrid) {
             Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
             Integer rowIndex = GridPane.getRowIndex(clickedNode.getParent());
-            System.out.println(colIndex + "  " + rowIndex);
-
             clientModel.getClientGameModel().sendStartingPoint(colIndex, rowIndex);
         }
     }
@@ -332,6 +299,7 @@ public class MapViewModel implements Initializable {
                         case "Antenna" -> {
                             Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            clientGameModel.getAntennaMap().put(new Point2D(x, y), antenna);
                             ImageView imageView2 = loadImage("priority-antenna", String.join(",", antenna.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }

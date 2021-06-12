@@ -46,7 +46,7 @@ public class ChatViewModel implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        chatField.setText(model.getChatHistory());
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         readyDisplay.setText(model.playersStatusMapProperty().getValue());
         chatField.setEditable(false);
