@@ -25,6 +25,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +38,7 @@ import json.protocol.PlayCardBody;
 
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
-public class GameViewModel implements Initializable {
+public class GameViewModel implements Initializable, PropertyChangeListener {
 
 
     @FXML
@@ -102,6 +104,8 @@ public class GameViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        model.addPropertyChangeListener(this);
+        clientGameModel.addPropertyChangeListener(this);
         dummesButton.setText(Integer.toString(1));
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
@@ -130,60 +134,44 @@ public class GameViewModel implements Initializable {
 
 */
 
-        clientGameModel.getProgrammingPhaseProperty().addListener(new ChangeListener<Boolean>() {
-            //TODO:Boolean Checkk dass es auf True gesetzt ist
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-                Platform.runLater(() -> {
-                    clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
-                        @Override
-                        public void onChanged(Change change) {
-                            regToCard.put(0, null);
-                            regToCard.put(1, null);
-                            regToCard.put(2, null);
-                            regToCard.put(3, null);
-                            regToCard.put(4, null);
-                            for (ImageView register : registers) {
-                                register.setImage(null);
-                            }
-                            cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
-                                    card_6, card_7, card_8);
-                            Platform.runLater(() -> {
-                                try {
-                                    for (int j = 0; j < cards.size(); j++) {
-                                        cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
-                                        cards.get(j).setImage(loadImage(cardName));
-                                        cards.get(j).setId(Integer.toString(j));
-                                    }
-                                } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        }
-                    });
-                    showPopup("Programming Phase has begin");
-                    playerInfo.setText("please choose your Programming Cards");
-
-                });
-            }
-        });
-
-
-        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                Platform.runLater(() -> {
-                    try {
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-
-                        pane.setCenter(fxmlLoader.load());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        });
+//        clientGameModel.getProgrammingPhaseProperty().addListener(new ChangeListener<Boolean>() {
+//            //TODO:Boolean Checkk dass es auf True gesetzt ist
+//            @Override
+//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//
+//                Platform.runLater(() -> {
+//                    clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
+//                        @Override
+//                        public void onChanged(Change change) {
+//                            regToCard.put(0, null);
+//                            regToCard.put(1, null);
+//                            regToCard.put(2, null);
+//                            regToCard.put(3, null);
+//                            regToCard.put(4, null);
+//                            for (ImageView register : registers) {
+//                                register.setImage(null);
+//                            }
+//                            cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
+//                                    card_6, card_7, card_8);
+//                            Platform.runLater(() -> {
+//                                try {
+//                                    for (int j = 0; j < cards.size(); j++) {
+//                                        cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
+//                                        cards.get(j).setImage(loadImage(cardName));
+//                                        cards.get(j).setId(Integer.toString(j));
+//                                    }
+//                                } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            });
+//                        }
+//                    });
+//                    showPopup("Programming Phase has begin");
+//                    playerInfo.setText("please choose your Programming Cards");
+//
+//                });
+//            }
+//        });
     }
 
     private void showPopup(String popupText) {
@@ -320,7 +308,7 @@ public class GameViewModel implements Initializable {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             regToCard.replace(registerNum, Integer.parseInt(cardName));
-            clientGameModel.sendSelectedCards(registerNum, (String) clientGameModel.getCardsInHandObservable().get(Integer.parseInt(cardName)));
+            clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
@@ -360,6 +348,45 @@ public class GameViewModel implements Initializable {
             register.setImage(null);
 
         }
+    }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("gameOn")) {
+            Platform.runLater(() -> {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
+                    pane.setCenter(fxmlLoader.load());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("handCards")) {
+            System.out.println("HALLO????? THERE????");
+            regToCard.put(0, null);
+            regToCard.put(1, null);
+            regToCard.put(2, null);
+            regToCard.put(3, null);
+            regToCard.put(4, null);
+            for (ImageView register : registers) {
+                register.setImage(null);
+            }
+            cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
+                    card_6, card_7, card_8);
+            Platform.runLater(() -> {
+                try {
+                    for (int j = 0; j < cards.size(); j++) {
+                        cardName = clientGameModel.getCardsInHand().get(j);
+                        cards.get(j).setImage(loadImage(cardName));
+                        cards.get(j).setId(Integer.toString(j));
+                    }
+                } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                showPopup("Programming Phase has begin");
+                playerInfo.setText("please choose your Programming Cards");
+            });
+        }
     }
 }
