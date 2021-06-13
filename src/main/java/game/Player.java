@@ -96,14 +96,14 @@ public class Player {
     public void discardHandCards() {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
-            this.deckHand.getDeck().remove(this.deckHand.getDeck().get(i));
         }
+        this.getDeckHand().getDeck().clear();
     }
 
     public void discardRegisterCards() {
         for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
-            this.deckRegister.getDeck().remove(this.deckRegister.getDeck().get(i));
+            this.getDeckRegister().getDeck().set(i, null);
         }
     }
 
