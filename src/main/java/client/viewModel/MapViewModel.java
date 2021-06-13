@@ -59,51 +59,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             ioException.printStackTrace();
         }
 
-//        clientGameModel.getMoveQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-//
-//            @Override
-//            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-//                Platform.runLater(() -> {
-//                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-//                        //nullpointer hier. warum=
-//                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-//                        moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-//                        clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-//                        clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-//                    }
-//                });
-//            }
-//        });
-
-
-//        clientGameModel.getTurningQueueObservable().addListener(new MapChangeListener<Robot, String>() {
-//
-//            @Override
-//            public void onChanged (Change<? extends Robot, ? extends String> change) {
-//                Platform.runLater(() -> {
-//                    for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
-//                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-//                        turnRobot(playerID, entry.getValue());
-//                        //TODO: wo muss ich die orientation ändern in ClientGameModel?
-//                        clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
-//                    }
-//                });
-//            }
-//        });
-
-//        clientGameModel.getStartingPointQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-//            @Override
-//            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-//                Platform.runLater(() -> {
-//                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-//                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-//                        setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-//                        clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-//                        clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-//                            }
-//                        });
-//            }
-//        });
     }
 
 
@@ -140,22 +95,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void refreshOrientation () {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
 
-        mapGrid.add(imageView, clientGameModel.getPlayer().getRobot().getxPosition(), clientGameModel.getPlayer().getRobot().getxPosition());
-    }
 
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -209,27 +149,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     }
-
-//    private String handleLaser () {
-//        String laserT = "";
-//        for (Point2D loc : laserMap.keySet()) {
-//            if (wallMap.containsKey(loc)) {
-//                laserT = "OneLaser";
-//            } else {
-//                laserT = "OneLaserBeam";
-//            }
-//        }
-//        return laserT;
-//    }
-  /*  private String handleBelts() {
-
-    }*/
-
-
-    /*public File findPath(String element) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-    }*/
 
 
     public void clickGrid (MouseEvent event) {

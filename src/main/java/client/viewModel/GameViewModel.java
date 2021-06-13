@@ -363,6 +363,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("handCards")) {
+            clientGameModel.setHandCards(false);
             System.out.println("HALLO????? THERE????");
             regToCard.put(0, null);
             regToCard.put(1, null);
