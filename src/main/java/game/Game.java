@@ -339,6 +339,19 @@ public class Game {
         }
     }
 
+    public void activateGears(){
+        for(Point2D position : gearMap.keySet()){
+            for(Robot robot : getRobotsOnFields(position)){
+                if(gearMap.get(position).getOrientations().get(0).equals("counterclockwise")){
+                    changeOrientation(robot, "left");
+                }
+                else if(gearMap.get(position).getOrientations().get(0).equals("clockwise")){
+                    changeOrientation(robot, "right");
+                }
+            }
+        }
+    }
+
     public ArrayList<Robot> getRobotsOnFields(Point2D position){
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
