@@ -319,12 +319,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         int currentRegister = clientGameModel.getActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         try {
+            //TODO Lilas hier ist ein Nullpointerexception
             String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void setCardName(String cardName) {

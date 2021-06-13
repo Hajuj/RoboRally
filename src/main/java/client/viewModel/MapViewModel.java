@@ -472,6 +472,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        clientModel.getClientGameModel().setStartingPoint(false);
         if (evt.getPropertyName().equals("startingPoint")) {
             Platform.runLater(() -> {
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
@@ -483,6 +484,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("queueMove")) {
+            clientModel.getClientGameModel().setQueueMove(false);
             Platform.runLater(() -> {
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
                     //nullpointer hier. warum=
@@ -490,10 +492,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+
                 }
             });
         }
         if (evt.getPropertyName().equals("queueTurning")) {
+            clientModel.getClientGameModel().setQueueTurning(false);
             Platform.runLater(() -> {
                 for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
                     //TODO check NullPointerException here
