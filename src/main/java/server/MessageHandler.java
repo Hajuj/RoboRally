@@ -84,18 +84,29 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "PlayerValues Message received." + ANSI_RESET);
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
+        boolean accept = true;
 
-        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-        player.pickRobot(figure, username);
-
-        //informiere alle anderen clients über den neu gekommen
         for (Player player1 : server.getWaitingPlayer()) {
-            JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player.getPlayerID(), player.getName(), player.getFigure()));
-            server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
-            JSONMessage jsonMessage2 = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), false));
-            server.sendMessage(jsonMessage2, server.getConnectionWithID(player1.getPlayerID()).getWriter());
+            if (player1.getFigure() == figure) {
+                JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
+                server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
+                accept = false;
+            }
         }
-        logger.info("Alles gut, der Spieler mit ID " + clientHandler.getPlayer_id() + " heißt " + username + " und hat figur " + figure);
+
+        if (accept) {
+            Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+            player.pickRobot(figure, username);
+
+            //informiere alle anderen clients über den neu gekommen
+            for (Player player1 : server.getWaitingPlayer()) {
+                JSONMessage jsonMessage1 = new JSONMessage("PlayerAdded", new PlayerAddedBody(player.getPlayerID(), player.getName(), player.getFigure()));
+                server.sendMessage(jsonMessage1, server.getConnectionWithID(player1.getPlayerID()).getWriter());
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), false));
+                server.sendMessage(jsonMessage2, server.getConnectionWithID(player1.getPlayerID()).getWriter());
+            }
+            logger.info("Alles gut, der Spieler mit ID " + clientHandler.getPlayer_id() + " heißt " + username + " und hat figur " + figure);
+        }
     }
 
 
@@ -197,14 +208,16 @@ public class MessageHandler {
                 //sage allen wo der Spieler mit playerID started
                 JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
                 server.getCurrentGame().sendToAllPlayers(startingPointTakenMessage);
+
+                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+                if (server.getCurrentGame().getCurrentPlayer() != -1) {
+                    JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
+                    server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
+                } else {
+                    server.getCurrentGame().setActivePhase(2);
+                }
             }
-            server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
-            if (server.getCurrentGame().getCurrentPlayer() != -1) {
-                JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
-                server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
-            } else {
-                server.getCurrentGame().setActivePhase(2);
-            }
+
             //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));

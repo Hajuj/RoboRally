@@ -831,17 +831,16 @@ public class Game {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
-                System.out.println("hier ist einen startpoint " + positionID);
-                //TODO: testen!!
                 robotMap.put(positionID, server.getPlayerWithID(currentPlayer).getRobot());
                 return true;
             } else {
-                System.out.println("Das ist kein leeres Starting point");
+                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Another robot is on this tile!"));
+                server.sendMessage(errorNotYourTurn, server.getConnectionWithID(currentPlayer).getWriter());
                 return false;
             }
         } else {
-            //TODO: dem Spieler das auch sagen
-            System.out.println("hier NOT startpoint ");
+            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It's not a starting point"));
+            server.sendMessage(errorNotYourTurn, server.getConnectionWithID(currentPlayer).getWriter());
             return false;
         }
     }
