@@ -315,6 +315,30 @@ public class Game {
         }
     }
 
+    public void activatePushPanels(){
+        if(currentRegister == 1 || currentRegister == 3 || currentRegister == 5){
+            for(Point2D position : pushPanelMap.keySet()){
+                if(pushPanelMap.get(position).getRegisters().contains(1) ||
+                        pushPanelMap.get(position).getRegisters().contains(3) ||
+                        pushPanelMap.get(position).getRegisters().contains(5)){
+                    for(Robot robot : getRobotsOnFields(position)){
+                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    }
+                }
+            }
+        }
+        else if(currentRegister == 2 || currentRegister == 4){
+            for(Point2D position : pushPanelMap.keySet()){
+                if(pushPanelMap.get(position).getRegisters().contains(2) ||
+                        pushPanelMap.get(position).getRegisters().contains(4)){
+                    for(Robot robot : getRobotsOnFields(position)){
+                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    }
+                }
+            }
+        }
+    }
+
     public ArrayList<Robot> getRobotsOnFields(Point2D position){
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -677,6 +701,13 @@ public class Game {
                     tempPosition--;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
                     for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        //Is a robot in the line of the laser?
+                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()){
+                            foundBlocker = true;
+                            Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
+                            break;
+                        }
+
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
