@@ -531,6 +531,9 @@ public class Game {
                                     }
                                 }
                             }
+                            case "Laser" -> {
+                                //do nothing for now, relevant for later
+                            }
                             default -> {
                                 if (robotYPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
@@ -556,6 +559,9 @@ public class Game {
                                         robotYPosition++;
                                     }
                                 }
+                            }
+                            case "Laser" -> {
+                                //do nothing for now, relevant for later
                             }
                             default -> {
                                 if (robotYPosition + 1 > map.get(0).size()) {
@@ -583,6 +589,9 @@ public class Game {
                                     }
                                 }
                             }
+                            case "Laser" -> {
+                                //do nothing for now, relevant for later
+                            }
                             default -> {
                                 if (robotXPosition - 1 < 0) {
                                     //TODO: Get RestartPoint and start Reboot routine
@@ -608,6 +617,9 @@ public class Game {
                                         robotXPosition++;
                                     }
                                 }
+                            }
+                            case "Laser" -> {
+                                //do nothing for now, relevant for later
                             }
                             default -> {
                                 if (robotXPosition + 1 > map.size()) {
