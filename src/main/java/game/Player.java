@@ -3,6 +3,7 @@ package game;
 import game.decks.*;
 import json.JSONMessage;
 import json.protocol.*;
+import server.Server;
 
 //import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * @author Ilja Knis
  */
 public class Player {
-    Game game = Game.getInstance();
+    Server server = Server.getInstance();
 
     private int playerID;
     private String name;
@@ -87,8 +88,7 @@ public class Player {
             this.deckProgramming.removeTopCard();
 
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
-
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
             return card;
         }
     }
@@ -131,7 +131,7 @@ public class Player {
                 this.deckProgramming.removeTopCard();
             }
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
         }
     }
 

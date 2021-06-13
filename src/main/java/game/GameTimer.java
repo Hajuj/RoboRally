@@ -11,7 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameTimer {
-    private Timer timer = new Timer();
+    private Timer timer;
     private Server server;
 
     public GameTimer(Server server) {
@@ -19,6 +19,7 @@ public class GameTimer {
     }
 
     public void startTimer() {
+        timer = new Timer();
         server.getCurrentGame().setTimerOn(true);
         JSONMessage jsonMessage = new JSONMessage("TimerStarted", new TimerStartedBody());
         server.getCurrentGame().sendToAllPlayers(jsonMessage);
@@ -26,6 +27,7 @@ public class GameTimer {
     }
 
     public void timerEnded() {
+        timer.cancel();
         server.getCurrentGame().setTimerOn(false);
         server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
         for (int i : server.getCurrentGame().tooLateClients()) {
@@ -35,15 +37,15 @@ public class GameTimer {
         }
         server.getCurrentGame().setActivePhaseOn(false);
         server.getCurrentGame().setActivePhase(3);
-        timer.cancel();
     }
 
 
     class RemindTask extends TimerTask {
         public void run() {
-            timerEnded();
-            timer.cancel();
-            timer.purge();
+            if (server.getCurrentGame().isTimerOn()) {
+                timerEnded();
+                timer.purge();
+            }
         }
     }
 }

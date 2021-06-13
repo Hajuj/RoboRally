@@ -1,9 +1,6 @@
 package server;
 
-import game.Card;
-import game.Game;
-import game.Player;
-import game.Robot;
+import game.*;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -303,6 +300,7 @@ public class MessageHandler {
                         server.getCurrentGame().sendCurrentCards(newRegister);
                     } else {
                         //New Round
+                        server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
                             player.discardRegisterCards();
