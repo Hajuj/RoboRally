@@ -7,15 +7,17 @@ import game.Game;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.NodeOrientation;
-import javafx.geometry.Point2D;
+import javafx.geometry.*;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -25,6 +27,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Translate;
+import javafx.util.Duration;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -216,7 +219,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 Group imageGroup = new Group();
                 ImageView imageView = loadImage("normal1", "null");
                 imageGroup.getChildren().add(imageView);
-
                 // ImageView imageView2 = new ImageView();
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
                     switch (map.get(x).get(y).get(i).getType()) {
@@ -322,6 +324,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                             Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
                             ImageView imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
+                            imageView2.setFitHeight(40);
+                            imageView2.setFitWidth(40);
                             imageGroup.getChildren().add(imageView2);
                         }
                         //TODO:laser 1 or two handeln und dann orientation
@@ -382,9 +386,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                     }
                 }
+
                 fieldMap.put(new Point2D(x, y), imageGroup);
                 mapGrid.setConstraints(imageGroup, x, y);
+                mapGrid.setAlignment(Pos.CENTER);
                 mapGrid.getChildren().add(imageGroup);
+                GridPane.setHalignment(imageGroup, HPos.CENTER);
+                GridPane.setValignment(imageGroup, VPos.CENTER);
             }
         }
     }
@@ -399,6 +407,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                    handleMyLife();
                 }
             });
         }
@@ -429,12 +438,19 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
-   /* private void handleGreenBelt() {
-        switch (conveyorBelt.getOrientations().size())
+    private void handleMyLife () {
+        for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
+            ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 1);
+
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(1000), gear);
+            rotateTransition.setByAngle(90);
+            rotateTransition.setCycleCount(Animation.INDEFINITE);
+            rotateTransition.setInterpolator(Interpolator.LINEAR);
+            rotateTransition.play();
+
+        }
     }
 
-    private void handleBlueBelt(){
 
-    }*/
 }
 

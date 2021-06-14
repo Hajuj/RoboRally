@@ -116,6 +116,7 @@ public class ClientGameModel {
                         case "Antenna" -> {
                             Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            antennaMap.put(new Point2D(x, y), antenna);
                         }
                         case "ConveyorBelt" -> {
                             Element element = map.get(x).get(y).get(i);
