@@ -1,6 +1,7 @@
 package client.model;
-
+import client.viewModel.MapViewModel;
 import game.Element;
+import game.Game;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
@@ -8,6 +9,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import game.boardelements.*;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -21,11 +24,15 @@ import json.protocol.SetStartingPointBody;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.LinkedHashMap;
+
 
 public class ClientGameModel {
 
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
+    private static Game game = Game.getInstance();
 
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
@@ -48,6 +55,7 @@ public class ClientGameModel {
 
 
     private BooleanProperty canMove = new SimpleBooleanProperty(false);
+    private BooleanProperty animType = new SimpleBooleanProperty(false);
 
 
     //TODO: Observer hier
@@ -76,6 +84,10 @@ public class ClientGameModel {
     private LinkedHashMap<Point2D, StartPoint> startPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, Wall> wallMap = new LinkedHashMap<>();
 
+    private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
+
 
     //Singleton Zeug
     private ClientGameModel () {
@@ -100,6 +112,34 @@ public class ClientGameModel {
         clientModel.sendMessage(jsonMessage);
     }
 
+    public void setanimationType (String animationType){
+        switch (animationType){
+            /*case "BlueConveyorBelt" ->{
+                extractData(conveyorBeltMap);
+                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
+                    Point2D position =entry.getKey();
+                    ConveyorBelt belt =entry.getValue();
+
+                }
+            }*/
+            case "WallShooting" -> {
+                animType.set(true);
+            }
+        }
+
+    }
+    public void extractData(LinkedHashMap elementMap){
+
+    }
+    public BooleanProperty getanimationType(){
+        return animType;
+    }
+
+    public ArrayList<Point2D>  getLaserPath( Point2D laserPosition, Laser laser){
+        return game.getLaserPath(laserPosition, laser);
+
+    }
+
 
     public void sendPlayCard (String cardName) {
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(cardName));
@@ -120,6 +160,7 @@ public class ClientGameModel {
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
                             conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
+
                         }
                         case "CheckPoint" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -400,5 +441,14 @@ public class ClientGameModel {
 
     public void setMoveQueueObservable (ObservableMap<Robot, Point2D> moveQueueObservable) {
         this.moveQueueObservable = moveQueueObservable;
+    }
+
+//Animation Active BooleanWerte
+    public void activateBlueBeltAnime(boolean b) {
+        this.blueBeltAnimeProperty.set(b);
+    }
+
+    public SimpleBooleanProperty blueBeltAnimePropertyProperty() {
+        return blueBeltAnimeProperty;
     }
 }

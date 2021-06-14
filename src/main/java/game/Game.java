@@ -608,7 +608,7 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath(Point2D laserPosition, Laser laser ) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;

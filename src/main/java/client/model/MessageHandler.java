@@ -336,11 +336,12 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-                //animation für BlueConveyorBelt
+
+                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
+                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
                 break;
             }
             case "GreenConveyorBelt": {
-                //animation für GreenConveyorBelt
                 break;
             }
             case "PushPanel": {
@@ -360,6 +361,7 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
+                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
@@ -368,6 +370,7 @@ public class MessageHandler {
                 break;
             }
         }
+
     }
 
 

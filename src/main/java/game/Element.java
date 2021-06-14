@@ -47,16 +47,6 @@ public class Element {
     }
 
 
-    /**
-     * Used to load the raw card textures from filesystem
-     */
-   /* private void loadImagePath(Element e, Orientation o){
-        textures = new Texture[7];
-        String [] conveyorBelt= new String[] {"BlueBelt","GreenBelt","RotatingBeltBlue1","RotatingBeltBlue2","RotatingBeltBlue3","RotatingBeltGreen1","RotatingBeltGreen2","RotatingBeltGreen3"};
-        for(int i = 0; i<7; i++){
-            String path = "assets/Card/" + cardNames[i] + ".png";
-            textures[i] = new Texture(path);
-        }
-    }*/
+
 }
 

@@ -2,14 +2,18 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
+import client.viewModel.MapViewModel;
 
 import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,6 +26,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -97,12 +102,22 @@ public class GameViewModel implements Initializable {
     ObservableList<ImageView> registers;
     Dragboard dbImage = null;
     ImageView returnSource;
-
+    private BooleanProperty laserShootProperty ;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dummesButton.setText(Integer.toString(1));
+        //dummesButton.setText(Integer.toString(1));
+       /* clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(laserShootProperty.equals(true)){
+                    MapViewModel mapViewModel = new MapViewModel();
+                    mapViewModel.handleAnimation();
+                }
+            }
+    });*/
+
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
@@ -118,6 +133,7 @@ public class GameViewModel implements Initializable {
                 });
             }
         });
+
 
       /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -159,11 +175,12 @@ public class GameViewModel implements Initializable {
                                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                                     e.printStackTrace();
                                 }
+                                showPopup("Programming Phase has begin");
+                                playerInfo.setText("please choose your Programming Cards");
                             });
                         }
                     });
-                    showPopup("Programming Phase has begin");
-                    playerInfo.setText("please choose your Programming Cards");
+
 
                 });
             }
@@ -200,18 +217,20 @@ public class GameViewModel implements Initializable {
         scaleTransition.play();
         StackPane root = new StackPane();
         root.getChildren().addAll(text);
-        Scene scene = new Scene(root, 200, 200);
+        Scene scene = new Scene(root, 250, 200);
         Stage not = new Stage();
         scene.setFill(Color.DARKGRAY);
         not.setTitle("Player Notification");
         not.setScene(scene);
         not.show();
-     /*   try {
-            not.wait(2);
+        Platform.runLater(() -> {
+          try {
+            not.wait(5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        not.close();*/
+        });
+        not.close();
 
     }
 
@@ -231,7 +250,7 @@ public class GameViewModel implements Initializable {
 
     }
 
-    private Image loadImage(String cardName) throws FileNotFoundException {
+    public Image loadImage(String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
@@ -239,6 +258,7 @@ public class GameViewModel implements Initializable {
         return image;
 
     }
+
 
     /*private void loadScene(String scene) throws IOException {
         if (scene.equals("Map")) {
@@ -324,7 +344,6 @@ public class GameViewModel implements Initializable {
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
-
     }
 
     public void playCard () {
@@ -358,4 +377,5 @@ public class GameViewModel implements Initializable {
         }
 
     }
+
 }

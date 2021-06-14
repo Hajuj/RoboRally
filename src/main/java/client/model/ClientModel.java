@@ -27,6 +27,7 @@ public class ClientModel {
     private static ClientModel instance;
     private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+
     private Socket socket;
     private ClientModelReaderThread clientModelReaderThread;
     private ClientModelWriterThread clientModelWriterThread;
