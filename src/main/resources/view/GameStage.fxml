@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-            prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.viewModel.GameViewModel">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
     <children>
         <ImageView fitHeight="422.0" fitWidth="1100.0" layoutY="-1.0" pickOnBounds="true">
             <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png"/>
+                <Image url="@../images/mapElements/Elements/2016Board.png" />
             </image>
         </ImageView>
         <ImageView fitHeight="382.0" fitWidth="1100.0" layoutX="2.0" layoutY="419.0" pickOnBounds="true">
             <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png"/>
+                <Image url="@../images/mapElements/Elements/2016Board.png" />
             </image>
       </ImageView>
       <ImageView fx:id="yourRobot" fitHeight="162.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" x="868.0" y="500.0" />
@@ -65,13 +67,13 @@
                         <ImageView fx:id="reg_4" fitHeight="147.0" fitWidth="113.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                   <Button fx:id="dummesButton" mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="88.0"
-                           prefWidth="91.0">
+                  <Button fx:id="testButton" mnemonicParsing="false" onAction="#activateTestButton" text="Button" />
+                   <Button fx:id="dummesButton" mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="88.0" prefWidth="91.0">
                        <HBox.margin>
-                           <Insets left="50.0" top="0.0"/>
+                           <Insets left="50.0" top="0.0" />
                        </HBox.margin>
                        <font>
-                           <Font name="System Bold" size="32.0"/>
+                           <Font name="System Bold" size="32.0" />
                        </font>
                    </Button>
                </children>

@@ -1,12 +1,16 @@
 package client.model;
 
+import client.viewModel.GameViewModel;
 import com.google.gson.annotations.Expose;
 import game.Game;
 import game.Player;
 import game.Robot;
+import game.boardelements.Gear;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -14,6 +18,9 @@ import server.ClientHandler;
 import server.Server;
 
 import javax.swing.text.Position;
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -367,6 +374,8 @@ public class MessageHandler {
             }
         }
     }
+
+
 
 
 }

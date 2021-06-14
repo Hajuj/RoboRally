@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import json.JSONMessage;
 import json.protocol.MapSelectedBody;
 import json.protocol.PlayCardBody;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ClientGameModel {
+public class ClientGameModel extends Node {
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
 

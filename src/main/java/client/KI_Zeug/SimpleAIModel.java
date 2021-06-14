@@ -68,12 +68,18 @@ public class SimpleAIModel {
         }
     }
 
+    public void findTheRouteToWin () {
+         clientModel.getClientGameModel().getCheckPointMap();
+         clientModel.getClientGameModel().getStartPointMap();
+    }
+
 
     public void chooseCardsRoutine () {
         for (int i = 0; i < 5; i++) {
-            String cardName = clientModel.getClientGameModel().getCardsInHand().get(i);
+            /**String cardName = clientModel.getClientGameModel().getCardsInHand().get(i);
             clientModel.getClientGameModel().sendSelectedCards(i, cardName);
             cardsInRegister.replace(i, cardName);
+             */
         }
     }
 

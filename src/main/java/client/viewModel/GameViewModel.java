@@ -2,16 +2,24 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
+import game.boardelements.Gear;
 import game.programmingcards.BackUp;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -19,7 +27,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import json.JSONMessage;
+import json.protocol.AnimationBody;
 import json.protocol.PlayCardBody;
 
 import java.awt.dnd.DropTargetListener;
@@ -58,6 +68,9 @@ public class GameViewModel implements Initializable {
     public Button dummesButton;
 
     @FXML
+    public Button testButton;
+
+    @FXML
     public BorderPane pane;
 
     @FXML
@@ -82,13 +95,14 @@ public class GameViewModel implements Initializable {
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private String cardName;
     private String register;
+    private LinkedHashMap<Point2D, Group> fieldMap = new LinkedHashMap<>();
 
     private HashMap<Integer, Integer> regToCard = new HashMap<>();
 
-    ObservableList<ImageView> cards ;
+    ObservableList<ImageView> cards;
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         regToCard.put(0, null);
         regToCard.put(1, null);
         regToCard.put(2, null);
@@ -103,7 +117,7 @@ public class GameViewModel implements Initializable {
 
         clientGameModel.actualRegisterPropertyProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 Platform.runLater(() -> {
                     dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegisterProperty()));
                 });
@@ -151,7 +165,7 @@ public class GameViewModel implements Initializable {
 
         model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
                 Platform.runLater(() -> {
                     try {
                         loadScene("Map");
@@ -163,7 +177,7 @@ public class GameViewModel implements Initializable {
         });
     }
 
-    public Image yourRobot (){
+    public Image yourRobot() {
 
         //int player = model.getPlayersFigureMap().get(playerId);
 
@@ -197,34 +211,39 @@ public class GameViewModel implements Initializable {
             pane.setCenter(fxmlLoader.load());
 
         }
-        if(scene.equals("PlayerMat")){
+        if (scene.equals("PlayerMat")) {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PlayerMat.fxml"));
             pane.setLeft(fxmlLoader.load());
         }
     }
 
 
-    /** drag was detected, start a drag-and-drop gesture
-     /* allow any transfer mode **/
+    /**
+     * drag was detected, start a drag-and-drop gesture
+     * /* allow any transfer mode
+     **/
     public void handle(MouseEvent event) {
         ImageView source = (ImageView) event.getSource();
-        if(source.getId().equals(reg_0.getId())||source.getId().equals(reg_1.getId())
-                ||source.getId().equals(reg_2.getId())||source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
+        if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
+                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
             this.cardName = "Null";
             int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
             regToCard.replace(reg, null);
             collectingCards();
-        }else {
+        } else {
             this.cardName = source.getId();
         }
         handleSource(source);
 
 
     }
-    /** data is dragged over the target
-    /* accept it only if it is not dragged from the same node
+
+    /**
+     * data is dragged over the target
+     * /* accept it only if it is not dragged from the same node
      * and if it has a image data
-    /* allow for moving **/
+     * /* allow for moving
+     **/
     public void handleTarget(DragEvent event) {
 
         if (event.getDragboard().hasImage()) {
@@ -256,7 +275,7 @@ public class GameViewModel implements Initializable {
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
-   }
+    }
 
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
@@ -269,18 +288,60 @@ public class GameViewModel implements Initializable {
 
     }
 
-    public void playCard () {
+    public void playCard() {
         int currentRegister = clientGameModel.getActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
         clientGameModel.sendPlayCard(card);
 
     }
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
+
+    public void activateTestButton(ActionEvent event){
+        //JSONMessage testGearAnimation = new JSONMessage("Gear",new AnimationBody("Gear"));
+        //ClientModel.getInstance().sendMessage(testGearAnimation);
+        Platform.runLater(()->{handleGearAnimation();});
+
     }
 
-    public String getCardName() {
-        return cardName;
+
+    public void handleGearAnimation() {
+
+        //switch (gear.getColour()) {
+            //case "green": {
+        for (Map.Entry<Point2D, Gear> entry: clientGameModel.getGearMap().entrySet()){
+            ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
+
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(3000), gear);
+            rotateTransition.setByAngle(270);
+            rotateTransition.setCycleCount(Animation.INDEFINITE);
+            rotateTransition.setInterpolator(Interpolator.LINEAR);
+            rotateTransition.play();
+
+        }
+                //}
+
+            }
+            /**break;
+            case "red": {
+                Group imageGroup = fieldMap.get((Point2D) clientGameModel.getGearMap().keySet());
+                ImageView image = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+                for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
+                    gear = entry.getValue();
+                    Duration duration = Duration.INDEFINITE;
+                    RotateTransition rotateTransition = new RotateTransition(duration, image);
+                    rotateTransition.setByAngle(-90);
+                    rotateTransition.play();
+
+                }*/
+
+
+
+
+        public void setCardName (String cardName){
+            this.cardName = cardName;
+        }
+
+        public String getCardName () {
+            return cardName;
+        }
     }
-}
