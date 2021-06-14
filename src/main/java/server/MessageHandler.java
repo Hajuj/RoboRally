@@ -285,7 +285,7 @@ public class MessageHandler {
                     }
                 }
                 server.getCurrentGame().activateCardEffect(card);
-                //TODO call activateCard() method from Ilja :)
+
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
                 if (nextPlayer != -1) {

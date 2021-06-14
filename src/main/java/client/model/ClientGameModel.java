@@ -48,16 +48,17 @@ public class ClientGameModel {
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
 
+    private boolean programmingPhase = false;
+
     //TODO: Observer hier
+    //      these two attributes are never used!
     private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
-    private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
     private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
 
     //TODO:mut dem button verbinden
-    private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
-
-
+    private int currentRegister;
     private int actualRegister = -1;
+
     private volatile int actualPlayerID;
     private volatile int actualPhase;
 
@@ -222,12 +223,13 @@ public class ClientGameModel {
 
     }
 
-    public void setProgrammingPhase (boolean b) {
-        /* if (this.actualPhase == 2)*/
-        this.programmingPhaseProperty.set(b);
-
+    public boolean isProgrammingPhase() {
+        return programmingPhase;
     }
 
+    public void setProgrammingPhase(boolean programmingPhase) {
+        this.programmingPhase = programmingPhase;
+    }
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -289,20 +291,14 @@ public class ClientGameModel {
         }
     }
 
-    public int getActualRegisterProperty () {
-        return actualRegisterProperty.get();
+    public int getCurrentRegister() {
+        return currentRegister;
     }
 
-    public IntegerProperty actualRegisterPropertyProperty () {
-        return actualRegisterProperty;
-    }
-
-    public void setActualRegisterProperty (int actualRegisterProperty) {
-        this.actualRegisterProperty.set(actualRegisterProperty);
-    }
-
-    public BooleanProperty getProgrammingPhaseProperty () {
-        return programmingPhaseProperty;
+    public void setCurrentRegister(int currentRegister) {
+        int oldCurrentRegister = this.currentRegister;
+        this.currentRegister = currentRegister;
+        propertyChangeSupport.firePropertyChange("currentRegister", oldCurrentRegister, currentRegister);
     }
 
     public Player getPlayer () {
@@ -352,7 +348,7 @@ public class ClientGameModel {
 
     public void setActualRegister(int actualRegister) {
         this.actualRegister = actualRegister;
-        this.actualRegisterPropertyProperty().setValue(actualRegister);
+        this.setCurrentRegister(actualRegister);
     }
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {

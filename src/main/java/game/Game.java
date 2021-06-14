@@ -65,7 +65,7 @@ public class Game {
     private int currentRound;
     private int currentRegister;
     private boolean activePhaseOn = false;
-    private boolean timerOn = false;
+    private volatile boolean timerOn = false;
     private Comparator<Player> comparator = new Helper(this);
 
     private Game () {
@@ -486,6 +486,28 @@ public class Game {
         }
     }
 
+    //TODO take two Spam cards -> in discardDeck
+    //     cancel programming
+    //     discard registerDeck
+    //     discard handDeck
+    //     place robot on reboot token, orientation up
+    //     place robot in the its startingPoint (rebooting from start board)
+    //     if a robot already on the reboot token -> push him up
+    //     if there's a wall and another robot can't be pushed, push it in the next free field
+    public void rebootRobot() {
+        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        for (int i = 0; i < 2; i++) {
+            playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+            deckSpam.removeTopCard();
+        }
+        playerList.get(indexCurrentPlayer).discardRegisterCards();
+        playerList.get(indexCurrentPlayer).discardHandCards();
+        if (restartPointMap == null) {
+
+        }
+
+    }
+
     public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
@@ -535,6 +557,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("TOP x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("TOP " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                             switch (element.getType()) {
@@ -546,9 +570,9 @@ public class Game {
                                         }
                                     }
                                 }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
+//                                case "Laser" -> {
+//                                    //do nothing for now, relevant for later
+//                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setyPosition(robotYPosition - 1);
@@ -566,6 +590,8 @@ public class Game {
                     //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("BOTTOM x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("BOTTOM " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                             switch (element.getType()) {
@@ -577,9 +603,9 @@ public class Game {
                                         }
                                     }
                                 }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
+//                                case "Laser" -> {
+//                                    //do nothing for now, relevant for later
+//                                }
                                 default -> {
 
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
@@ -597,6 +623,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("LEFT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("LEFT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -608,9 +636,9 @@ public class Game {
                                         }
                                     }
                                 }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
+//                                case "Laser" -> {
+//                                    //do nothing for now, relevant for later
+//                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition - 1);
@@ -626,6 +654,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("RIGHT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("RIGHT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -637,9 +667,9 @@ public class Game {
                                         }
                                     }
                                 }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
+//                                case "Laser" -> {
+//                                    //do nothing for now, relevant for later
+//                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition + 1);
@@ -988,7 +1018,7 @@ public class Game {
 
     public void setNewRoundCounter () {
         this.roundCounter++;
-        System.out.println(roundCounter);
+        System.out.println(roundCounter + " THIS IS ROUND COUNTER");
     }
 
     public void setActivePhaseOn (boolean activePhaseOn) {

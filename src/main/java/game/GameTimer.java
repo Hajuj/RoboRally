@@ -7,6 +7,7 @@ import server.Server;
 import json.JSONMessage;
 import json.protocol.TimerStartedBody;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,7 +28,6 @@ public class GameTimer {
     }
 
     public void timerEnded() {
-        timer.cancel();
         server.getCurrentGame().setTimerOn(false);
         server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
         for (int i : server.getCurrentGame().tooLateClients()) {
@@ -44,6 +44,7 @@ public class GameTimer {
         public void run() {
             if (server.getCurrentGame().isTimerOn()) {
                 timerEnded();
+                timer.cancel();
                 timer.purge();
             }
         }
