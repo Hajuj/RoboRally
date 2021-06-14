@@ -21,6 +21,8 @@ import json.protocol.PlayCardBody;
 import json.protocol.SelectedCardBody;
 import json.protocol.SetStartingPointBody;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,23 +36,24 @@ public class ClientGameModel {
     private ClientModel clientModel = ClientModel.getInstance();
     private static Game game = Game.getInstance();
 
+    protected PropertyChangeSupport propertyChangeSupport;
+
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
     private ArrayList<String> cardsInHand = new ArrayList();
-    private ObservableList<String> cardsInHandObservable = FXCollections.observableList(cardsInHand);
-
+    private boolean handCards = false;
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
     private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
-    private ObservableMap<Robot, Point2D> startingPointQueueObservable = FXCollections.observableMap(startingPointQueue);
-
+    private boolean startingPoint = false;
 
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
-    private ObservableMap<Robot, Point2D> moveQueueObservable = FXCollections.observableMap(moveQueue);
+    private boolean queueMove = false;
 
     private HashMap<Robot, String> turningQueue = new HashMap<>();
+    private boolean queueTurning = false;
     private ObservableMap<Robot, String> turningQueueObservable = FXCollections.observableMap(turningQueue);
 
 
@@ -91,6 +94,7 @@ public class ClientGameModel {
 
     //Singleton Zeug
     private ClientGameModel () {
+        propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
     public static ClientGameModel getInstance () {
@@ -100,6 +104,9 @@ public class ClientGameModel {
         return instance;
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
 
     public void sendStartingPoint (int x, int y) {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
@@ -320,16 +327,12 @@ public class ClientGameModel {
         return turningQueue;
     }
 
-    public void setTurningQueue (HashMap<Robot, String> turningQueue) {
-        this.turningQueue = turningQueue;
-    }
-
-    public ObservableMap<Robot, String> getTurningQueueObservable () {
-        return turningQueueObservable;
-    }
-
-    public void setTurningQueueObservable (ObservableMap<Robot, String> turningQueueObservable) {
-        this.turningQueueObservable = turningQueueObservable;
+    public void setQueueTurning(boolean queueTurning) {
+        boolean oldQueueTurning = this.queueTurning;
+        this.queueTurning = queueTurning;
+        if (this.queueTurning) {
+            propertyChangeSupport.firePropertyChange("queueTurning", oldQueueTurning, true);
+        }
     }
 
     public int getActualRegisterProperty () {
@@ -344,22 +347,9 @@ public class ClientGameModel {
         this.actualRegisterProperty.set(actualRegisterProperty);
     }
 
-    public boolean isCanMove () {
-        return canMove.get();
-    }
-
-    public BooleanProperty canMoveProperty () {
-        return canMove;
-    }
-
-    public void setCanMove (boolean canMove) {
-        this.canMove.set(canMove);
-    }
-
     public BooleanProperty getProgrammingPhaseProperty () {
         return programmingPhaseProperty;
     }
-
 
     public Player getPlayer () {
         return player;
@@ -385,24 +375,16 @@ public class ClientGameModel {
         this.cardsInHand = cardsInHand;
     }
 
-    public ObservableList getCardsInHandObservable () {
-        return cardsInHandObservable;
-    }
-
-    public void setCardsInHandObservable (ObservableList cardsInHandObservable) {
-        this.cardsInHandObservable = cardsInHandObservable;
+    public void setHandCards(boolean handCards) {
+        boolean oldHandCards = this.handCards;
+        this.handCards = handCards;
+        if (this.handCards) {
+            propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
+        }
     }
 
     public HashMap<Robot, Point2D> getRobotMap () {
         return robotMap;
-    }
-
-    public ObservableMap<Robot, Point2D> getStartingPointQueueObservable () {
-        return startingPointQueueObservable;
-    }
-
-    public void setStartingPointQueueObservable (ObservableMap<Robot, Point2D> startingPointQueueObservable) {
-        this.startingPointQueueObservable = startingPointQueueObservable;
     }
 
     public void sendSelectedCards (int registerNum, String cardName) {
@@ -423,24 +405,24 @@ public class ClientGameModel {
         return startingPointQueue;
     }
 
-    public void setStartingPointQueue (HashMap<Robot, Point2D> startingPointQueue) {
-        this.startingPointQueue = startingPointQueue;
+    public void setStartingPoint(boolean startingPoint) {
+        boolean oldStartingPoint = this.startingPoint;
+        this.startingPoint = startingPoint;
+        if (this.startingPoint) {
+            propertyChangeSupport.firePropertyChange("startingPoint", oldStartingPoint, true);
+        }
     }
 
     public HashMap<Robot, Point2D> getMoveQueue () {
         return moveQueue;
     }
 
-    public void setMoveQueue (HashMap<Robot, Point2D> moveQueue) {
-        this.moveQueue = moveQueue;
-    }
-
-    public ObservableMap<Robot, Point2D> getMoveQueueObservable () {
-        return moveQueueObservable;
-    }
-
-    public void setMoveQueueObservable (ObservableMap<Robot, Point2D> moveQueueObservable) {
-        this.moveQueueObservable = moveQueueObservable;
+    public void setQueueMove(boolean queueMove) {
+        boolean oldQueueMove = this.queueMove;
+        this.queueMove = queueMove;
+        if (this.queueMove) {
+            propertyChangeSupport.firePropertyChange("queueMove", oldQueueMove, true);
+        }
     }
 
 //Animation Active BooleanWerte

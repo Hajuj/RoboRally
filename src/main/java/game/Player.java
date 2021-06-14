@@ -1,21 +1,18 @@
 package game;
 
-import game.boardelements.Antenna;
 import game.decks.*;
-import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
+import server.Server;
 
 //import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Ilja Knis
  */
 public class Player {
-    Game game = Game.getInstance();
+    Server server = Server.getInstance();
 
     private int playerID;
     private String name;
@@ -63,7 +60,7 @@ public class Player {
 
     public ArrayList<String> drawBlind() {
         //TODO check when cards are discarded
-        discardCards();
+        discardHandCards();
         ArrayList<String> newCard = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
@@ -79,28 +76,34 @@ public class Player {
     public Card drawRegisterCards() {
         //YourCardsBody
         if (this.deckProgramming.getDeck().size() > 0) {
-            Card card = this.deckProgramming.getDeck().get(0);
-            this.deckProgramming.getDeck().remove(0);
+            Card card = this.deckProgramming.getTopCard();
+            this.deckProgramming.removeTopCard();
             return card;
         }
 
         //When there is no enough cards
         else {
             shuffleDiscardIntoProgramming();
-            Card card = this.deckProgramming.getDeck().get(0);
-            this.deckProgramming.getDeck().remove(0);
+            Card card = this.deckProgramming.getTopCard();
+            this.deckProgramming.removeTopCard();
 
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
-
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
             return card;
         }
     }
 
-    public void discardCards() {
+    public void discardHandCards() {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
-            this.deckHand.getDeck().remove(this.deckHand.getDeck().get(i));
+        }
+        this.getDeckHand().getDeck().clear();
+    }
+
+    public void discardRegisterCards() {
+        for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
+            this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
+            this.getDeckRegister().getDeck().set(i, null);
         }
     }
 
@@ -128,7 +131,7 @@ public class Player {
                 this.deckProgramming.removeTopCard();
             }
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
         }
     }
 

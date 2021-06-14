@@ -75,4 +75,10 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleTimerStarted (ClientModel clientModel, TimerStartedBody timerStartedBody) {
         System.out.println("You are awesome AI Baby");
     }
+
+    @Override
+    public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
+        super.handleSelectMap(clientModel, selectMapBody);
+        clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
+    }
 }

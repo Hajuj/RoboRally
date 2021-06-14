@@ -1,9 +1,8 @@
 package client.viewModel;
 
 import client.model.ClientModel;
+
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,14 +14,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.Objects;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
-public class ChatViewModel implements Initializable {
+public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     ClientModel model = ClientModel.getInstance();
 
@@ -46,9 +44,10 @@ public class ChatViewModel implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        model.addPropertyChangeListener(this);
         chatField.setText(model.getChatHistory());
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        readyDisplay.setText(model.playersStatusMapProperty().getValue());
+        readyDisplay.setText(model.getPlayersStatus());
         chatField.setEditable(false);
         readyDisplay.setEditable(false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
@@ -56,73 +55,6 @@ public class ChatViewModel implements Initializable {
             notReadyBtn.setVisible(false);
         }
         notReadyBtn.setDisable(true);
-
-        //TODO check how to do it with observable pattern instead of addListener
-        model.doChooseMapProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                //TODO: Hier (wenn möglich) kein Platform.runLater()
-                if (model.doChooseMapProperty().getValue() == true) {
-                    Platform.runLater(() -> {
-                        try {
-                            showMaps();
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    });
-                }
-            }
-        });
-        //chatField = new TextArea("");
-        model.chatHistoryProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
-                //System.out.println("VALUE CHANGED");
-                chatField.setText(t1);
-                chatField.appendText("");
-            }
-        });
-
-            model.playersStatusMapProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observableValue, String s1, String s2) {
-                    //TODO try to implement it in ClientModel
-                    //     check if synchronized block working
-                    //     which means no -> java.lang.ArrayIndexOutOfBoundsException: Index 66 out of bounds for length 66
-                    //     arraycopy: last destination index 78 out of bounds for byte[66]
-                    //     IndexOutOfBoundsException: Index 2 out of bounds for length 2
-                    //     SYNCHRONIZED IS NOT WORKING LOL
-                    //     Cannot read field "glyphs" because "this.layoutCache" is null
-                    readyDisplay.setText(s2);
-                }
-            });
-        //Automatic scroll for the ChatField
-        chatField.textProperty().addListener(new ChangeListener<Object>() {
-            @Override
-            public void changed(ObservableValue<?> observable, Object oldValue,
-                                Object newValue) {
-                chatField.setScrollTop(Double.MAX_VALUE); //this will scroll to the bottom
-
-            }
-        });
-
-        //TODO close the chat window when the game starts and make the chat as a button in the game window
-        /*model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-
-                Platform.runLater(() -> {
-                    try {
-                        loadGameScene();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                });
-
-            }
-        });
-*/
-
     }
 
     public void sendMessageButton(ActionEvent event) {
@@ -160,7 +92,7 @@ public class ChatViewModel implements Initializable {
         model.setNewStatus(false);
         notReadyBtn.setDisable(true);
         readyButton.setDisable(false);
-        model.doChooseMapProperty().setValue(false);
+        model.setDoChooseMap(false);
     }
 
     public void loadGameScene () throws IOException {
@@ -182,5 +114,26 @@ public class ChatViewModel implements Initializable {
         newStage2.setTitle("CARDS");
         newStage2.setScene(new Scene(root2));
         newStage2.show();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("chatHistory")) {
+            chatField.setText(evt.getNewValue().toString());
+            chatField.appendText("");
+            chatField.setScrollTop(Double.MAX_VALUE);
+        }
+        if (evt.getPropertyName().equals("playerStatus")) {
+            readyDisplay.setText(evt.getNewValue().toString());
+        }
+        if (evt.getPropertyName().equals("doChooseMap")) {
+            Platform.runLater(() -> {
+                try {
+                    showMaps();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            });
+        }
     }
 }

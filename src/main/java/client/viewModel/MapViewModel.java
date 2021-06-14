@@ -10,8 +10,10 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -22,6 +24,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class MapViewModel implements Initializable {
+public class MapViewModel implements Initializable, PropertyChangeListener {
 
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
@@ -42,6 +46,8 @@ public class MapViewModel implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        clientModel.addPropertyChangeListener(this);
+        clientGameModel.addPropertyChangeListener(this);
 
         int mapX = clientGameModel.getMap().size();
         int mapY = clientGameModel.getMap().get(0).size();
@@ -50,6 +56,7 @@ public class MapViewModel implements Initializable {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+
        // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
         clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -57,55 +64,6 @@ public class MapViewModel implements Initializable {
                 handleLaserAnime();
             }
         });
-        clientGameModel.getMoveQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                        //nullpointer hier. warum=
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                        clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-                        clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-                    }
-                });
-            }
-        });
-
-
-        clientGameModel.getTurningQueueObservable().addListener(new MapChangeListener<Robot, String>() {
-
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends String> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        turnRobot(playerID, entry.getValue());
-                        //TODO: wo muss ich die orientation ändern in ClientGameModel?
-                        clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
-                    }
-                });
-            }
-        });
-
-        clientGameModel.getStartingPointQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                        clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                        clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                            }
-                        }
-                );
-                //setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-
-            }
-        });
-
 //        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
 //            @Override
 //            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
@@ -175,22 +133,7 @@ public class MapViewModel implements Initializable {
     }
 
 
-    public void refreshOrientation () {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
 
-        mapGrid.add(imageView, clientGameModel.getPlayer().getRobot().getxPosition(), clientGameModel.getPlayer().getRobot().getxPosition());
-    }
 
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -244,27 +187,6 @@ public class MapViewModel implements Initializable {
 
 
     }
-
-//    private String handleLaser () {
-//        String laserT = "";
-//        for (Point2D loc : laserMap.keySet()) {
-//            if (wallMap.containsKey(loc)) {
-//                laserT = "OneLaser";
-//            } else {
-//                laserT = "OneLaserBeam";
-//            }
-//        }
-//        return laserT;
-//    }
-  /*  private String handleBelts() {
-
-    }*/
-
-
-    /*public File findPath(String element) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-    }*/
 
 
     public void clickGrid (MouseEvent event) {
@@ -495,7 +417,45 @@ public class MapViewModel implements Initializable {
         }
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        clientModel.getClientGameModel().setStartingPoint(false);
+        if (evt.getPropertyName().equals("startingPoint")) {
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                    clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("queueMove")) {
+            clientModel.getClientGameModel().setQueueMove(false);
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
+                    //nullpointer hier. warum=
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                    clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
+                    clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
 
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("queueTurning")) {
+            clientModel.getClientGameModel().setQueueTurning(false);
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
+                    //TODO check NullPointerException here
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    turnRobot(playerID, entry.getValue());
+                    //TODO: wo muss ich die orientation ändern in ClientGameModel?
+                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                }
+            });
+        }
+    }
     public void handleAnimation (String type) {
         double ToX = 0;
         double ToY = 0;
