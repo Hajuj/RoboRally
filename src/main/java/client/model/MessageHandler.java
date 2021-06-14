@@ -1,32 +1,19 @@
 package client.model;
 
-import client.viewModel.GameViewModel;
-import com.google.gson.annotations.Expose;
 import game.Game;
 import game.Player;
 import game.Robot;
-import game.boardelements.Gear;
-import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
-import javafx.util.Duration;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
-import server.ClientHandler;
-import server.Server;
 
-import javax.swing.text.Position;
-import java.awt.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -102,7 +89,7 @@ public class MessageHandler {
         int mapX = bodyObject.getGameMap().size();
         int mapY = bodyObject.getGameMap().get(0).size();
         client.getClientGameModel().createMapObjects(bodyObject.getGameMap(), mapX, mapY);
-        client.gameOnProperty().setValue(true);
+        client.setGameOn(true);
         //TODO implement map controller and use in this method to build the map
     }
 
@@ -167,7 +154,8 @@ public class MessageHandler {
 
         Point2D position = new Point2D(startingPointTakenBody.getX(), startingPointTakenBody.getY());
 
-        clientModel.getClientGameModel().getStartingPointQueueObservable().put(robot, position);
+        clientModel.getClientGameModel().getStartingPointQueue().put(robot, position);
+        clientModel.getClientGameModel().setStartingPoint(true);
 
         //BraucheIch das noch
         clientModel.getClientGameModel().setProgrammingPhase(true);
@@ -212,7 +200,9 @@ public class MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
         //speichere die Cards und refresh the View
-        clientModel.getClientGameModel().getCardsInHandObservable().addAll(yourCardsBody.getCardsInHand());
+        clientModel.getClientGameModel().getCardsInHand().clear();
+        clientModel.getClientGameModel().setCardsInHand(yourCardsBody.getCardsInHand());
+        clientModel.getClientGameModel().setHandCards(true);
     }
 
     public void handleNotYourCards (ClientModel clientModel, NotYourCardsBody notYourCardsBody) {
@@ -313,8 +303,8 @@ public class MessageHandler {
                 robot = entry.getKey();
             }
         }
-        clientModel.getClientGameModel().getTurningQueueObservable().put(robot, rotation);
-
+        clientModel.getClientGameModel().getTurningQueue().put(robot, rotation);
+        clientModel.getClientGameModel().setQueueTurning(true);
 
         logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
 
@@ -332,7 +322,8 @@ public class MessageHandler {
                 robot = entry.getKey();
             }
         }
-        clientModel.getClientGameModel().getMoveQueueObservable().put(robot, new Point2D(newX, newY));
+        clientModel.getClientGameModel().getMoveQueue().put(robot, new Point2D(newX, newY));
+        clientModel.getClientGameModel().setQueueMove(true);
 
     }
 
@@ -375,7 +366,13 @@ public class MessageHandler {
         }
     }
 
+    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
 
+    }
+
+    public void handleRebootDirection(ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
+
+    }
 
 
 }

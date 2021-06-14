@@ -9,8 +9,10 @@ import game.Robot;
 import game.boardelements.*;
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Point2D;
@@ -24,6 +26,8 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Translate;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +35,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class MapViewModel implements Initializable {
+public class MapViewModel implements Initializable, PropertyChangeListener {
 
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
@@ -44,6 +48,8 @@ public class MapViewModel implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        clientModel.addPropertyChangeListener(this);
+        clientGameModel.addPropertyChangeListener(this);
 
         int mapX = clientGameModel.getMap().size();
         int mapY = clientGameModel.getMap().get(0).size();
@@ -53,52 +59,6 @@ public class MapViewModel implements Initializable {
             ioException.printStackTrace();
         }
 
-        clientGameModel.getMoveQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                        //nullpointer hier. warum=
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                        clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-                        clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-                    }
-                });
-            }
-        });
-
-
-        clientGameModel.getTurningQueueObservable().addListener(new MapChangeListener<Robot, String>() {
-
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends String> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        turnRobot(playerID, entry.getValue());
-                        //TODO: wo muss ich die orientation ändern in ClientGameModel?
-                        clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
-                    }
-                });
-            }
-        });
-
-        clientGameModel.getStartingPointQueueObservable().addListener(new MapChangeListener<Robot, Point2D>() {
-            @Override
-            public void onChanged (Change<? extends Robot, ? extends Point2D> change) {
-                Platform.runLater(() -> {
-                    for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-                        int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                        setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                        clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                        clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                            }
-                        }
-                );
-            }
-        });
     }
 
 
@@ -135,22 +95,7 @@ public class MapViewModel implements Initializable {
     }
 
 
-    public void refreshOrientation () {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirection.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
 
-        mapGrid.add(imageView, clientGameModel.getPlayer().getRobot().getxPosition(), clientGameModel.getPlayer().getRobot().getxPosition());
-    }
 
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -168,23 +113,23 @@ public class MapViewModel implements Initializable {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         switch (orientations) {
-            case "top", "bottom,top,left" -> {
+            case "top", "bottom,top,left", "left,bottom"-> {
                 imageView.setRotate(0);
             }
-            case "right", "right,left", "left,right,bottom" -> {
+            case "right", "right,left", "left,right,bottom", "top,left" -> {
                 imageView.setRotate(90);
             }
-            case "left", "right,left,top" -> {
+            case "left", "right,left,top", "bottom,right" -> {
                 imageView.setRotate(-90);
             }
-            case "bottom", "top,bottom,left" -> {
+            case "bottom", "top,bottom,left", "right,top" -> {
                 imageView.setRotate(180);
             }
             case "left,top,right" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(90);
             }
-            case "bottom,left,top" -> {
+            case "bottom,left,top", "left,top" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(0);
             }
@@ -204,27 +149,6 @@ public class MapViewModel implements Initializable {
 
 
     }
-
-//    private String handleLaser () {
-//        String laserT = "";
-//        for (Point2D loc : laserMap.keySet()) {
-//            if (wallMap.containsKey(loc)) {
-//                laserT = "OneLaser";
-//            } else {
-//                laserT = "OneLaserBeam";
-//            }
-//        }
-//        return laserT;
-//    }
-  /*  private String handleBelts() {
-
-    }*/
-
-
-    /*public File findPath(String element) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource("images/mapElements/" + element + ".jpg")).getFile());
-    }*/
 
 
     public void clickGrid (MouseEvent event) {
@@ -316,8 +240,53 @@ public class MapViewModel implements Initializable {
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
 
+                          /*  switch (conveyorBelt.getSpeed()){
+                                case 1 -> handleGreenBelt();
+                                case 2 -> handleBlueBelt();
 
-                            if (conveyorBelt.getOrientations().size() == 1 || conveyorBelt.getOrientations().size() == 2) {
+                            }*/
+
+                            if (conveyorBelt.getSpeed()==2){
+                                switch (conveyorBelt.getOrientations().size()){
+                                    case 1 ->{
+                                        ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 2 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 3 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                }
+                            }
+
+                            if(conveyorBelt.getSpeed()==1){
+                                switch (conveyorBelt.getOrientations().size()){
+                                    case 1 ->{
+                                        ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    case 2 ->{
+                                        ImageView imageView2;
+                                        if(conveyorBelt.getIsOnBoard().equals("Start A")) {
+                                            imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
+                                        }else{
+                                            imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
+                                        }
+                                        imageGroup.getChildren().add(imageView2);
+                                    }
+                                    /*case 3 ->{
+                                        ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
+                                        imageGroup.getChildren().add(imageView2);
+                                    }*/
+                                }
+
+                            }
+
+                          /*  if (conveyorBelt.getOrientations().size() == 1 || conveyorBelt.getOrientations().size() == 2) {
                                 if (conveyorBelt.getSpeed() == 2) {
                                     ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                     imageGroup.getChildren().add(imageView2);
@@ -338,7 +307,7 @@ public class MapViewModel implements Initializable {
 
                                 }
 
-                            }
+                            }*/
 
                         }
 
@@ -419,5 +388,53 @@ public class MapViewModel implements Initializable {
             }
         }
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        clientModel.getClientGameModel().setStartingPoint(false);
+        if (evt.getPropertyName().equals("startingPoint")) {
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                    clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("queueMove")) {
+            clientModel.getClientGameModel().setQueueMove(false);
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
+                    //nullpointer hier. warum=
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                    clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
+                    clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("queueTurning")) {
+            clientModel.getClientGameModel().setQueueTurning(false);
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
+                    //TODO check NullPointerException here
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    turnRobot(playerID, entry.getValue());
+                    //TODO: wo muss ich die orientation ändern in ClientGameModel?
+                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                }
+            });
+        }
+    }
+
+   /* private void handleGreenBelt() {
+        switch (conveyorBelt.getOrientations().size())
+    }
+
+    private void handleBlueBelt(){
+
+    }*/
 }
 
