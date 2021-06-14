@@ -65,21 +65,21 @@ public class Game {
     private int currentRound;
     private int currentRegister;
     private boolean activePhaseOn = false;
-    private boolean timerOn = false;
+    private volatile boolean timerOn = false;
     private Comparator<Player> comparator = new Helper(this);
 
-    private Game () {
+    private Game() {
 
     }
 
-    public static Game getInstance () {
+    public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
         }
         return instance;
     }
 
-    public Game (Server server) {
+    public Game(Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
         availableMaps.add("DeathTrap");
@@ -89,7 +89,7 @@ public class Game {
     }
 
 
-    public void startGame (ArrayList<Player> players) throws IOException {
+    public void startGame(ArrayList<Player> players) throws IOException {
         //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -125,7 +125,7 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public ArrayList<Integer> tooLateClients () {
+    public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
             if (!player.isRegisterFull()) {
@@ -135,7 +135,7 @@ public class Game {
         return tooLateClients;
     }
 
-    public int nextPlayerID () {
+    public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         if (playerList.size() - 1 == currentIndex) {
             return -1;
@@ -143,12 +143,12 @@ public class Game {
         return playerList.get(currentIndex + 1).getPlayerID();
     }
 
-    public void informAboutActivePhase () {
+    public void informAboutActivePhase() {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
-    public void informAboutCurrentPlayer () {
+    public void informAboutCurrentPlayer() {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
@@ -164,13 +164,13 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers (JSONMessage jsonMessage) {
+    public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (Player player : playerList) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
         }
     }
 
-    public void selectMap (String mapName) throws IOException {
+    public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -186,7 +186,7 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
-    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
+    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
@@ -288,42 +288,42 @@ public class Game {
 
      */
 
-    public void activateBlueBelts () {
+    public void activateBlueBelts() {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                for (Robot robot : getRobotsOnFields(position)) {
+                for (Player player : getRobotsOnFieldsOwner(position)) {
                     //first move on the belt
-                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
 
                     //second move: need to find new position and new orientation first
-                    double xRobotPos = robot.getxPosition();
-                    double yRobotPos = robot.getyPosition();
+                    double xRobotPos = player.getRobot().getxPosition();
+                    double yRobotPos = player.getRobot().getyPosition();
                     Point2D newPos = new Point2D(xRobotPos, yRobotPos);
                     String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                    moveRobot(robot, newOrientation, 1);
+                    moveRobot(player.getRobot(), newOrientation, 1);
                 }
             }
         }
     }
 
-    public void activateGreenBelts () {
+    public void activateGreenBelts() {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("green")) {
-                for (Robot robot : getRobotsOnFields(position)) {
-                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                for (Player player : getRobotsOnFieldsOwner(position)) {
+                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                 }
             }
         }
     }
 
-    public void activatePushPanels () {
+    public void activatePushPanels() {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
                         pushPanelMap.get(position).getRegisters().contains(3) ||
                         pushPanelMap.get(position).getRegisters().contains(5)) {
-                    for (Robot robot : getRobotsOnFields(position)) {
-                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                        moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
             }
@@ -331,27 +331,48 @@ public class Game {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(2) ||
                         pushPanelMap.get(position).getRegisters().contains(4)) {
-                    for (Robot robot : getRobotsOnFields(position)) {
-                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                        moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
             }
         }
     }
 
-    public void activateGears () {
+    public void activateGears() {
         for (Point2D position : gearMap.keySet()) {
-            for (Robot robot : getRobotsOnFields(position)) {
+            for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
-                    changeOrientation(robot, "left");
+                    changeOrientation(player.getRobot(), "left");
                 } else if (gearMap.get(position).getOrientations().get(0).equals("clockwise")) {
-                    changeOrientation(robot, "right");
+                    changeOrientation(player.getRobot(), "right");
                 }
             }
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+    public void activateWallLasers() {
+        for (Point2D position : laserMap.keySet()){
+            for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)){
+                for(Player player : getRobotsOnFieldsOwner(beamPosition)){
+                    for(int i = 0; i < laserMap.get(position).getCount(); i++) {
+
+                        //TODO: check laserPath
+                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
+                }
+            }
+        }
+    }
+
+    public void activateRobotLasers() {
+        for(Player player : playerList){
+
+        }
+    }
+
+    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -364,9 +385,22 @@ public class Game {
         return robotsOnFields;
     }
 
+    public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
+        ArrayList<Player> robotsOwner = new ArrayList<>();
+
+        for (Player player : playerList) {
+            if (player.getRobot().getxPosition() == (int) position.getX() &&
+                    player.getRobot().getyPosition() == (int) position.getY()) {
+                robotsOwner.add(player);
+            }
+        }
+
+        return robotsOwner;
+    }
+
 
     //TODO messageBodies verwenden
-    public void activateCardEffect (String card) {
+    public void activateCardEffect(String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -486,6 +520,28 @@ public class Game {
         }
     }
 
+    //TODO take two Spam cards -> in discardDeck
+    //     cancel programming
+    //     discard registerDeck
+    //     discard handDeck
+    //     place robot on reboot token, orientation up
+    //     place robot in the its startingPoint (rebooting from start board)
+    //     if a robot already on the reboot token -> push him up
+    //     if there's a wall and another robot can't be pushed, push it in the next free field
+    public void rebootRobot() {
+        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        for (int i = 0; i < 2; i++) {
+            playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+            deckSpam.removeTopCard();
+        }
+        playerList.get(indexCurrentPlayer).discardRegisterCards();
+        playerList.get(indexCurrentPlayer).discardHandCards();
+        if (restartPointMap == null) {
+
+        }
+
+    }
+
     public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
@@ -527,7 +583,7 @@ public class Game {
         return playersInRadius;
     }
 
-    public void moveRobot (Robot robot, String orientation, int movement) {
+    public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         switch (orientation) {
@@ -535,6 +591,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("TOP x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("TOP " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                             switch (element.getType()) {
@@ -549,6 +607,7 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
+                                //TODO: case "Pit" ->...
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setyPosition(robotYPosition - 1);
@@ -566,6 +625,8 @@ public class Game {
                     //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("BOTTOM x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("BOTTOM " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                             switch (element.getType()) {
@@ -580,6 +641,7 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
+                                //TODO: case "Pit" ->...
                                 default -> {
 
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
@@ -597,6 +659,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("LEFT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("LEFT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -611,6 +675,7 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
+                                //TODO: case "Pit" ->...
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition - 1);
@@ -626,6 +691,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("RIGHT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("RIGHT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -639,7 +706,9 @@ public class Game {
                                 }
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
+                                    System.out.println("Found laser!");
                                 }
+                                //TODO: case "Pit" ->...
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition + 1);
@@ -655,7 +724,7 @@ public class Game {
         }
     }
 
-    private boolean canRobotMove (int robotXPosition, int robotYPosition, String orientation) {
+    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
 
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
@@ -671,7 +740,7 @@ public class Game {
         return canPass;
     }
 
-    public void changeOrientation (Robot robot, String direction) {
+    public void changeOrientation(Robot robot, String direction) {
         switch (robot.getOrientation()) {
             case "top" -> {
                 switch (direction) {
@@ -731,7 +800,7 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
@@ -815,7 +884,7 @@ public class Game {
 
     //TODO find next wall with laser
 
-    public void startProgrammingPhase () {
+    public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
@@ -831,7 +900,7 @@ public class Game {
         }
     }
 
-    public boolean valideStartingPoint (int x, int y) {
+    public boolean valideStartingPoint(int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -849,7 +918,7 @@ public class Game {
         }
     }
 
-    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
             map.get(x).get(y).remove(element);
@@ -864,7 +933,7 @@ public class Game {
     //TODO activateCard() method with switch
     //     check discard consistency
 
-    public void setActivePhase (int activePhase) {
+    public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
@@ -878,14 +947,14 @@ public class Game {
     }
 
     //TODO change get(0)
-    public void startActivationPhase () {
+    public void startActivationPhase() {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
     }
 
-    public String getInverseOrientation (String orientation) {
+    public String getInverseOrientation(String orientation) {
         String inverseOrientation;
         switch (orientation) {
             case "top" -> inverseOrientation = "bottom";
@@ -897,7 +966,7 @@ public class Game {
         return inverseOrientation;
     }
 
-    public void sendCurrentCards (int register) {
+    public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
             ArrayList<Object> array1 = new ArrayList<>();
@@ -911,19 +980,19 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public int getActivePhase () {
+    public int getActivePhase() {
         return activePhase;
     }
 
     public static class Helper implements java.util.Comparator<Player> {
         private Game game;
 
-        private Helper (Game game) {
+        private Helper(Game game) {
             this.game = game;
         }
 
         @Override
-        public int compare (Player o1, Player o2) {
+        public int compare(Player o1, Player o2) {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
@@ -950,15 +1019,15 @@ public class Game {
         }
     }
 
-    public void setGameTimer (GameTimer gameTimer) {
+    public void setGameTimer(GameTimer gameTimer) {
         this.gameTimer = gameTimer;
     }
 
-    public int getCurrentRegister () {
+    public int getCurrentRegister() {
         return currentRegister;
     }
 
-    public void setCurrentRegister (int currentRegister) {
+    public void setCurrentRegister(int currentRegister) {
         this.currentRegister = currentRegister;
     }
 

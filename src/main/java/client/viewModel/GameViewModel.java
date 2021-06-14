@@ -113,15 +113,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             yourRobot.setImage(yourRobot());
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
-        //TODO BINDINGS
-        clientGameModel.actualRegisterPropertyProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                Platform.runLater(() -> {
-                    dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegisterProperty()));
-                });
-            }
-        });
 
       /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -133,45 +124,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         });
 
 */
-
-//        clientGameModel.getProgrammingPhaseProperty().addListener(new ChangeListener<Boolean>() {
-//            //TODO:Boolean Checkk dass es auf True gesetzt ist
-//            @Override
-//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-//
-//                Platform.runLater(() -> {
-//                    clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
-//                        @Override
-//                        public void onChanged(Change change) {
-//                            regToCard.put(0, null);
-//                            regToCard.put(1, null);
-//                            regToCard.put(2, null);
-//                            regToCard.put(3, null);
-//                            regToCard.put(4, null);
-//                            for (ImageView register : registers) {
-//                                register.setImage(null);
-//                            }
-//                            cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
-//                                    card_6, card_7, card_8);
-//                            Platform.runLater(() -> {
-//                                try {
-//                                    for (int j = 0; j < cards.size(); j++) {
-//                                        cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
-//                                        cards.get(j).setImage(loadImage(cardName));
-//                                        cards.get(j).setId(Integer.toString(j));
-//                                    }
-//                                } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            });
-//                        }
-//                    });
-//                    showPopup("Programming Phase has begin");
-//                    playerInfo.setText("please choose your Programming Cards");
-//
-//                });
-//            }
-//        });
     }
 
     private void showPopup(String popupText) {
@@ -387,6 +339,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
                 showPopup("Programming Phase has begin");
                 playerInfo.setText("please choose your Programming Cards");
+            });
+        }
+        if (evt.getPropertyName().equals("currentRegister")) {
+            Platform.runLater(() -> {
+                dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegister()));
             });
         }
     }
