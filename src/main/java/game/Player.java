@@ -225,4 +225,5 @@ public class Player {
             this.energy -= amount;
         }
     }
+
 }
