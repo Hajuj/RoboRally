@@ -1,6 +1,7 @@
 package client.model;
-
+import client.viewModel.MapViewModel;
 import game.Element;
+import game.Game;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
@@ -8,6 +9,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import game.boardelements.*;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -23,12 +26,16 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class ClientGameModel {
 
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
+    private static Game game = Game.getInstance();
 
     protected PropertyChangeSupport propertyChangeSupport;
 
@@ -37,6 +44,8 @@ public class ClientGameModel {
 
     private ArrayList<String> cardsInHand = new ArrayList();
     private boolean handCards = false;
+    private String lateCards;
+
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
@@ -48,6 +57,12 @@ public class ClientGameModel {
 
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
+    private ObservableMap<Robot, String> turningQueueObservable = FXCollections.observableMap(turningQueue);
+
+
+    private BooleanProperty canMove = new SimpleBooleanProperty(false);
+    private BooleanProperty animType = new SimpleBooleanProperty(false);
+
 
     private boolean programmingPhase = false;
 
@@ -68,6 +83,11 @@ public class ClientGameModel {
     private LinkedHashMap<Point2D, RestartPoint> restartPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, StartPoint> startPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, Wall> wallMap = new LinkedHashMap<>();
+
+    private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
+    private boolean currentPlayer;
 
 
     //Singleton Zeug
@@ -90,11 +110,47 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+    public void setProgrammingPhase (boolean programmingPhase) {
+        boolean progPhase = this.programmingPhase;
+        this.programmingPhase = progPhase;
+        if (this.programmingPhase) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", progPhase, true);
+        }
+
+    }
 
 
     public void chooseMap (String mapName) {
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
         clientModel.sendMessage(jsonMessage);
+    }
+
+    public void setanimationType (String animationType){
+        switch (animationType){
+            /*case "BlueConveyorBelt" ->{
+                extractData(conveyorBeltMap);
+                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
+                    Point2D position =entry.getKey();
+                    ConveyorBelt belt =entry.getValue();
+
+                }
+            }*/
+            case "WallShooting" -> {
+                animType.set(true);
+            }
+        }
+
+    }
+    public void extractData(LinkedHashMap elementMap){
+
+    }
+    public BooleanProperty getanimationType(){
+        return animType;
+    }
+
+    public ArrayList<Point2D>  getLaserPath( Point2D laserPosition, Laser laser){
+        return game.getLaserPath(laser,laserPosition);
+
     }
 
 
@@ -118,6 +174,7 @@ public class ClientGameModel {
                             ConveyorBelt conveyorBelt = new ConveyorBelt(element.getType(), element.getIsOnBoard(),
                                     element.getSpeed(), element.getOrientations());
                             conveyorBeltMap.put(new Point2D(x, y), conveyorBelt);
+
                         }
                         case "CheckPoint" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -180,25 +237,28 @@ public class ClientGameModel {
     }
 
     public void setActualPlayerID (int actualPlayerID) {
+        int currentPlayer = this.actualPlayerID;
         this.actualPlayerID = actualPlayerID;
+        propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
+
     }
 
     public int getActualPhase () {
         return actualPhase;
     }
 
-    public void setActualPhase (int actualPhase) {
+ /*   public void setActualPhase (int actualPhase) {
         this.actualPhase = actualPhase;
 
-    }
+    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
 
-    public void setProgrammingPhase(boolean programmingPhase) {
+    /*public void setProgrammingPhase(boolean programmingPhase) {
         this.programmingPhase = programmingPhase;
-    }
+    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -260,6 +320,8 @@ public class ClientGameModel {
         }
     }
 
+
+
     public int getValueActualRegister() {
         return actualRegister.get();
     }
@@ -297,6 +359,11 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
+/*    public void setLateCard(String card) {
+        this.lateCard = card;
+    }*/
+
+
 
     public void setHandCards(boolean handCards) {
         boolean oldHandCards = this.handCards;
@@ -304,6 +371,20 @@ public class ClientGameModel {
         if (this.handCards) {
             propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
         }
+    }
+
+    public void setActualPhase(int phase){
+        System.out.println("here ist SETACUTALPHASE");
+        int currentPhase = this.actualPhase;
+        this.actualPhase=currentPhase;
+        if (this.actualPhase == 2) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
+        }
+        if(this.actualPhase==3){
+            propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
+
+        }
+
     }
 
     public HashMap<Robot, Point2D> getRobotMap () {
@@ -314,6 +395,17 @@ public class ClientGameModel {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
     }
+/*
+    public int getActualRegister() {
+        return actualRegister;
+    }*/
+/*
+    public void setActualRegister(int actualRegister) {
+        int currentRegister=this.actualRegister;
+        this.actualRegister = actualRegister;
+        propertyChangeSupport.firePropertyChange("ActualRegister", currentRegister, actualRegister);
+        //this.actualRegisterPropertyProperty().setValue(actualRegister);
+    }*/
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
         return startingPointQueue;
@@ -338,4 +430,23 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("queueMove", oldQueueMove, true);
         }
     }
+
+//Animation Active BooleanWerte
+    public void activateBlueBeltAnime(boolean b) {
+        this.blueBeltAnimeProperty.set(b);
+    }
+
+    public SimpleBooleanProperty blueBeltAnimePropertyProperty() {
+        return blueBeltAnimeProperty;
+    }
+
+    public void switchPlayer(boolean currentPlayer) {
+        boolean oldPlayer = this.currentPlayer;
+        this.currentPlayer = currentPlayer;
+
+        propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
+
+    }
+
+
 }

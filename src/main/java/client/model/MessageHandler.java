@@ -171,6 +171,7 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
     }
 
@@ -254,6 +255,7 @@ public class MessageHandler {
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
         for (String card : cards) {
+            //clientModel.getClientGameModel().setLateCard(card);
             clientModel.receiveMessage("Your new Card is " + card);
         }
     }
@@ -332,11 +334,12 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-                //animation für BlueConveyorBelt
+
+                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
+                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
                 break;
             }
             case "GreenConveyorBelt": {
-                //animation für GreenConveyorBelt
                 break;
             }
             case "PushPanel": {
@@ -356,6 +359,7 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
+                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
@@ -364,6 +368,7 @@ public class MessageHandler {
                 break;
             }
         }
+
     }
 
     public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
