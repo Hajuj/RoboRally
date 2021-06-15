@@ -212,7 +212,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
         if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
-                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
+                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_4.getId())) {
             this.cardName = "Null";
             int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
             regToCard.replace(reg, null);
@@ -253,7 +253,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void handledropped(DragEvent dragEvent) {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
-
+        //TODO 2 Karten auf einem Register
+        //TODO TargetId nehemn und überprüfen
         this.register = target.getId();
         if (target.getImage() != null){
             returnSource.setImage(target.getImage());
@@ -327,6 +328,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("handCards")) {
+            clientGameModel.setHandCards(false);
+            System.out.println("HALLO????? THERE????");
+            regToCard.put(0, null);
+            regToCard.put(1, null);
+            regToCard.put(2, null);
+            regToCard.put(3, null);
+            regToCard.put(4, null);
+            for (ImageView register : registers) {
+                register.setImage(null);
+            }
             cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8);
             Platform.runLater(() -> {
@@ -347,17 +358,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
-            clientGameModel.setHandCards(false);
-            System.out.println("HALLO????? THERE????");
-            regToCard.put(0, null);
-            regToCard.put(1, null);
-            regToCard.put(2, null);
-            regToCard.put(3, null);
-            regToCard.put(4, null);
-            for (ImageView register : registers) {
-                register.setImage(null);
-            }
         }
+    }
+}
+
+
+
 
 
     /*    if (evt.getPropertyName().equals("yourTurn")){
@@ -370,13 +376,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             playerInfo.setText(null);
 
-        }*/
-        if (evt.getPropertyName().equals("currentRegister")) {
-            Platform.runLater(() -> {
-                dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
-            });
         }
     }
-}
+        if (evt.getPropertyName().equals("ActualRegister")){
+            int currentRegister = (int) evt.getNewValue();
+            for (ImageView register: registers) {
+                if (String.valueOf(currentRegister).equals(String.valueOf(register.getId().charAt(4)))) {
+                    register.setDisable(true);
+                }
+            }
+
+        }*/
+
 
 

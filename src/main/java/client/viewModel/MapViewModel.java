@@ -65,12 +65,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
 
         // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
-        clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
+  /*      clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 handleLaserAnime();
             }
-        });
+        });*/
 //        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
 //            @Override
 //            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
@@ -437,7 +437,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     handleMyLife();
-                    handleLaserAnime();
+                   // handleLaserAnime();
 
 
 
