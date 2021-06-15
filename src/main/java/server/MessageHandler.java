@@ -223,8 +223,8 @@ public class MessageHandler {
     }
 
     public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
-        logger.info(ANSI_CYAN + "SelectedCard Message received." + ANSI_RESET);
         String card = selectedCardBody.getCard();
+        logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
         System.out.println("HEY I GOT SELECTED");
 
@@ -249,6 +249,7 @@ public class MessageHandler {
             } else {
                 Card currentCard = currentPlayer.removeSelectedCard(card);
                 currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
+                System.out.println(currentCard);
 
                 JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
                 server.getCurrentGame().sendToAllPlayers(addCard);
@@ -259,16 +260,23 @@ public class MessageHandler {
                     server.getCurrentGame().sendToAllPlayers(selectionFinished);
                 }
 
-                if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
-                    server.getCurrentGame().getGameTimer().startTimer();
-                } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().isTimerOn()) {
-                    if (server.getCurrentGame().tooLateClients().size() == 0) {
-                        server.getCurrentGame().getGameTimer().timerEnded();
+                synchronized (server.getCurrentGame().getGameTimer()) {
+                    if (currentPlayer.isRegisterFull() && !server.getCurrentGame().getTimerOn()) {
+                        server.getCurrentGame().getGameTimer().startTimer();
+                    } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().getTimerOn()) {
+                        if (server.getCurrentGame().tooLateClients().size() == 0) {
+                            server.getCurrentGame().getGameTimer().timerEnded();
+                            System.out.println("PLAYER STOPPED TIME: " + clientHandler.getPlayer_id());
+                            for (Player player : server.getCurrentGame().getPlayerList()) {
+                                System.out.println("DECK: " + player.getDeckRegister().getDeck());
+                            }
+                        }
                     }
                 }
             }
         }
     }
+
 
     public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);

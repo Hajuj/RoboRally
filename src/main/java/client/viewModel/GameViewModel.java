@@ -268,7 +268,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void playCard () {
-        int currentRegister = clientGameModel.getActualRegister();
+        int currentRegister = clientGameModel.getValueActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         try {
             //TODO Lilas hier ist ein Nullpointerexception
@@ -343,7 +343,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
-                dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegister()));
+                dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
         }
     }

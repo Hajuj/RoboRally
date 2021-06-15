@@ -23,6 +23,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientGameModel {
 
@@ -50,14 +51,7 @@ public class ClientGameModel {
 
     private boolean programmingPhase = false;
 
-    //TODO: Observer hier
-    //      these two attributes are never used!
-    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
-    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
-
-    //TODO:mut dem button verbinden
-    private int currentRegister;
-    private int actualRegister = -1;
+    private AtomicInteger actualRegister = new AtomicInteger(-1);
 
     private volatile int actualPlayerID;
     private volatile int actualPhase;
@@ -185,32 +179,6 @@ public class ClientGameModel {
         }
     }
 
-
-
-    public boolean getCanSetStartingPoint () {
-        return canSetStartingPoint.get();
-    }
-
-    public BooleanProperty canSetStartingPointProperty () {
-        return canSetStartingPoint;
-    }
-
-    public void setCanSetStartingPoint (boolean canSetStartingPoint) {
-        this.canSetStartingPoint.set(canSetStartingPoint);
-    }
-
-    public int getActualPlayerID () {
-        return actualPlayerID;
-    }
-
-    public IntegerProperty actualPlayerTurnProperty() {
-        return actualPlayerTurn;
-    }
-
-    public void setActualPlayerTurn(int actualPlayerTurn) {
-        this.actualPlayerTurn.set(actualPlayerTurn);
-    }
-
     public void setActualPlayerID (int actualPlayerID) {
         this.actualPlayerID = actualPlayerID;
     }
@@ -292,14 +260,18 @@ public class ClientGameModel {
         }
     }
 
-    public int getCurrentRegister() {
-        return currentRegister;
+    public int getValueActualRegister() {
+        return actualRegister.get();
     }
 
-    public void setCurrentRegister(int currentRegister) {
-        int oldCurrentRegister = this.currentRegister;
-        this.currentRegister = currentRegister;
-        propertyChangeSupport.firePropertyChange("currentRegister", oldCurrentRegister, currentRegister);
+    public void setActualRegister(int value) {
+        while (true) {
+            int existingValue = getValueActualRegister();
+            if (actualRegister.compareAndSet(existingValue, value)) {
+                propertyChangeSupport.firePropertyChange("currentRegister", existingValue, value);
+                return;
+            }
+        }
     }
 
     public Player getPlayer () {
@@ -341,15 +313,6 @@ public class ClientGameModel {
     public void sendSelectedCards (int registerNum, String cardName) {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
-    }
-
-    public int getActualRegister() {
-        return actualRegister;
-    }
-
-    public void setActualRegister(int actualRegister) {
-        this.actualRegister = actualRegister;
-        this.setCurrentRegister(actualRegister);
     }
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
