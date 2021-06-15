@@ -8,6 +8,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -106,6 +108,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     ImageView returnSource;
     private BooleanProperty laserShootProperty ;
 
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -129,6 +133,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         });
 
 */
+
     }
 
     private void showPopup(String popupText) {
@@ -179,8 +184,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public Image loadImage(String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
-        path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
-        image = new Image(path);
+            try {
+                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            image = new Image(path);
         return image;
 
     }
@@ -244,8 +253,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void handledropped(DragEvent dragEvent) {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
-        //TODO 2 Karten auf einem Register
-        //TODO TargetId nehemn und überprüfen
+
         this.register = target.getId();
         if (target.getImage() != null){
             returnSource.setImage(target.getImage());
@@ -319,16 +327,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("handCards")) {
-            clientGameModel.setHandCards(false);
-            System.out.println("HALLO????? THERE????");
-            regToCard.put(0, null);
-            regToCard.put(1, null);
-            regToCard.put(2, null);
-            regToCard.put(3, null);
-            regToCard.put(4, null);
-            for (ImageView register : registers) {
-                register.setImage(null);
-            }
             cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8);
             Platform.runLater(() -> {
@@ -349,7 +347,36 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
+            clientGameModel.setHandCards(false);
+            System.out.println("HALLO????? THERE????");
+            regToCard.put(0, null);
+            regToCard.put(1, null);
+            regToCard.put(2, null);
+            regToCard.put(3, null);
+            regToCard.put(4, null);
+            for (ImageView register : registers) {
+                register.setImage(null);
+            }
+        }
+
+
+    /*    if (evt.getPropertyName().equals("yourTurn")){
+            playerInfo.setText("it's Your turn");
+            yourRobot.setEffect(new DropShadow(15.0, Color.GREEN));
+            try {
+                wait(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playerInfo.setText(null);
+
+        }*/
+        if (evt.getPropertyName().equals("currentRegister")) {
+            Platform.runLater(() -> {
+                dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
+            });
         }
     }
-
 }
+
+

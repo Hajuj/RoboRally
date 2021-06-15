@@ -52,7 +52,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         clientModel.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
 
@@ -64,7 +64,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             ioException.printStackTrace();
         }
 
-       // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
+        // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
         clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -88,8 +88,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     private void startAnimation(String type) {
         Double toX = null;
         Double toY = null;
-        switch (type){
-            case "BlueBelt"-> {
+        switch (type) {
+            case "BlueBelt" -> {
 
             }
 
@@ -108,7 +108,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     //startings points
-    public void setRobot (int playerID, int x, int y) {
+    public void setRobot(int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
         Image image;
@@ -140,15 +140,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-
-
-    public File findPath (String fileName) {
+    public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
 
-    public ImageView loadImage (String element, String orientations) throws FileNotFoundException {
+    public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
@@ -158,7 +156,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         switch (orientations) {
-            case "top", "bottom,top,left", "left,bottom"-> {
+            case "top", "bottom,top,left", "left,bottom" -> {
                 imageView.setRotate(0);
             }
             case "right", "right,left", "left,right,bottom", "top,left" -> {
@@ -170,15 +168,15 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             case "bottom", "top,bottom,left", "right,top" -> {
                 imageView.setRotate(180);
             }
-            case "left,top,right","bottom,left" -> {
+            case "left,top,right", "bottom,left" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(90);
             }
-            case "bottom,left,top", "right,bottom"-> {
+            case "bottom,left,top", "right,bottom" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(0);
             }
-            case "top,right,bottom" , "left,top"-> {
+            case "top,right,bottom", "left,top" -> {
                 imageView.setScaleX(-1);
                 imageView.setRotate(180);
             }
@@ -196,7 +194,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void clickGrid (MouseEvent event) {
+    public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
             Integer colIndex = GridPane.getColumnIndex(clickedNode.getParent());
@@ -206,7 +204,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void turnRobot (int playerID, String rotation) {
+    public void turnRobot(int playerID, String rotation) {
         Robot robot = null;
         for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
@@ -231,7 +229,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void moveRobot (int playerID, int x, int y) {
+    public void moveRobot(int playerID, int x, int y) {
         Robot robot = null;
         for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
             if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
@@ -254,7 +252,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
+    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
 
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
@@ -276,7 +274,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                             Element element = map.get(x).get(y).get(i);
                             CheckPoint checkPoint = new CheckPoint(element.getType(), element.getIsOnBoard(), element.getCount());
 
-                            ImageView imageView2 = loadImage("victory-counter"+checkPoint.getCount(), "null");
+                            ImageView imageView2 = loadImage("victory-counter" + checkPoint.getCount(), "null");
                             imageGroup.getChildren().add(imageView2);
 
                         }
@@ -286,35 +284,34 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                     element.getSpeed(), element.getOrientations());
 
 
-
-                            if (conveyorBelt.getSpeed()==2){
-                                switch (conveyorBelt.getOrientations().size()){
-                                    case 1 ->{
+                            if (conveyorBelt.getSpeed() == 2) {
+                                switch (conveyorBelt.getOrientations().size()) {
+                                    case 1 -> {
                                         ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 2 ->{
+                                    case 2 -> {
                                         ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 3 ->{
+                                    case 3 -> {
                                         ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                 }
                             }
 
-                            if(conveyorBelt.getSpeed()==1){
-                                switch (conveyorBelt.getOrientations().size()){
-                                    case 1 ->{
+                            if (conveyorBelt.getSpeed() == 1) {
+                                switch (conveyorBelt.getOrientations().size()) {
+                                    case 1 -> {
                                         ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 2 ->{
+                                    case 2 -> {
                                         ImageView imageView2;
-                                        if(conveyorBelt.getIsOnBoard().equals("Start A")) {
+                                        if (conveyorBelt.getIsOnBoard().equals("Start A")) {
                                             imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        }else{
+                                        } else {
                                             imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
                                         }
                                         imageGroup.getChildren().add(imageView2);
@@ -332,8 +329,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                             EnergySpace energySpace = new EnergySpace(element.getType(), element.getIsOnBoard(), element.getCount());
                             ImageView imageView2;
                             if (energySpace.getIsOnBoard().equals("5B")) {
-                                 imageView2 = loadImage("RedEnergySpace", "null");
-                            }else{
+                                imageView2 = loadImage("RedEnergySpace", "null");
+                            } else {
                                 imageView2 = loadImage("RedEnergySpace", "right");
                             }
                             imageGroup.getChildren().add(imageView2);
@@ -342,15 +339,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                         case "Gear" -> {
                             Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
-                                /*ImageView imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
-                        imageView2.setFitHeight(40);
-                        imageView2.setFitWidth(40);*/
                             ImageView imageView2 = null;
-                            String gearOrient= String.join(",", gear.getOrientations());
+                            String gearOrient = String.join(",", gear.getOrientations());
                             if (gearOrient.equals("clockwise")) {
-                                 imageView2 = loadImage("GreenGear", String.join(",", gear.getOrientations()));
+                                imageView2 = loadImage("GreenGear", String.join(",", gear.getOrientations()));
                             } else if (gearOrient.equals("counterclockwise")) {
-                                 imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
+                                imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
                             }
                             imageGroup.getChildren().add(imageView2);
                         }
@@ -361,7 +355,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                             Element element = map.get(x).get(y).get(i);
                             Laser laser = new Laser(element.getType(), element.getIsOnBoard(),
                                     element.getOrientations(), element.getCount());
-                            ImageView imageView2 = loadImage("Laser"+laser.getCount(), String.join(",", laser.getOrientations()));
+                            ImageView imageView2 = loadImage("Laser" + laser.getCount(), String.join(",", laser.getOrientations()));
                             imageGroup.getChildren().add(imageView2);
                         }
                         case "Pit" -> {
@@ -378,9 +372,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                     element.getRegisters());
                             String pushPanelType = String.valueOf(pushPanel.getRegisters());
                             ImageView imageView2;
-                            if (pushPanelType.equals("[1, 3, 5]")){
-                                 imageView2 = loadImage("PushPanel135", String.join(",", pushPanel.getOrientations()));
-                            }else {
+                            if (pushPanelType.equals("[1, 3, 5]")) {
+                                imageView2 = loadImage("PushPanel135", String.join(",", pushPanel.getOrientations()));
+                            } else {
                                 imageView2 = loadImage("PushPanel24", String.join(",", pushPanel.getOrientations()));
                             }
                             imageGroup.getChildren().add(imageView2);
@@ -424,7 +418,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                 fieldMap.put(new Point2D(x, y), imageGroup);
                 mapGrid.setConstraints(imageGroup, x, y);
-               // mapGrid.setAlignment(Pos.CENTER);
+                // mapGrid.setAlignment(Pos.CENTER);
                 mapGrid.getChildren().add(imageGroup);
                 /*GridPane.setHalignment(imageGroup, HPos.CENTER);
                 GridPane.setValignment(imageGroup, VPos.CENTER);*/
@@ -443,6 +437,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     handleMyLife();
+                    handleLaserAnime();
+
+
+
                 }
             });
         }
@@ -472,7 +470,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             });
         }
     }
-    public void handleAnimation (String type) {
+
+    public void handleAnimation(String type) {
         double ToX = 0;
         double ToY = 0;
         double move;
@@ -514,37 +513,41 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
         }
     }
-        public void handleLaserAnime () {
-            FileInputStream input = null;
-            Image image;
-            try {
-                input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            image = new Image(input);
 
-            for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()){
-                Laser laser = entry.getValue();
-                ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(),laser);
+    public void handleLaserAnime() {
+        FileInputStream input = null;
+        Image image;
+        try {
+            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image = new Image(input);
 
-                TranslateTransition transition = new TranslateTransition();
-                transition.setDuration(Duration.INDEFINITE);
-                transition.setToX(laserPath.indexOf(0));
-                transition.setToY(laserPath.size());
-                Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-                ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-                laserBeam.setImage(image);
-                transition.setNode(laserBeam);
-                transition.play();
-            }
+        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
+            Laser laser = entry.getValue();
+            ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(), laser);
 
+            TranslateTransition transition = new TranslateTransition();
+            transition.setDuration(Duration.INDEFINITE);
+            transition.setToX(laserPath.indexOf(0));
+            transition.setToY(laserPath.size());
+            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
+
+            //Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
+            //ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+
+            laserBeam.setImage(image);
+            transition.setNode(laserBeam);
+            transition.play();
         }
 
-        //(Point2D laserPosition, Laser laser);
-       // Point2D laserPosition = null;
+    }
 
-        //hier Kriege ich den Laser Position x,y
+    //(Point2D laserPosition, Laser laser);
+    // Point2D laserPosition = null;
+
+    //hier Kriege ich den Laser Position x,y
        /* for (Point2D pos: clientGameModel.getLaserMap().keySet()  ) {
          laserPosition.add(pos);
 
@@ -561,22 +564,52 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         transition.play();*/
 
 
-
-
-    private void handleMyLife () {
+    private void handleMyLife() {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
             ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 1);
 
             RotateTransition rotateTransition = new RotateTransition(Duration.millis(1000), gear);
             rotateTransition.setByAngle(90);
+            mapGrid.setAlignment(Pos.CENTER);
+              gear.setScaleY(0.70);
+              gear.setScaleX(0.70);
+
+
+
+            gear.setPreserveRatio(true);
             rotateTransition.setCycleCount(Animation.INDEFINITE);
             rotateTransition.setInterpolator(Interpolator.LINEAR);
             rotateTransition.play();
 
         }
     }
-
-
 }
+   /* public void start(Stage primaryStage)
+    {
+        ImageView iv = new ImageView();
+        Image image = new Image("file:res/flowers.jpg");
+        iv.setImage(image);
+
+        FadeTransition ft = new FadeTransition();
+        ft.setNode(iv);
+        ft.setDuration(new Duration(2000));
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.setCycleCount(6);
+        ft.setAutoReverse(true);
+
+        iv.setOnMouseClicked(me -> ft.play());
+
+        Group root = new Group();
+        root.getChildren().add(iv);
+        Scene scene = new Scene(root, image.getWidth(), image.getHeight());
+
+        primaryStage.setTitle("FadeTransition Demo");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }*/
+
+
+
 
 

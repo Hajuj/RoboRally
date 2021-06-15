@@ -85,6 +85,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
+    private boolean currentPlayer;
 
 
     //Singleton Zeug
@@ -106,6 +107,14 @@ public class ClientGameModel {
     public void sendStartingPoint (int x, int y) {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
+    }
+    public void setProgrammingPhase (boolean programmingPhase) {
+        boolean progPhase = this.programmingPhase;
+        this.programmingPhase = progPhase;
+        if (this.programmingPhase) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", progPhase, true);
+        }
+
     }
 
 
@@ -138,7 +147,7 @@ public class ClientGameModel {
     }
 
     public ArrayList<Point2D>  getLaserPath( Point2D laserPosition, Laser laser){
-        return game.getLaserPath(laser, laserPosition);
+        return game.getLaserPath(laser,laserPosition);
 
     }
 
@@ -226,25 +235,28 @@ public class ClientGameModel {
     }
 
     public void setActualPlayerID (int actualPlayerID) {
+        int currentPlayer = this.actualPlayerID;
         this.actualPlayerID = actualPlayerID;
+        propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
+
     }
 
     public int getActualPhase () {
         return actualPhase;
     }
 
-    public void setActualPhase (int actualPhase) {
+ /*   public void setActualPhase (int actualPhase) {
         this.actualPhase = actualPhase;
 
-    }
+    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
 
-    public void setProgrammingPhase(boolean programmingPhase) {
+    /*public void setProgrammingPhase(boolean programmingPhase) {
         this.programmingPhase = programmingPhase;
-    }
+    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -306,6 +318,8 @@ public class ClientGameModel {
         }
     }
 
+
+
     public int getValueActualRegister() {
         return actualRegister.get();
     }
@@ -352,6 +366,20 @@ public class ClientGameModel {
         }
     }
 
+    public void setActualPhase(int phase){
+        System.out.println("here ist SETACUTALPHASE");
+        int currentPhase = this.actualPhase;
+        this.actualPhase=currentPhase;
+        if (this.actualPhase == 2) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
+        }
+        if(this.actualPhase==3){
+            propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
+
+        }
+
+    }
+
     public HashMap<Robot, Point2D> getRobotMap () {
         return robotMap;
     }
@@ -360,6 +388,17 @@ public class ClientGameModel {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
     }
+/*
+    public int getActualRegister() {
+        return actualRegister;
+    }*/
+/*
+    public void setActualRegister(int actualRegister) {
+        int currentRegister=this.actualRegister;
+        this.actualRegister = actualRegister;
+        propertyChangeSupport.firePropertyChange("ActualRegister", currentRegister, actualRegister);
+        //this.actualRegisterPropertyProperty().setValue(actualRegister);
+    }*/
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
         return startingPointQueue;
@@ -392,5 +431,13 @@ public class ClientGameModel {
 
     public SimpleBooleanProperty blueBeltAnimePropertyProperty() {
         return blueBeltAnimeProperty;
+    }
+
+    public void switchPlayer(boolean currentPlayer) {
+        boolean oldPlayer = this.currentPlayer;
+        this.currentPlayer = currentPlayer;
+
+        propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
+
     }
 }
