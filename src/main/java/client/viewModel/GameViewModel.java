@@ -2,33 +2,26 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
-import client.viewModel.MapViewModel;
 
 import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -106,9 +99,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     ObservableList<ImageView> registers;
     Dragboard dbImage = null;
     ImageView returnSource;
-    private BooleanProperty laserShootProperty ;
 
-    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
 
     @Override
@@ -149,7 +140,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         scaleTransition.play();
         StackPane root = new StackPane();
         root.getChildren().addAll(text);
-        Scene scene = new Scene(root, 250, 250);
+        Scene scene = new Scene(root, 200, 200);
         Stage not = new Stage();
         scene.setFill(Color.DARKGRAY);
         not.setTitle("Player Notification");
@@ -180,15 +171,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    public Image loadImage(String cardName) throws FileNotFoundException {
+    private Image loadImage (String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
-            try {
-                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            image = new Image(path);
+        path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
+        image = new Image(path);
         return image;
 
     }
@@ -211,14 +198,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
         if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
-                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_4.getId())) {
+                || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_0.getId())) {
             this.cardName = "Null";
             int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
             regToCard.replace(reg, null);
             collectingCards();
         } else {
             this.cardName = source.getId();
-            System.out.println(this.cardName);
         }
         event.consume();
         handleSource(source);
@@ -287,11 +273,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         try {
             //TODO Lilas hier ist ein Nullpointerexception
             String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
-            System.out.println(card);
-            System.out.println(currentRegister);
-            System.out.println(regToCard.get(currentRegister));
-            System.out.println(this.register);
-            System.out.println(cardName);
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
             e.printStackTrace();
@@ -367,32 +348,3 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 }
-
-
-
-
-
-    /*    if (evt.getPropertyName().equals("yourTurn")){
-            playerInfo.setText("it's Your turn");
-            yourRobot.setEffect(new DropShadow(15.0, Color.GREEN));
-            try {
-                wait(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            playerInfo.setText(null);
-
-        }
-    }
-        if (evt.getPropertyName().equals("ActualRegister")){
-            int currentRegister = (int) evt.getNewValue();
-            for (ImageView register: registers) {
-                if (String.valueOf(currentRegister).equals(String.valueOf(register.getId().charAt(4)))) {
-                    register.setDisable(true);
-                }
-            }
-
-        }*/
-
-
-

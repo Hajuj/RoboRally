@@ -213,7 +213,6 @@ public class ClientModel {
         if (this.gameOn) {
             propertyChangeSupport.firePropertyChange("gameOn", oldGameOn, true);
         }
-
     }
 
     public void setChatHistory(String chatHistory) {
@@ -221,7 +220,6 @@ public class ClientModel {
         this.chatHistory = chatHistory;
         propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
     }
-
 
     public String getChatHistory () {
         return chatHistory;
