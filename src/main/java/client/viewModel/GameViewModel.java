@@ -219,6 +219,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             collectingCards();
         } else {
             this.cardName = source.getId();
+            System.out.println(this.cardName);
         }
         event.consume();
         handleSource(source);
@@ -286,6 +287,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         try {
             //TODO Lilas hier ist ein Nullpointerexception
             String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
+            System.out.println(card);
+            System.out.println(currentRegister);
+            System.out.println(regToCard.get(currentRegister));
+            System.out.println(this.register);
+            System.out.println(cardName);
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
             e.printStackTrace();

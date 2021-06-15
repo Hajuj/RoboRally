@@ -44,6 +44,8 @@ public class ClientGameModel {
 
     private ArrayList<String> cardsInHand = new ArrayList();
     private boolean handCards = false;
+    private String lateCards;
+
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
@@ -357,6 +359,11 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
+/*    public void setLateCard(String card) {
+        this.lateCard = card;
+    }*/
+
+
 
     public void setHandCards(boolean handCards) {
         boolean oldHandCards = this.handCards;
@@ -440,4 +447,6 @@ public class ClientGameModel {
         propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
 
     }
+
+
 }
