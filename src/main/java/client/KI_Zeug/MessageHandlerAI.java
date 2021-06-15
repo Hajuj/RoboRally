@@ -1,15 +1,12 @@
 package client.KI_Zeug;
 
 import client.model.ClientModel;
-import client.model.MessageHandler;
 import json.protocol.*;
-import org.apache.log4j.Logger;
 
 import java.util.Map;
 
 public class MessageHandlerAI extends client.model.MessageHandler {
     private static SimpleAIModel simpleAIModel = SimpleAIModel.getInstance();
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
 
     @Override
@@ -76,7 +73,6 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     //wegen Timer Alert
     @Override
     public void handleTimerStarted (ClientModel clientModel, TimerStartedBody timerStartedBody) {
-        logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
         System.out.println("You are awesome AI Baby");
     }
 

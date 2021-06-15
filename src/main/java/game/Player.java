@@ -97,13 +97,13 @@ public class Player {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
         }
-        this.deckHand.getDeck().clear();
+        this.getDeckHand().getDeck().clear();
     }
 
     public void discardRegisterCards() {
         for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
-            this.deckRegister.getDeck().set(i, null);
+            this.getDeckRegister().getDeck().set(i, null);
         }
     }
 
@@ -228,5 +228,4 @@ public class Player {
             this.energy -= amount;
         }
     }
-
 }
