@@ -57,7 +57,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
             if (clientModel.getClientGameModel().getActualPhase() == 0) {
                 simpleAIModel.setStartingPointRoutine();
             } else if (clientModel.getClientGameModel().getActualPhase() == 3) {
-                simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getActualRegister());
+                simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getValueActualRegister());
             }
         }
     }
@@ -66,7 +66,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         for (int i = 0; i < 5; i++) {
-            simpleAIModel.getCardsInRegister().replace(i, null);
+            SimpleAIModel.getCardsInRegister().replace(i, null);
         }
         if (clientModel.getClientGameModel().getActualPhase() == 2) {
             simpleAIModel.chooseCardsRoutine();

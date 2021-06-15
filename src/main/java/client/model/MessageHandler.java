@@ -263,19 +263,19 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
-        if (clientModel.getClientGameModel().getActualRegister() != 4) {
-            clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getActualRegister() + 1);
-        } else {
-            clientModel.getClientGameModel().setActualRegister(0);
-        }
-        for (Object currentCard : currentCards) {
-            String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
-            String userNameDelimiter = ".0, card=";
-            String[] split = message.split(userNameDelimiter);
-            int playerID = Integer.parseInt(split[0]);
-            String card = split[1];
-            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card + " in register: " + (clientModel.getClientGameModel().getActualRegister() + 1));
-        }
+            if (clientModel.getClientGameModel().getValueActualRegister() != 4) {
+                clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getValueActualRegister() + 1);
+            } else {
+                clientModel.getClientGameModel().setActualRegister(0);
+            }
+            for (Object currentCard : currentCards) {
+                String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
+                String userNameDelimiter = ".0, card=";
+                String[] split = message.split(userNameDelimiter);
+                int playerID = Integer.parseInt(split[0]);
+                String card = split[1];
+                clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card + " in register: " + (clientModel.getClientGameModel().getValueActualRegister() + 1));
+            }
     }
 
     public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {

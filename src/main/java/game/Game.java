@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ilja Knis
@@ -63,23 +65,23 @@ public class Game {
     private int currentPlayer;
     private int activePhase;
     private int currentRound;
-    private int currentRegister;
+    private int currentRegister = 0;
     private boolean activePhaseOn = false;
-    private volatile boolean timerOn = false;
+    private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
 
-    private Game() {
+    private Game () {
 
     }
 
-    public static Game getInstance() {
+    public static Game getInstance () {
         if (instance == null) {
             instance = new Game();
         }
         return instance;
     }
 
-    public Game(Server server) {
+    public Game (Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
         availableMaps.add("DeathTrap");
@@ -89,7 +91,7 @@ public class Game {
     }
 
 
-    public void startGame(ArrayList<Player> players) throws IOException {
+    public void startGame (ArrayList<Player> players) throws IOException {
         //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -125,7 +127,7 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public ArrayList<Integer> tooLateClients() {
+    public ArrayList<Integer> tooLateClients () {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
             if (!player.isRegisterFull()) {
@@ -135,7 +137,7 @@ public class Game {
         return tooLateClients;
     }
 
-    public int nextPlayerID() {
+    public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         if (playerList.size() - 1 == currentIndex) {
             return -1;
@@ -143,12 +145,12 @@ public class Game {
         return playerList.get(currentIndex + 1).getPlayerID();
     }
 
-    public void informAboutActivePhase() {
+    public void informAboutActivePhase () {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
-    public void informAboutCurrentPlayer() {
+    public void informAboutCurrentPlayer () {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
@@ -164,13 +166,13 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers(JSONMessage jsonMessage) {
-        for (Player player : playerList) {
-            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (int i = 0; i < playerList.size(); i++) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
-    public void selectMap(String mapName) throws IOException {
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -186,7 +188,7 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
-    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
+    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
@@ -274,20 +276,6 @@ public class Game {
         }
     }
 
-    /*
-    Antenna priority;
-    Register 1:
-    List<Player> turnOrder;
-    for(int i = 0; i < playersList.size; i++){
-        turnOrder[i].getPlayer.activateCardEffect();
-    }
-    triggerBoardElements();
-        -> for(Element element : map.get(y).get(x))
-               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
-
-
-     */
-
     public void activateBlueBelts() {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("blue")) {
@@ -372,7 +360,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -400,7 +388,7 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(String card) {
+    public void activateCardEffect (String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -583,7 +571,7 @@ public class Game {
         return playersInRadius;
     }
 
-    public void moveRobot(Robot robot, String orientation, int movement) {
+    public void moveRobot (Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         switch (orientation) {
@@ -607,7 +595,12 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
-                                //TODO: case "Pit" ->...
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setyPosition(robotYPosition - 1);
@@ -641,7 +634,12 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
-                                //TODO: case "Pit" ->...
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
                                 default -> {
 
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
@@ -675,7 +673,12 @@ public class Game {
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
                                 }
-                                //TODO: case "Pit" ->...
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition - 1);
@@ -706,9 +709,13 @@ public class Game {
                                 }
                                 case "Laser" -> {
                                     //do nothing for now, relevant for later
-                                    System.out.println("Found laser!");
                                 }
-                                //TODO: case "Pit" ->...
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
                                 default -> {
                                     if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
                                         robot.setxPosition(robotXPosition + 1);
@@ -724,7 +731,7 @@ public class Game {
         }
     }
 
-    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
+    private boolean canRobotMove (int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
 
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
@@ -740,7 +747,7 @@ public class Game {
         return canPass;
     }
 
-    public void changeOrientation(Robot robot, String direction) {
+    public void changeOrientation (Robot robot, String direction) {
         switch (robot.getOrientation()) {
             case "top" -> {
                 switch (direction) {
@@ -800,7 +807,7 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
@@ -884,7 +891,7 @@ public class Game {
 
     //TODO find next wall with laser
 
-    public void startProgrammingPhase() {
+    public void startProgrammingPhase () {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
@@ -900,7 +907,7 @@ public class Game {
         }
     }
 
-    public boolean valideStartingPoint(int x, int y) {
+    public boolean valideStartingPoint (int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -918,7 +925,7 @@ public class Game {
         }
     }
 
-    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
             map.get(x).get(y).remove(element);
@@ -933,7 +940,7 @@ public class Game {
     //TODO activateCard() method with switch
     //     check discard consistency
 
-    public void setActivePhase(int activePhase) {
+    public void setActivePhase (int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
@@ -947,14 +954,14 @@ public class Game {
     }
 
     //TODO change get(0)
-    public void startActivationPhase() {
+    public void startActivationPhase () {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
     }
 
-    public String getInverseOrientation(String orientation) {
+    public String getInverseOrientation (String orientation) {
         String inverseOrientation;
         switch (orientation) {
             case "top" -> inverseOrientation = "bottom";
@@ -966,7 +973,7 @@ public class Game {
         return inverseOrientation;
     }
 
-    public void sendCurrentCards(int register) {
+    public void sendCurrentCards (int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
             ArrayList<Object> array1 = new ArrayList<>();
@@ -980,19 +987,19 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public int getActivePhase() {
+    public int getActivePhase () {
         return activePhase;
     }
 
     public static class Helper implements java.util.Comparator<Player> {
         private Game game;
 
-        private Helper(Game game) {
+        private Helper (Game game) {
             this.game = game;
         }
 
         @Override
-        public int compare(Player o1, Player o2) {
+        public int compare (Player o1, Player o2) {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
@@ -1019,15 +1026,11 @@ public class Game {
         }
     }
 
-    public void setGameTimer(GameTimer gameTimer) {
-        this.gameTimer = gameTimer;
-    }
-
-    public int getCurrentRegister() {
+    public Integer getCurrentRegister () {
         return currentRegister;
     }
 
-    public void setCurrentRegister(int currentRegister) {
+    public void setCurrentRegister (int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
@@ -1035,11 +1038,11 @@ public class Game {
         return gameTimer;
     }
 
-    public boolean isTimerOn () {
-        return timerOn;
+    public boolean getTimerOn() {
+        return timerOn.get();
     }
 
-    public void setTimerOn (boolean timerOn) {
+    public synchronized void setTimerOn(AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
@@ -1057,14 +1060,14 @@ public class Game {
 
     public void setNewRoundCounter () {
         this.roundCounter++;
-        System.out.println(roundCounter);
+        System.out.println(roundCounter + " THIS IS ROUND COUNTER");
     }
 
     public void setActivePhaseOn (boolean activePhaseOn) {
         this.activePhaseOn = activePhaseOn;
     }
 
-    public int getCurrentPlayer () {
+    public Integer getCurrentPlayer () {
         return currentPlayer;
     }
 
