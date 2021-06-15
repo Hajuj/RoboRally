@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ClientGameModel {
@@ -61,16 +62,10 @@ public class ClientGameModel {
     private BooleanProperty animType = new SimpleBooleanProperty(false);
 
 
-    //TODO: Observer hier
-    private BooleanProperty canSetStartingPoint = new SimpleBooleanProperty(false);
-    private BooleanProperty programmingPhaseProperty = new SimpleBooleanProperty(false);
-    private IntegerProperty actualPlayerTurn = new SimpleIntegerProperty(0);
+    private boolean programmingPhase = false;
 
-    //TODO:mut dem button verbinden
-    private IntegerProperty actualRegisterProperty = new SimpleIntegerProperty();
+    private AtomicInteger actualRegister = new AtomicInteger(-1);
 
-
-    private int actualRegister = -1;
     private volatile int actualPlayerID;
     private volatile int actualPhase;
 
@@ -143,7 +138,7 @@ public class ClientGameModel {
     }
 
     public ArrayList<Point2D>  getLaserPath( Point2D laserPosition, Laser laser){
-        return game.getLaserPath(laserPosition, laser);
+        return game.getLaserPath(laser, laserPosition);
 
     }
 
@@ -230,32 +225,6 @@ public class ClientGameModel {
         }
     }
 
-
-
-    public boolean getCanSetStartingPoint () {
-        return canSetStartingPoint.get();
-    }
-
-    public BooleanProperty canSetStartingPointProperty () {
-        return canSetStartingPoint;
-    }
-
-    public void setCanSetStartingPoint (boolean canSetStartingPoint) {
-        this.canSetStartingPoint.set(canSetStartingPoint);
-    }
-
-    public int getActualPlayerID () {
-        return actualPlayerID;
-    }
-
-    public IntegerProperty actualPlayerTurnProperty() {
-        return actualPlayerTurn;
-    }
-
-    public void setActualPlayerTurn(int actualPlayerTurn) {
-        this.actualPlayerTurn.set(actualPlayerTurn);
-    }
-
     public void setActualPlayerID (int actualPlayerID) {
         this.actualPlayerID = actualPlayerID;
     }
@@ -269,12 +238,13 @@ public class ClientGameModel {
 
     }
 
-    public void setProgrammingPhase (boolean b) {
-        /* if (this.actualPhase == 2)*/
-        this.programmingPhaseProperty.set(b);
-
+    public boolean isProgrammingPhase() {
+        return programmingPhase;
     }
 
+    public void setProgrammingPhase(boolean programmingPhase) {
+        this.programmingPhase = programmingPhase;
+    }
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -336,20 +306,18 @@ public class ClientGameModel {
         }
     }
 
-    public int getActualRegisterProperty () {
-        return actualRegisterProperty.get();
+    public int getValueActualRegister() {
+        return actualRegister.get();
     }
 
-    public IntegerProperty actualRegisterPropertyProperty () {
-        return actualRegisterProperty;
-    }
-
-    public void setActualRegisterProperty (int actualRegisterProperty) {
-        this.actualRegisterProperty.set(actualRegisterProperty);
-    }
-
-    public BooleanProperty getProgrammingPhaseProperty () {
-        return programmingPhaseProperty;
+    public void setActualRegister(int value) {
+        while (true) {
+            int existingValue = getValueActualRegister();
+            if (actualRegister.compareAndSet(existingValue, value)) {
+                propertyChangeSupport.firePropertyChange("currentRegister", existingValue, value);
+                return;
+            }
+        }
     }
 
     public Player getPlayer () {
@@ -391,15 +359,6 @@ public class ClientGameModel {
     public void sendSelectedCards (int registerNum, String cardName) {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
-    }
-
-    public int getActualRegister() {
-        return actualRegister;
-    }
-
-    public void setActualRegister(int actualRegister) {
-        this.actualRegister = actualRegister;
-        this.actualRegisterPropertyProperty().setValue(actualRegister);
     }
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {

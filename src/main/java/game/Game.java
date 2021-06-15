@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ilja Knis
@@ -63,9 +65,9 @@ public class Game {
     private int currentPlayer;
     private int activePhase;
     private int currentRound;
-    private int currentRegister;
+    private int currentRegister = 0;
     private boolean activePhaseOn = false;
-    private boolean timerOn = false;
+    private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
 
     private Game () {
@@ -165,8 +167,8 @@ public class Game {
 
 
     public void sendToAllPlayers (JSONMessage jsonMessage) {
-        for (Player player : playerList) {
-            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+        for (int i = 0; i < playerList.size(); i++) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
@@ -274,56 +276,42 @@ public class Game {
         }
     }
 
-    /*
-    Antenna priority;
-    Register 1:
-    List<Player> turnOrder;
-    for(int i = 0; i < playersList.size; i++){
-        turnOrder[i].getPlayer.activateCardEffect();
-    }
-    triggerBoardElements();
-        -> for(Element element : map.get(y).get(x))
-               (ConveyorBelt, Laser, EnergySpace, CheckPoint).trigger();
-
-
-     */
-
-    public void activateBlueBelts () {
+    public void activateBlueBelts() {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                for (Robot robot : getRobotsOnFields(position)) {
+                for (Player player : getRobotsOnFieldsOwner(position)) {
                     //first move on the belt
-                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
 
                     //second move: need to find new position and new orientation first
-                    double xRobotPos = robot.getxPosition();
-                    double yRobotPos = robot.getyPosition();
+                    double xRobotPos = player.getRobot().getxPosition();
+                    double yRobotPos = player.getRobot().getyPosition();
                     Point2D newPos = new Point2D(xRobotPos, yRobotPos);
                     String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                    moveRobot(robot, newOrientation, 1);
+                    moveRobot(player.getRobot(), newOrientation, 1);
                 }
             }
         }
     }
 
-    public void activateGreenBelts () {
+    public void activateGreenBelts() {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("green")) {
-                for (Robot robot : getRobotsOnFields(position)) {
-                    moveRobot(robot, conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                for (Player player : getRobotsOnFieldsOwner(position)) {
+                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                 }
             }
         }
     }
 
-    public void activatePushPanels () {
+    public void activatePushPanels() {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
                         pushPanelMap.get(position).getRegisters().contains(3) ||
                         pushPanelMap.get(position).getRegisters().contains(5)) {
-                    for (Robot robot : getRobotsOnFields(position)) {
-                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                        moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
             }
@@ -331,23 +319,44 @@ public class Game {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(2) ||
                         pushPanelMap.get(position).getRegisters().contains(4)) {
-                    for (Robot robot : getRobotsOnFields(position)) {
-                        moveRobot(robot, pushPanelMap.get(position).getOrientations().get(0), 1);
+                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                        moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
             }
         }
     }
 
-    public void activateGears () {
+    public void activateGears() {
         for (Point2D position : gearMap.keySet()) {
-            for (Robot robot : getRobotsOnFields(position)) {
+            for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
-                    changeOrientation(robot, "left");
+                    changeOrientation(player.getRobot(), "left");
                 } else if (gearMap.get(position).getOrientations().get(0).equals("clockwise")) {
-                    changeOrientation(robot, "right");
+                    changeOrientation(player.getRobot(), "right");
                 }
             }
+        }
+    }
+
+    public void activateWallLasers() {
+        for (Point2D position : laserMap.keySet()){
+            for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)){
+                for(Player player : getRobotsOnFieldsOwner(beamPosition)){
+                    for(int i = 0; i < laserMap.get(position).getCount(); i++) {
+
+                        //TODO: check laserPath
+                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
+                }
+            }
+        }
+    }
+
+    public void activateRobotLasers() {
+        for(Player player : playerList){
+
         }
     }
 
@@ -362,6 +371,19 @@ public class Game {
         }
 
         return robotsOnFields;
+    }
+
+    public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
+        ArrayList<Player> robotsOwner = new ArrayList<>();
+
+        for (Player player : playerList) {
+            if (player.getRobot().getxPosition() == (int) position.getX() &&
+                    player.getRobot().getyPosition() == (int) position.getY()) {
+                robotsOwner.add(player);
+            }
+        }
+
+        return robotsOwner;
     }
 
 
@@ -486,6 +508,28 @@ public class Game {
         }
     }
 
+    //TODO take two Spam cards -> in discardDeck
+    //     cancel programming
+    //     discard registerDeck
+    //     discard handDeck
+    //     place robot on reboot token, orientation up
+    //     place robot in the its startingPoint (rebooting from start board)
+    //     if a robot already on the reboot token -> push him up
+    //     if there's a wall and another robot can't be pushed, push it in the next free field
+    public void rebootRobot() {
+        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+        for (int i = 0; i < 2; i++) {
+            playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+            deckSpam.removeTopCard();
+        }
+        playerList.get(indexCurrentPlayer).discardRegisterCards();
+        playerList.get(indexCurrentPlayer).discardHandCards();
+        if (restartPointMap == null) {
+
+        }
+
+    }
+
     public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
@@ -535,6 +579,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("TOP x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("TOP " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                             switch (element.getType()) {
@@ -547,6 +593,12 @@ public class Game {
                                     }
                                 }
                                 case "Laser" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
                                     //do nothing for now, relevant for later
                                 }
                                 default -> {
@@ -566,6 +618,8 @@ public class Game {
                     //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("BOTTOM x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("BOTTOM " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                             switch (element.getType()) {
@@ -578,6 +632,12 @@ public class Game {
                                     }
                                 }
                                 case "Laser" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
                                     //do nothing for now, relevant for later
                                 }
                                 default -> {
@@ -597,6 +657,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("LEFT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("LEFT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -609,6 +671,12 @@ public class Game {
                                     }
                                 }
                                 case "Laser" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
                                     //do nothing for now, relevant for later
                                 }
                                 default -> {
@@ -626,6 +694,8 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
+                        System.out.println("RIGHT x: " + robotXPosition + ", y: " + robotYPosition);
+                        System.out.println("RIGHT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -638,6 +708,12 @@ public class Game {
                                     }
                                 }
                                 case "Laser" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "CheckPoint" -> {
+                                    //do nothing for now, relevant for later
+                                }
+                                case "RestartPoint" -> {
                                     //do nothing for now, relevant for later
                                 }
                                 default -> {
@@ -950,11 +1026,7 @@ public class Game {
         }
     }
 
-    public void setGameTimer (GameTimer gameTimer) {
-        this.gameTimer = gameTimer;
-    }
-
-    public int getCurrentRegister () {
+    public Integer getCurrentRegister () {
         return currentRegister;
     }
 
@@ -966,11 +1038,11 @@ public class Game {
         return gameTimer;
     }
 
-    public boolean isTimerOn () {
-        return timerOn;
+    public boolean getTimerOn() {
+        return timerOn.get();
     }
 
-    public void setTimerOn (boolean timerOn) {
+    public synchronized void setTimerOn(AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
@@ -988,14 +1060,14 @@ public class Game {
 
     public void setNewRoundCounter () {
         this.roundCounter++;
-        System.out.println(roundCounter);
+        System.out.println(roundCounter + " THIS IS ROUND COUNTER");
     }
 
     public void setActivePhaseOn (boolean activePhaseOn) {
         this.activePhaseOn = activePhaseOn;
     }
 
-    public int getCurrentPlayer () {
+    public Integer getCurrentPlayer () {
         return currentPlayer;
     }
 

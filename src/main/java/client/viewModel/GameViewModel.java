@@ -109,17 +109,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //dummesButton.setText(Integer.toString(1));
-       /* clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(laserShootProperty.equals(true)){
-                    MapViewModel mapViewModel = new MapViewModel();
-                    mapViewModel.handleAnimation();
-                }
-            }
-    });*/
-
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
         dummesButton.setText(Integer.toString(1));
@@ -129,16 +118,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             yourRobot.setImage(yourRobot());
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
-        //TODO BINDINGS
-        clientGameModel.actualRegisterPropertyProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                Platform.runLater(() -> {
-                    dummesButton.setText(Integer.toString(1 + clientGameModel.getActualRegisterProperty()));
-                });
-            }
-        });
-
 
       /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -150,62 +129,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         });
 
 */
-
-      /*  clientGameModel.getProgrammingPhaseProperty().addListener(new ChangeListener<Boolean>() {
-            //TODO:Boolean Checkk dass es auf True gesetzt ist
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-                Platform.runLater(() -> {
-                    clientGameModel.getCardsInHandObservable().addListener(new ListChangeListener() {
-                        @Override
-                        public void onChanged(Change change) {
-                            regToCard.put(0, null);
-                            regToCard.put(1, null);
-                            regToCard.put(2, null);
-                            regToCard.put(3, null);
-                            regToCard.put(4, null);
-                            for (ImageView register : registers) {
-                                register.setImage(null);
-                            }
-                            cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
-                                    card_6, card_7, card_8);
-                            Platform.runLater(() -> {
-                                try {
-                                    for (int j = 0; j < cards.size(); j++) {
-                                        cardName = (String) clientGameModel.getCardsInHandObservable().get(j);
-                                        cards.get(j).setImage(loadImage(cardName));
-                                        cards.get(j).setId(Integer.toString(j));
-                                    }
-                                } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                                showPopup("Programming Phase has begin");
-                                playerInfo.setText("please choose your Programming Cards");
-                            });
-                        }
-                    });
-
-
-                });
-            }
-        });
-*/
-
-        model.gameOnProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                Platform.runLater(() -> {
-                    try {
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-
-                        pane.setCenter(fxmlLoader.load());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        });
     }
 
     private void showPopup(String popupText) {
@@ -222,20 +145,18 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         scaleTransition.play();
         StackPane root = new StackPane();
         root.getChildren().addAll(text);
-        Scene scene = new Scene(root, 250, 200);
+        Scene scene = new Scene(root, 250, 250);
         Stage not = new Stage();
         scene.setFill(Color.DARKGRAY);
         not.setTitle("Player Notification");
         not.setScene(scene);
         not.show();
-        Platform.runLater(() -> {
-          try {
-            not.wait(5);
+     /*   try {
+            not.wait(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        });
-        not.close();
+        not.close();*/
 
     }
 
@@ -263,7 +184,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         return image;
 
     }
-
 
     /*private void loadScene(String scene) throws IOException {
         if (scene.equals("Map")) {
@@ -345,7 +265,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             regToCard.replace(registerNum, Integer.parseInt(cardName));
-           //TODO WMD HERE
             clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
@@ -353,7 +272,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void playCard () {
-        int currentRegister = clientGameModel.getActualRegister();
+        int currentRegister = clientGameModel.getValueActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         try {
             //TODO Lilas hier ist ein Nullpointerexception
@@ -424,6 +343,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
                 showPopup("Programming Phase has begin");
                 playerInfo.setText("please choose your Programming Cards");
+            });
+        }
+        if (evt.getPropertyName().equals("currentRegister")) {
+            Platform.runLater(() -> {
+                dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
         }
     }
