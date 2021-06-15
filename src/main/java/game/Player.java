@@ -125,8 +125,8 @@ public class Player {
             System.out.println("AMOUNT LEFT: " + amountLeft);
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
-                this.deckProgramming.removeTopCard();
             }
+            this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
@@ -215,16 +215,15 @@ public class Player {
         return energy;
     }
 
-    public void increaseEnergy(int amount){
+    public void increaseEnergy(int amount) {
         this.energy += amount;
     }
 
-    public void decreaseEnergy(int amount){
-        if(this.energy < amount){
+    public void decreaseEnergy(int amount) {
+        if (this.energy < amount) {
             //TODO can't use if not enough energy
             this.energy = 0;
-        }
-        else {
+        } else {
             this.energy -= amount;
         }
     }
