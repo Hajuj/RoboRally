@@ -127,7 +127,6 @@ public class Player {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
-            this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());

@@ -382,7 +382,6 @@ public class Game {
                 robotsOwner.add(player);
             }
         }
-
         return robotsOwner;
     }
 
@@ -894,6 +893,7 @@ public class Game {
     public void startProgrammingPhase () {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
+//            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
