@@ -121,8 +121,11 @@ public class Player {
         //ShuffleCodingBody
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
+            System.out.println("AMOUNT: " + amount);
+            System.out.println("AMOUNT LEFT: " + amountLeft);
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
-                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
+                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
+                this.deckProgramming.removeTopCard();
             }
             this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
@@ -142,6 +145,7 @@ public class Player {
     }
 
     public Card removeSelectedCard(String card) {
+        System.out.println("STUPID DECK HAND: " + this.deckHand.getDeck());
         for (Card card1 : this.deckHand.getDeck()) {
             if (card.equals(card1.getCardName())) {
                 deckHand.getDeck().remove(card1);
