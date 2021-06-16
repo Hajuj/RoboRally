@@ -95,20 +95,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public Label playerInfo;
 
 
-    private ClientModel model = ClientModel.getInstance();
-    private ClientGameModel clientGameModel = ClientGameModel.getInstance();
-    private String cardName;
-    private String register;
+    public ClientModel model = ClientModel.getInstance();
+    public ClientGameModel clientGameModel = ClientGameModel.getInstance();
+    public String cardName;
+    public String register;
 
-    private HashMap<Integer, Integer> regToCard = new HashMap<>();
+    public HashMap<Integer, Integer> regToCard = new HashMap<>();
 
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
     Dragboard dbImage = null;
     ImageView returnSource;
-    private BooleanProperty laserShootProperty ;
+    public BooleanProperty laserShootProperty ;
 
-    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
+    public BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
 
     @Override
@@ -136,7 +136,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    private void showPopup(String popupText) {
+    public void showPopup(String popupText) {
         Text text = new Text(popupText);
         text.setFill(Color.RED);
         text.setStroke(Color.BLACK);
@@ -240,7 +240,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    private void handleSource(ImageView source) {
+    public void handleSource(ImageView source) {
         Dragboard db = source.startDragAndDrop(TransferMode.MOVE);
         dbImage=source.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
@@ -367,21 +367,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("Losers")) {
             System.out.println("HERE WERDEN NEUE KARTEN VERTEILT");
-          /*  for (int i = 0; i < clientGameModel.getLateCards().size() ; i++) {
-                for (ImageView register: registers) {
-                    if (register.getImage()==null){
-                        try {
-                            register.setImage(loadImage(clientGameModel.getLateCards().get(i)));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        break;
-                    }
-                }
-            }*/
+
         }
-            int i = 0;
         if(evt.getPropertyName().equals("blindCards")) {
             for (ImageView register : registers) {
                 if (register.getImage() == null) {

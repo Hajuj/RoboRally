@@ -256,7 +256,7 @@ public class MessageHandler {
         //clientModel.getClientGameModel().setLateCards(cards);
         //TODO: put the cards in leere Felder in Register
         for (String card : cards) {
-            clientModel.getClientGameModel().setLateCards(card);
+            clientModel.getClientGameModel().setLateCard(card);
             clientModel.getClientGameModel().setLatePlayers(true);
             clientModel.receiveMessage("Your new Card is " + card);
         }

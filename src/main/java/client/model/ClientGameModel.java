@@ -42,10 +42,9 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
-    private ArrayList<String> cardsInHand = new ArrayList();
-    private boolean handCards = false;
+    public ArrayList<String> cardsInHand = new ArrayList();
+    public boolean handCards = false;
 
-    private ArrayList<String> lateCards= new ArrayList<>();
     private boolean latePlayer=false;
     private String lateCard = "";
 
@@ -69,7 +68,7 @@ public class ClientGameModel {
 
     private boolean programmingPhase = false;
 
-    private AtomicInteger actualRegister = new AtomicInteger(-1);
+    public AtomicInteger actualRegister = new AtomicInteger(-1);
 
     private volatile int actualPlayerID;
     private volatile int actualPhase;
@@ -95,7 +94,7 @@ public class ClientGameModel {
 
 
     //Singleton Zeug
-    private ClientGameModel () {
+    public ClientGameModel () {
         propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
@@ -380,7 +379,7 @@ public class ClientGameModel {
 
     }
 
-    public void setLateCards(String card){
+    public void setLateCard(String card){
         String newCard = this.lateCard;
         this.lateCard = card;
         propertyChangeSupport.firePropertyChange("blindCards", newCard,card);
@@ -470,12 +469,4 @@ public class ClientGameModel {
 
     }
 
-
-    public void setLateCards(ArrayList<String> cards) {
-        this.lateCards=cards;
-    }
-
-    public ArrayList<String> getLateCards () {
-        return lateCards;
-    }
 }
