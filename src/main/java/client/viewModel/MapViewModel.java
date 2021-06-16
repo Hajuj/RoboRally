@@ -95,8 +95,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-
-
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
@@ -113,7 +111,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setFitWidth(50);
         imageView.setFitHeight(50);
         switch (orientations) {
-            case "top", "bottom,top,left", "left,bottom"-> {
+            case "top", "bottom,top,left", "left,bottom" -> {
                 imageView.setRotate(0);
             }
             case "right", "right,left", "left,right,bottom", "top,left" -> {
@@ -246,34 +244,34 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                             }*/
 
-                            if (conveyorBelt.getSpeed()==2){
-                                switch (conveyorBelt.getOrientations().size()){
-                                    case 1 ->{
+                            if (conveyorBelt.getSpeed() == 2) {
+                                switch (conveyorBelt.getOrientations().size()) {
+                                    case 1 -> {
                                         ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 2 ->{
+                                    case 2 -> {
                                         ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 3 ->{
+                                    case 3 -> {
                                         ImageView imageView2 = loadImage("RotatingBeltBlue2", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                 }
                             }
 
-                            if(conveyorBelt.getSpeed()==1){
-                                switch (conveyorBelt.getOrientations().size()){
-                                    case 1 ->{
+                            if (conveyorBelt.getSpeed() == 1) {
+                                switch (conveyorBelt.getOrientations().size()) {
+                                    case 1 -> {
                                         ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
                                     }
-                                    case 2 ->{
+                                    case 2 -> {
                                         ImageView imageView2;
-                                        if(conveyorBelt.getIsOnBoard().equals("Start A")) {
+                                        if (conveyorBelt.getIsOnBoard().equals("Start A")) {
                                             imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        }else{
+                                        } else {
                                             imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
                                         }
                                         imageGroup.getChildren().add(imageView2);
