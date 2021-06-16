@@ -170,7 +170,8 @@ public class MessageHandler {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        clientModel.getClientGameModel().setActualPlayerID(playerID);
+        //TODO:CURRENT PLAYER
+        //clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
     }
@@ -253,11 +254,10 @@ public class MessageHandler {
     public void handleCardsYouGotNowBody (ClientModel clientModel, CardsYouGotNowBody cardsYouGotNowBody) {
         logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
-        //clientModel.getClientGameModel().setLateCards(cards);
         //TODO: put the cards in leere Felder in Register
         for (String card : cards) {
-            clientModel.getClientGameModel().setLateCard(card);
             clientModel.getClientGameModel().setLatePlayers(true);
+            clientModel.getClientGameModel().setLateCard(card);
             clientModel.receiveMessage("Your new Card is " + card);
         }
     }

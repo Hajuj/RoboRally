@@ -120,6 +120,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
+            yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
 
@@ -366,7 +367,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("Losers")) {
-            System.out.println("HERE WERDEN NEUE KARTEN VERTEILT");
+           playerInfo.setText("You are Late!! PECH GEHABT");
 
         }
         if(evt.getPropertyName().equals("blindCards")) {
@@ -378,12 +379,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                         break;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                    }
-                }
-
-            }
-
+                    } } }
         }
+        /*if (evt.getPropertyName().equals("yourTurn")){
+            Platform.runLater(() -> {
+                //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
+                if(model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID()).equals(yourRobot.getId())){
+                    playerInfo.setText("Its your turn :)");
+                    yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
+                }
+            });
+        }*/
     }
 }
 

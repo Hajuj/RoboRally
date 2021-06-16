@@ -89,7 +89,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
-    private boolean currentPlayer;
+    private boolean currentPlayer = false;
    ;
 
 
@@ -239,11 +239,19 @@ public class ClientGameModel {
         }
     }
 
-    public void setActualPlayerID (int actualPlayerID) {
+   /* public void setActualPlayerID (int actualPlayerID) {
         int currentPlayer = this.actualPlayerID;
         this.actualPlayerID = actualPlayerID;
         propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
 
+    }*/
+
+    public void setActualPlayerID (int actualPlayerID){
+        this.actualPlayerID=actualPlayerID;
+    }
+
+    public int getActualPlayerID() {
+        return actualPlayerID;
     }
 
     public int getActualPhase () {
