@@ -361,7 +361,7 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
-                clientModel.getClientGameModel().setanimationType("WallShooting");
+               // clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }

@@ -100,7 +100,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String cardName;
     public String register;
 
-    public HashMap<Integer, Integer> regToCard = new HashMap<>();
+    public HashMap<Integer, String> regToCard = new HashMap<>();
 
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
@@ -167,7 +167,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public Image yourRobot() {
-
         int figure = clientGameModel.getPlayer().getFigure();
         FileInputStream input = null;
         Image image;
@@ -271,8 +270,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
-            regToCard.replace(registerNum, Integer.parseInt(cardName));
-            clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
+            String card = clientGameModel.getCardsInHand().get(Integer.parseInt(cardName));
+            regToCard.replace(registerNum, card);
+            clientGameModel.sendSelectedCards(registerNum, card);
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
@@ -283,7 +283,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         //TODO:  java.lang.reflect.InvocationTargetException?
         try {
             //TODO Lilas hier ist ein Nullpointerexception
-            String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
+            String card = regToCard.get(currentRegister);
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
             e.printStackTrace();
@@ -358,7 +358,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
         }
         if (evt.getPropertyName().equals("Losers")) {
-           playerInfo.setText("You are Late!! PECH GEHABT");
+            Platform.runLater(() -> {
+                playerInfo.setText("You are Late!! PECH GEHABT");
+            });
 
         }
         if(evt.getPropertyName().equals("blindCards")) {
@@ -367,6 +369,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     System.out.println("ICH BIN DRINNEN");
                     try {
                         register.setImage(loadImage(clientGameModel.getLateCard()));
+                        int registerNum = Integer.parseInt(String.valueOf(register.getId().charAt(4)));
+                        regToCard.replace(registerNum, clientGameModel.getLateCard());
                         break;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
