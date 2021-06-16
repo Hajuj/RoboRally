@@ -11,24 +11,24 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragExited="#dragExited" prefHeight="700.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
+<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
    <children>
-      <ImageView fitHeight="419.0" fitWidth="975.0" layoutY="-1.0" pickOnBounds="true">
+      <ImageView fitHeight="388.0" fitWidth="1104.0" layoutY="-1.0" pickOnBounds="true">
          <image>
             <Image url="@../images/mapElements/Elements/2016Board.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="293.0" fitWidth="975.0" layoutX="2.0" layoutY="413.0" pickOnBounds="true">
+      <ImageView fitHeight="283.0" fitWidth="1110.0" layoutX="-4.0" layoutY="384.0" pickOnBounds="true">
          <image>
             <Image url="@../images/mapElements/Elements/2016Board.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="yourRobot" fitHeight="119.0" fitWidth="94.0" layoutY="-8.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
-      <Label fx:id="playerInfo" layoutX="200.0" layoutY="500.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="480.0" style="-fx-border-color: grey;" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+      <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="110.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
+      <Label fx:id="playerInfo" layoutX="231.0" layoutY="485.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="480.0" style="-fx-border-color: grey;" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
          <font>
-            <Font name="Consolas" size="24.0" />
+            <Font name="Consolas" size="20.0" />
          </font></Label>
-      <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="975.0">
+      <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1100.0">
          <bottom>
             <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="890.0" BorderPane.alignment="CENTER">
                <children>
@@ -72,9 +72,9 @@
                         <ImageView fx:id="reg_4" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                   <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="80.0" prefWidth="85.0">
+                   <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#playCard" prefHeight="67.0" prefWidth="85.0">
                        <HBox.margin>
-                           <Insets left="50.0" top="40.0" />
+                           <Insets left="23.0" top="55.0" />
                        </HBox.margin>
                        <font>
                            <Font name="System Bold" size="32.0" />
@@ -93,7 +93,7 @@
                <fx:include fx:id="chat" source="RoboChat.fxml" />
          </right>
          <center>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="426.0" prefWidth="497.0" BorderPane.alignment="CENTER">
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="525.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="50.0" top="30.0" />
                </BorderPane.margin></AnchorPane>

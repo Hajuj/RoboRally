@@ -150,7 +150,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         scaleTransition.play();
         StackPane root = new StackPane();
         root.getChildren().addAll(text);
-        Scene scene = new Scene(root, 250, 250);
+        Scene scene = new Scene(root, 300, 200);
         Stage not = new Stage();
         scene.setFill(Color.DARKGRAY);
         not.setTitle("Player Notification");
@@ -214,7 +214,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
                 || source.getId().equals(reg_2.getId()) || source.getId().equals(reg_3.getId()) || source.getId().equals(reg_4.getId())) {
             this.cardName = "Null";
-            int reg = Integer.parseInt(String.valueOf(this.register.charAt(4)));
+            int reg = Integer.parseInt(String.valueOf(source.getId().charAt(4)));
             regToCard.replace(reg, null);
             collectingCards();
         } else {
@@ -364,6 +364,38 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
+        }
+        if (evt.getPropertyName().equals("Losers")) {
+            System.out.println("HERE WERDEN NEUE KARTEN VERTEILT");
+          /*  for (int i = 0; i < clientGameModel.getLateCards().size() ; i++) {
+                for (ImageView register: registers) {
+                    if (register.getImage()==null){
+                        try {
+                            register.setImage(loadImage(clientGameModel.getLateCards().get(i)));
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        break;
+                    }
+                }
+            }*/
+        }
+            int i = 0;
+        if(evt.getPropertyName().equals("blindCards")) {
+            for (ImageView register : registers) {
+                if (register.getImage() == null) {
+                    System.out.println("ICH BIN DRINNEN");
+                    try {
+                        register.setImage(loadImage(clientGameModel.getLateCard()));
+                        break;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
         }
     }
 }

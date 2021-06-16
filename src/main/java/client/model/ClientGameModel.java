@@ -44,7 +44,10 @@ public class ClientGameModel {
 
     private ArrayList<String> cardsInHand = new ArrayList();
     private boolean handCards = false;
-    private String lateCards;
+
+    private ArrayList<String> lateCards= new ArrayList<>();
+    private boolean latePlayer=false;
+    private String lateCard = "";
 
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
@@ -88,6 +91,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
+   ;
 
 
     //Singleton Zeug
@@ -359,10 +363,28 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
-/*    public void setLateCard(String card) {
+  /*  public void setLateCard(String card) {
         this.lateCard = card;
     }*/
+    public String getLateCard (){
+        return this.lateCard;
+    }
 
+    public void setLatePlayers(boolean late){
+        boolean latePlayers = this.latePlayer;
+        this.latePlayer= late;
+        if (this.latePlayer){
+            propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
+
+        }
+
+    }
+
+    public void setLateCards(String card){
+        String newCard = this.lateCard;
+        this.lateCard = card;
+        propertyChangeSupport.firePropertyChange("blindCards", newCard,card);
+    }
 
 
     public void setHandCards(boolean handCards) {
@@ -449,4 +471,11 @@ public class ClientGameModel {
     }
 
 
+    public void setLateCards(ArrayList<String> cards) {
+        this.lateCards=cards;
+    }
+
+    public ArrayList<String> getLateCards () {
+        return lateCards;
+    }
 }
