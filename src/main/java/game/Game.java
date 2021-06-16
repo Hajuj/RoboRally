@@ -579,8 +579,6 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
-                        System.out.println("TOP x: " + robotXPosition + ", y: " + robotYPosition);
-                        System.out.println("TOP " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
                             switch (element.getType()) {
@@ -615,11 +613,8 @@ public class Game {
             }
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
-                    //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
-                        System.out.println("BOTTOM x: " + robotXPosition + ", y: " + robotYPosition);
-                        System.out.println("BOTTOM " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
                             switch (element.getType()) {
@@ -657,8 +652,6 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
-                        System.out.println("LEFT x: " + robotXPosition + ", y: " + robotYPosition);
-                        System.out.println("LEFT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
                             switch (element.getType()) {
@@ -694,8 +687,6 @@ public class Game {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
-                        System.out.println("RIGHT x: " + robotXPosition + ", y: " + robotYPosition);
-                        System.out.println("RIGHT " + map.size());
                     } else {
                         for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
                             switch (element.getType()) {
