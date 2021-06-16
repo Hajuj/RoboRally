@@ -125,6 +125,7 @@ public class Player {
             System.out.println("AMOUNT LEFT: " + amountLeft);
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
+                this.deckProgramming.removeTopCard();
             }
             this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
