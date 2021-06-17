@@ -576,6 +576,9 @@ public class Game {
                     }
                 }
             }
+            if (element.getType().equals("Antenna")){
+                foundBlocker = true;
+            }
         }
 
         return foundBlocker;
