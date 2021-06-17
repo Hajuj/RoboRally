@@ -43,6 +43,7 @@ public class Game {
     private Server server;
     private GameTimer gameTimer;
     private ArrayList<String> availableMaps = new ArrayList<>();
+    private ArrayList<Player> deadRobots = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
@@ -59,6 +60,7 @@ public class Game {
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
     private Map<Player, Integer> checkPoint = new HashMap<>();
+    private Map<Robot, Point2D> startingPointMap = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -278,7 +280,7 @@ public class Game {
     }
 
 
-    public void activateBlueBelts () {
+    public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
@@ -300,7 +302,7 @@ public class Game {
     }
 
 
-    public void sendNewPosition (Player player) {
+    public void sendNewPosition(Player player) {
         int clientID = player.getPlayerID();
         int newX = player.getRobot().getxPosition();
         int newY = player.getRobot().getyPosition();
@@ -308,12 +310,12 @@ public class Game {
         server.sendMessage(jsonMessage, server.getConnectionWithID(clientID).getWriter());
     }
 
-    public void activateBoardElements () {
+    public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
     }
 
-    public void activateGreenBelts () {
+    public void activateGreenBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("green")) {
@@ -363,10 +365,10 @@ public class Game {
     }
 
     public void activateWallLasers() {
-        for (Point2D position : laserMap.keySet()){
-            for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)){
-                for(Player player : getRobotsOnFieldsOwner(beamPosition)){
-                    for(int i = 0; i < laserMap.get(position).getCount(); i++) {
+        for (Point2D position : laserMap.keySet()) {
+            for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
+                for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
+                    for (int i = 0; i < laserMap.get(position).getCount(); i++) {
 
                         //TODO: check laserPath
                         player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
@@ -378,7 +380,7 @@ public class Game {
     }
 
     public void activateRobotLasers() {
-        for(Player player : playerList){
+        for (Player player : playerList) {
 
         }
     }
@@ -531,29 +533,101 @@ public class Game {
         }
     }
 
-    //TODO take two Spam cards -> in discardDeck
-    //     cancel programming
-    //     discard registerDeck
-    //     discard handDeck
-    //     place robot on reboot token, orientation up
-    //     place robot in the its startingPoint (rebooting from start board)
-    //     if a robot already on the reboot token -> push him up
-    //     if there's a wall and another robot can't be pushed, push it in the next free field
-    public void rebootRobot() {
-        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+    public void rebootRobot(Player player) {
+        deadRobots.add(player);
         for (int i = 0; i < 2; i++) {
-            playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
             deckSpam.removeTopCard();
         }
-        playerList.get(indexCurrentPlayer).discardRegisterCards();
-        playerList.get(indexCurrentPlayer).discardHandCards();
-        if (restartPointMap == null) {
+        player.discardRegisterCards();
+        player.discardHandCards();
+        player.getRobot().setOrientation("top");
 
+        int robotPlacementX = player.getRobot().getxPosition();
+        int robotPlacementY = player.getRobot().getyPosition();
+
+        String isStartingBoard = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
+
+        if (isStartingBoard.equals("A") || isStartingBoard.equals("B")) {
+            int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
+            int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
+            for (Player player1 : playerList) {
+                int robotHereX = player1.getRobot().getxPosition();
+                int robotHereY = player1.getRobot().getyPosition();
+                if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                    if (canRobotMove(robotHereX, robotHereY, "top")) {
+                        player1.getRobot().setyPosition(robotHereY - 1);
+                        player.getRobot().setxPosition(startingPointX);
+                        player.getRobot().setyPosition(startingPointY);
+                        player.getRobot().setOrientation("right");
+                        JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                        sendToAllPlayers(jsonMessage);
+
+                        JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
+                        sendToAllPlayers(jsonMessage1);
+                    } else {
+                        int newStartingPointX = (int) firstFreeStartingPoint().getX();
+                        int newStartingPointY = (int) firstFreeStartingPoint().getY();
+                        player.getRobot().setxPosition(newStartingPointX);
+                        player.getRobot().setyPosition(newStartingPointY);
+                        player.getRobot().setOrientation("right");
+                        JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                        sendToAllPlayers(jsonMessage);
+
+                        JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
+                        sendToAllPlayers(jsonMessage1);
+                    }
+                }
+            }
+        } else {
+            for (HashMap.Entry<Point2D, RestartPoint> entry : getRestartPointMap().entrySet()) {
+                if (entry.getValue() != null) {
+                    for (Player player1 : playerList) {
+                        int restartPointX = (int) entry.getKey().getX();
+                        int restartPointY = (int) entry.getKey().getY();
+
+                        int robotX = player1.getRobot().getxPosition();
+                        int robotY = player1.getRobot().getyPosition();
+                        if (restartPointX == robotX && restartPointY == robotY) {
+                            if (canRobotMove(robotX, robotY, "top")) {
+                                player1.getRobot().setyPosition(robotY - 1);
+                                player.getRobot().setxPosition(restartPointX);
+                                player.getRobot().setyPosition(restartPointY);
+                                player.getRobot().setOrientation("top");
+
+                                JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                                sendToAllPlayers(jsonMessage);
+
+                                JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
+                                sendToAllPlayers(jsonMessage1);
+                            }
+                        } else {
+                            player.getRobot().setxPosition(restartPointX);
+                            player.getRobot().setyPosition(restartPointY);
+                            player.getRobot().setOrientation("top");
+
+                            JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                            sendToAllPlayers(jsonMessage);
+
+                            JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
+                            sendToAllPlayers(jsonMessage1);
+                        }
+                    }
+                }
+            }
         }
-
     }
 
-    public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
+    public Point2D firstFreeStartingPoint() {
+        for (Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
+            if (getRobotsOnFields(entry.getKey()).size() == 0) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
         int robotYPosition = currentPlayer.getRobot().getyPosition();
@@ -594,23 +668,23 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation){
+    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)){
-            if (element.getType().equals("Pit")){
+        for (Element element : map.get(x).get(y)) {
+            if (element.getType().equals("Pit")) {
                 foundBlocker = true;
                 //TODO: Get RestartPoint and start Reboot routine
             }
-            if (element.getType().equals("Wall")){
-                for (String orientation : element.getOrientations()){
-                    if(orientation.equals(blockOrientation)){
+            if (element.getType().equals("Wall")) {
+                for (String orientation : element.getOrientations()) {
+                    if (orientation.equals(blockOrientation)) {
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")){
+            if (element.getType().equals("Antenna")) {
                 foundBlocker = true;
             }
         }
@@ -630,7 +704,7 @@ public class Game {
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                         }
@@ -646,7 +720,7 @@ public class Game {
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                         }
@@ -982,27 +1056,27 @@ public class Game {
         }
     }
 
-    public Integer getCurrentRegister () {
+    public Integer getCurrentRegister() {
         return currentRegister;
     }
 
-    public void setCurrentRegister (int currentRegister) {
+    public void setCurrentRegister(int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
-    public GameTimer getGameTimer () {
+    public GameTimer getGameTimer() {
         return gameTimer;
     }
 
-    public boolean getTimerOn () {
+    public boolean getTimerOn() {
         return timerOn.get();
     }
 
-    public synchronized void setTimerOn (AtomicBoolean timerOn) {
+    public synchronized void setTimerOn(AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
-    public int getCurrentRound () {
+    public int getCurrentRound() {
         return currentRound;
     }
 
