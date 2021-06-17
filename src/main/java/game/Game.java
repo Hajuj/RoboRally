@@ -614,9 +614,10 @@ public class Game {
                     }
                 }
             }
+
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
-                    //TODO ILJA schau bitte das an.  Jetzt mit =
+                    //TODO ILJA schau bitte das an. Jetzt mit
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
@@ -629,6 +630,7 @@ public class Game {
                     }
                 }
             }
+
             case "left" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
@@ -643,6 +645,7 @@ public class Game {
                     }
                 }
             }
+
             case "right" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
@@ -662,7 +665,6 @@ public class Game {
 
     private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
-
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
             if ("Wall".equals(element.getType())) {
                 for (String orient : element.getOrientations()) {
@@ -673,7 +675,6 @@ public class Game {
                 }
             }
         }
-
         return canPass;
     }
 
