@@ -7,7 +7,10 @@ import game.Game;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -25,6 +28,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Translate;
+import javafx.util.Duration;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -321,8 +325,16 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                         case "Gear" -> {
                             Element element = map.get(x).get(y).get(i);
                             Gear gear = new Gear(element.getType(), element.getIsOnBoard(), element.getOrientations());
-                            ImageView imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
-                            imageGroup.getChildren().add(imageView2);
+                            switch (gear.getColour()) {
+                                case "red": {
+                                    ImageView imageView2 = loadImage("RedGear", String.join(",", gear.getOrientations()));
+                                    imageGroup.getChildren().add(imageView2);
+                                }break;
+                                case "green":{
+                                    ImageView imageView2 = loadImage("GreenGear", String.join(",", gear.getOrientations()));
+                                    imageGroup.getChildren().add(imageView2);
+                                }break;
+                            }
                         }
                         //TODO:laser 1 or two handeln und dann orientation
                         case "Laser" -> {
@@ -400,6 +412,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                 }
+                handleMyLife();
             });
         }
         if (evt.getPropertyName().equals("queueMove")) {
@@ -429,6 +442,34 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    private void handleMyLife() {
+
+        for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
+            String colour = entry.getValue().getColour();
+            switch (colour) {
+                case "green": {
+                    ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 1);
+
+                    RotateTransition rotateTransition = new RotateTransition(Duration.millis(3000), gear);
+                    rotateTransition.setByAngle(360);
+                    rotateTransition.setCycleCount(Animation.INDEFINITE);
+                    rotateTransition.setInterpolator(Interpolator.LINEAR);
+                    rotateTransition.play();
+                }
+                break;
+                case "red": {
+                    ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 1);
+
+                    RotateTransition rotateTransition = new RotateTransition(Duration.millis(3000), gear);
+                    rotateTransition.setByAngle(-360);
+                    rotateTransition.setCycleCount(Animation.INDEFINITE);
+                    rotateTransition.setInterpolator(Interpolator.LINEAR);
+                    rotateTransition.play();
+                }
+                break;
+            }
+
+
    /* private void handleGreenBelt() {
         switch (conveyorBelt.getOrientations().size())
     }
@@ -436,5 +477,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     private void handleBlueBelt(){
 
     }*/
-}
 
+
+        }
+    }}
