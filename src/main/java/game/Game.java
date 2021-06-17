@@ -548,7 +548,6 @@ public class Game {
             upperYCap = robotYPosition + radius;
         }
 
-        //TODO what about the player that uses the virus card?
         for (Player player : playerList) {
             int robotX = player.getRobot().getxPosition();
             int robotY = player.getRobot().getyPosition();
@@ -561,70 +560,56 @@ public class Game {
         return playersInRadius;
     }
 
+    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation){
+        boolean foundBlocker = false;
+
+        for (Element element : map.get(x).get(y)){
+            if (element.getType().equals("Pit")){
+                foundBlocker = true;
+                //TODO: Get RestartPoint and start Reboot routine
+            }
+            if (element.getType().equals("Wall")){
+                for (String orientation : element.getOrientations()){
+                    if(orientation.equals(blockOrientation)){
+                        foundBlocker = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return foundBlocker;
+    }
+
     public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
+        boolean canMove;
         switch (orientation) {
             case "top" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("bottom")) {
-                                            robot.setyPosition(robotYPosition - 1);
-                                            robotYPosition--;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                //TODO: case "Pit" ->...
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setyPosition(robotYPosition - 1);
-                                        robotYPosition--;
-                                    }
-
-                                }
-                            }
+                        canMove = isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
+                                getInverseOrientation("top"));
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                            robot.setyPosition(robotYPosition - 1);
+                            robotYPosition--;
                         }
                     }
                 }
             }
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
-                    //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("top")) {
-                                            robot.setyPosition(robotYPosition + 1);
-                                            robotYPosition++;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                //TODO: case "Pit" ->...
-                                default -> {
-
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setyPosition(robotYPosition + 1);
-                                        robotYPosition++;
-                                    }
-
-                                }
-                            }
+                        canMove = isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
+                                getInverseOrientation("bottom"));
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                            robot.setyPosition(robotYPosition + 1);
+                            robotYPosition++;
                         }
                     }
                 }
@@ -634,27 +619,11 @@ public class Game {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("right")) {
-                                            robot.setxPosition(robotXPosition - 1);
-                                            robotXPosition--;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                //TODO: case "Pit" ->...
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setxPosition(robotXPosition - 1);
-                                        robotXPosition--;
-                                    }
-                                }
-                            }
+                        canMove = isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
+                                getInverseOrientation("left"));
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                            robot.setxPosition(robotXPosition - 1);
+                            robotXPosition--;
                         }
                     }
                 }
@@ -664,29 +633,11 @@ public class Game {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("left")) {
-                                            robot.setxPosition(robotXPosition + 1);
-                                            robotXPosition++;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                    System.out.println("Found laser!");
-                                }
-                                //TODO: case "Pit" ->...
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setxPosition(robotXPosition + 1);
-                                        robotXPosition++;
-                                    }
-
-                                }
-                            }
+                        canMove = isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
+                                getInverseOrientation("right"));
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                            robot.setxPosition(robotXPosition + 1);
+                            robotXPosition++;
                         }
                     }
                 }
@@ -707,7 +658,6 @@ public class Game {
                 }
             }
         }
-
         return canPass;
     }
 
