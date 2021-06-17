@@ -377,15 +377,15 @@ public class ClientGameModel {
         return this.lateCard;
     }
 
-    public void setLatePlayers(boolean late){
+   /* public void setLatePlayers(boolean late){
         boolean latePlayers = this.latePlayer;
         this.latePlayer= late;
         if (this.latePlayer){
             propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
 
-        }
+        }*/
 
-    }
+   // }
 
     public void setLateCard(String card){
         String newCard = this.lateCard;
@@ -405,14 +405,14 @@ public class ClientGameModel {
     public void setActualPhase(int phase){
         System.out.println("here ist SETACUTALPHASE");
         int currentPhase = this.actualPhase;
-        this.actualPhase=currentPhase;
+        this.actualPhase= phase;
         if (this.actualPhase == 2) {
             propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
         }
-        if(this.actualPhase==3){
+       /* if(this.actualPhase==3){
             propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
 
-        }
+        }*/
 
     }
 

@@ -100,13 +100,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String cardName;
     public String register;
 
-    public HashMap<Integer, Integer> regToCard = new HashMap<>();
+    public HashMap<Integer, String> regToCard = new HashMap<>();
 
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
     Dragboard dbImage = null;
     ImageView returnSource;
-    public BooleanProperty laserShootProperty ;
+    public BooleanProperty laserShootProperty;
 
     public BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
@@ -185,12 +185,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public Image loadImage(String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
-            try {
-                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            image = new Image(path);
+        try {
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image = new Image(path);
         return image;
 
     }
@@ -243,7 +243,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public void handleSource(ImageView source) {
         Dragboard db = source.startDragAndDrop(TransferMode.MOVE);
-        dbImage=source.startDragAndDrop(TransferMode.MOVE);
+        dbImage = source.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putImage(source.getImage());
         source.setImage(null);
@@ -258,11 +258,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         //TODO 2 Karten auf einem Register
         //TODO TargetId nehemn und überprüfen
         this.register = target.getId();
-        if (target.getImage() != null){
+        if (target.getImage() != null) {
             returnSource.setImage(target.getImage());
             target.setImage(dbImage.getImage());
 
-        }else {
+        } else {
             handlewithdraw(target, image);
             collectingCards();
         }
@@ -270,29 +270,24 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
-   }
+    }
 
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
-            regToCard.replace(registerNum, Integer.parseInt(cardName));
+            regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
             clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
         } else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
     }
 
-    public void playCard () {
+    public void playCard() {
         int currentRegister = clientGameModel.getValueActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
         try {
             //TODO Lilas hier ist ein Nullpointerexception
-            String card = clientGameModel.getCardsInHand().get(regToCard.get(currentRegister));
-            System.out.println(card);
-            System.out.println(currentRegister);
-            System.out.println(regToCard.get(currentRegister));
-            System.out.println(this.register);
-            System.out.println(cardName);
+            String card = regToCard.get(currentRegister);
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
             e.printStackTrace();
@@ -308,15 +303,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-
     public void dragExited(DragEvent dragEvent) {
-        if (dragEvent.getTarget()==null ||dragEvent.getGestureTarget()==null) {
+        if (dragEvent.getTarget() == null || dragEvent.getGestureTarget() == null) {
             returnSource.setImage(dbImage.getImage());
         }
     }
 
-    public void clearRegisters(){
-        for (ImageView register:registers) {
+    public void clearRegisters() {
+        for (ImageView register : registers) {
             register.setImage(null);
 
         }
@@ -366,21 +360,32 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
         }
-        if (evt.getPropertyName().equals("Losers")) {
+     /*   if (evt.getPropertyName().equals("Losers")) {
            playerInfo.setText("You are Late!! PECH GEHABT");
 
-        }
-        if(evt.getPropertyName().equals("blindCards")) {
+        }*/
+        if (evt.getPropertyName().equals("blindCards")) {
+
             for (ImageView register : registers) {
+
                 if (register.getImage() == null) {
                     System.out.println("ICH BIN DRINNEN");
-                    try {
-                        register.setImage(loadImage(clientGameModel.getLateCard()));
-                        break;
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } } }
+                    Platform.runLater(() -> {
+                        try {
+                            register.setImage(loadImage(clientGameModel.getLateCard()));
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    int regNumber = Integer.parseInt(String.valueOf(register.getId().charAt(4)));
+                    regToCard.put(regNumber, clientGameModel.getLateCard());
+                    break;
+                }
+
+            }
         }
+    }
+}
         /*if (evt.getPropertyName().equals("yourTurn")){
             Platform.runLater(() -> {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
@@ -390,8 +395,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             });
         }*/
-    }
-}
+
 
 
 

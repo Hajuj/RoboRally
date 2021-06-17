@@ -437,6 +437,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     handleMyLife();
+                    //handleAnimation("BlueConveyorBelt");
                    // handleLaserAnime();
 
 
