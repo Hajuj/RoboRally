@@ -205,27 +205,28 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     public void turnRobot(int playerID, String rotation) {
-        Robot robot = null;
-        for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
-                robot = entry.getKey();
-                break;
+        Platform.runLater(() -> {
+            Robot robot = null;
+            for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+                if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID)))) {
+                    robot = entry.getKey();
+                    break;
+                }
             }
-        }
+            Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
+            double angle = 0;
+            if (rotation.equals("clockwise")) {
+                angle = 90;
+            } else if (rotation.equals("counterclockwise")) {
+                angle = -90;
+            }
+            Group imageGroup = fieldMap.get(oldPosition);
+            ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+            robotOrientation.setRotate(robotOrientation.getRotate() + angle);
+            fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+            fieldMap.get(oldPosition).getChildren().add(robotOrientation);
 
-        Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
-        double angle = 0;
-        if (rotation.equals("clockwise")) {
-            angle = 90;
-        } else if (rotation.equals("counterclockwise")) {
-            angle = -90;
-        }
-
-        Group imageGroup = fieldMap.get(oldPosition);
-        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-        robotOrientation.setRotate(robotOrientation.getRotate() + angle);
-        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
-        fieldMap.get(oldPosition).getChildren().add(robotOrientation);
+        });
     }
 
 
@@ -239,16 +240,16 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
         Point2D newPosition = new Point2D(x, y);
-        Group imageGroup = fieldMap.get(oldPosition);
-        ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-        ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
-        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
-        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
-        fieldMap.get(newPosition).getChildren().add(robotV);
-        fieldMap.get(newPosition).getChildren().add(robotOrientation);
-
+        Platform.runLater(() -> {
+            Group imageGroup = fieldMap.get(oldPosition);
+            ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+            ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
+            fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+            fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().add(robotV);
+            fieldMap.get(newPosition).getChildren().add(robotOrientation);
+        });
         clientGameModel.getRobotMap().replace(robot, newPosition);
-
     }
 
 
@@ -444,7 +445,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
-            Platform.runLater(() -> {
+            System.out.println(clientGameModel.getMoveQueue().size());
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
                     //nullpointer hier. warum=
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
@@ -453,7 +454,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
 
                 }
-            });
+
         }
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);

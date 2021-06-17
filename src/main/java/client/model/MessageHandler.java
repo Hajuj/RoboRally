@@ -367,14 +367,22 @@ public class MessageHandler {
                 break;
             }
         }
+    }
+
+    public void handleEnergy (ClientModel clientModel, EnergyBody energyBody) {
+        clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
+            clientModel.getClientGameModel().setEnergy(energyBody.getCount());
+        }
+        //TODO: speichern? benutzen?
+    }
+
+
+    public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
 
     }
 
-    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
-
-    }
-
-    public void handleRebootDirection(ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
+    public void handleRebootDirection (ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
 
     }
 
