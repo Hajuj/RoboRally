@@ -1,5 +1,6 @@
 package game;
 
+import client.model.ClientModel;
 import game.boardelements.*;
 import game.decks.DeckSpam;
 import game.decks.DeckTrojan;
@@ -45,6 +46,10 @@ public class Game {
     private ArrayList<String> availableMaps = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
+
+
+    private ArrayList<Player> deadRobots = new ArrayList<>();
+
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
@@ -55,9 +60,15 @@ public class Game {
     private Map<Point2D, Pit> pitMap = new HashMap<>();
     private Map<Point2D, PushPanel> pushPanelMap = new HashMap<>();
     private Map<Point2D, RestartPoint> restartPointMap = new HashMap<>();
+
+
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
+
+
+
+    private Map<Robot, Point2D>  startingPointMap = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -508,26 +519,116 @@ public class Game {
         }
     }
 
-    //TODO take two Spam cards -> in discardDeck
-    //     cancel programming
-    //     discard registerDeck
-    //     discard handDeck
-    //     place robot on reboot token, orientation up
-    //     place robot in the its startingPoint (rebooting from start board)
-    //     if a robot already on the reboot token -> push him up
+    //TODO take two Spam cards -> in discardDeck -done
+    //     cancel programming -done
+    //     discard registerDeck -done
+    //     discard handDeck -done
+    //     place robot on reboot token, orientation up -done
+    //     place robot in the its startingPoint (rebooting from start board) -done
+    //     if a robot already on the reboot token -> push him up -done
     //     if there's a wall and another robot can't be pushed, push it in the next free field
-    public void rebootRobot() {
-        int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
+    public void rebootRobot(Player player) {
+        deadRobots.add(player);
         for (int i = 0; i < 2; i++) {
-            playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
             deckSpam.removeTopCard();
         }
-        playerList.get(indexCurrentPlayer).discardRegisterCards();
-        playerList.get(indexCurrentPlayer).discardHandCards();
-        if (restartPointMap == null) {
+        player.discardRegisterCards();
+        player.discardHandCards();
+        player.getRobot().setOrientation("top");
+
+
+        int robotPlacementX = player.getRobot().getxPosition();
+        int robotPlacementY = player.getRobot().getyPosition();
+
+        String isStartingBoard = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
+
+        if(isStartingBoard.equals("A") || isStartingBoard.equals("B")){
+            int startingPointX =(int) startingPointMap.get(player.getRobot()).getX();
+            int startingPointY =(int) startingPointMap.get(player.getRobot()).getY();
+            for (Player player1 : playerList){
+                int robotHereX = player1.getRobot().getxPosition();
+                int robotHereY = player1.getRobot().getyPosition();
+                    if(robotHereX == startingPointX && robotHereY == startingPointY) {
+                        if(canRobotMove(robotHereX, robotHereY , "top")) {
+                            player1.getRobot().setyPosition(robotHereY - 1);
+                            player.getRobot().setxPosition(startingPointX);
+                            player.getRobot().setyPosition(startingPointY);
+                            player.getRobot().setOrientation("right");
+                            JSONMessage jsonMessage = new JSONMessage("Reboot",new RebootBody(player.getPlayerID()));
+                            sendToAllPlayers(jsonMessage);
+
+                            JSONMessage jsonMessage1 = new JSONMessage("RebootDirection",new RebootDirectionBody("right"));
+                            sendToAllPlayers(jsonMessage1);
+                        }else {
+                            int newStartingPointX =(int) firstFreeStartingPoint().getX();
+                            int newStartingPointY =(int) firstFreeStartingPoint().getY();
+                            player.getRobot().setxPosition(newStartingPointX);
+                            player.getRobot().setyPosition(newStartingPointY);
+                            player.getRobot().setOrientation("right");
+                            JSONMessage jsonMessage = new JSONMessage("Reboot",new RebootBody(player.getPlayerID()));
+                            sendToAllPlayers(jsonMessage);
+
+                            JSONMessage jsonMessage1 = new JSONMessage("RebootDirection",new RebootDirectionBody("right"));
+                            sendToAllPlayers(jsonMessage1);
+                            }
+                        }
+                    }
+
+        }else{
+        for (HashMap.Entry<Point2D, RestartPoint> entry : getRestartPointMap().entrySet()) {
+                if (entry.getValue() != null) {
+                    for(Player player1: playerList){
+                        int restartPointX = (int) entry.getKey().getX();
+                        int restartPointY = (int) entry.getKey().getY();
+
+                        int robotX = player1.getRobot().getxPosition();
+                        int robotY = player1.getRobot().getyPosition();
+                            if(restartPointX == robotX && restartPointY == robotY){
+                                if (canRobotMove(robotX, robotY, "top")) {
+                                    player1.getRobot().setyPosition(robotY - 1);
+                                    player.getRobot().setxPosition(restartPointX);
+                                    player.getRobot().setyPosition(restartPointY);
+                                    player.getRobot().setOrientation("top");
+
+                                    JSONMessage jsonMessage = new JSONMessage("Reboot",new RebootBody(player.getPlayerID()));
+                                    sendToAllPlayers(jsonMessage);
+
+                                    JSONMessage jsonMessage1 = new JSONMessage("RebootDirection",new RebootDirectionBody("right"));
+                                    sendToAllPlayers(jsonMessage1);
+                        }
+
+
+                    }else{
+                                player.getRobot().setxPosition(restartPointX);
+                                player.getRobot().setyPosition(restartPointY);
+                                player.getRobot().setOrientation("top");
+
+                                JSONMessage jsonMessage = new JSONMessage("Reboot",new RebootBody(player.getPlayerID()));
+                                sendToAllPlayers(jsonMessage);
+
+                                JSONMessage jsonMessage1 = new JSONMessage("RebootDirection",new RebootDirectionBody("right"));
+                                sendToAllPlayers(jsonMessage1);
+                            }
+
+                    }
+                }
+
+            }
 
         }
 
+
+        }
+
+
+    public Point2D firstFreeStartingPoint (){
+        for(Map.Entry<Point2D,StartPoint> entry : startPointMap.entrySet()){
+            if(getRobotsOnFields(entry.getKey()).size() == 0){
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
@@ -1103,6 +1204,13 @@ public class Game {
     public ArrayList<Player> getPlayerList () {
         return playerList;
     }
+    public Map<Robot, Point2D> getStartingPointMap() {
+        return startingPointMap;
+    }
+
+    public void setStartPointMap(Map<Point2D, StartPoint> startPointMap) {
+        this.startPointMap = startPointMap;
+    }
 
     public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
         return map;
@@ -1175,5 +1283,9 @@ public class Game {
     public Server getServer () {
         return server;
     }
+    public ArrayList<Player> getDeadRobots() {
+        return deadRobots;
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package server;
 
 import game.*;
+import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -201,6 +202,7 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+                server.getCurrentGame().getStartingPointMap().put(player.getRobot(),new Point2D(x,y));
 
                 //sage allen wo der Spieler mit playerID started
                 JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
@@ -297,9 +299,11 @@ public class MessageHandler {
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
                 if (nextPlayer != -1) {
-                    server.getCurrentGame().setCurrentPlayer(nextPlayer);
-                    JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
-                    server.getCurrentGame().sendToAllPlayers(jsonMessage);
+                    if (server.getCurrentGame().getDeadRobots().contains(server.getPlayerWithID(nextPlayer))) {
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                        JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
+                        server.getCurrentGame().sendToAllPlayers(jsonMessage);
+                    }
                 } else {
                     //Get new register
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
