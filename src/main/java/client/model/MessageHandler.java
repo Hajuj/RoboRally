@@ -394,7 +394,7 @@ public class MessageHandler {
 
     public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
             alert.show();
         });

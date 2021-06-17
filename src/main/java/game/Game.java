@@ -286,6 +286,11 @@ public class Game {
                         //first move on the belt
                         System.out.println((player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()));
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         sendNewPosition(player);
                         //second move: need to find new position and new orientation first
                         double xRobotPos = player.getRobot().getxPosition();
@@ -293,6 +298,12 @@ public class Game {
                         Point2D newPos = new Point2D(xRobotPos, yRobotPos);
                         String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
                         moveRobot(player.getRobot(), newOrientation, 1);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendNewPosition(player);
                         break;
                     }
                 }

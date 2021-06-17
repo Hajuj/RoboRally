@@ -119,8 +119,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
-            yourRobot.setImage(yourRobot());
-            yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
+            //yourRobot.setImage(yourRobot());
+            //yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
 
