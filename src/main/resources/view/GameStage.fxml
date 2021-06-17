@@ -98,7 +98,7 @@
                             </children>
                         </VBox>
                         <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                                minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#playCard"
+                                minWidth="-Infinity" mnemonicParsing="false" onAction="#playCard"
                                 prefHeight="67.0" prefWidth="85.0">
                             <HBox.margin>
                                 <Insets left="23.0" top="55.0"/>

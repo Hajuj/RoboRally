@@ -58,6 +58,7 @@ public class Game {
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
+    private Map<Player, Integer> checkPoint = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -284,7 +285,6 @@ public class Game {
                     if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
                         //first move on the belt
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                         //second move: need to find new position and new orientation first
                         double xRobotPos = player.getRobot().getxPosition();
                         double yRobotPos = player.getRobot().getyPosition();

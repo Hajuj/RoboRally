@@ -39,8 +39,8 @@ public class SimpleAIModel {
         for (int i = 0; i < 5; i++) {
             cardsInRegister.put(i, null);
         }
-        clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52018);
+//        clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
+        clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52019);
     }
 
     public void chooseRobotRoutine () {
