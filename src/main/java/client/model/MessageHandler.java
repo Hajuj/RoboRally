@@ -255,11 +255,8 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
-        for (String card : cards) {
-//            clientModel.getClientGameModel().setLatePlayers(true);
-            clientModel.getClientGameModel().setLateCard(card);
-            clientModel.receiveMessage("Your new Card is " + card);
-        }
+        clientModel.getClientGameModel().setLateCards(cards);
+        clientModel.getClientGameModel().setLatePlayers(true);
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {

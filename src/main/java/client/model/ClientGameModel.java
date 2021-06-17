@@ -44,7 +44,9 @@ public class ClientGameModel {
     private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
     private boolean startingPoint = false;
 
-    private boolean latePlayer=false;
+
+    private ArrayList<String> lateCards = new ArrayList<>();
+    private boolean latePlayer = false;
     private String lateCard = "";
 
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
@@ -52,7 +54,7 @@ public class ClientGameModel {
 
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
-     private BooleanProperty animType = new SimpleBooleanProperty(false);
+    private BooleanProperty animType = new SimpleBooleanProperty(false);
 
 
     private boolean programmingPhase = false;
@@ -323,7 +325,7 @@ public class ClientGameModel {
         return actualRegister.get();
     }
 
-    public void setActualRegister(int value) {
+    public void setActualRegister (int value) {
         while (true) {
             int existingValue = getValueActualRegister();
             if (actualRegister.compareAndSet(existingValue, value)) {
@@ -331,6 +333,15 @@ public class ClientGameModel {
                 return;
             }
         }
+    }
+
+
+    public ArrayList<String> getLateCards () {
+        return lateCards;
+    }
+
+    public void setLateCards (ArrayList<String> lateCards) {
+        this.lateCards = lateCards;
     }
 
     public Player getPlayer () {
@@ -365,12 +376,10 @@ public class ClientGameModel {
 
     public void setLatePlayers(boolean late){
         boolean latePlayers = this.latePlayer;
-        this.latePlayer= late;
+        this.latePlayer = late;
         if (this.latePlayer){
             propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
-
         }
-
     }
 
     public void setLateCard(String card){
@@ -389,9 +398,8 @@ public class ClientGameModel {
     }
 
     public void setActualPhase(int phase){
-        System.out.println("here ist SETACUTALPHASE");
         int currentPhase = this.actualPhase;
-        this.actualPhase=currentPhase;
+        this.actualPhase = phase;
         if (this.actualPhase == 2) {
             propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
         }
@@ -410,17 +418,7 @@ public class ClientGameModel {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
     }
-/*
-    public int getActualRegister() {
-        return actualRegister;
-    }*/
-/*
-    public void setActualRegister(int actualRegister) {
-        int currentRegister=this.actualRegister;
-        this.actualRegister = actualRegister;
-        propertyChangeSupport.firePropertyChange("ActualRegister", currentRegister, actualRegister);
-        //this.actualRegisterPropertyProperty().setValue(actualRegister);
-    }*/
+
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
         return startingPointQueue;

@@ -85,30 +85,30 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 //        });
     }
 
-    private void startAnimation(String type) {
-        Double toX = null;
-        Double toY = null;
-        switch (type) {
-            case "BlueBelt" -> {
-
-            }
-
-        }
-
-        ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
-        TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(3));
-        transition.setToX(laserPath.indexOf(0));
-        transition.setToY(laserPath.size());
-        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-        transition.setNode(imageGroup);
-        transition.play();
-
-    }
+//    private void startAnimation(String type) {
+//        Double toX = null;
+//        Double toY = null;
+//        switch (type) {
+//            case "BlueBelt" -> {
+//
+//            }
+//
+//        }
+//
+//        ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
+//        TranslateTransition transition = new TranslateTransition();
+//        transition.setDuration(Duration.seconds(3));
+//        transition.setToX(laserPath.indexOf(0));
+//        transition.setToY(laserPath.size());
+//        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
+//        transition.setNode(imageGroup);
+//        transition.play();
+//
+//    }
 
 
     //startings points
-    public void setRobot(int playerID, int x, int y) {
+    public void setRobot (int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
         Image image;
@@ -439,9 +439,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     handleMyLife();
                     //handleAnimation("BlueConveyorBelt");
                    // handleLaserAnime();
-
-
-
                 }
             });
         }
@@ -515,35 +512,35 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
-    public void handleLaserAnime() {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-
-        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
-            Laser laser = entry.getValue();
-            ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(), laser);
-
-            TranslateTransition transition = new TranslateTransition();
-            transition.setDuration(Duration.INDEFINITE);
-            transition.setToX(laserPath.indexOf(0));
-            transition.setToY(laserPath.size());
-            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
-
-            //Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-            //ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-
-            laserBeam.setImage(image);
-            transition.setNode(laserBeam);
-            transition.play();
-        }
-
-    }
+//    public void handleLaserAnime() {
+//        FileInputStream input = null;
+//        Image image;
+//        try {
+//            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        image = new Image(input);
+//
+//        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
+//            Laser laser = entry.getValue();
+//            ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(), laser);
+//
+//            TranslateTransition transition = new TranslateTransition();
+//            transition.setDuration(Duration.INDEFINITE);
+//            transition.setToX(laserPath.indexOf(0));
+//            transition.setToY(laserPath.size());
+//            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
+//
+//            //Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
+//            //ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
+//
+//            laserBeam.setImage(image);
+//            transition.setNode(laserBeam);
+//            transition.play();
+//        }
+//
+//    }
 
     //(Point2D laserPosition, Laser laser);
     // Point2D laserPosition = null;

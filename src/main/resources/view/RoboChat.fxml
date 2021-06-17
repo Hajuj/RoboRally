@@ -8,35 +8,35 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0"
-            prefWidth="348.0" stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/16"
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="564.0"
+            prefWidth="283.0" stylesheets="@../Chat.css" xmlns="http://javafx.com/javafx/16"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChatViewModel">
     <center>
         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    prefHeight="579.0" prefWidth="353.0" BorderPane.alignment="CENTER">
+                    prefHeight="566.0" prefWidth="286.0" BorderPane.alignment="CENTER">
 
-            <TextField fx:id="messageField" layoutX="28.0" layoutY="472.0" maxHeight="-Infinity" maxWidth="-Infinity"
-                       minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="227.0"/>
-            <Button fx:id="sendButton" layoutX="269.0" layoutY="472.0" mnemonicParsing="false"
-                    onAction="#sendMessageButton" prefHeight="35.0" prefWidth="72.0" style="-fx-background-color: grey;"
+            <TextField fx:id="messageField" layoutX="11.0" layoutY="461.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                       minHeight="-Infinity" minWidth="-Infinity" prefHeight="29.0" prefWidth="267.0"/>
+            <Button fx:id="sendButton" layoutX="214.0" layoutY="503.0" mnemonicParsing="false"
+                    onAction="#sendMessageButton" prefHeight="38.0" prefWidth="64.0" style="-fx-background-color: grey;"
                     text="send"/>
-            <Button fx:id="gameGuideBtn" layoutX="234.0" layoutY="137.0" maxHeight="-Infinity" maxWidth="-Infinity"
+            <Button fx:id="gameGuideBtn" layoutX="179.0" layoutY="124.0" maxHeight="-Infinity" maxWidth="-Infinity"
                     minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToGameGuide"
-                    prefHeight="38.0" prefWidth="101.0" style="-fx-background-color: grey;" text="Game Guide"/>
-            <TextArea fx:id="chatField" layoutX="28.0" layoutY="243.0" prefHeight="221.0" prefWidth="308.0"/>
-            <Label fx:id="chatLabel" layoutX="21.0" layoutY="214.0" text="Chat:"/>
-            <Button fx:id="readyButton" layoutX="236.0" layoutY="187.0" mnemonicParsing="false"
-                    onAction="#sendReadyStatus" prefHeight="37.0" prefWidth="99.0" style="-fx-background-color: green;"
+                    prefHeight="34.0" prefWidth="97.0" style="-fx-background-color: grey;" text="Game Guide"/>
+            <TextArea fx:id="chatField" layoutX="11.0" layoutY="244.0" prefHeight="207.0" prefWidth="267.0"/>
+            <Label fx:id="chatLabel" layoutX="10.0" layoutY="217.0" text="Chat:"/>
+            <Button fx:id="readyButton" layoutX="180.0" layoutY="176.0" mnemonicParsing="false"
+                    onAction="#sendReadyStatus" prefHeight="29.0" prefWidth="96.0" style="-fx-background-color: green;"
                     text="Ready"/>
-            <TextArea fx:id="readyDisplay" layoutX="21.0" layoutY="53.0" prefHeight="69.0" prefWidth="316.0"/>
-            <Label fx:id="playersLabel" layoutX="146.0" layoutY="14.0" prefHeight="39.0" prefWidth="173.0"
+            <TextArea fx:id="readyDisplay" layoutX="15.0" layoutY="53.0" prefHeight="59.0" prefWidth="259.0"/>
+            <Label fx:id="playersLabel" layoutX="15.0" layoutY="14.0" prefHeight="39.0" prefWidth="173.0"
                    text="PLAYERS ONLINE">
                 <font>
                     <Font size="15.0"/>
                 </font>
             </Label>
-            <Button fx:id="notReadyBtn" layoutX="95.0" layoutY="156.0" mnemonicParsing="false"
-                    onAction="#changeStatusButton" prefHeight="38.0" prefWidth="103.0"
+            <Button fx:id="notReadyBtn" layoutX="34.0" layoutY="158.0" mnemonicParsing="false"
+                    onAction="#changeStatusButton" prefHeight="33.0" prefWidth="103.0"
                     style="-fx-background-color: red;" text="  Not Ready"/>
         </AnchorPane>
    </center>

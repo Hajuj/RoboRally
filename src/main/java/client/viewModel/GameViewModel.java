@@ -309,15 +309,26 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
-    public void clearRegisters() {
+    public void clearRegisters () {
         for (ImageView register : registers) {
             register.setImage(null);
 
         }
     }
 
+    public int getNextAvailableRegister () {
+        int regNumber = 0;
+        for (ImageView register : registers) {
+            if (register.getImage() == null) {
+                regNumber = Integer.parseInt(String.valueOf(register.getId().charAt(4)));
+                break;
+            }
+        }
+        return regNumber;
+    }
+
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange (PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("gameOn")) {
             Platform.runLater(() -> {
                 try {
@@ -351,8 +362,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                showPopup("Programming Phase has begin");
-                playerInfo.setText("please choose your Programming Cards");
+                //showPopup("Programming Phase has begin");
+                playerInfo.setText("Please choose your programming cards");
             });
         }
         if (evt.getPropertyName().equals("currentRegister")) {
@@ -360,29 +371,18 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
         }
-     /*   if (evt.getPropertyName().equals("Losers")) {
-           playerInfo.setText("You are Late!! PECH GEHABT");
-
-        }*/
-        if (evt.getPropertyName().equals("blindCards")) {
-
-            for (ImageView register : registers) {
-
-                if (register.getImage() == null) {
-                    System.out.println("ICH BIN DRINNEN");
-                    Platform.runLater(() -> {
-                        try {
-                            register.setImage(loadImage(clientGameModel.getLateCard()));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    int regNumber = Integer.parseInt(String.valueOf(register.getId().charAt(4)));
-                    regToCard.put(regNumber, clientGameModel.getLateCard());
-                    break;
+        if (evt.getPropertyName().equals("Losers")) {
+            for (int i = 0; i < clientGameModel.getLateCards().size(); i++) {
+                int regNum = getNextAvailableRegister();
+                ImageView register = registers.get(regNum);
+                try {
+                    register.setImage(loadImage(clientGameModel.getLateCards().get(i)));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-
+                regToCard.put(regNum, clientGameModel.getLateCards().get(i));
             }
+            clientGameModel.setLatePlayers(false);
         }
     }
 }
