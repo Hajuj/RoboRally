@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -367,17 +366,39 @@ public class MessageHandler {
                 break;
             }
         }
+    }
+
+    public void handleEnergy (ClientModel clientModel, EnergyBody energyBody) {
+        clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
+            clientModel.getClientGameModel().setEnergy(energyBody.getCount());
+        }
+        //TODO: speichern? benutzen?
+    }
+
+
+    public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
 
     }
 
-    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+    public void handleRebootDirection (ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
 
     }
 
-    public void handleRebootDirection(ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
-
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
     }
 
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
+            alert.show();
+        });
+    }
 
 }
 

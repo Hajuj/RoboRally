@@ -284,15 +284,28 @@ public class Game {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
+                    System.out.println("Compate robot (" + player.getRobot().getxPosition() + " " + player.getRobot().getyPosition() + ") und  Belt Position " + position);
                     if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
                         //first move on the belt
+                        System.out.println((player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()));
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendNewPosition(player);
                         //second move: need to find new position and new orientation first
                         double xRobotPos = player.getRobot().getxPosition();
                         double yRobotPos = player.getRobot().getyPosition();
                         Point2D newPos = new Point2D(xRobotPos, yRobotPos);
                         String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
                         moveRobot(player.getRobot(), newOrientation, 1);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         sendNewPosition(player);
                         break;
                     }
@@ -313,6 +326,7 @@ public class Game {
     public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
+        activateEnergySpaces();
     }
 
     public void activateGreenBelts() {
@@ -329,7 +343,26 @@ public class Game {
         }
     }
 
-    public void activatePushPanels() {
+    public void activateEnergySpaces () {
+        for (Point2D position : energySpaceMap.keySet()) {
+            for (Player player : getRobotsOnFieldsOwner(position)) {
+                if (currentRegister != 4) {
+                    int energyCount = energySpaceMap.get(position).getCount();
+                    if (energyCount > 0) {
+                        energySpaceMap.get(position).setCount(energyCount - 1);
+                        player.increaseEnergy(1);
+                        sendToAllPlayers(new JSONMessage("Energy", new EnergyBody(player.getPlayerID(), player.getEnergy(), "EnergySpace")));
+                    }
+                } else {
+                    // 5 register
+                    player.increaseEnergy(1);
+                    sendToAllPlayers(new JSONMessage("Energy", new EnergyBody(player.getPlayerID(), player.getEnergy(), "EnergySpace")));
+                }
+            }
+        }
+    }
+
+    public void activatePushPanels () {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
@@ -470,6 +503,7 @@ public class Game {
             }
             case "PowerUp" -> {
                 playerList.get(indexCurrentPlayer).increaseEnergy(1);
+                sendToAllPlayers(new JSONMessage("Energy", new EnergyBody(currentPlayer, server.getPlayerWithID(currentPlayer).getEnergy(), "PowerUpCard")));
             }
             case "TurnLeft" -> {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "left");
@@ -922,7 +956,6 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-//            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());

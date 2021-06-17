@@ -13,7 +13,7 @@ public class EnergySpace extends Element {
     @Expose
     private final String isOnBoard;
     @Expose
-    private final int count;
+    private int count;
 
     public EnergySpace(String type, String isOnBoard, int count){
         this.type = type;
@@ -25,11 +25,15 @@ public class EnergySpace extends Element {
         return type;
     }
 
-    public String getIsOnBoard() {
+    public String getIsOnBoard () {
         return isOnBoard;
     }
 
-    public int getCount() {
+    public int getCount () {
         return count;
+    }
+
+    public void setCount (int count) {
+        this.count = count;
     }
 }

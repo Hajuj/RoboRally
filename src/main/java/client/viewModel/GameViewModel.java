@@ -119,8 +119,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
-            yourRobot.setImage(yourRobot());
-            yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
+            //yourRobot.setImage(yourRobot());
+            //yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
 
@@ -341,7 +341,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("handCards")) {
             clientGameModel.setHandCards(false);
-            System.out.println("HALLO????? THERE????");
             regToCard.put(0, null);
             regToCard.put(1, null);
             regToCard.put(2, null);
@@ -363,7 +362,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     e.printStackTrace();
                 }
                 //showPopup("Programming Phase has begin");
-                playerInfo.setText("Please choose your programming cards");
+                //playerInfo.setText("Please choose your programming cards");
             });
         }
         if (evt.getPropertyName().equals("currentRegister")) {

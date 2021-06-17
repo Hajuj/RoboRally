@@ -77,12 +77,16 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handleTimerStarted (ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
-        System.out.println("You are awesome AI Baby");
     }
 
     @Override
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
         super.handleSelectMap(clientModel, selectMapBody);
         clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
+    }
+
+    @Override
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        System.out.println("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
     }
 }

@@ -39,6 +39,8 @@ public class ClientGameModel {
     private ArrayList<String> cardsInHand = new ArrayList();
     private boolean handCards = false;
 
+    private int energy = 0;
+
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
     private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
@@ -436,7 +438,7 @@ public class ClientGameModel {
         return moveQueue;
     }
 
-    public void setQueueMove(boolean queueMove) {
+    public synchronized void setQueueMove (boolean queueMove) {
         boolean oldQueueMove = this.queueMove;
         this.queueMove = queueMove;
         if (this.queueMove) {
@@ -453,7 +455,7 @@ public class ClientGameModel {
         return blueBeltAnimeProperty;
     }
 
-    public void switchPlayer(boolean currentPlayer) {
+    public void switchPlayer (boolean currentPlayer) {
         boolean oldPlayer = this.currentPlayer;
         this.currentPlayer = currentPlayer;
 
@@ -461,4 +463,12 @@ public class ClientGameModel {
 
     }
 
+
+    public int getEnergy () {
+        return energy;
+    }
+
+    public void setEnergy (int energy) {
+        this.energy = energy;
+    }
 }
