@@ -1,7 +1,6 @@
 package client.model;
-import client.viewModel.MapViewModel;
+
 import game.Element;
-import game.Game;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
@@ -9,8 +8,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import game.boardelements.*;
-import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -28,45 +25,41 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class ClientGameModel {
 
     private static ClientGameModel instance;
     private ClientModel clientModel = ClientModel.getInstance();
-    private static Game game = Game.getInstance();
+
 
     protected PropertyChangeSupport propertyChangeSupport;
 
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
-    public ArrayList<String> cardsInHand = new ArrayList();
-    public boolean handCards = false;
-
-    private boolean latePlayer=false;
-    private String lateCard = "";
-
+    private ArrayList<String> cardsInHand = new ArrayList();
+    private boolean handCards = false;
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
     private HashMap<Robot, Point2D> startingPointQueue = new HashMap<>();
     private boolean startingPoint = false;
 
+
+    private ArrayList<String> lateCards = new ArrayList<>();
+    private boolean latePlayer = false;
+    private String lateCard = "";
+
     private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
     private boolean queueMove = false;
 
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
-    private ObservableMap<Robot, String> turningQueueObservable = FXCollections.observableMap(turningQueue);
-
-
-    private BooleanProperty canMove = new SimpleBooleanProperty(false);
     private BooleanProperty animType = new SimpleBooleanProperty(false);
 
 
     private boolean programmingPhase = false;
 
-    public AtomicInteger actualRegister = new AtomicInteger(-1);
+    private AtomicInteger actualRegister = new AtomicInteger(-1);
 
     private volatile int actualPlayerID;
     private volatile int actualPhase;
@@ -111,12 +104,45 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+    public void setProgrammingPhase (boolean programmingPhase) {
+        boolean progPhase = this.programmingPhase;
+        this.programmingPhase = progPhase;
+        if (this.programmingPhase) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", progPhase, true);
+        }
+
+    }
 
 
     public void chooseMap (String mapName) {
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
         clientModel.sendMessage(jsonMessage);
     }
+
+    public void setanimationType (String animationType){
+        switch (animationType){
+            /*case "BlueConveyorBelt" ->{
+                extractData(conveyorBeltMap);
+                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
+                    Point2D position =entry.getKey();
+                    ConveyorBelt belt =entry.getValue();
+
+                }
+            }*/
+            case "WallShooting" -> {
+                animType.set(true);
+            }
+        }
+
+    }
+    public void extractData(LinkedHashMap elementMap){
+
+    }
+    public BooleanProperty getanimationType(){
+        return animType;
+    }
+
+
 
 
     public void sendPlayCard (String cardName) {
@@ -132,6 +158,7 @@ public class ClientGameModel {
                         case "Antenna" -> {
                             Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
+                            antennaMap.put(new Point2D(x, y), antenna);
                         }
                         case "ConveyorBelt" -> {
                             Element element = map.get(x).get(y).get(i);
@@ -219,18 +246,18 @@ public class ClientGameModel {
         return actualPhase;
     }
 
-    public void setActualPhase (int actualPhase) {
+ /*   public void setActualPhase (int actualPhase) {
         this.actualPhase = actualPhase;
 
-    }
+    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
 
-    public void setProgrammingPhase (boolean programmingPhase) {
+    /*public void setProgrammingPhase(boolean programmingPhase) {
         this.programmingPhase = programmingPhase;
-    }
+    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -298,7 +325,7 @@ public class ClientGameModel {
         return actualRegister.get();
     }
 
-    public void setActualRegister(int value) {
+    public void setActualRegister (int value) {
         while (true) {
             int existingValue = getValueActualRegister();
             if (actualRegister.compareAndSet(existingValue, value)) {
@@ -306,6 +333,15 @@ public class ClientGameModel {
                 return;
             }
         }
+    }
+
+
+    public ArrayList<String> getLateCards () {
+        return lateCards;
+    }
+
+    public void setLateCards (ArrayList<String> lateCards) {
+        this.lateCards = lateCards;
     }
 
     public Player getPlayer () {
@@ -340,12 +376,10 @@ public class ClientGameModel {
 
     public void setLatePlayers(boolean late){
         boolean latePlayers = this.latePlayer;
-        this.latePlayer= late;
+        this.latePlayer = late;
         if (this.latePlayer){
             propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
-
         }
-
     }
 
     public void setLateCard(String card){
@@ -363,6 +397,19 @@ public class ClientGameModel {
         }
     }
 
+    public void setActualPhase(int phase){
+        int currentPhase = this.actualPhase;
+        this.actualPhase = phase;
+        if (this.actualPhase == 2) {
+            propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
+        }
+        if(this.actualPhase==3){
+            propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
+
+        }
+
+    }
+
     public HashMap<Robot, Point2D> getRobotMap () {
         return robotMap;
     }
@@ -371,6 +418,7 @@ public class ClientGameModel {
         JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
         clientModel.sendMessage(jsonMessage);
     }
+
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
         return startingPointQueue;
