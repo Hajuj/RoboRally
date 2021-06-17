@@ -65,23 +65,23 @@ public class Game {
     private int currentPlayer;
     private int activePhase;
     private int currentRound;
-    private int currentRegister = 0;
+    private int currentRegister;
     private boolean activePhaseOn = false;
-    private AtomicBoolean timerOn = new AtomicBoolean();
+    private boolean timerOn = false;
     private Comparator<Player> comparator = new Helper(this);
 
-    private Game () {
+    private Game() {
 
     }
 
-    public static Game getInstance () {
+    public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
         }
         return instance;
     }
 
-    public Game (Server server) {
+    public Game(Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
         availableMaps.add("DeathTrap");
@@ -91,7 +91,7 @@ public class Game {
     }
 
 
-    public void startGame (ArrayList<Player> players) throws IOException {
+    public void startGame(ArrayList<Player> players) throws IOException {
         //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -127,7 +127,7 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public ArrayList<Integer> tooLateClients () {
+    public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
             if (!player.isRegisterFull()) {
@@ -137,7 +137,7 @@ public class Game {
         return tooLateClients;
     }
 
-    public int nextPlayerID () {
+    public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         if (playerList.size() - 1 == currentIndex) {
             return -1;
@@ -145,12 +145,12 @@ public class Game {
         return playerList.get(currentIndex + 1).getPlayerID();
     }
 
-    public void informAboutActivePhase () {
+    public void informAboutActivePhase() {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
-    public void informAboutCurrentPlayer () {
+    public void informAboutCurrentPlayer() {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
@@ -166,13 +166,13 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers (JSONMessage jsonMessage) {
-        for (int i = 0; i < playerList.size(); i++) {
-            server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
+    public void sendToAllPlayers(JSONMessage jsonMessage) {
+        for (Player player : playerList) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
         }
     }
 
-    public void selectMap (String mapName) throws IOException {
+    public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -188,7 +188,7 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
-    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
+    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
@@ -360,7 +360,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -388,7 +388,7 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect (String card) {
+    public void activateCardEffect(String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -571,79 +571,60 @@ public class Game {
         return playersInRadius;
     }
 
-    public void moveRobot (Robot robot, String orientation, int movement) {
+    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation){
+        boolean foundBlocker = false;
+
+        for (Element element : map.get(x).get(y)){
+            if (element.getType().equals("Pit")){
+                foundBlocker = true;
+                //TODO: Get RestartPoint and start Reboot routine
+            }
+            if (element.getType().equals("Wall")){
+                for (String orientation : element.getOrientations()){
+                    if(orientation.equals(blockOrientation)){
+                        foundBlocker = true;
+                        break;
+                    }
+                }
+            }
+            if (element.getType().equals("Antenna")){
+                foundBlocker = true;
+            }
+        }
+
+        return foundBlocker;
+    }
+
+    public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
+        boolean canMove;
         switch (orientation) {
             case "top" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition).get(robotYPosition - 1)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("bottom")) {
-                                            robot.setyPosition(robotYPosition - 1);
-                                            robotYPosition--;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "CheckPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "RestartPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setyPosition(robotYPosition - 1);
-                                        robotYPosition--;
-                                    }
-
-                                }
-                            }
+                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
+                                getInverseOrientation("top"));
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                            robot.setyPosition(robotYPosition - 1);
+                            robotYPosition--;
                         }
                     }
                 }
             }
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
+                    //TODO ILJA schau bitte das an.  Jetzt mit =
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition).get(robotYPosition + 1)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("top")) {
-                                            robot.setyPosition(robotYPosition + 1);
-                                            robotYPosition++;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "CheckPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "RestartPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                default -> {
-
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setyPosition(robotYPosition + 1);
-                                        robotYPosition++;
-                                    }
-
-                                }
-                            }
+                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
+                                getInverseOrientation("bottom"));
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                            robot.setyPosition(robotYPosition + 1);
+                            robotYPosition++;
                         }
                     }
                 }
@@ -653,32 +634,11 @@ public class Game {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition - 1).get(robotYPosition)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("right")) {
-                                            robot.setxPosition(robotXPosition - 1);
-                                            robotXPosition--;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "CheckPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "RestartPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setxPosition(robotXPosition - 1);
-                                        robotXPosition--;
-                                    }
-                                }
-                            }
+                        canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
+                                getInverseOrientation("left"));
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                            robot.setxPosition(robotXPosition - 1);
+                            robotXPosition--;
                         }
                     }
                 }
@@ -688,33 +648,11 @@ public class Game {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        for (Element element : map.get(robotXPosition + 1).get(robotYPosition)) {
-                            switch (element.getType()) {
-                                case "Wall" -> {
-                                    for (String orient : element.getOrientations()) {
-                                        if (!orient.equals("left")) {
-                                            robot.setxPosition(robotXPosition + 1);
-                                            robotXPosition++;
-                                        }
-                                    }
-                                }
-                                case "Laser" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "CheckPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                case "RestartPoint" -> {
-                                    //do nothing for now, relevant for later
-                                }
-                                default -> {
-                                    if (canRobotMove(robotXPosition, robotYPosition, orientation)) {
-                                        robot.setxPosition(robotXPosition + 1);
-                                        robotXPosition++;
-                                    }
-
-                                }
-                            }
+                        canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
+                                getInverseOrientation("right"));
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                            robot.setxPosition(robotXPosition + 1);
+                            robotXPosition++;
                         }
                     }
                 }
@@ -722,7 +660,7 @@ public class Game {
         }
     }
 
-    private boolean canRobotMove (int robotXPosition, int robotYPosition, String orientation) {
+    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
 
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
@@ -735,10 +673,11 @@ public class Game {
                 }
             }
         }
+
         return canPass;
     }
 
-    public void changeOrientation (Robot robot, String direction) {
+    public void changeOrientation(Robot robot, String direction) {
         switch (robot.getOrientation()) {
             case "top" -> {
                 switch (direction) {
@@ -798,7 +737,7 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
@@ -882,7 +821,7 @@ public class Game {
 
     //TODO find next wall with laser
 
-    public void startProgrammingPhase () {
+    public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
             player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
@@ -898,7 +837,7 @@ public class Game {
         }
     }
 
-    public boolean valideStartingPoint (int x, int y) {
+    public boolean valideStartingPoint(int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -916,7 +855,7 @@ public class Game {
         }
     }
 
-    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
             map.get(x).get(y).remove(element);
@@ -931,7 +870,7 @@ public class Game {
     //TODO activateCard() method with switch
     //     check discard consistency
 
-    public void setActivePhase (int activePhase) {
+    public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
@@ -945,14 +884,14 @@ public class Game {
     }
 
     //TODO change get(0)
-    public void startActivationPhase () {
+    public void startActivationPhase() {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
     }
 
-    public String getInverseOrientation (String orientation) {
+    public String getInverseOrientation(String orientation) {
         String inverseOrientation;
         switch (orientation) {
             case "top" -> inverseOrientation = "bottom";
@@ -964,7 +903,7 @@ public class Game {
         return inverseOrientation;
     }
 
-    public void sendCurrentCards (int register) {
+    public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
             ArrayList<Object> array1 = new ArrayList<>();
@@ -978,19 +917,19 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public int getActivePhase () {
+    public int getActivePhase() {
         return activePhase;
     }
 
     public static class Helper implements java.util.Comparator<Player> {
         private Game game;
 
-        private Helper (Game game) {
+        private Helper(Game game) {
             this.game = game;
         }
 
         @Override
-        public int compare (Player o1, Player o2) {
+        public int compare(Player o1, Player o2) {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
@@ -1017,152 +956,156 @@ public class Game {
         }
     }
 
-    public Integer getCurrentRegister () {
+    public void setGameTimer(GameTimer gameTimer) {
+        this.gameTimer = gameTimer;
+    }
+
+    public int getCurrentRegister() {
         return currentRegister;
     }
 
-    public void setCurrentRegister (int currentRegister) {
+    public void setCurrentRegister(int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
-    public GameTimer getGameTimer () {
+    public GameTimer getGameTimer() {
         return gameTimer;
     }
 
-    public boolean getTimerOn() {
-        return timerOn.get();
+    public boolean isTimerOn() {
+        return timerOn;
     }
 
-    public synchronized void setTimerOn(AtomicBoolean timerOn) {
+    public void setTimerOn(boolean timerOn) {
         this.timerOn = timerOn;
     }
 
-    public int getCurrentRound () {
+    public int getCurrentRound() {
         return currentRound;
     }
 
-    public void setCurrentRound (int currentRound) {
+    public void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
     }
 
-    public boolean isActivePhaseOn () {
+    public boolean isActivePhaseOn() {
         return activePhaseOn;
     }
 
-    public void setNewRoundCounter () {
+    public void setNewRoundCounter() {
         this.roundCounter++;
-        System.out.println(roundCounter + " THIS IS ROUND COUNTER");
+        System.out.println(roundCounter);
     }
 
-    public void setActivePhaseOn (boolean activePhaseOn) {
+    public void setActivePhaseOn(boolean activePhaseOn) {
         this.activePhaseOn = activePhaseOn;
     }
 
-    public Integer getCurrentPlayer () {
+    public int getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer (int currentPlayer) {
+    public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
-    public String getMapName () {
+    public String getMapName() {
         return mapName;
     }
 
-    public void setMapName (String mapName) {
+    public void setMapName(String mapName) {
         this.mapName = mapName;
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return gameOn;
     }
 
-    public void setGameOn (boolean gameOn) {
+    public void setGameOn(boolean gameOn) {
         this.gameOn = gameOn;
     }
 
-    public ArrayList<String> getAvailableMaps () {
+    public ArrayList<String> getAvailableMaps() {
         return availableMaps;
     }
 
-    public static ArrayList<String> getRobotNames () {
+    public static ArrayList<String> getRobotNames() {
         return robotNames;
     }
 
-    public ArrayList<Player> getPlayerList () {
+    public ArrayList<Player> getPlayerList() {
         return playerList;
     }
 
-    public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
         return map;
     }
 
-    public Map<Point2D, Laser> getLaserMap () {
+    public Map<Point2D, Laser> getLaserMap() {
         return laserMap;
     }
 
-    public Map<Point2D, Antenna> getAntennaMap () {
+    public Map<Point2D, Antenna> getAntennaMap() {
         return antennaMap;
     }
 
-    public DeckWorm getDeckWorm () {
+    public DeckWorm getDeckWorm() {
         return deckWorm;
     }
 
-    public DeckVirus getDeckVirus () {
+    public DeckVirus getDeckVirus() {
         return deckVirus;
     }
 
-    public DeckTrojan getDeckTrojan () {
+    public DeckTrojan getDeckTrojan() {
         return deckTrojan;
     }
 
-    public DeckSpam getDeckSpam () {
+    public DeckSpam getDeckSpam() {
         return deckSpam;
     }
 
-    public Map<Point2D, CheckPoint> getCheckPointMap () {
+    public Map<Point2D, CheckPoint> getCheckPointMap() {
         return checkPointMap;
     }
 
-    public Map<Point2D, ConveyorBelt> getConveyorBeltMap () {
+    public Map<Point2D, ConveyorBelt> getConveyorBeltMap() {
         return conveyorBeltMap;
     }
 
-    public Map<Point2D, Empty> getEmptyMap () {
+    public Map<Point2D, Empty> getEmptyMap() {
         return emptyMap;
     }
 
-    public Map<Point2D, EnergySpace> getEnergySpaceMap () {
+    public Map<Point2D, EnergySpace> getEnergySpaceMap() {
         return energySpaceMap;
     }
 
-    public Map<Point2D, Gear> getGearMap () {
+    public Map<Point2D, Gear> getGearMap() {
         return gearMap;
     }
 
-    public Map<Point2D, Pit> getPitMap () {
+    public Map<Point2D, Pit> getPitMap() {
         return pitMap;
     }
 
-    public Map<Point2D, PushPanel> getPushPanelMap () {
+    public Map<Point2D, PushPanel> getPushPanelMap() {
         return pushPanelMap;
     }
 
-    public Map<Point2D, RestartPoint> getRestartPointMap () {
+    public Map<Point2D, RestartPoint> getRestartPointMap() {
         return restartPointMap;
     }
 
-    public Map<Point2D, StartPoint> getStartPointMap () {
+    public Map<Point2D, StartPoint> getStartPointMap() {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap () {
+    public Map<Point2D, Wall> getWallMap() {
         return wallMap;
     }
 
-    public Server getServer () {
+    public Server getServer() {
         return server;
     }
 
