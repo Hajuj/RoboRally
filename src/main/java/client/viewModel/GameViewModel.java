@@ -341,7 +341,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("handCards")) {
             clientGameModel.setHandCards(false);
-            System.out.println("HALLO????? THERE????");
             regToCard.put(0, null);
             regToCard.put(1, null);
             regToCard.put(2, null);
@@ -363,7 +362,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     e.printStackTrace();
                 }
                 //showPopup("Programming Phase has begin");
-                playerInfo.setText("Please choose your programming cards");
+                //playerInfo.setText("Please choose your programming cards");
             });
         }
         if (evt.getPropertyName().equals("currentRegister")) {

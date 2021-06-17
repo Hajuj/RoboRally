@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -386,6 +385,20 @@ public class MessageHandler {
 
     }
 
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
+    }
+
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
+            alert.show();
+        });
+    }
 
 }
 
