@@ -98,13 +98,13 @@ public class Player {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
         }
-        this.getDeckHand().getDeck().clear();
+        this.deckHand.getDeck().clear();
     }
 
     public void discardRegisterCards() {
         for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
-            this.getDeckRegister().getDeck().set(i, null);
+            this.deckRegister.getDeck().set(i, null);
         }
     }
 
@@ -122,6 +122,8 @@ public class Player {
         //ShuffleCodingBody
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
+            System.out.println("AMOUNT: " + amount);
+            System.out.println("AMOUNT LEFT: " + amountLeft);
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
@@ -138,11 +140,12 @@ public class Player {
 
     private void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
-        this.deckDiscard.removeAllCards();
+        this.deckDiscard.getDeck().clear();
         this.deckProgramming.shuffleDeck();
     }
 
     public Card removeSelectedCard(String card) {
+        System.out.println("STUPID DECK HAND: " + this.deckHand.getDeck());
         for (Card card1 : this.deckHand.getDeck()) {
             if (card.equals(card1.getCardName())) {
                 deckHand.getDeck().remove(card1);
@@ -213,17 +216,17 @@ public class Player {
         return energy;
     }
 
-    public void increaseEnergy(int amount){
+    public void increaseEnergy(int amount) {
         this.energy += amount;
     }
 
-    public void decreaseEnergy(int amount){
-        if(this.energy < amount){
+    public void decreaseEnergy(int amount) {
+        if (this.energy < amount) {
             //TODO can't use if not enough energy
             this.energy = 0;
-        }
-        else {
+        } else {
             this.energy -= amount;
         }
     }
+
 }
