@@ -65,9 +65,9 @@ public class Game {
     private int currentPlayer;
     private int activePhase;
     private int currentRound;
-    private int currentRegister;
+    private int currentRegister = 0;
     private boolean activePhaseOn = false;
-    private boolean timerOn = false;
+    private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
 
     private Game() {
@@ -956,31 +956,27 @@ public class Game {
         }
     }
 
-    public void setGameTimer(GameTimer gameTimer) {
-        this.gameTimer = gameTimer;
-    }
-
-    public int getCurrentRegister() {
+    public Integer getCurrentRegister () {
         return currentRegister;
     }
 
-    public void setCurrentRegister(int currentRegister) {
+    public void setCurrentRegister (int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
-    public GameTimer getGameTimer() {
+    public GameTimer getGameTimer () {
         return gameTimer;
     }
 
-    public boolean isTimerOn() {
-        return timerOn;
+    public boolean getTimerOn () {
+        return timerOn.get();
     }
 
-    public void setTimerOn(boolean timerOn) {
+    public synchronized void setTimerOn (AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
-    public int getCurrentRound() {
+    public int getCurrentRound () {
         return currentRound;
     }
 
