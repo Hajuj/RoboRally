@@ -276,29 +276,52 @@ public class Game {
         }
     }
 
-    public void activateBlueBelts() {
-        for (Point2D position : conveyorBeltMap.keySet()) {
-            if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                for (Player player : getRobotsOnFieldsOwner(position)) {
-                    //first move on the belt
-                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
 
-                    //second move: need to find new position and new orientation first
-                    double xRobotPos = player.getRobot().getxPosition();
-                    double yRobotPos = player.getRobot().getyPosition();
-                    Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                    String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                    moveRobot(player.getRobot(), newOrientation, 1);
+    public void activateBlueBelts () {
+        for (Player player : playerList) {
+            for (Point2D position : conveyorBeltMap.keySet()) {
+                if (conveyorBeltMap.get(position).getColour().equals("blue")) {
+                    if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+                        //first move on the belt
+                        moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
+                        //second move: need to find new position and new orientation first
+                        double xRobotPos = player.getRobot().getxPosition();
+                        double yRobotPos = player.getRobot().getyPosition();
+                        Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                        String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                        moveRobot(player.getRobot(), newOrientation, 1);
+                        sendNewPosition(player);
+                        break;
+                    }
                 }
             }
         }
     }
 
-    public void activateGreenBelts() {
-        for (Point2D position : conveyorBeltMap.keySet()) {
-            if (conveyorBeltMap.get(position).getColour().equals("green")) {
-                for (Player player : getRobotsOnFieldsOwner(position)) {
-                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+
+    public void sendNewPosition (Player player) {
+        int clientID = player.getPlayerID();
+        int newX = player.getRobot().getxPosition();
+        int newY = player.getRobot().getyPosition();
+        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(clientID, newX, newY));
+        server.sendMessage(jsonMessage, server.getConnectionWithID(clientID).getWriter());
+    }
+
+    public void activateBoardElements () {
+        activateBlueBelts();
+        activateGreenBelts();
+    }
+
+    public void activateGreenBelts () {
+        for (Player player : playerList) {
+            for (Point2D position : conveyorBeltMap.keySet()) {
+                if (conveyorBeltMap.get(position).getColour().equals("green")) {
+                    if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+                        moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
+                        break;
+                    }
                 }
             }
         }
@@ -372,6 +395,7 @@ public class Game {
 
         return robotsOnFields;
     }
+
 
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
@@ -883,6 +907,7 @@ public class Game {
             activePhaseOn = true;
         }
     }
+
 
     //TODO change get(0)
     public void startActivationPhase() {

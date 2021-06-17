@@ -302,6 +302,7 @@ public class MessageHandler {
                     server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
                     //Get new register
+                    server.getCurrentGame().activateBoardElements();
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
                     server.getCurrentGame().setCurrentRegister(newRegister);
                     if (server.getCurrentGame().getCurrentRegister() != 5) {
