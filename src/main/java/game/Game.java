@@ -591,7 +591,7 @@ public class Game {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
+                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
                         if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition - 1);
@@ -605,7 +605,7 @@ public class Game {
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
+                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
                         if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition + 1);
@@ -619,7 +619,7 @@ public class Game {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
+                        canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
@@ -633,7 +633,7 @@ public class Game {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
+                        canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
