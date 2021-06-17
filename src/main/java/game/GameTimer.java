@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Mohamad, Viktoria
  */
 public class GameTimer {
-    public Timer timer;
+    private Timer timer;
     private Server server;
 
     public GameTimer(Server server) {
@@ -52,6 +52,7 @@ public class GameTimer {
                 timerEnded();
                 //timer.cancel();
                 //timer.purge();
+                //srry mohamad
             }
         }
     }

@@ -122,9 +122,9 @@ public class Player {
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
-                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
-                this.deckProgramming.removeTopCard();
+                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
             }
+            this.getDeckProgramming().getDeck().clear();
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
