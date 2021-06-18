@@ -148,10 +148,14 @@ public class Game {
 
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
-        if (playerList.size() - 1 == currentIndex) {
-            return -1;
+        //Get the next alive player
+        for (int i = currentIndex + 1; i < playerList.size(); i++) {
+            if (!server.getCurrentGame().getDeadRobots().contains(playerList.get(currentIndex + 1))) {
+                return playerList.get(i).getPlayerID();
+            }
         }
-        return playerList.get(currentIndex + 1).getPlayerID();
+        //No more players in the list / no more alive players in the list
+        return -1;
     }
 
     public void informAboutActivePhase() {
@@ -326,7 +330,7 @@ public class Game {
         int newX = player.getRobot().getxPosition();
         int newY = player.getRobot().getyPosition();
         JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(clientID, newX, newY));
-        server.sendMessage(jsonMessage, server.getConnectionWithID(clientID).getWriter());
+        sendToAllPlayers(jsonMessage);
     }
 
     public void activateBoardElements() {
@@ -350,7 +354,7 @@ public class Game {
         }
     }
 
-    public void activateEnergySpaces () {
+    public void activateEnergySpaces() {
         for (Point2D position : energySpaceMap.keySet()) {
             for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (currentRegister != 4) {
@@ -369,7 +373,7 @@ public class Game {
         }
     }
 
-    public void activatePushPanels () {
+    public void activatePushPanels() {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
@@ -574,89 +578,94 @@ public class Game {
         }
     }
 
+    //TODO remove the players after 5 registers
+    //     add to the messageHandler
+    //     call the method in activeCardEffect()
     public void rebootRobot(Player player) {
         deadRobots.add(player);
         for (int i = 0; i < 2; i++) {
             player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
             deckSpam.removeTopCard();
         }
-        player.discardRegisterCards();
-        player.discardHandCards();
-        player.getRobot().setOrientation("top");
+//        player.discardRegisterCards();
+//        player.discardHandCards();
+//        player.getRobot().setOrientation("top");
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
+        String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
 
-        String isStartingBoard = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
-
-        if (isStartingBoard.equals("A") || isStartingBoard.equals("B")) {
+        boolean fieldIsTaken = false;
+        //If a robot dies on the starting map
+        if (boardName.equals("Start A") || boardName.equals("Start B")) {
             int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
             int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
             for (Player player1 : playerList) {
                 int robotHereX = player1.getRobot().getxPosition();
                 int robotHereY = player1.getRobot().getyPosition();
+                //If another robot is already on the start point
                 if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                    fieldIsTaken = true;
+                    //If the robot can move up
                     if (canRobotMove(robotHereX, robotHereY, "top")) {
                         player1.getRobot().setyPosition(robotHereY - 1);
-                        player.getRobot().setxPosition(startingPointX);
-                        player.getRobot().setyPosition(startingPointY);
-                        player.getRobot().setOrientation("right");
-                        JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
                         sendToAllPlayers(jsonMessage);
 
-                        JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
-                        sendToAllPlayers(jsonMessage1);
+                        player.getRobot().setxPosition(startingPointX);
+                        player.getRobot().setyPosition(startingPointY);
+                        //TODO Check the orientation of the robot
                     } else {
+                        //Robot can not move up because of wall, look for another free starting point
                         int newStartingPointX = (int) firstFreeStartingPoint().getX();
                         int newStartingPointY = (int) firstFreeStartingPoint().getY();
                         player.getRobot().setxPosition(newStartingPointX);
                         player.getRobot().setyPosition(newStartingPointY);
-                        player.getRobot().setOrientation("right");
-                        JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
-                        sendToAllPlayers(jsonMessage);
-
-                        JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
-                        sendToAllPlayers(jsonMessage1);
+                        //TODO Check the orientation of the robot
                     }
                 }
             }
+            //No another robot on the starting point
+            if (!fieldIsTaken) {
+                player.getRobot().setxPosition(startingPointX);
+                player.getRobot().setyPosition(startingPointY);
+            }
         } else {
-            for (HashMap.Entry<Point2D, RestartPoint> entry : getRestartPointMap().entrySet()) {
+            //If robot dies on the game map
+            for (HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
                 if (entry.getValue() != null) {
+                    int restartPointX = (int) entry.getKey().getX();
+                    int restartPointY = (int) entry.getKey().getY();
                     for (Player player1 : playerList) {
-                        int restartPointX = (int) entry.getKey().getX();
-                        int restartPointY = (int) entry.getKey().getY();
-
                         int robotX = player1.getRobot().getxPosition();
                         int robotY = player1.getRobot().getyPosition();
+                        //If another robot already on the restart point
                         if (restartPointX == robotX && restartPointY == robotY) {
+                            //If the robot can move up
                             if (canRobotMove(robotX, robotY, "top")) {
                                 player1.getRobot().setyPosition(robotY - 1);
-                                player.getRobot().setxPosition(restartPointX);
-                                player.getRobot().setyPosition(restartPointY);
-                                player.getRobot().setOrientation("top");
-
-                                JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+                                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
                                 sendToAllPlayers(jsonMessage);
 
-                                JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
-                                sendToAllPlayers(jsonMessage1);
+                                player.getRobot().setxPosition(restartPointX);
+                                player.getRobot().setyPosition(restartPointY);
+                                //TODO Check the orientation of the robot
+                                break;
                             }
-                        } else {
-                            player.getRobot().setxPosition(restartPointX);
-                            player.getRobot().setyPosition(restartPointY);
-                            player.getRobot().setOrientation("top");
-
-                            JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
-                            sendToAllPlayers(jsonMessage);
-
-                            JSONMessage jsonMessage1 = new JSONMessage("RebootDirection", new RebootDirectionBody("right"));
-                            sendToAllPlayers(jsonMessage1);
                         }
                     }
+                    //If the restart point is free
+                    player.getRobot().setxPosition(restartPointX);
+                    player.getRobot().setyPosition(restartPointY);
+                    //TODO Check the orientation of the robot
                 }
             }
         }
+        JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
+        sendToAllPlayers(jsonMessage);
+
+        JSONMessage jsonMessage1 = new JSONMessage("Movement", new MovementBody(player.getPlayerID(), player.getRobot().getxPosition(), player.getRobot().getyPosition()));
+        sendToAllPlayers(jsonMessage1);
     }
 
     public Point2D firstFreeStartingPoint() {
@@ -735,7 +744,7 @@ public class Game {
 
 
     //TODO: ich kann auch den anderen spieler auf ein checkpoint schieben
-    public void activateCheckpoints () {
+    public void activateCheckpoints() {
         for (Player player : playerList) {
             for (Point2D position : checkPointMap.keySet()) {
                 if (player.getRobot().getxPosition() == position.getX() && player.getRobot().getyPosition() == position.getY()) {
@@ -757,7 +766,7 @@ public class Game {
         }
     }
 
-    public void moveRobot (Robot robot, String orientation, int movement) {
+    public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         boolean canMove;
@@ -765,7 +774,8 @@ public class Game {
             case "top" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
-                        //TODO: Get RestartPoint and start Reboot routine
+                        //TODO: Test the rebootRobot method
+                        rebootRobot(server.getPlayerWithID(currentPlayer));
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
@@ -780,7 +790,8 @@ public class Game {
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition + 1 >= map.get(0).size()) {
-                        //TODO: Get RestartPoint and start Reboot routine
+                        //TODO: Test the rebootRobot method
+                        rebootRobot(server.getPlayerWithID(currentPlayer));
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
@@ -795,7 +806,8 @@ public class Game {
             case "left" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
-                        //TODO: Get RestartPoint and start Reboot routine
+                        //TODO: Test the rebootRobot method
+                        rebootRobot(server.getPlayerWithID(currentPlayer));
                     } else {
                         canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
@@ -810,7 +822,8 @@ public class Game {
             case "right" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
-                        //TODO: Get RestartPoint and start Reboot routine
+                        //TODO: Test the rebootRobot method
+                        rebootRobot(server.getPlayerWithID(currentPlayer));
                     } else {
                         canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
@@ -1069,10 +1082,12 @@ public class Game {
     public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
-            ArrayList<Object> array1 = new ArrayList<>();
-            array1.add("clientID=" + player.getPlayerID() + ".0");
-            array1.add("card=" + player.getDeckRegister().getDeck().get(register).getCardName());
-            currentCards.add(array1);
+            if (!deadRobots.contains(player)) {
+                ArrayList<Object> array1 = new ArrayList<>();
+                array1.add("clientID=" + player.getPlayerID() + ".0");
+                array1.add("card=" + player.getDeckRegister().getDeck().get(register).getCardName());
+                currentCards.add(array1);
+            }
         }
         JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
         sendToAllPlayers(jsonMessage);
@@ -1168,32 +1183,32 @@ public class Game {
         this.currentPlayer = currentPlayer;
     }
 
-    public String getMapName () {
+    public String getMapName() {
         return mapName;
     }
 
-    public void setMapName (String mapName) {
+    public void setMapName(String mapName) {
         this.mapName = mapName;
     }
 
 
-    public Map<Player, Integer> getCheckPointReached () {
+    public Map<Player, Integer> getCheckPointReached() {
         return checkPointReached;
     }
 
-    public void setCheckPointReached (Map<Player, Integer> checkPointReached) {
+    public void setCheckPointReached(Map<Player, Integer> checkPointReached) {
         this.checkPointReached = checkPointReached;
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return gameOn;
     }
 
-    public void setGameOn (boolean gameOn) {
+    public void setGameOn(boolean gameOn) {
         this.gameOn = gameOn;
     }
 
-    public ArrayList<String> getAvailableMaps () {
+    public ArrayList<String> getAvailableMaps() {
         return availableMaps;
     }
 
@@ -1277,4 +1292,11 @@ public class Game {
         return server;
     }
 
+    public ArrayList<Player> getDeadRobots() {
+        return deadRobots;
+    }
+
+    public Map<Robot, Point2D> getStartingPointMap() {
+        return startingPointMap;
+    }
 }

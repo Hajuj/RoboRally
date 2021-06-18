@@ -1,6 +1,8 @@
 package server;
 
+import client.model.ClientModel;
 import game.*;
+import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -84,10 +86,12 @@ public class MessageHandler {
         boolean accept = true;
 
         for (Player player1 : server.getWaitingPlayer()) {
-            if (player1.getFigure() == figure) {
-                JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
-                server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
-                accept = false;
+            if (player1.getPlayerID() != clientHandler.getPlayer_id()) {
+                if (player1.getFigure() == figure) {
+                    JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
+                    server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
+                    accept = false;
+                }
             }
         }
 
@@ -201,6 +205,7 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+                server.getCurrentGame().getStartingPointMap().put(player.getRobot(), new Point2D(x, y));
 
                 //sage allen wo der Spieler mit playerID started
                 JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
@@ -215,7 +220,6 @@ public class MessageHandler {
                 }
             }
 
-            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
@@ -277,7 +281,6 @@ public class MessageHandler {
         }
     }
 
-
     public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
@@ -309,6 +312,7 @@ public class MessageHandler {
                         server.getCurrentGame().sendCurrentCards(newRegister);
                     } else {
                         //New Round
+                        server.getCurrentGame().getDeadRobots().clear();
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -330,6 +334,10 @@ public class MessageHandler {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
+    }
+
+    public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+
     }
 
 }

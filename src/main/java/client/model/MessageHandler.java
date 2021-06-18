@@ -381,10 +381,6 @@ public class MessageHandler {
 
     }
 
-    public void handleRebootDirection (ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
-
-    }
-
     public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
         clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
         if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
