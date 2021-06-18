@@ -310,6 +310,7 @@ public class MessageHandler {
 
                     if (server.getCurrentGame().getCurrentRegister() != 5) {
                         canStartNewRound = false;
+                        server.getCurrentGame().getPlayerList().sort(server.getCurrentGame().getComparator());
                         int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
                         server.getCurrentGame().setCurrentPlayer(nextPlayer);
                         if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {

@@ -1309,4 +1309,8 @@ public class Game {
     public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
+
+    public Comparator<Player> getComparator () {
+        return comparator;
+    }
 }
