@@ -113,7 +113,7 @@ public class Player {
     }
 
     public void drawCardsProgramming(int amount) {
-        int amountLeft;
+        int amountLeft = 100000000;
 
         //YourCardsBody
         if (amount <= this.deckProgramming.getDeck().size()) {
@@ -126,15 +126,23 @@ public class Player {
         //ShuffleCodingBody
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
+            System.out.println("Deck Programming Size");
+            System.out.println("Amount " + amount);
+            System.out.println("AmountLeft " + amountLeft);
+
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
-                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
-                this.deckProgramming.removeTopCard();
+                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
             }
+            this.deckProgramming.getDeck().clear();
+            System.out.println("Nach der alle restlich karten aus progDeck");
+            System.out.println("Size von deckProgrammig now" + deckProgramming.getDeck().size());
+            System.out.println("Size von deckHand now" + deckHand.getDeck().size());
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
+            System.out.println("Neue HandCards SIZE" + this.deckHand.getDeck().size());
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
             server.getCurrentGame().sendToAllPlayers(shuffleMessage);
         }
