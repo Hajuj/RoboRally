@@ -76,11 +76,13 @@ public class Game {
     private Comparator<Player> comparator = new Helper(this);
     private final boolean IS_LAZY = true;
 
-    private Game() {
+    private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
+
+    private Game () {
 
     }
 
-    public static Game getInstance() {
+    public static Game getInstance () {
         if (instance == null) {
             instance = new Game();
         }
@@ -349,8 +351,9 @@ public class Game {
         activateGreenBelts();
         //push pannels hier
         activateGears();
-        //lasers hier
+        activateWallLasers();
         //robot lasers hier
+        activateDamage();
         activateEnergySpaces();
         activateCheckpoints();
     }
@@ -431,24 +434,56 @@ public class Game {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
                 for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
-                    for (int i = 0; i < laserMap.get(position).getCount(); i++) {
-
-                        //TODO: check laserPath
-                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
+                    int amount = laserMap.get(position).getCount();
+                    int amountLeft;
+                    if (deckSpam.getDeck().size() >= amount) {
+                        for (int i = 0; i < amount; i++) {
+                            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                            deckSpam.removeTopCard();
+                            currentDamage.get(player).add("Spam");
+                        }
+                    } else {
+                        amountLeft = amount - deckSpam.getDeck().size();
+                        for (int i = 0; i < deckSpam.getDeck().size(); i++) {
+                            player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
+                            currentDamage.get(player).add("Spam");
+                        }
+                        deckSpam.getDeck().clear();
+                        //TODO: Mohamad hier ein peckDamage message schicken mit amountLeft Damage
                     }
                 }
             }
         }
     }
 
-    public void activateRobotLasers() {
+    public void sendDamage (Player player, ArrayList<String> damageCards) {
+        JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
+        sendToAllPlayers(damageMessage);
+    }
+
+    public void activateDamage () {
+        for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
+            if (entry.getValue().size() != 0) {
+                sendDamage(entry.getKey(), entry.getValue());
+            }
+        }
+        clearDamage();
+    }
+
+    public void clearDamage () {
+        currentDamage.clear();
+        for (Player player : playerList) {
+            currentDamage.put(player, new ArrayList<String>());
+        }
+    }
+
+    public void activateRobotLasers () {
         for (Player player : playerList) {
 
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -610,6 +645,7 @@ public class Game {
             }
         }
     }
+
 
     public void rebootRobot(Player player) {
         deadRobotsIDs.add(player.getPlayerID());

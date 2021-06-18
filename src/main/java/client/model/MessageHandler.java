@@ -148,6 +148,12 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
         int playerID = startingPointTakenBody.getClientID();
 
+        if (playerID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
+            Robot myRobot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
+            clientModel.getClientGameModel().getPlayer().setRobot(myRobot);
+        }
+
         String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
 
@@ -398,6 +404,17 @@ public class MessageHandler {
             alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
             alert.show();
         });
+    }
+
+    public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
+        ArrayList<String> cards = drawDamageBody.getCards();
+        int clientID = drawDamageBody.getClientID();
+
+        if (clientID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            clientModel.getClientGameModel().getPlayer().getRobot().setSchadenPunkte(clientModel.getClientGameModel().getPlayer().getRobot().getSchadenPunkte() + cards.size());
+        }
+
+        clientModel.receiveMessage("Player " + clientID + " has +" + cards.size() + " DamagePoints!");
     }
 
 }
