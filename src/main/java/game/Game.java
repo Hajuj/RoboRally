@@ -10,10 +10,7 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
-
-import javafx.geometry.Point2D;
 
 import java.io.File;
 import java.io.IOException;
@@ -292,15 +289,65 @@ public class Game {
         for (Point2D position : conveyorBeltMap.keySet()) {
             if (conveyorBeltMap.get(position).getColour().equals("blue")) {
                 for (Player player : getRobotsOnFieldsOwner(position)) {
+                    boolean movedOnBelt = false;
                     //first move on the belt
                     moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
 
                     //second move: need to find new position and new orientation first
                     double xRobotPos = player.getRobot().getxPosition();
                     double yRobotPos = player.getRobot().getyPosition();
-                    Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                    String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                    moveRobot(player.getRobot(), newOrientation, 1);
+                    for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                        if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                            movedOnBelt = true;
+                            Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                            String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                            moveRobot(player.getRobot(), newOrientation, 1);
+                        }
+                    }
+                    if (!movedOnBelt){
+                        moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public void activateBlueBeltsAlternate() {
+        for (Player player : playerList) {
+            for (Point2D position : conveyorBeltMap.keySet()) {
+                if (conveyorBeltMap.get(position).getColour().equals("blue")) {
+                    if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+                        boolean movedOnBelt = false;
+                        //first move on the belt
+                        moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendNewPosition(player);
+                        //second move: need to find new position and new orientation first
+                        double xRobotPos = player.getRobot().getxPosition();
+                        double yRobotPos = player.getRobot().getyPosition();
+                        for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                            if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                                movedOnBelt = true;
+                                Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                                String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                                moveRobot(player.getRobot(), newOrientation, 1);
+                            }
+                        }
+                        if (!movedOnBelt){
+                            moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        }
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendNewPosition(player);
+                        break;
+                    }
                 }
             }
         }
@@ -560,7 +607,7 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation){
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
         boolean foundBlocker = false;
 
         for (Element element : map.get(x).get(y)){
@@ -581,7 +628,7 @@ public class Game {
             }
         }
 
-        return foundBlocker;
+        return !foundBlocker;
     }
 
     public void moveRobot(Robot robot, String orientation, int movement) {
@@ -594,7 +641,7 @@ public class Game {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
+                        canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
                         if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition - 1);
@@ -608,7 +655,7 @@ public class Game {
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
+                        canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
                         if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition + 1);
@@ -622,7 +669,7 @@ public class Game {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
+                        canMove = isFieldNotBlocked(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
@@ -636,7 +683,7 @@ public class Game {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
-                        canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
+                        canMove = isFieldNotBlocked(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
