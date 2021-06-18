@@ -59,6 +59,8 @@ public class Game {
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
 
+    private Map<Player, Integer> checkPointReached = new HashMap<>();
+
     private int roundCounter = 1;
     private String mapName;
     private boolean gameOn;
@@ -106,6 +108,10 @@ public class Game {
         this.deckWorm.initializeDeck();
 
         this.playerList = players;
+
+        for (Player player : players) {
+            checkPointReached.put(player, 0);
+        }
 
         this.currentRound = 0;
         this.setActivePhase(0);
@@ -324,6 +330,7 @@ public class Game {
         activateBlueBelts();
         activateGreenBelts();
         activateEnergySpaces();
+        activateCheckpoints();
     }
 
     public void activateGreenBelts () {
@@ -636,15 +643,15 @@ public class Game {
                 foundBlocker = true;
                 //TODO: Get RestartPoint and start Reboot routine
             }
-            if (element.getType().equals("Wall")){
-                for (String orientation : element.getOrientations()){
-                    if(orientation.equals(blockOrientation)){
+            if (element.getType().equals("Wall")) {
+                for (String orientation : element.getOrientations()) {
+                    if (orientation.equals(blockOrientation)) {
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")){
+            if (element.getType().equals("Antenna")) {
                 foundBlocker = true;
             }
         }
@@ -652,7 +659,31 @@ public class Game {
         return foundBlocker;
     }
 
-    public void moveRobot(Robot robot, String orientation, int movement) {
+
+    //TODO: ich kann auch den anderen spieler auf ein checkpoint schieben
+    public void activateCheckpoints () {
+        for (Player player : playerList) {
+            for (Point2D position : checkPointMap.keySet()) {
+                if (player.getRobot().getxPosition() == position.getX() && player.getRobot().getyPosition() == position.getY()) {
+                    int lastCheckpoint = checkPointReached.get(player);
+                    if (checkPointMap.get(position).getCount() == lastCheckpoint + 1) {
+                        checkPointReached.replace(player, lastCheckpoint + 1);
+                        if (lastCheckpoint + 1 == checkPointMap.size()) {
+                            JSONMessage checkpointReached = new JSONMessage("CheckPointReached", new CheckPointReachedBody(player.getPlayerID(), lastCheckpoint + 1));
+                            sendToAllPlayers(checkpointReached);
+                            JSONMessage finishedGame = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
+                            sendToAllPlayers(finishedGame);
+                        } else {
+                            JSONMessage checkpointReached = new JSONMessage("CheckPointReached", new CheckPointReachedBody(player.getPlayerID(), lastCheckpoint + 1));
+                            sendToAllPlayers(checkpointReached);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void moveRobot (Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         boolean canMove;
@@ -674,7 +705,6 @@ public class Game {
 
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
-                    //TODO ILJA schau bitte das an. Jetzt mit
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Get RestartPoint and start Reboot routine
                     } else {
@@ -1064,23 +1094,32 @@ public class Game {
         this.currentPlayer = currentPlayer;
     }
 
-    public String getMapName() {
+    public String getMapName () {
         return mapName;
     }
 
-    public void setMapName(String mapName) {
+    public void setMapName (String mapName) {
         this.mapName = mapName;
     }
 
-    public boolean isGameOn() {
+
+    public Map<Player, Integer> getCheckPointReached () {
+        return checkPointReached;
+    }
+
+    public void setCheckPointReached (Map<Player, Integer> checkPointReached) {
+        this.checkPointReached = checkPointReached;
+    }
+
+    public boolean isGameOn () {
         return gameOn;
     }
 
-    public void setGameOn(boolean gameOn) {
+    public void setGameOn (boolean gameOn) {
         this.gameOn = gameOn;
     }
 
-    public ArrayList<String> getAvailableMaps() {
+    public ArrayList<String> getAvailableMaps () {
         return availableMaps;
     }
 
