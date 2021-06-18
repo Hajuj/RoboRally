@@ -142,7 +142,7 @@ public class Player {
         }
     }
 
-    private void shuffleDiscardIntoProgramming() {
+    public void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
         this.deckDiscard.getDeck().clear();
         this.deckProgramming.shuffleDeck();

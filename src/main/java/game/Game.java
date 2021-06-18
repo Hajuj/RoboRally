@@ -291,12 +291,12 @@ public class Game {
         }
     }
 
-
     public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
                     if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+                        boolean movedOnBelt = false;
                         //first move on the belt
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         try {
@@ -308,9 +308,17 @@ public class Game {
                         //second move: need to find new position and new orientation first
                         double xRobotPos = player.getRobot().getxPosition();
                         double yRobotPos = player.getRobot().getyPosition();
-                        Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                        String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                        moveRobot(player.getRobot(), newOrientation, 1);
+                        for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                            if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                                movedOnBelt = true;
+                                Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                                String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                                moveRobot(player.getRobot(), newOrientation, 1);
+                            }
+                        }
+                        if (!movedOnBelt){
+                            moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
+                        }
                         try {
                             Thread.sleep(80);
                         } catch (InterruptedException e) {
@@ -546,6 +554,10 @@ public class Game {
                 deckSpam.getDeck().add(spam);
                 //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
 
+                //TODO test if-statement for consistency when deck is empty
+                if(!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)){
+                    playerList.get(indexCurrentPlayer).shuffleDiscardIntoProgramming();
+                }
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
                 if (currentRegister == 0 && top.cardName.equals("Again")) {
                     playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(top);
@@ -564,8 +576,10 @@ public class Game {
             }
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+                    if(deckSpam.getDeck().size() > 0) {
+                        playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -574,8 +588,10 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+                    if(deckSpam.getDeck().size() > 0) {
+                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -591,8 +607,10 @@ public class Game {
         deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
             //TODO: what if es keine Karten in deckSpam gibt?
-            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-            deckSpam.removeTopCard();
+            if(deckSpam.getDeck().size() > 0) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+            }
         }
 
         int robotPlacementX = player.getRobot().getxPosition();
@@ -722,29 +740,29 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isBlockerOnField(Robot robot, int x, int y, String blockOrientation) {
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)) {
-            if (element.getType().equals("Pit")) {
+        for (Element element : map.get(x).get(y)){
+            if (element.getType().equals("Pit")){
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
                 //TODO: Get RestartPoint and start Reboot routine
             }
-            if (element.getType().equals("Wall")) {
-                for (String orientation : element.getOrientations()) {
-                    if (orientation.equals(blockOrientation)) {
+            if (element.getType().equals("Wall")){
+                for (String orientation : element.getOrientations()){
+                    if(orientation.equals(blockOrientation)){
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")) {
+            if (element.getType().equals("Antenna")){
                 foundBlocker = true;
             }
         }
 
-        return foundBlocker;
+        return !foundBlocker;
     }
 
 
@@ -783,9 +801,9 @@ public class Game {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
-                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
+                        canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                         }
@@ -807,9 +825,9 @@ public class Game {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
-                        canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
+                        canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                         }
@@ -831,7 +849,7 @@ public class Game {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
-                        canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
+                        canMove = isFieldNotBlocked(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
@@ -855,7 +873,7 @@ public class Game {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
-                        canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
+                        canMove = isFieldNotBlocked(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
