@@ -10,7 +10,7 @@ import java.util.Map;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
-    private final boolean IS_LASY = true;
+    private final boolean IS_LAZY = false;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -98,7 +98,7 @@ public class SimpleAIModel {
 
 
     public void playCardRoutine (int currentRegiser) {
-        if (IS_LASY) {
+        if (IS_LAZY) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

@@ -545,9 +545,17 @@ public class Game {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
                 deckSpam.getDeck().add(spam);
                 //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
+
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
-                playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
+                if (currentRegister == 0 && top.cardName.equals("Again")) {
+                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(top);
+                    playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
+                    activateCardEffect("Spam");
+                    break;
+                }
                 playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().set(currentRegister, top);
+                playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
+
                 JSONMessage jsonMessage = new JSONMessage("ReplaceCard", new ReplaceCardBody(currentRegister, top.cardName, currentPlayer));
                 sendToAllPlayers(jsonMessage);
                 activateCardEffect(top.cardName);
@@ -586,9 +594,6 @@ public class Game {
             player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
             deckSpam.removeTopCard();
         }
-//        player.discardRegisterCards();
-//        player.discardHandCards();
-//        player.getRobot().setOrientation("top");
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
