@@ -795,6 +795,13 @@ public class Game {
                             robotYPosition--;
                         }
                     }
+                    if (movement > 1) {
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
@@ -810,6 +817,13 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
+                        }
+                    }
+                    if (movement > 1) {
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -829,6 +843,13 @@ public class Game {
                             robotXPosition--;
                         }
                     }
+                    if (movement > 1) {
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
@@ -844,6 +865,13 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
+                        }
+                    }
+                    if (movement > 1) {
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
