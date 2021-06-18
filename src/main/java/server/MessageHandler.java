@@ -288,7 +288,7 @@ public class MessageHandler {
                 for (Player player : server.getCurrentGame().getPlayerList()) {
                     if (player.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
-                        server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                        server.getCurrentGame().sendToAllPlayers(cardPlayed);
                         //TODO send also all Movement and Animations
                     }
                 }

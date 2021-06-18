@@ -65,12 +65,13 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                if (!card.cardName.equals("Again") && this.getDeckRegister().getDeck().get(0) == null) {
+                if (card.cardName.equals("Again") && i == 0){
+                    this.getDeckDiscard().getDeck().add(card);
+                    i--;
+                } else {
                     newCard.add(card.getCardName());
                     this.getDeckRegister().getDeck().set(i, card);
                 }
-                newCard.add(card.getCardName());
-                this.getDeckRegister().getDeck().set(i, card);
             }
         }
         return newCard;

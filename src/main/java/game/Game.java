@@ -573,23 +573,13 @@ public class Game {
                 //     JSON Messages senden
             }
             case "Worm" -> {
-//                for (int i = 0; i < 2; i++) {
-//                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-//                    deckSpam.removeTopCard();
-//                }
-
-                //TODO: Call Reboot method
-                //      set Robot to RestartPoint
-                //      cancel remaining registers
-                //      discard remaining registers
+                rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
             }
         }
     }
 
-    //TODO remove the players after 5 registers
-    //     add to the messageHandler
-    //     call the method in activeCardEffect()
     public void rebootRobot(Player player) {
+        System.out.println("DUMM ALLES");
         deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
             //TODO: what if es keine Karten in deckSpam gibt?
