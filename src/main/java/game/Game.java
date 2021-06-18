@@ -291,35 +291,7 @@ public class Game {
         }
     }
 
-
     public void activateBlueBelts() {
-        for (Point2D position : conveyorBeltMap.keySet()) {
-            if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                for (Player player : getRobotsOnFieldsOwner(position)) {
-                    boolean movedOnBelt = false;
-                    //first move on the belt
-                    moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-
-                    //second move: need to find new position and new orientation first
-                    double xRobotPos = player.getRobot().getxPosition();
-                    double yRobotPos = player.getRobot().getyPosition();
-                    for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
-                        if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
-                            movedOnBelt = true;
-                            Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                            String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                            moveRobot(player.getRobot(), newOrientation, 1);
-                        }
-                    }
-                    if (!movedOnBelt){
-                        moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                    }
-                }
-            }
-        }
-    }
-
-    public void activateBlueBeltsAlternate() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
