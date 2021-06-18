@@ -459,7 +459,7 @@ public class ClientGameModel {
         boolean oldPlayer = this.currentPlayer;
         this.currentPlayer = currentPlayer;
 
-        propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
+        //propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
 
     }
 

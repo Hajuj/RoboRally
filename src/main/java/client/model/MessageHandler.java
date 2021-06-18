@@ -173,6 +173,7 @@ public class MessageHandler {
         //clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
+
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
@@ -184,6 +185,9 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         clientModel.getClientGameModel().setActualPhase(phase);
+        if (phase == 2) {
+            clientModel.getClientGameModel().setActualRegister(-1);
+        }
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {

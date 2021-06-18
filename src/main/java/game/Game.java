@@ -43,7 +43,7 @@ public class Game {
     private Server server;
     private GameTimer gameTimer;
     private ArrayList<String> availableMaps = new ArrayList<>();
-    private ArrayList<Player> deadRobots = new ArrayList<>();
+    private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
@@ -67,7 +67,7 @@ public class Game {
     private int roundCounter = 1;
     private String mapName;
     private boolean gameOn;
-    private int currentPlayer;
+    private volatile int currentPlayer;
     private int activePhase;
     private int currentRound;
     private int currentRegister = 0;
@@ -150,9 +150,11 @@ public class Game {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
         for (int i = currentIndex + 1; i < playerList.size(); i++) {
-            if (!server.getCurrentGame().getDeadRobots().contains(playerList.get(currentIndex + 1))) {
+            if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
+                System.out.println("Player " + playerList.get(i).getPlayerID() + " ist am leben und ist jetzt currenPlayer");
                 return playerList.get(i).getPlayerID();
             }
+            System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
         }
         //No more players in the list / no more alive players in the list
         return -1;
@@ -294,10 +296,8 @@ public class Game {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                    System.out.println("Compate robot (" + player.getRobot().getxPosition() + " " + player.getRobot().getyPosition() + ") und  Belt Position " + position);
                     if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
                         //first move on the belt
-                        System.out.println((player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()));
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         try {
                             Thread.sleep(80);
@@ -582,8 +582,9 @@ public class Game {
     //     add to the messageHandler
     //     call the method in activeCardEffect()
     public void rebootRobot(Player player) {
-        deadRobots.add(player);
+        deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
+            //TODO: what if es keine Karten in deckSpam gibt?
             player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
             deckSpam.removeTopCard();
         }
@@ -724,6 +725,7 @@ public class Game {
         for (Element element : map.get(x).get(y)) {
             if (element.getType().equals("Pit")) {
                 foundBlocker = true;
+                rebootRobot(server.getPlayerWithID(currentPlayer));
                 //TODO: Get RestartPoint and start Reboot routine
             }
             if (element.getType().equals("Wall")) {
@@ -776,6 +778,7 @@ public class Game {
                     if (robotYPosition - 1 < 0) {
                         //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
+                        break;
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
@@ -792,6 +795,7 @@ public class Game {
                     if (robotYPosition + 1 >= map.get(0).size()) {
                         //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
+                        break;
                     } else {
                         canMove = !isBlockerOnField(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
@@ -808,6 +812,7 @@ public class Game {
                     if (robotXPosition - 1 < 0) {
                         //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
+                        break;
                     } else {
                         canMove = !isBlockerOnField(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
@@ -824,6 +829,7 @@ public class Game {
                     if (robotXPosition + 1 >= map.size()) {
                         //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
+                        break;
                     } else {
                         canMove = !isBlockerOnField(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
@@ -1062,9 +1068,10 @@ public class Game {
     //TODO change get(0)
     public void startActivationPhase() {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
-        currentPlayer = playerList.get(0).getPlayerID();
         currentRegister = 0;
         sendCurrentCards(currentRegister);
+        currentPlayer = playerList.get(0).getPlayerID();
+        informAboutCurrentPlayer();
     }
 
     public String getInverseOrientation(String orientation) {
@@ -1082,7 +1089,7 @@ public class Game {
     public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
-            if (!deadRobots.contains(player)) {
+            if (!deadRobotsIDs.contains(player.getPlayerID())) {
                 ArrayList<Object> array1 = new ArrayList<>();
                 array1.add("clientID=" + player.getPlayerID() + ".0");
                 array1.add("card=" + player.getDeckRegister().getDeck().get(register).getCardName());
@@ -1091,8 +1098,8 @@ public class Game {
         }
         JSONMessage jsonMessage = new JSONMessage("CurrentCards", new CurrentCardsBody(currentCards));
         sendToAllPlayers(jsonMessage);
-        currentPlayer = playerList.get(0).getPlayerID();
-        informAboutCurrentPlayer();
+        //currentPlayer = playerList.get(0).getPlayerID();
+        //informAboutCurrentPlayer();
     }
 
     public int getActivePhase() {
@@ -1168,7 +1175,10 @@ public class Game {
 
     public void setNewRoundCounter() {
         this.roundCounter++;
-        System.out.println(roundCounter);
+        System.out.println("************************************************************************");
+        System.out.println("******************************   ROUND " + roundCounter + "   ******************************");
+        System.out.println("************************************************************************");
+
     }
 
     public void setActivePhaseOn(boolean activePhaseOn) {
@@ -1284,19 +1294,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
 
-    public ArrayList<Player> getDeadRobots() {
-        return deadRobots;
+    public ArrayList<Integer> getDeadRobotsIDs () {
+        return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
+    }
+
+    public Comparator<Player> getComparator () {
+        return comparator;
     }
 }
