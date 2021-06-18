@@ -579,7 +579,10 @@ public class Game {
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
                 deckSpam.getDeck().add(spam);
-                //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
+                //TODO test if-statement for consistency when deck is empty
+                if(!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)){
+                    playerList.get(indexCurrentPlayer).shuffleDiscardIntoProgramming();
+                }
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
                 playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
                 playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().set(currentRegister, top);
@@ -588,6 +591,7 @@ public class Game {
                 activateCardEffect(top.cardName);
                 JSONMessage jsonMessage1 = new JSONMessage("CardPlayed", new PlayCardBody(top.cardName));
                 sendToAllPlayers(jsonMessage1);
+
             }
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
@@ -1104,9 +1108,6 @@ public class Game {
 
         }
     }
-
-    //TODO activateCard() method with switch
-    //     check discard consistency
 
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
