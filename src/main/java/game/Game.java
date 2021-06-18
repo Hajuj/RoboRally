@@ -1121,7 +1121,6 @@ public class Game {
         }
     }
 
-
     //TODO change get(0)
     public void startActivationPhase() {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
