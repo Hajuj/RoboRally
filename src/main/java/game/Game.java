@@ -336,6 +336,10 @@ public class Game {
     public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
+        //push pannels hier
+        activateGears();
+        //lasers hier
+        //robot lasers hier
         activateEnergySpaces();
         activateCheckpoints();
     }
@@ -401,8 +405,12 @@ public class Game {
             for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
                     changeOrientation(player.getRobot(), "left");
+                    JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(player.getPlayerID(), "counterclockwise"));
+                    sendToAllPlayers(jsonMessage);
                 } else if (gearMap.get(position).getOrientations().get(0).equals("clockwise")) {
                     changeOrientation(player.getRobot(), "right");
+                    JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(player.getPlayerID(), "clockwise"));
+                    sendToAllPlayers(jsonMessage);
                 }
             }
         }
