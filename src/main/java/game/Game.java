@@ -549,6 +549,12 @@ public class Game {
                 changeOrientation(playerList.get(indexCurrentPlayer).getRobot(), "uturn");
                 JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
                 sendToAllPlayers(jsonMessage);
+                //TODO: Repair Move and Turning Queues.
+                try {
+                    Thread.sleep(80);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
                 sendToAllPlayers(jsonMessage2);
             }
