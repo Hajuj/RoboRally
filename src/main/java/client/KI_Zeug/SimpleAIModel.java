@@ -10,7 +10,7 @@ import java.util.Map;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -50,7 +50,6 @@ public class SimpleAIModel {
             figureCounter++;
             clientModel.sendUsernameAndRobot("SimpleAIModel", figureCounter);
         } else {
-            System.out.println("No available figure, srry");
             System.exit(0);
         }
     }
@@ -69,7 +68,6 @@ public class SimpleAIModel {
                 }
             }
         } else {
-            System.out.println("No starting points, srry");
             System.exit(0);
         }
     }
@@ -80,7 +78,6 @@ public class SimpleAIModel {
             if (!clientModel.getClientGameModel().getCardsInHand().get(j).equals("Again")) {
                 clientModel.getClientGameModel().sendSelectedCards(0, clientModel.getClientGameModel().getCardsInHand().get(j));
                 cardsInRegister.replace(0, clientModel.getClientGameModel().getCardsInHand().get(j));
-                System.out.println("boink");
                 break;
             }
         }
@@ -90,9 +87,6 @@ public class SimpleAIModel {
             String cardName = clientModel.getClientGameModel().getCardsInHand().get(i);
             clientModel.getClientGameModel().sendSelectedCards(i + 1, cardName);
             cardsInRegister.replace(i + 1, cardName);
-        }
-        for (int o = 0; o < 5; o++) {
-            System.out.println(cardsInRegister.get(o));
         }
     }
 

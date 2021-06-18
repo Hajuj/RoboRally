@@ -74,6 +74,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
+    private final boolean IS_LAZY = true;
 
     private Game() {
 
@@ -151,10 +152,8 @@ public class Game {
         //Get the next alive player
         for (int i = currentIndex + 1; i < playerList.size(); i++) {
             if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
-                System.out.println("Player " + playerList.get(i).getPlayerID() + " ist am leben und ist jetzt currenPlayer");
                 return playerList.get(i).getPlayerID();
             }
-            System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
         }
         //No more players in the list / no more alive players in the list
         return -1;
@@ -299,10 +298,12 @@ public class Game {
                         boolean movedOnBelt = false;
                         //first move on the belt
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                         sendNewPosition(player);
                         //second move: need to find new position and new orientation first
@@ -316,13 +317,15 @@ public class Game {
                                 moveRobot(player.getRobot(), newOrientation, 1);
                             }
                         }
-                        if (!movedOnBelt){
+                        if (!movedOnBelt) {
                             moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         }
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                         sendNewPosition(player);
                         break;
@@ -555,7 +558,7 @@ public class Game {
                 //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
 
                 //TODO test if-statement for consistency when deck is empty
-                if(!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)){
+                if (!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)) {
                     playerList.get(indexCurrentPlayer).shuffleDiscardIntoProgramming();
                 }
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
@@ -576,7 +579,7 @@ public class Game {
             }
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
-                    if(deckSpam.getDeck().size() > 0) {
+                    if (deckSpam.getDeck().size() > 0) {
                         playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                         deckSpam.removeTopCard();
                     }
@@ -588,7 +591,7 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    if(deckSpam.getDeck().size() > 0) {
+                    if (deckSpam.getDeck().size() > 0) {
                         player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                         deckSpam.removeTopCard();
                     }
@@ -603,11 +606,10 @@ public class Game {
     }
 
     public void rebootRobot(Player player) {
-        System.out.println("DUMM ALLES");
         deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
             //TODO: what if es keine Karten in deckSpam gibt?
-            if(deckSpam.getDeck().size() > 0) {
+            if (deckSpam.getDeck().size() > 0) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                 deckSpam.removeTopCard();
             }
@@ -740,24 +742,24 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)){
-            if (element.getType().equals("Pit")){
+        for (Element element : map.get(x).get(y)) {
+            if (element.getType().equals("Pit")) {
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
                 //TODO: Get RestartPoint and start Reboot routine
             }
-            if (element.getType().equals("Wall")){
-                for (String orientation : element.getOrientations()){
-                    if(orientation.equals(blockOrientation)){
+            if (element.getType().equals("Wall")) {
+                for (String orientation : element.getOrientations()) {
+                    if (orientation.equals(blockOrientation)) {
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")){
+            if (element.getType().equals("Antenna")) {
                 foundBlocker = true;
             }
         }
@@ -803,16 +805,18 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                         }
                     }
                     if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -827,16 +831,18 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                         }
                     }
                     if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -857,10 +863,12 @@ public class Game {
                         }
                     }
                     if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -881,10 +889,12 @@ public class Game {
                         }
                     }
                     if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -1343,23 +1353,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap () {
+    public Map<Point2D, Wall> getWallMap() {
         return wallMap;
     }
 
-    public Server getServer () {
+    public Server getServer() {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs () {
+    public ArrayList<Integer> getDeadRobotsIDs() {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap () {
+    public Map<Robot, Point2D> getStartingPointMap() {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator () {
+    public Comparator<Player> getComparator() {
         return comparator;
     }
 }
