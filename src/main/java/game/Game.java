@@ -595,8 +595,10 @@ public class Game {
             }
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
-                    playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+                    if(deckSpam.getDeck().size() > 0) {
+                        playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -605,8 +607,10 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                    deckSpam.removeTopCard();
+                    if(deckSpam.getDeck().size() > 0) {
+                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                        deckSpam.removeTopCard();
+                    }
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -622,8 +626,10 @@ public class Game {
         deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
             //TODO: what if es keine Karten in deckSpam gibt?
-            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-            deckSpam.removeTopCard();
+            if(deckSpam.getDeck().size() > 0) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+            }
         }
 //        player.discardRegisterCards();
 //        player.discardHandCards();

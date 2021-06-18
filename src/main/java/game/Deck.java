@@ -16,13 +16,9 @@ public abstract class Deck {
 
     public Card getTopCard() {
         //TODO Index 0 out of bounds for length 0 -> Ilja please help us :(
-        if(this.getDeck().size() > 0) {
-            topCard = this.getDeck().get(0);
-            return topCard;
-        }
-        else{
-            throw new ClassCastException("Can't draw a card as the deck is empty!");
-        }
+        topCard = this.getDeck().get(0);
+        return topCard;
+
     }
 
     protected abstract ArrayList<Card> getDeck();
