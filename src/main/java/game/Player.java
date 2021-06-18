@@ -115,6 +115,7 @@ public class Player {
     public void drawCardsProgramming(int amount) {
         int amountLeft;
         //YourCardsBody
+        //If there is enough cards in deckProgramming
         if (amount <= this.deckProgramming.getDeck().size()) {
             for (int i = 0; i < amount; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(0));
@@ -123,6 +124,7 @@ public class Player {
         }
 
         //ShuffleCodingBody
+        //If there is no enough cards in deckProgramming
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
 
@@ -140,7 +142,7 @@ public class Player {
         }
     }
 
-    private void shuffleDiscardIntoProgramming() {
+    public void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
         this.deckDiscard.getDeck().clear();
         this.deckProgramming.shuffleDeck();

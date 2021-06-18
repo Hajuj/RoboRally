@@ -230,7 +230,6 @@ public class MessageHandler {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
-        System.out.println("HEY I GOT SELECTED");
 
         Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
 
@@ -253,7 +252,6 @@ public class MessageHandler {
             } else {
                 Card currentCard = currentPlayer.removeSelectedCard(card);
                 currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
-                System.out.println(currentCard);
 
                 JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
                 server.getCurrentGame().sendToAllPlayers(addCard);
@@ -288,7 +286,7 @@ public class MessageHandler {
                 for (Player player : server.getCurrentGame().getPlayerList()) {
                     if (player.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
-                        server.getCurrentGame().sendToAllPlayers(cardPlayed);
+                        server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
                         //TODO send also all Movement and Animations
                     }
                 }
@@ -296,14 +294,12 @@ public class MessageHandler {
 
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
-                System.out.println("NEXT PLAYER IS " + nextPlayer);
                 if (nextPlayer != -1) {
                     server.getCurrentGame().setCurrentPlayer(nextPlayer);
                     JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
                     server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
                     //Get new register
-                    System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
                     server.getCurrentGame().activateBoardElements();
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
                     server.getCurrentGame().setCurrentRegister(newRegister);
@@ -328,7 +324,6 @@ public class MessageHandler {
                     if (canStartNewRound) {
                         //New Round
                         server.getCurrentGame().getDeadRobotsIDs().clear();
-                        System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -341,7 +336,6 @@ public class MessageHandler {
                         //TODO when does the game stops? -> Ilja
                     }
                 }
-                logger.info("IM PLAYING MY CARD LOL");
             } else {
                 JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
                 server.sendMessage(errorNotYourTurn, clientHandler.getWriter());

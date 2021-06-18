@@ -226,7 +226,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             collectingCards();
         } else {
             this.cardName = source.getId();
-            System.out.println(this.cardName);
         }
         event.consume();
         handleSource(source);
@@ -242,7 +241,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         if (event.getDragboard().hasImage()) {
             event.acceptTransferModes(TransferMode.MOVE);
-            // System.out.println(event.getTarget());
         }
 
     }

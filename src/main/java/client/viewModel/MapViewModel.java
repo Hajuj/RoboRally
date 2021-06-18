@@ -444,7 +444,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
-            System.out.println(clientGameModel.getMoveQueue().size());
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
                     //nullpointer hier. warum=
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());

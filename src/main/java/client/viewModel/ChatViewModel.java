@@ -59,7 +59,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void sendMessageButton(ActionEvent event) {
-       //System.out.println("HI");
             message = messageField.getText();
             model.sendMsg(message);
             messageField.clear();
@@ -98,8 +97,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     public void loadGameScene () throws IOException {
        /* ClassLoader classLoader = getClass().getClassLoader();
-        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");
-        System.out.println(is+"True File exited");*/
+        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");*/
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
