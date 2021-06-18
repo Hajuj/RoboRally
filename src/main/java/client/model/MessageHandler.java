@@ -170,7 +170,7 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         //TODO:CURRENT PLAYER
-        //clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
 

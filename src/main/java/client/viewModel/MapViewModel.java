@@ -438,7 +438,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     handleMyLife();
-                    //handleAnimation("BlueConveyorBelt");
                    // handleLaserAnime();
                 }
             });
@@ -497,7 +496,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 ToY = entry.getKey().getY() + move;
                 ToX = 0.0;
             }
-
+           // System.out.println("Bis HERE IST ALLES GUT GELAUFEN");
             TranslateTransition transition = new TranslateTransition();
             transition.setDuration(Duration.INDEFINITE);
             transition.setToX(ToX);
@@ -507,7 +506,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
             ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
             transition.setNode(robotV);
-            transition.setNode(robotOrientation);
+            //transition.setNode(robotOrientation);
+            //System.out.println("ANIMATION BIS HERE IST GUT");
             transition.play();
 
         }

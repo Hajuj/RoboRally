@@ -82,8 +82,8 @@ public class ClientGameModel {
     private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
-    private boolean currentPlayer = false;
-   ;
+    private boolean currentPlayer ;
+
 
 
     //Singleton Zeug
@@ -144,8 +144,9 @@ public class ClientGameModel {
         return animType;
     }
 
-
-
+    public boolean isCurrentPlayer() {
+        return currentPlayer;
+    }
 
     public void sendPlayCard (String cardName) {
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(cardName));
@@ -402,13 +403,7 @@ public class ClientGameModel {
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;
         this.actualPhase = phase;
-        if (this.actualPhase == 2) {
-            propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
-        }
-        if(this.actualPhase==3){
-            propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
-
-        }
+        propertyChangeSupport.firePropertyChange("ActualPhase", currentPhase, phase);
 
     }
 
@@ -455,15 +450,12 @@ public class ClientGameModel {
         return blueBeltAnimeProperty;
     }
 
-    public void switchPlayer (boolean currentPlayer) {
+    public void switchPlayer(boolean currentPlayer) {
         boolean oldPlayer = this.currentPlayer;
         this.currentPlayer = currentPlayer;
 
-        //propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
-
+        propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, currentPlayer);
     }
-
-
     public int getEnergy () {
         return energy;
     }
