@@ -19,7 +19,7 @@ public class Player {
     private Robot robot;
     private int figure;
     private boolean isReady;
-    private int energy;
+    private int energy = 0;
 
     private DeckDiscard deckDiscard;
     private DeckProgramming deckProgramming;
@@ -65,8 +65,13 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                newCard.add(card.getCardName());
-                this.getDeckRegister().getDeck().set(i, card);
+                if (card.cardName.equals("Again") && i == 0){
+                    this.getDeckDiscard().getDeck().add(card);
+                    i--;
+                } else {
+                    newCard.add(card.getCardName());
+                    this.getDeckRegister().getDeck().set(i, card);
+                }
             }
         }
         return newCard;
@@ -97,13 +102,13 @@ public class Player {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
         }
-        this.getDeckHand().getDeck().clear();
+        this.deckHand.getDeck().clear();
     }
 
     public void discardRegisterCards() {
         for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
-            this.getDeckRegister().getDeck().set(i, null);
+            this.deckRegister.getDeck().set(i, null);
         }
     }
 
@@ -137,7 +142,7 @@ public class Player {
 
     private void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
-        this.deckDiscard.removeAllCards();
+        this.deckDiscard.getDeck().clear();
         this.deckProgramming.shuffleDeck();
     }
 
@@ -212,16 +217,15 @@ public class Player {
         return energy;
     }
 
-    public void increaseEnergy(int amount){
+    public void increaseEnergy(int amount) {
         this.energy += amount;
     }
 
-    public void decreaseEnergy(int amount){
-        if(this.energy < amount){
+    public void decreaseEnergy(int amount) {
+        if (this.energy < amount) {
             //TODO can't use if not enough energy
             this.energy = 0;
-        }
-        else {
+        } else {
             this.energy -= amount;
         }
     }

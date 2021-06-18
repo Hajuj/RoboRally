@@ -18,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable, PropertyChangeListener {
@@ -67,7 +68,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public void goToGameGuide(ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
         Parent root;
-        root = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
         rootStage.setScene(new Scene(root));
         rootStage.setTitle("Game Guide");
         rootStage.show();

@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -170,8 +169,11 @@ public class MessageHandler {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        clientModel.getClientGameModel().setActualPlayerID(playerID);
+        //TODO:CURRENT PLAYER
+        //clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
+
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
@@ -183,6 +185,9 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         clientModel.getClientGameModel().setActualPhase(phase);
+        if (phase == 2) {
+            clientModel.getClientGameModel().setActualRegister(-1);
+        }
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
@@ -253,9 +258,8 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
-        for (String card : cards) {
-            clientModel.receiveMessage("Your new Card is " + card);
-        }
+        clientModel.getClientGameModel().setLateCards(cards);
+        clientModel.getClientGameModel().setLatePlayers(true);
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
@@ -263,19 +267,19 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
-        if (clientModel.getClientGameModel().getActualRegister() != 4) {
-            clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getActualRegister() + 1);
-        } else {
-            clientModel.getClientGameModel().setActualRegister(0);
-        }
-        for (Object currentCard : currentCards) {
-            String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
-            String userNameDelimiter = ".0, card=";
-            String[] split = message.split(userNameDelimiter);
-            int playerID = Integer.parseInt(split[0]);
-            String card = split[1];
-            clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card + " in register: " + (clientModel.getClientGameModel().getActualRegister() + 1));
-        }
+            if (clientModel.getClientGameModel().getValueActualRegister() != 4) {
+                clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getValueActualRegister() + 1);
+            } else {
+                clientModel.getClientGameModel().setActualRegister(0);
+            }
+            for (Object currentCard : currentCards) {
+                String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
+                String userNameDelimiter = ".0, card=";
+                String[] split = message.split(userNameDelimiter);
+                int playerID = Integer.parseInt(split[0]);
+                String card = split[1];
+                clientModel.receiveMessage("Player with ID: " + playerID + " has card: " + card + " in register: " + (clientModel.getClientGameModel().getValueActualRegister() + 1));
+            }
     }
 
     public void handleReplaceCard (ClientModel clientModel, ReplaceCardBody replaceCardBody) {
@@ -332,11 +336,12 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-                //animation für BlueConveyorBelt
+
+                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
+                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
                 break;
             }
             case "GreenConveyorBelt": {
-                //animation für GreenConveyorBelt
                 break;
             }
             case "PushPanel": {
@@ -356,6 +361,7 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
+                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
@@ -366,14 +372,33 @@ public class MessageHandler {
         }
     }
 
-    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+    public void handleEnergy (ClientModel clientModel, EnergyBody energyBody) {
+        clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
+            clientModel.getClientGameModel().setEnergy(energyBody.getCount());
+        }
+        //TODO: speichern? benutzen?
+    }
+
+
+    public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
 
     }
 
-    public void handleRebootDirection(ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
-
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
     }
 
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
+            alert.show();
+        });
+    }
 
 }
 

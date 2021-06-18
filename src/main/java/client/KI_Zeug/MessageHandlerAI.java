@@ -1,12 +1,15 @@
 package client.KI_Zeug;
 
 import client.model.ClientModel;
+import client.model.MessageHandler;
 import json.protocol.*;
+import org.apache.log4j.Logger;
 
 import java.util.Map;
 
 public class MessageHandlerAI extends client.model.MessageHandler {
     private static SimpleAIModel simpleAIModel = SimpleAIModel.getInstance();
+    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
 
 
     @Override
@@ -54,7 +57,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
             if (clientModel.getClientGameModel().getActualPhase() == 0) {
                 simpleAIModel.setStartingPointRoutine();
             } else if (clientModel.getClientGameModel().getActualPhase() == 3) {
-                simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getActualRegister());
+                simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getValueActualRegister());
             }
         }
     }
@@ -63,7 +66,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         for (int i = 0; i < 5; i++) {
-            simpleAIModel.getCardsInRegister().replace(i, null);
+            SimpleAIModel.getCardsInRegister().replace(i, null);
         }
         if (clientModel.getClientGameModel().getActualPhase() == 2) {
             simpleAIModel.chooseCardsRoutine();
@@ -73,12 +76,17 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     //wegen Timer Alert
     @Override
     public void handleTimerStarted (ClientModel clientModel, TimerStartedBody timerStartedBody) {
-        System.out.println("You are awesome AI Baby");
+        logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
     }
 
     @Override
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
         super.handleSelectMap(clientModel, selectMapBody);
         clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
+    }
+
+    @Override
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        System.out.println("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
     }
 }

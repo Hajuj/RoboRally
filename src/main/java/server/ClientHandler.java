@@ -114,8 +114,8 @@ public class ClientHandler extends Thread {
             server.getCurrentGame().setGameOn(false);
             for (Player player : server.getCurrentGame().getPlayerList()) {
                 if (player.getPlayerID() != this.getPlayer_id()) {
-                    JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("YOU WON!"));
-                    server.sendMessage(errorNotYourTurn, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                    JSONMessage gameFinished = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
+                    server.getCurrentGame().sendToAllPlayers(gameFinished);
                     //TODO change the error to game finished message
                     //TODO add winner player
                     //TODO finish the game

@@ -10,6 +10,7 @@ import java.util.Map;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
+    private final boolean IS_LASY = true;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -17,6 +18,7 @@ public class SimpleAIModel {
     private boolean hasPlayerValues = false;
     private int figureCounter = 0;
     private int startingPointCounter = 0;
+
 
     private static HashMap<Integer, String> cardsInRegister = new HashMap<Integer, String>();
 
@@ -40,7 +42,7 @@ public class SimpleAIModel {
             cardsInRegister.put(i, null);
         }
         clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52018);
+//        clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52019);
     }
 
     public void chooseRobotRoutine () {
@@ -96,6 +98,13 @@ public class SimpleAIModel {
 
 
     public void playCardRoutine (int currentRegiser) {
+        if (IS_LASY) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
     }
 

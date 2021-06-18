@@ -1,6 +1,8 @@
 package server;
 
+import client.model.ClientModel;
 import game.*;
+import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
 import org.apache.log4j.Logger;
@@ -84,10 +86,12 @@ public class MessageHandler {
         boolean accept = true;
 
         for (Player player1 : server.getWaitingPlayer()) {
-            if (player1.getFigure() == figure) {
-                JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
-                server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
-                accept = false;
+            if (player1.getPlayerID() != clientHandler.getPlayer_id()) {
+                if (player1.getFigure() == figure) {
+                    JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
+                    server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
+                    accept = false;
+                }
             }
         }
 
@@ -178,7 +182,7 @@ public class MessageHandler {
 
 
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
-        logger.info("The player " + player.getName() + " is " + isReady);
+        logger.info("Player " + player.getName() + " is " + isReady);
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
@@ -201,6 +205,7 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+                server.getCurrentGame().getStartingPointMap().put(player.getRobot(), new Point2D(x, y));
 
                 //sage allen wo der Spieler mit playerID started
                 JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
@@ -215,7 +220,6 @@ public class MessageHandler {
                 }
             }
 
-            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
@@ -223,8 +227,8 @@ public class MessageHandler {
     }
 
     public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
-        logger.info(ANSI_CYAN + "SelectedCard Message received." + ANSI_RESET);
         String card = selectedCardBody.getCard();
+        logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
         System.out.println("HEY I GOT SELECTED");
 
@@ -249,6 +253,7 @@ public class MessageHandler {
             } else {
                 Card currentCard = currentPlayer.removeSelectedCard(card);
                 currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
+                System.out.println(currentCard);
 
                 JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
                 server.getCurrentGame().sendToAllPlayers(addCard);
@@ -259,11 +264,13 @@ public class MessageHandler {
                     server.getCurrentGame().sendToAllPlayers(selectionFinished);
                 }
 
-                if (currentPlayer.isRegisterFull() && !server.getCurrentGame().isTimerOn()) {
-                    server.getCurrentGame().getGameTimer().startTimer();
-                } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().isTimerOn()) {
-                    if (server.getCurrentGame().tooLateClients().size() == 0) {
-                        server.getCurrentGame().getGameTimer().timerEnded();
+                synchronized (server.getCurrentGame().getGameTimer()) {
+                    if (currentPlayer.isRegisterFull() && !server.getCurrentGame().getTimerOn()) {
+                        server.getCurrentGame().getGameTimer().startTimer();
+                    } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().getTimerOn()) {
+                        if (server.getCurrentGame().tooLateClients().size() == 0) {
+                            server.getCurrentGame().getGameTimer().timerEnded();
+                        }
                     }
                 }
             }
@@ -273,6 +280,7 @@ public class MessageHandler {
     public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
+        boolean canStartNewRound = true;
 
         //When it's the turn of the player himself
         if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
@@ -280,26 +288,47 @@ public class MessageHandler {
                 for (Player player : server.getCurrentGame().getPlayerList()) {
                     if (player.getPlayerID() != clientHandler.getPlayer_id()) {
                         JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
-                        server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                        server.getCurrentGame().sendToAllPlayers(cardPlayed);
                         //TODO send also all Movement and Animations
                     }
                 }
                 server.getCurrentGame().activateCardEffect(card);
-                //TODO call activateCard() method from Ilja :)
+
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
+                System.out.println("NEXT PLAYER IS " + nextPlayer);
                 if (nextPlayer != -1) {
                     server.getCurrentGame().setCurrentPlayer(nextPlayer);
                     JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
                     server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
                     //Get new register
+                    System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
+                    server.getCurrentGame().activateBoardElements();
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
                     server.getCurrentGame().setCurrentRegister(newRegister);
+
                     if (server.getCurrentGame().getCurrentRegister() != 5) {
-                        server.getCurrentGame().sendCurrentCards(newRegister);
-                    } else {
+                        canStartNewRound = false;
+                        server.getCurrentGame().getPlayerList().sort(server.getCurrentGame().getComparator());
+                        int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                        if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {
+                            nextPlayer1 = server.getCurrentGame().nextPlayerID();
+                            if (nextPlayer1 == -1) {
+                                canStartNewRound = true;
+                            }
+                        }
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer1);
+                        if (!canStartNewRound) {
+                            server.getCurrentGame().sendCurrentCards(server.getCurrentGame().getCurrentRegister());
+                            server.getCurrentGame().informAboutCurrentPlayer();
+                        }
+                    }
+                    if (canStartNewRound) {
                         //New Round
+                        server.getCurrentGame().getDeadRobotsIDs().clear();
+                        System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -321,6 +350,10 @@ public class MessageHandler {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
+    }
+
+    public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+
     }
 
 }
