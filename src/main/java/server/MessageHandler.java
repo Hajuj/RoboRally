@@ -182,7 +182,7 @@ public class MessageHandler {
 
 
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
-        logger.info("The player " + player.getName() + " is " + isReady);
+        logger.info("Player " + player.getName() + " is " + isReady);
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {

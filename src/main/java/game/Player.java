@@ -65,6 +65,10 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
+                if (!card.cardName.equals("Again") && this.getDeckRegister().getDeck().get(0) == null) {
+                    newCard.add(card.getCardName());
+                    this.getDeckRegister().getDeck().set(i, card);
+                }
                 newCard.add(card.getCardName());
                 this.getDeckRegister().getDeck().set(i, card);
             }
@@ -122,9 +126,9 @@ public class Player {
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
-                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
+                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
+                this.deckProgramming.removeTopCard();
             }
-            this.getDeckProgramming().getDeck().clear();
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
