@@ -38,11 +38,11 @@ public class Element {
         return this.speed;
     }
 
-    public int getCount() {
+    public int getCount () {
         return this.count;
     }
 
-    public ArrayList<Integer> getRegisters() {
+    public ArrayList<Integer> getRegisters () {
         return this.registers;
     }
 

@@ -1,28 +1,25 @@
 package game;
 
-import game.boardelements.Antenna;
 import game.decks.*;
-import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
+import server.Server;
 
 //import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Ilja Knis
  */
 public class Player {
-    Game game = Game.getInstance();
+    Server server = Server.getInstance();
 
     private int playerID;
     private String name;
     private Robot robot;
     private int figure;
     private boolean isReady;
-    private int energy;
+    private int energy = 0;
 
     private DeckDiscard deckDiscard;
     private DeckProgramming deckProgramming;
@@ -63,13 +60,18 @@ public class Player {
 
     public ArrayList<String> drawBlind() {
         //TODO check when cards are discarded
-        discardCards();
+        discardHandCards();
         ArrayList<String> newCard = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                newCard.add(card.getCardName());
-                this.getDeckRegister().getDeck().set(i, card);
+                if (card.cardName.equals("Again") && i == 0){
+                    this.getDeckDiscard().getDeck().add(card);
+                    i--;
+                } else {
+                    newCard.add(card.getCardName());
+                    this.getDeckRegister().getDeck().set(i, card);
+                }
             }
         }
         return newCard;
@@ -79,35 +81,41 @@ public class Player {
     public Card drawRegisterCards() {
         //YourCardsBody
         if (this.deckProgramming.getDeck().size() > 0) {
-            Card card = this.deckProgramming.getDeck().get(0);
-            this.deckProgramming.getDeck().remove(0);
+            Card card = this.deckProgramming.getTopCard();
+            this.deckProgramming.removeTopCard();
             return card;
         }
 
         //When there is no enough cards
         else {
             shuffleDiscardIntoProgramming();
-            Card card = this.deckProgramming.getDeck().get(0);
-            this.deckProgramming.getDeck().remove(0);
+            Card card = this.deckProgramming.getTopCard();
+            this.deckProgramming.removeTopCard();
 
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
-
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
             return card;
         }
     }
 
-    public void discardCards() {
+    public void discardHandCards() {
         for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
-            this.deckHand.getDeck().remove(this.deckHand.getDeck().get(i));
+        }
+        this.deckHand.getDeck().clear();
+    }
+
+    public void discardRegisterCards() {
+        for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
+            this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
+            this.deckRegister.getDeck().set(i, null);
         }
     }
 
     public void drawCardsProgramming(int amount) {
         int amountLeft;
-
         //YourCardsBody
+        //If there is enough cards in deckProgramming
         if (amount <= this.deckProgramming.getDeck().size()) {
             for (int i = 0; i < amount; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(0));
@@ -116,25 +124,27 @@ public class Player {
         }
 
         //ShuffleCodingBody
+        //If there is no enough cards in deckProgramming
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
+
             for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
-                this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
-                this.deckProgramming.removeTopCard();
+                this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
             }
+            this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
             for (int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
             JSONMessage shuffleMessage = new JSONMessage("ShuffleCoding", new ShuffleCodingBody(playerID));
-            game.sendToAllPlayers(shuffleMessage);
+            server.getCurrentGame().sendToAllPlayers(shuffleMessage);
         }
     }
 
-    private void shuffleDiscardIntoProgramming() {
+    public void shuffleDiscardIntoProgramming() {
         this.deckProgramming.getDeck().addAll(this.deckDiscard.getDeck());
-        this.deckDiscard.removeAllCards();
+        this.deckDiscard.getDeck().clear();
         this.deckProgramming.shuffleDeck();
     }
 
@@ -209,17 +219,17 @@ public class Player {
         return energy;
     }
 
-    public void increaseEnergy(int amount){
+    public void increaseEnergy(int amount) {
         this.energy += amount;
     }
 
-    public void decreaseEnergy(int amount){
-        if(this.energy < amount){
+    public void decreaseEnergy(int amount) {
+        if (this.energy < amount) {
             //TODO can't use if not enough energy
             this.energy = 0;
-        }
-        else {
+        } else {
             this.energy -= amount;
         }
     }
+
 }

@@ -23,17 +23,17 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChooseRobotViewModel implements Initializable {
+    ClientModel model = ClientModel.getInstance();
 
     public Button playButton;
     public TextField nameField = new TextField("");
     private String username;
-    ClientModel model = ClientModel.getInstance();
     private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
     private static Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
-
 
     @FXML
     public ImageView robot0;
@@ -47,7 +47,6 @@ public class ChooseRobotViewModel implements Initializable {
     public ImageView robot4;
     @FXML
     public ImageView robot5;
-
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
@@ -202,9 +201,9 @@ public class ChooseRobotViewModel implements Initializable {
             model.getClientGameModel().getPlayer().setFigure(figureProperty.getValue());
             logger.info("Username " + username + " has been set.");
             model.sendUsernameAndRobot(username, figureProperty.getValue());
-            Parent root = FXMLLoader.load(getClass().getResource("/view/GameStage.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
             Stage window = (Stage) playButton.getScene().getWindow();
-            window.setScene(new Scene(root, 1100, 800));
+            window.setScene(new Scene(root, 1100, 750));
         } catch (
                 IOException e) {
             e.printStackTrace();
