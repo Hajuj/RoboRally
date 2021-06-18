@@ -270,10 +270,6 @@ public class MessageHandler {
                     } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().getTimerOn()) {
                         if (server.getCurrentGame().tooLateClients().size() == 0) {
                             server.getCurrentGame().getGameTimer().timerEnded();
-                            System.out.println("PLAYER STOPPED TIME: " + clientHandler.getPlayer_id());
-                            for (Player player : server.getCurrentGame().getPlayerList()) {
-                                System.out.println("DECK: " + player.getDeckRegister().getDeck());
-                            }
                         }
                     }
                 }
@@ -284,6 +280,7 @@ public class MessageHandler {
     public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
+        boolean canStartNewRound = true;
 
         //When it's the turn of the player himself
         if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
@@ -299,20 +296,38 @@ public class MessageHandler {
 
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
+                System.out.println("NEXT PLAYER IS " + nextPlayer);
                 if (nextPlayer != -1) {
                     server.getCurrentGame().setCurrentPlayer(nextPlayer);
                     JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
                     server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
                     //Get new register
+                    System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
                     server.getCurrentGame().activateBoardElements();
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
                     server.getCurrentGame().setCurrentRegister(newRegister);
+
                     if (server.getCurrentGame().getCurrentRegister() != 5) {
-                        server.getCurrentGame().sendCurrentCards(newRegister);
-                    } else {
+                        canStartNewRound = false;
+                        int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                        if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {
+                            nextPlayer1 = server.getCurrentGame().nextPlayerID();
+                            if (nextPlayer1 == -1) {
+                                canStartNewRound = true;
+                            }
+                        }
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer1);
+                        if (!canStartNewRound) {
+                            server.getCurrentGame().sendCurrentCards(server.getCurrentGame().getCurrentRegister());
+                            server.getCurrentGame().informAboutCurrentPlayer();
+                        }
+                    }
+                    if (canStartNewRound) {
                         //New Round
-                        server.getCurrentGame().getDeadRobots().clear();
+                        server.getCurrentGame().getDeadRobotsIDs().clear();
+                        System.out.println("Dead players" + server.getCurrentGame().getDeadRobotsIDs());
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
