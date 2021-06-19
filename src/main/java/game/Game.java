@@ -115,6 +115,8 @@ public class Game {
 
         this.playerList = players;
 
+        clearDamage();
+
         for (Player player : players) {
             checkPointReached.put(player, 0);
         }
@@ -436,25 +438,35 @@ public class Game {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
                 for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
-                    int amount = laserMap.get(position).getCount();
-                    int amountLeft;
-                    if (deckSpam.getDeck().size() >= amount) {
-                        for (int i = 0; i < amount; i++) {
-                            player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                            deckSpam.removeTopCard();
-                            currentDamage.get(player).add("Spam");
-                        }
-                    } else {
-                        amountLeft = amount - deckSpam.getDeck().size();
-                        for (int i = 0; i < deckSpam.getDeck().size(); i++) {
-                            player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
-                            currentDamage.get(player).add("Spam");
-                        }
-                        deckSpam.getDeck().clear();
-                        //TODO: Mohamad hier ein peckDamage message schicken mit amountLeft Damage
-                    }
+                    drawSpam(player, laserMap.get(position).getCount());
                 }
             }
+        }
+    }
+
+    public void drawSpam(Player player, int amount) {
+        //TODO: Check why draw damage more than deckSpam.size() is.
+        int amountLeft;
+        //If there is enough spam cards
+        if (deckSpam.getDeck().size() >= amount) {
+            for (int i = 0; i < amount; i++) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+                currentDamage.get(player).add("Spam");
+                System.out.println("SPAM IN 453 " + deckSpam.getDeck().size());
+            }
+        } else {
+            //If there is not enough spam cards
+            amountLeft = amount - deckSpam.getDeck().size();
+            for (int i = 0; i < deckSpam.getDeck().size(); i++) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
+                currentDamage.get(player).add("Spam");
+                System.out.println("SPAM IN 461 " + deckSpam.getDeck().size());
+            }
+            deckSpam.getDeck().clear();
+
+            JSONMessage jsonMessage = new JSONMessage("PickDamage", new PickDamageBody(amountLeft));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
         }
     }
 
@@ -621,12 +633,7 @@ public class Game {
                 sendToAllPlayers(jsonMessage1);
             }
             case "Trojan" -> {
-                for (int i = 0; i < 2; i++) {
-                    if (deckSpam.getDeck().size() > 0) {
-                        playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
-                    }
-                }
+                drawSpam(server.getPlayerWithID(currentPlayer), 2);
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
 
@@ -634,10 +641,7 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    if (deckSpam.getDeck().size() > 0) {
-                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
-                    }
+                    drawSpam(player, 1);
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -651,13 +655,6 @@ public class Game {
 
     public void rebootRobot(Player player) {
         deadRobotsIDs.add(player.getPlayerID());
-        for (int i = 0; i < 2; i++) {
-            //TODO: what if es keine Karten in deckSpam gibt?
-            if (deckSpam.getDeck().size() > 0) {
-                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                deckSpam.removeTopCard();
-            }
-        }
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
@@ -729,6 +726,8 @@ public class Game {
                 }
             }
         }
+        drawSpam(player, 2);
+
         JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
         sendToAllPlayers(jsonMessage);
 

@@ -379,6 +379,7 @@ public class MessageHandler {
     }
 
     public void handleEnergy (ClientModel clientModel, EnergyBody energyBody) {
+        logger.info(ANSI_CYAN + "Energy Message received." + ANSI_RESET);
         clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
         if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
             clientModel.getClientGameModel().setEnergy(energyBody.getCount());
@@ -388,9 +389,12 @@ public class MessageHandler {
 
 
     public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
+        logger.info(ANSI_CYAN + "Reboot Message received." + ANSI_RESET);
+
     }
 
     public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
         clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
         if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
             clientModel.receiveMessage("YOU ARE AWESOME");
@@ -398,6 +402,7 @@ public class MessageHandler {
     }
 
     public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        logger.info(ANSI_CYAN + "GameFinished Message received." + ANSI_RESET);
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
@@ -406,6 +411,7 @@ public class MessageHandler {
     }
 
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
+        logger.info(ANSI_CYAN + "DrawDamage Message received." + ANSI_RESET);
         ArrayList<String> cards = drawDamageBody.getCards();
         int clientID = drawDamageBody.getClientID();
         String cardsString = "";
@@ -413,6 +419,11 @@ public class MessageHandler {
             cardsString = cardsString + " " + one;
         }
         clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
+    }
+
+    public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
+        logger.info(ANSI_CYAN + "PickDamage Message received." + ANSI_RESET);
+
     }
 
 }

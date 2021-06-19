@@ -2,6 +2,7 @@ package client.KI_Zeug;
 
 import client.model.ClientModel;
 import client.model.MessageHandler;
+import game.Game;
 import json.protocol.*;
 import org.apache.log4j.Logger;
 
@@ -88,4 +89,5 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
     }
+
 }

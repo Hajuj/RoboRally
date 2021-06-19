@@ -6,6 +6,9 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
+/**
+ * @author Viktoria
+ */
 public class DrawDamageBody implements ServerMessageAction<DrawDamageBody> {
 
     @Expose
@@ -14,15 +17,14 @@ public class DrawDamageBody implements ServerMessageAction<DrawDamageBody> {
     @Expose
     private ArrayList<String> cards;
 
-    @Override
-    public void triggerAction (ClientModel client, DrawDamageBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleDrawDamage(client, bodyObject);
-    }
-
-
     public DrawDamageBody (int clientID, ArrayList<String> cards) {
         this.clientID = clientID;
         this.cards = cards;
+    }
+
+    @Override
+    public void triggerAction (ClientModel client, DrawDamageBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleDrawDamage(client, bodyObject);
     }
 
     public int getClientID () {
