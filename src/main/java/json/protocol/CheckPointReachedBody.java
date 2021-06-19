@@ -4,6 +4,9 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
+/**
+ * @author Viktoria
+ */
 public class CheckPointReachedBody implements ServerMessageAction<CheckPointReachedBody> {
 
     @Expose
@@ -13,15 +16,14 @@ public class CheckPointReachedBody implements ServerMessageAction<CheckPointReac
     private int number;
 
 
-    @Override
-    public void triggerAction (ClientModel client, CheckPointReachedBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleCheckPointReachedBody(client, bodyObject);
-    }
-
-
     public CheckPointReachedBody (int clientID, int number) {
         this.clientID = clientID;
         this.number = number;
+    }
+
+    @Override
+    public void triggerAction (ClientModel client, CheckPointReachedBody bodyObject, MessageHandler messageHandler) {
+        messageHandler.handleCheckPointReachedBody(client, bodyObject);
     }
 
     public int getClientID () {

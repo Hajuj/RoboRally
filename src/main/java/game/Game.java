@@ -74,13 +74,15 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = true;
+    private final boolean IS_LAZY = false;
 
-    private Game() {
+    private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
+
+    private Game () {
 
     }
 
-    public static Game getInstance() {
+    public static Game getInstance () {
         if (instance == null) {
             instance = new Game();
         }
@@ -112,6 +114,8 @@ public class Game {
         this.deckWorm.initializeDeck();
 
         this.playerList = players;
+
+        clearDamage();
 
         for (Player player : players) {
             checkPointReached.put(player, 0);
@@ -349,8 +353,9 @@ public class Game {
         activateGreenBelts();
         //push pannels hier
         activateGears();
-        //lasers hier
+        activateWallLasers();
         //robot lasers hier
+        activateDamage();
         activateEnergySpaces();
         activateCheckpoints();
     }
@@ -425,30 +430,74 @@ public class Game {
                 }
             }
         }
+        JSONMessage animationGears = new JSONMessage("Animation", new AnimationBody("Gear"));
+        sendToAllPlayers(animationGears);
     }
 
     public void activateWallLasers() {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
                 for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
-                    for (int i = 0; i < laserMap.get(position).getCount(); i++) {
-
-                        //TODO: check laserPath
-                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
-                    }
+                    drawSpam(player, laserMap.get(position).getCount());
                 }
             }
         }
     }
 
-    public void activateRobotLasers() {
+    public void drawSpam(Player player, int amount) {
+        //TODO: Check why draw damage more than deckSpam.size() is.
+        int amountLeft;
+        //If there is enough spam cards
+        if (deckSpam.getDeck().size() >= amount) {
+            for (int i = 0; i < amount; i++) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+                currentDamage.get(player).add("Spam");
+                System.out.println("SPAM IN 453 " + deckSpam.getDeck().size());
+            }
+        } else {
+            //If there is not enough spam cards
+            amountLeft = amount - deckSpam.getDeck().size();
+            for (int i = 0; i < deckSpam.getDeck().size(); i++) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
+                currentDamage.get(player).add("Spam");
+                System.out.println("SPAM IN 461 " + deckSpam.getDeck().size());
+            }
+            deckSpam.getDeck().clear();
+
+            JSONMessage jsonMessage = new JSONMessage("PickDamage", new PickDamageBody(amountLeft));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+        }
+    }
+
+    public void sendDamage (Player player, ArrayList<String> damageCards) {
+        JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
+        sendToAllPlayers(damageMessage);
+    }
+
+    public void activateDamage () {
+        for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
+            if (entry.getValue().size() != 0) {
+                sendDamage(entry.getKey(), entry.getValue());
+            }
+        }
+        clearDamage();
+    }
+
+    public void clearDamage () {
+        currentDamage.clear();
+        for (Player player : playerList) {
+            currentDamage.put(player, new ArrayList<String>());
+        }
+    }
+
+    public void activateRobotLasers () {
         for (Player player : playerList) {
 
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -584,12 +633,7 @@ public class Game {
                 sendToAllPlayers(jsonMessage1);
             }
             case "Trojan" -> {
-                for (int i = 0; i < 2; i++) {
-                    if (deckSpam.getDeck().size() > 0) {
-                        playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
-                    }
-                }
+                drawSpam(server.getPlayerWithID(currentPlayer), 2);
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
 
@@ -597,10 +641,7 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    if (deckSpam.getDeck().size() > 0) {
-                        player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                        deckSpam.removeTopCard();
-                    }
+                    drawSpam(player, 1);
                 }
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
@@ -611,15 +652,9 @@ public class Game {
         }
     }
 
+
     public void rebootRobot(Player player) {
         deadRobotsIDs.add(player.getPlayerID());
-        for (int i = 0; i < 2; i++) {
-            //TODO: what if es keine Karten in deckSpam gibt?
-            if (deckSpam.getDeck().size() > 0) {
-                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                deckSpam.removeTopCard();
-            }
-        }
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
@@ -691,6 +726,8 @@ public class Game {
                 }
             }
         }
+        drawSpam(player, 2);
+
         JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
         sendToAllPlayers(jsonMessage);
 
@@ -1070,7 +1107,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            player.drawCardsProgramming(9);
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 

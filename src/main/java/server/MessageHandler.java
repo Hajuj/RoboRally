@@ -8,6 +8,8 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Mohamad, Viktoria
@@ -347,7 +349,79 @@ public class MessageHandler {
     }
 
     public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+        logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
 
+    }
+
+    public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
+        logger.info(ANSI_CYAN + "SelectedDamage Message received." + ANSI_RESET);
+        ArrayList<String> cards = selectedDamageBody.getCards();
+
+        Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        int leftCards = 0;
+        String unavailableCard = "";
+
+        int countTrojan = Collections.frequency(cards, "Trojan");
+        int countVirus = Collections.frequency(cards, "Virus");
+        int countWorm = Collections.frequency(cards, "Worm");
+
+        int deckTrojanSize = server.getCurrentGame().getDeckTrojan().getDeck().size();
+        int deckVirusSize = server.getCurrentGame().getDeckVirus().getDeck().size();
+        int deckWormSize = server.getCurrentGame().getDeckWorm().getDeck().size();
+
+        if (deckTrojanSize < countTrojan) {
+            leftCards = leftCards + (countTrojan - deckTrojanSize);
+            for (int i = 0; i < deckTrojanSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckTrojan().getTopCard());
+                server.getCurrentGame().getDeckTrojan().removeTopCard();
+            }
+            unavailableCard += "Trojan ";
+        } else if (deckTrojanSize >= countTrojan) {
+            for (int i = 0; i < countTrojan; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckTrojan().getTopCard());
+                server.getCurrentGame().getDeckTrojan().removeTopCard();
+            }
+        }
+
+        if (deckVirusSize < countVirus) {
+            leftCards = leftCards + (countVirus - deckVirusSize);
+            for (int i = 0; i < deckVirusSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckVirus().getTopCard());
+                server.getCurrentGame().getDeckVirus().removeTopCard();
+            }
+            unavailableCard += "Virus ";
+        } else if (deckVirusSize >= countVirus) {
+            for (int i = 0; i < countVirus; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckVirus().getTopCard());
+                server.getCurrentGame().getDeckVirus().removeTopCard();
+            }
+        }
+
+        if (deckWormSize < countWorm) {
+            leftCards = leftCards + (countWorm - deckWormSize);
+            for (int i = 0; i < deckWormSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckWorm().getTopCard());
+                server.getCurrentGame().getDeckWorm().removeTopCard();
+            }
+            unavailableCard += "Worm ";
+        } else if (deckWormSize >= countWorm) {
+            for (int i = 0; i < countWorm; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckWorm().getTopCard());
+                server.getCurrentGame().getDeckWorm().removeTopCard();
+            }
+        }
+
+        if (leftCards > 0) {
+            JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("The cards: " + unavailableCard + " are unavailable!"));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+
+            JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
+            server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+        } else {
+            JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("All damage cards are picked!"));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+        }
     }
 
 }

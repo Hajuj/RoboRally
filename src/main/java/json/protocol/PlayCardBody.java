@@ -6,7 +6,7 @@ import server.MessageHandler;
 import server.Server;
 
 /**
- * @author altug
+ * @author Altug
  */
 
 public class PlayCardBody implements ClientMessageAction<PlayCardBody> {
