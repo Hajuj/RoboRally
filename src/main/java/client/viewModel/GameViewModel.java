@@ -18,6 +18,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -93,6 +95,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public AnchorPane paneA;
     @FXML
     public Text Playerinfo;
+    public Button countButton;
+    public ImageView TrojanHorse;
+    public ImageView Virus;
+    public ImageView Worm;
 
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
@@ -100,12 +106,15 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String register;
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
+    public ArrayList<String> choosenDamageCards = null;
 
 
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
+    ObservableList<ImageView> damages;
     Dragboard dbImage = null;
     ImageView returnSource;
+    int count = 0;
 
     public BooleanProperty laserShootProperty;
 
@@ -114,6 +123,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
         dummesButton.setDisable(true);
@@ -335,6 +345,23 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             register.setDisable(b);
         }
     }
+    public void chooseDamageCards(MouseEvent event){
+       // damages = FXCollections.observableArrayList(TrojanHorse,Virus,Worm);
+        try {
+            for (int i = 0; i < this.count; i++) {
+                choosenDamageCards.add((String) event.getSource());
+            }
+            this.count--;
+        }catch(Exception e){
+            Alert a = new Alert(Alert.AlertType.NONE);
+            a.setAlertType(Alert.AlertType.ERROR);
+            a.setContentText("please pick only " +count + " damage cards" );
+        }
+    }
+
+    public void setCount (){
+        this.count = model.getCount();
+    }
 
     @Override
     public void propertyChange (PropertyChangeEvent evt) {
@@ -422,6 +449,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     disableAllRegisters(true);
                 }
             });
+        }
+       if (evt.getPropertyName().equals("PickDamage")){
+           FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+           Parent root1 = null;
+           try {
+               root1 = fxmlLoader.load();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+           Stage newStage = new Stage();
+           newStage.setTitle("RoboRally");
+           newStage.setScene(new Scene(root1));
+           newStage.show();
+           setCount();
         }
     }
 }
