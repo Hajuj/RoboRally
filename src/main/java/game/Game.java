@@ -74,7 +74,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
 
