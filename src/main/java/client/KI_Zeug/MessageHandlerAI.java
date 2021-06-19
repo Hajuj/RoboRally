@@ -84,4 +84,8 @@ public class MessageHandlerAI extends client.model.MessageHandler {
         super.handleSelectMap(clientModel, selectMapBody);
         clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
     }
+
+    @Override
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+    }
 }

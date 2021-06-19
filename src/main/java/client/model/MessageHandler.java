@@ -355,7 +355,7 @@ public class MessageHandler {
                 break;
             }
             case "Gear": {
-                //animation für Gear
+                clientModel.getClientGameModel().setAnimateGears(true);
                 break;
             }
             case "CheckPoint": {
@@ -388,7 +388,6 @@ public class MessageHandler {
 
 
     public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
-
     }
 
     public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
@@ -409,12 +408,11 @@ public class MessageHandler {
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
         ArrayList<String> cards = drawDamageBody.getCards();
         int clientID = drawDamageBody.getClientID();
-
-        if (clientID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-            clientModel.getClientGameModel().getPlayer().getRobot().setSchadenPunkte(clientModel.getClientGameModel().getPlayer().getRobot().getSchadenPunkte() + cards.size());
+        String cardsString = "";
+        for (String one : cards) {
+            cardsString = cardsString + " " + one;
         }
-
-        clientModel.receiveMessage("Player " + clientID + " has +" + cards.size() + " DamagePoints!");
+        clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
     }
 
 }

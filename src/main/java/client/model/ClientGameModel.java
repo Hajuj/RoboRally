@@ -23,6 +23,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientGameModel {
@@ -57,6 +58,8 @@ public class ClientGameModel {
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
+
+    private boolean animateGears = false;
 
 
     private boolean programmingPhase = false;
@@ -446,12 +449,21 @@ public class ClientGameModel {
         }
     }
 
-//Animation Active BooleanWerte
-    public void activateBlueBeltAnime(boolean b) {
+    public boolean isRobotOnField (Point2D position) {
+        for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
+            if (position.getX() == entry.getValue().getX() && position.getY() == entry.getValue().getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Animation Active BooleanWerte
+    public void activateBlueBeltAnime (boolean b) {
         this.blueBeltAnimeProperty.set(b);
     }
 
-    public SimpleBooleanProperty blueBeltAnimePropertyProperty() {
+    public SimpleBooleanProperty blueBeltAnimePropertyProperty () {
         return blueBeltAnimeProperty;
     }
 
@@ -470,5 +482,13 @@ public class ClientGameModel {
 
     public void setEnergy (int energy) {
         this.energy = energy;
+    }
+
+    public void setAnimateGears (boolean animateGears) {
+        boolean oldValue = this.animateGears;
+        this.animateGears = animateGears;
+        if (this.animateGears) {
+            propertyChangeSupport.firePropertyChange("Gears", oldValue, true);
+        }
     }
 }

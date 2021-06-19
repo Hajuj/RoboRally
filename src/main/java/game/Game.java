@@ -74,7 +74,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = true;
+    private final boolean IS_LAZY = false;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
 
@@ -428,6 +428,8 @@ public class Game {
                 }
             }
         }
+        JSONMessage animationGears = new JSONMessage("Animation", new AnimationBody("Gear"));
+        sendToAllPlayers(animationGears);
     }
 
     public void activateWallLasers() {
@@ -1106,7 +1108,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            player.drawCardsProgramming(9);
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
