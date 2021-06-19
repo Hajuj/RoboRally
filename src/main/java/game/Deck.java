@@ -18,6 +18,7 @@ public abstract class Deck {
         //TODO Index 0 out of bounds for length 0 -> Ilja please help us :(
         topCard = this.getDeck().get(0);
         return topCard;
+
     }
 
     protected abstract ArrayList<Card> getDeck();

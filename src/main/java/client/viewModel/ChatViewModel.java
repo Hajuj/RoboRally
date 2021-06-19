@@ -18,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable, PropertyChangeListener {
@@ -60,7 +61,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void sendMessageButton(ActionEvent event) {
-       //System.out.println("HI");
             message = messageField.getText();
             model.sendMsg(message);
             messageField.clear();
@@ -69,7 +69,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public void goToGameGuide(ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
         Parent root;
-        root = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
         rootStage.setScene(new Scene(root));
         rootStage.setTitle("Game Guide");
         rootStage.show();
@@ -99,8 +99,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     public void loadGameScene () throws IOException {
        /* ClassLoader classLoader = getClass().getClassLoader();
-        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");
-        System.out.println(is+"True File exited");*/
+        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");*/
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
@@ -120,11 +119,11 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("chatHistory")) {
-            chatField.setText(evt.getNewValue().toString());
-            chatField.appendText("");
-            chatField.setScrollTop(Double.MAX_VALUE);
-        }
+//        if (evt.getPropertyName().equals("chatHistory")) {
+//            chatField.setText(evt.getNewValue().toString());
+//            chatField.appendText("");
+//            chatField.setScrollTop(Double.MAX_VALUE);
+//        }
         if (evt.getPropertyName().equals("playerStatus")) {
             readyDisplay.setText(evt.getNewValue().toString());
         }

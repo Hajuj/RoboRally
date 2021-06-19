@@ -10,6 +10,7 @@ import java.util.Map;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
+    private final boolean IS_LAZY = false;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 507;
@@ -17,6 +18,7 @@ public class SimpleAIModel {
     private boolean hasPlayerValues = false;
     private int figureCounter = 0;
     private int startingPointCounter = 0;
+
 
     private static HashMap<Integer, String> cardsInRegister = new HashMap<Integer, String>();
 
@@ -40,7 +42,7 @@ public class SimpleAIModel {
             cardsInRegister.put(i, null);
         }
         clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52018);
+//        clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52019);
     }
 
     public void chooseRobotRoutine () {
@@ -48,7 +50,6 @@ public class SimpleAIModel {
             figureCounter++;
             clientModel.sendUsernameAndRobot("SimpleAIModel", figureCounter);
         } else {
-            System.out.println("No available figure, srry");
             System.exit(0);
         }
     }
@@ -67,7 +68,6 @@ public class SimpleAIModel {
                 }
             }
         } else {
-            System.out.println("No starting points, srry");
             System.exit(0);
         }
     }
@@ -78,7 +78,6 @@ public class SimpleAIModel {
             if (!clientModel.getClientGameModel().getCardsInHand().get(j).equals("Again")) {
                 clientModel.getClientGameModel().sendSelectedCards(0, clientModel.getClientGameModel().getCardsInHand().get(j));
                 cardsInRegister.replace(0, clientModel.getClientGameModel().getCardsInHand().get(j));
-                System.out.println("boink");
                 break;
             }
         }
@@ -89,13 +88,17 @@ public class SimpleAIModel {
             clientModel.getClientGameModel().sendSelectedCards(i + 1, cardName);
             cardsInRegister.replace(i + 1, cardName);
         }
-        for (int o = 0; o < 5; o++) {
-            System.out.println(cardsInRegister.get(o));
-        }
     }
 
 
     public void playCardRoutine (int currentRegiser) {
+        if (IS_LAZY) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
     }
 

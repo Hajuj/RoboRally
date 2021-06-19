@@ -1,5 +1,6 @@
 package server;
 
+import client.model.ClientModel;
 import game.*;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
@@ -7,6 +8,8 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Mohamad, Viktoria
@@ -85,10 +88,12 @@ public class MessageHandler {
         boolean accept = true;
 
         for (Player player1 : server.getWaitingPlayer()) {
-            if (player1.getFigure() == figure) {
-                JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
-                server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
-                accept = false;
+            if (player1.getPlayerID() != clientHandler.getPlayer_id()) {
+                if (player1.getFigure() == figure) {
+                    JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("Figure is already taken"));
+                    server.sendMessage(jsonMessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
+                    accept = false;
+                }
             }
         }
 
@@ -179,7 +184,7 @@ public class MessageHandler {
 
 
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
-        logger.info("The player " + player.getName() + " is " + isReady);
+        logger.info("Player " + player.getName() + " is " + isReady);
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
@@ -202,7 +207,7 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
-                server.getCurrentGame().getStartingPointMap().put(player.getRobot(),new Point2D(x,y));
+                server.getCurrentGame().getStartingPointMap().put(player.getRobot(), new Point2D(x, y));
 
                 //sage allen wo der Spieler mit playerID started
                 JSONMessage startingPointTakenMessage = new JSONMessage("StartingPointTaken", new StartingPointTakenBody(x, y, playerID));
@@ -217,7 +222,6 @@ public class MessageHandler {
                 }
             }
 
-            //create einen neuen Robot auf (x,y) und setRobot zu dem Player
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
@@ -228,7 +232,6 @@ public class MessageHandler {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
-        System.out.println("HEY I GOT SELECTED");
 
         Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
 
@@ -251,7 +254,6 @@ public class MessageHandler {
             } else {
                 Card currentCard = currentPlayer.removeSelectedCard(card);
                 currentPlayer.getDeckRegister().getDeck().set(register, currentCard);
-                System.out.println(currentCard);
 
                 JSONMessage addCard = new JSONMessage("CardSelected", new CardSelectedBody(currentPlayer.getPlayerID(), register, true));
                 server.getCurrentGame().sendToAllPlayers(addCard);
@@ -268,10 +270,6 @@ public class MessageHandler {
                     } else if (currentPlayer.isRegisterFull() && server.getCurrentGame().getTimerOn()) {
                         if (server.getCurrentGame().tooLateClients().size() == 0) {
                             server.getCurrentGame().getGameTimer().timerEnded();
-                            System.out.println("PLAYER STOPPED TIME: " + clientHandler.getPlayer_id());
-                            for (Player player : server.getCurrentGame().getPlayerList()) {
-                                System.out.println("DECK: " + player.getDeckRegister().getDeck());
-                            }
                         }
                     }
                 }
@@ -279,10 +277,10 @@ public class MessageHandler {
         }
     }
 
-
     public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
+        boolean canStartNewRound = true;
 
         //When it's the turn of the player himself
         if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
@@ -299,19 +297,35 @@ public class MessageHandler {
                 //inform everyone about next player
                 int nextPlayer = server.getCurrentGame().nextPlayerID();
                 if (nextPlayer != -1) {
-                    if (server.getCurrentGame().getDeadRobots().contains(server.getPlayerWithID(nextPlayer))) {
-                        server.getCurrentGame().setCurrentPlayer(nextPlayer);
-                        JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
-                        server.getCurrentGame().sendToAllPlayers(jsonMessage);
-                    }
+                    server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                    JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
+                    server.getCurrentGame().sendToAllPlayers(jsonMessage);
                 } else {
                     //Get new register
+                    server.getCurrentGame().activateBoardElements();
                     int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
                     server.getCurrentGame().setCurrentRegister(newRegister);
+
                     if (server.getCurrentGame().getCurrentRegister() != 5) {
-                        server.getCurrentGame().sendCurrentCards(newRegister);
-                    } else {
+                        canStartNewRound = false;
+                        server.getCurrentGame().getPlayerList().sort(server.getCurrentGame().getComparator());
+                        int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                        if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {
+                            nextPlayer1 = server.getCurrentGame().nextPlayerID();
+                            if (nextPlayer1 == -1) {
+                                canStartNewRound = true;
+                            }
+                        }
+                        server.getCurrentGame().setCurrentPlayer(nextPlayer1);
+                        if (!canStartNewRound) {
+                            server.getCurrentGame().sendCurrentCards(server.getCurrentGame().getCurrentRegister());
+                            server.getCurrentGame().informAboutCurrentPlayer();
+                        }
+                    }
+                    if (canStartNewRound) {
                         //New Round
+                        server.getCurrentGame().getDeadRobotsIDs().clear();
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -324,7 +338,6 @@ public class MessageHandler {
                         //TODO when does the game stops? -> Ilja
                     }
                 }
-                logger.info("IM PLAYING MY CARD LOL");
             } else {
                 JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
                 server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
@@ -332,6 +345,82 @@ public class MessageHandler {
         } else {
             JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
             server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
+        }
+    }
+
+    public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+        logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
+
+    }
+
+    public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
+        logger.info(ANSI_CYAN + "SelectedDamage Message received." + ANSI_RESET);
+        ArrayList<String> cards = selectedDamageBody.getCards();
+
+        Player currentPlayer = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        int leftCards = 0;
+        String unavailableCard = "";
+
+        int countTrojan = Collections.frequency(cards, "Trojan");
+        int countVirus = Collections.frequency(cards, "Virus");
+        int countWorm = Collections.frequency(cards, "Worm");
+
+        int deckTrojanSize = server.getCurrentGame().getDeckTrojan().getDeck().size();
+        int deckVirusSize = server.getCurrentGame().getDeckVirus().getDeck().size();
+        int deckWormSize = server.getCurrentGame().getDeckWorm().getDeck().size();
+
+        if (deckTrojanSize < countTrojan) {
+            leftCards = leftCards + (countTrojan - deckTrojanSize);
+            for (int i = 0; i < deckTrojanSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckTrojan().getTopCard());
+                server.getCurrentGame().getDeckTrojan().removeTopCard();
+            }
+            unavailableCard += "Trojan ";
+        } else if (deckTrojanSize >= countTrojan) {
+            for (int i = 0; i < countTrojan; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckTrojan().getTopCard());
+                server.getCurrentGame().getDeckTrojan().removeTopCard();
+            }
+        }
+
+        if (deckVirusSize < countVirus) {
+            leftCards = leftCards + (countVirus - deckVirusSize);
+            for (int i = 0; i < deckVirusSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckVirus().getTopCard());
+                server.getCurrentGame().getDeckVirus().removeTopCard();
+            }
+            unavailableCard += "Virus ";
+        } else if (deckVirusSize >= countVirus) {
+            for (int i = 0; i < countVirus; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckVirus().getTopCard());
+                server.getCurrentGame().getDeckVirus().removeTopCard();
+            }
+        }
+
+        if (deckWormSize < countWorm) {
+            leftCards = leftCards + (countWorm - deckWormSize);
+            for (int i = 0; i < deckWormSize; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckWorm().getTopCard());
+                server.getCurrentGame().getDeckWorm().removeTopCard();
+            }
+            unavailableCard += "Worm ";
+        } else if (deckWormSize >= countWorm) {
+            for (int i = 0; i < countWorm; i++) {
+                currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckWorm().getTopCard());
+                server.getCurrentGame().getDeckWorm().removeTopCard();
+            }
+        }
+
+        if (leftCards > 0) {
+            JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("The cards: " + unavailableCard + " are unavailable!"));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+
+            JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
+            server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+        } else {
+            JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("All damage cards are picked!"));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
     }
 

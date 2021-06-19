@@ -50,8 +50,8 @@ public class GameTimer {
         public void run() {
             if (server.getCurrentGame().getTimerOn()) {
                 timerEnded();
-                timer.cancel();
-                timer.purge();
+//                timer.cancel();
+//                timer.purge();
             }
         }
     }

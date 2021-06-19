@@ -25,7 +25,6 @@ public class DeckVirus extends Deck {
         Collections.shuffle(this.getDeck());
     }
 
-    @Override
     public ArrayList<Card> getDeck() {
         return deckVirus;
     }

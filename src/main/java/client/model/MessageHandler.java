@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -149,6 +148,12 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
         int playerID = startingPointTakenBody.getClientID();
 
+        if (playerID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
+            Robot myRobot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
+            clientModel.getClientGameModel().getPlayer().setRobot(myRobot);
+        }
+
         String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
         Robot robot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
 
@@ -170,8 +175,11 @@ public class MessageHandler {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        clientModel.getClientGameModel().setActualPlayerID(playerID);
+        //TODO:CURRENT PLAYER
+        //clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
+
     }
 
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
@@ -183,6 +191,9 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         clientModel.getClientGameModel().setActualPhase(phase);
+        if (phase == 2) {
+            clientModel.getClientGameModel().setActualRegister(-1);
+        }
     }
 
     public void handleCardSelected(ClientModel clientModel, CardSelectedBody cardSelectedBody) {
@@ -253,9 +264,8 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CardsYouGotNow Message received." + ANSI_RESET);
         ArrayList<String> cards = cardsYouGotNowBody.getCards();
         //TODO: put the cards in leere Felder in Register
-        for (String card : cards) {
-            clientModel.receiveMessage("Your new Card is " + card);
-        }
+        clientModel.getClientGameModel().setLateCards(cards);
+        clientModel.getClientGameModel().setLatePlayers(true);
     }
 
     public void handleCurrentCards(ClientModel clientModel, CurrentCardsBody currentCardsBody) {
@@ -332,11 +342,12 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-                //animation für BlueConveyorBelt
+
+                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
+                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
                 break;
             }
             case "GreenConveyorBelt": {
-                //animation für GreenConveyorBelt
                 break;
             }
             case "PushPanel": {
@@ -344,7 +355,7 @@ public class MessageHandler {
                 break;
             }
             case "Gear": {
-                //animation für Gear
+                clientModel.getClientGameModel().setAnimateGears(true);
                 break;
             }
             case "CheckPoint": {
@@ -356,6 +367,7 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
+                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
@@ -366,14 +378,53 @@ public class MessageHandler {
         }
     }
 
-    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+    public void handleEnergy (ClientModel clientModel, EnergyBody energyBody) {
+        logger.info(ANSI_CYAN + "Energy Message received." + ANSI_RESET);
+        clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
+            clientModel.getClientGameModel().setEnergy(energyBody.getCount());
+        }
+        //TODO: speichern? benutzen?
+    }
+
+
+    public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
+        logger.info(ANSI_CYAN + "Reboot Message received." + ANSI_RESET);
 
     }
 
-    public void handleRebootDirection(ClientModel clientModel, RebootDirectionBody rebootDirectionBody) {
-
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
     }
 
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+        logger.info(ANSI_CYAN + "GameFinished Message received." + ANSI_RESET);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
+            alert.show();
+        });
+    }
+
+    public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
+        logger.info(ANSI_CYAN + "DrawDamage Message received." + ANSI_RESET);
+        ArrayList<String> cards = drawDamageBody.getCards();
+        int clientID = drawDamageBody.getClientID();
+        String cardsString = "";
+        for (String one : cards) {
+            cardsString = cardsString + " " + one;
+        }
+        clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
+    }
+
+    public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
+        logger.info(ANSI_CYAN + "PickDamage Message received." + ANSI_RESET);
+
+    }
 
 }
 

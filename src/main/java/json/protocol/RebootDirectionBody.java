@@ -1,13 +1,13 @@
 package json.protocol;
 
-import client.model.ClientModel;
-import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
+import server.ClientHandler;
+import server.Server;
 
 /**
  * @author Mohamad
  */
-public class RebootDirectionBody implements ServerMessageAction<RebootDirectionBody> {
+public class RebootDirectionBody implements ClientMessageAction<RebootDirectionBody> {
     @Expose
     private String direction;
 
@@ -16,8 +16,8 @@ public class RebootDirectionBody implements ServerMessageAction<RebootDirectionB
     }
 
     @Override
-    public void triggerAction(ClientModel client, RebootDirectionBody bodyObject, MessageHandler messageHandler) {
-        messageHandler.handleRebootDirection(client, bodyObject);
+    public void triggerAction(Server server, ClientHandler clientHandler, RebootDirectionBody bodyObject, server.MessageHandler messageHandler) {
+        messageHandler.handleRebootDirection(server, clientHandler, bodyObject);
     }
 
     public String getDirection() {
