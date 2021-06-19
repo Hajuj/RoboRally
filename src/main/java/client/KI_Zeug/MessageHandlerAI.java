@@ -2,6 +2,7 @@ package client.KI_Zeug;
 
 import client.model.ClientModel;
 import client.model.MessageHandler;
+import game.Game;
 import json.protocol.*;
 import org.apache.log4j.Logger;
 
@@ -84,4 +85,9 @@ public class MessageHandlerAI extends client.model.MessageHandler {
         super.handleSelectMap(clientModel, selectMapBody);
         clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
     }
+
+    @Override
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+    }
+
 }

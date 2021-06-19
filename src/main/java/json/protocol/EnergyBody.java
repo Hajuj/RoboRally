@@ -4,6 +4,9 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
+/**
+ * @author Viktoria
+ */
 public class EnergyBody implements ServerMessageAction<EnergyBody> {
 
     @Expose

@@ -8,16 +8,10 @@ import game.Robot;
 import game.boardelements.*;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
-import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.*;
 import javafx.scene.Group;
@@ -26,9 +20,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 import java.beans.PropertyChangeEvent;
@@ -437,7 +428,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                    handleMyLife();
+                    //handleAnimation("BlueConveyorBelt");
                    // handleLaserAnime();
                 }
             });
@@ -464,6 +455,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     //TODO: wo muss ich die orientation ändern in ClientGameModel?
                     clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
                 }
+            });
+        }
+        if (evt.getPropertyName().equals("Gears")) {
+            clientModel.getClientGameModel().setAnimateGears(false);
+            Platform.runLater(() -> {
+                animateGears();
             });
         }
     }
@@ -562,22 +559,25 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         transition.play();*/
 
 
-    private void handleMyLife() {
+    private void animateGears () {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
-            ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 1);
+            int layer = 1;
+            if (clientGameModel.isRobotOnField(entry.getKey())) {
+                layer = 3;
+            }
+            ImageView gear = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - layer);
 
-            RotateTransition rotateTransition = new RotateTransition(Duration.millis(1000), gear);
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(5000), gear);
             rotateTransition.setByAngle(90);
             mapGrid.setAlignment(Pos.CENTER);
-              gear.setScaleY(0.70);
-              gear.setScaleX(0.70);
-
-
-
+            gear.setScaleY(0.70);
+            gear.setScaleX(0.70);
             gear.setPreserveRatio(true);
             rotateTransition.setCycleCount(Animation.INDEFINITE);
             rotateTransition.setInterpolator(Interpolator.LINEAR);
+            rotateTransition.setDuration(Duration.seconds(2));
             rotateTransition.play();
+
 
         }
     }

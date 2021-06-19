@@ -13,13 +13,13 @@ public class CardsYouGotNowBody implements ServerMessageAction<CardsYouGotNowBod
     @Expose
     private ArrayList<String> cards;
 
+    public CardsYouGotNowBody (ArrayList<String> cards) {
+        this.cards = cards;
+    }
+
     @Override
     public void triggerAction (ClientModel client, CardsYouGotNowBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleCardsYouGotNowBody(client, bodyObject);
-    }
-
-    public CardsYouGotNowBody (ArrayList<String> cards) {
-        this.cards = cards;
     }
 
     public ArrayList<String> getCards () {

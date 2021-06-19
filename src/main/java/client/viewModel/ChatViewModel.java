@@ -117,11 +117,11 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("chatHistory")) {
-            chatField.setText(evt.getNewValue().toString());
-            chatField.appendText("");
-            chatField.setScrollTop(Double.MAX_VALUE);
-        }
+//        if (evt.getPropertyName().equals("chatHistory")) {
+//            chatField.setText(evt.getNewValue().toString());
+//            chatField.appendText("");
+//            chatField.setScrollTop(Double.MAX_VALUE);
+//        }
         if (evt.getPropertyName().equals("playerStatus")) {
             readyDisplay.setText(evt.getNewValue().toString());
         }

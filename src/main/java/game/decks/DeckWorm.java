@@ -26,7 +26,7 @@ public class DeckWorm extends Deck {
         Collections.shuffle(this.getDeck());
     }
 
-    protected ArrayList<Card> getDeck() {
+    public ArrayList<Card> getDeck() {
         return deckWorm;
     }
 }

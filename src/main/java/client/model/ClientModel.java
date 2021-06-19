@@ -218,7 +218,7 @@ public class ClientModel {
     public void setChatHistory(String chatHistory) {
         String oldChatHistory = this.chatHistory;
         this.chatHistory = chatHistory;
-        propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
+//        propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
     }
 
     public String getChatHistory () {
