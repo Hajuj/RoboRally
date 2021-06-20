@@ -391,6 +391,11 @@ public class MessageHandler {
     public void handleReboot (ClientModel clientModel, RebootBody rebootBody) {
         logger.info(ANSI_CYAN + "Reboot Message received." + ANSI_RESET);
 
+        int clientID = rebootBody.getClientID();
+        if (clientID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            clientModel.getClientGameModel().setChooseRebootDirection(true);
+        }
+
     }
 
     public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
