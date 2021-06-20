@@ -342,6 +342,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    private void disableHand(boolean b) {
+        for (ImageView hand : cards) {
+            hand.setDisable(b);
+        }
+    }
+
     public void setCount (){
         this.count = clientGameModel.getDamageCount();
     }
@@ -424,10 +430,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
+                    disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }
                 if(evt.getNewValue().equals(3)){
+                    disableHand(true);
                     showPopup("Activation Phase has begun");
                     disableAllRegisters(true);
                 }

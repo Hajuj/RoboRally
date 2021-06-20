@@ -439,7 +439,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-
                 }
         }
         if (evt.getPropertyName().equals("queueTurning")) {
