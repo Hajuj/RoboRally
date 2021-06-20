@@ -4,8 +4,10 @@ import client.model.ClientModel;
 import game.boardelements.StartPoint;
 import javafx.geometry.Point2D;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class SimpleAIModel {
     private static SimpleAIModel instance;
@@ -102,6 +104,20 @@ public class SimpleAIModel {
         clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
     }
 
+
+    public void pickDamageRoutine () {
+        Random random = new Random();
+        ArrayList<String> pickedDamage = new ArrayList();
+        ArrayList<String> availableDamage = new ArrayList<>();
+        availableDamage.add("Virus");
+        availableDamage.add("Trojan");
+        availableDamage.add("Worm");
+        for (int i = 0; i < clientModel.getClientGameModel().getDamageCount(); i++) {
+            int cardInx = random.nextInt(3);
+            pickedDamage.add(availableDamage.get(cardInx));
+        }
+        clientModel.getClientGameModel().sendSelectedDamage(pickedDamage);
+    }
 
     public static HashMap<Integer, String> getCardsInRegister () {
         return cardsInRegister;

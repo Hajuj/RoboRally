@@ -106,7 +106,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String register;
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
-    public ArrayList<String> choosenDamageCards = null;
+    public ArrayList<String> choosenDamageCards = new ArrayList<>();
 
 
     ObservableList<ImageView> cards;
@@ -360,7 +360,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void setCount (){
-        this.count = model.getCount();
+        this.count = clientGameModel.getDamageCount();
     }
 
     @Override

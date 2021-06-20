@@ -13,10 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
-import json.protocol.MapSelectedBody;
-import json.protocol.PlayCardBody;
-import json.protocol.SelectedCardBody;
-import json.protocol.SetStartingPointBody;
+import json.protocol.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -69,6 +66,8 @@ public class ClientGameModel {
     private volatile int actualPlayerID;
     private volatile int actualPhase;
 
+    private int damageCount = 0;
+
     private LinkedHashMap<Point2D, Antenna> antennaMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, CheckPoint> checkPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, ConveyorBelt> conveyorBeltMap = new LinkedHashMap<>();
@@ -109,6 +108,7 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+
     public void setProgrammingPhase (boolean programmingPhase) {
         boolean progPhase = this.programmingPhase;
         this.programmingPhase = progPhase;
@@ -118,14 +118,18 @@ public class ClientGameModel {
 
     }
 
+    public void sendSelectedDamage (ArrayList<String> damageList) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedDamage", new SelectedDamageBody(damageList));
+        clientModel.sendMessage(jsonMessage);
+    }
 
     public void chooseMap (String mapName) {
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
         clientModel.sendMessage(jsonMessage);
     }
 
-    public void setanimationType (String animationType){
-        switch (animationType){
+    public void setanimationType (String animationType) {
+        switch (animationType) {
             /*case "BlueConveyorBelt" ->{
                 extractData(conveyorBeltMap);
                 for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
@@ -483,4 +487,14 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("Gears", oldValue, true);
         }
     }
+
+
+    public int getDamageCount () {
+        return damageCount;
+    }
+
+    public void setDamageCount (int damageCount) {
+        this.damageCount = damageCount;
+    }
+
 }
