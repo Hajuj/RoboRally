@@ -457,6 +457,22 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                newStage.show();
            });
        }
+        if (evt.getPropertyName().equals("RebootDirection")) {
+            Platform.runLater(() -> {
+                setCount();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/RebootDirection.fxml"));
+                Parent root1 = null;
+                try {
+                    root1 = fxmlLoader.load();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                Stage newStage = new Stage();
+                newStage.setTitle("Choose Reboot Direction");
+                newStage.setScene(new Scene(root1));
+                newStage.show();
+            });
+        }
     }
 }
 

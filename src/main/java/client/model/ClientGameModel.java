@@ -61,6 +61,7 @@ public class ClientGameModel {
 
     private boolean programmingPhase = false;
 
+    private boolean chooseRebootDirection = false;
     private AtomicInteger actualRegister = new AtomicInteger(-1);
 
     private volatile int actualPlayerID;
@@ -126,6 +127,11 @@ public class ClientGameModel {
     public void chooseMap (String mapName) {
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
         clientModel.sendMessage(jsonMessage);
+    }
+
+    public void sendRebootDirection (String direction) {
+        JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
+        clientModel.sendMessage(rebootDirection);
     }
 
     public void setanimationType (String animationType) {
@@ -488,7 +494,6 @@ public class ClientGameModel {
         }
     }
 
-
     public int getDamageCount () {
         return damageCount;
     }
@@ -501,4 +506,11 @@ public class ClientGameModel {
         }
     }
 
+    public void setChooseRebootDirection (boolean chooseRebootDirection) {
+        boolean oldValue = this.chooseRebootDirection;
+        this.chooseRebootDirection = chooseRebootDirection;
+        if (this.chooseRebootDirection) {
+            propertyChangeSupport.firePropertyChange("RebootDirection", oldValue, true);
+        }
+    }
 }

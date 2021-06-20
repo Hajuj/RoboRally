@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="359.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.RebootDirectionViewModel">
+    <children>
+        <Button fx:id="top" layoutX="62.0" layoutY="85.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
+                text="TOP" onAction="#chooseTop"/>
+        <Button fx:id="bottom" layoutX="62.0" layoutY="151.0" mnemonicParsing="false" prefHeight="37.0"
+                prefWidth="177.0" text="BOTTOM" onAction="#chooseBottom"/>
+        <Button fx:id="left" layoutX="62.0" layoutY="216.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
+                text="LEFT" onAction="#chooseLeft"/>
+        <Button fx:id="right" layoutX="62.0" layoutY="279.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
+                text="RIGHT" onAction="#chooseRight"/>
+    </children>
+</AnchorPane>
