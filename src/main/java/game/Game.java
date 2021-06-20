@@ -821,14 +821,12 @@ public class Game {
 
                         player.getRobot().setxPosition(startingPointX);
                         player.getRobot().setyPosition(startingPointY);
-                        //TODO Check the orientation of the robot
                     } else {
                         //Robot can not move up because of wall, look for another free starting point
                         int newStartingPointX = (int) firstFreeStartingPoint().getX();
                         int newStartingPointY = (int) firstFreeStartingPoint().getY();
                         player.getRobot().setxPosition(newStartingPointX);
                         player.getRobot().setyPosition(newStartingPointY);
-                        //TODO Check the orientation of the robot
                     }
                 }
             }
@@ -856,7 +854,6 @@ public class Game {
 
                                 player.getRobot().setxPosition(restartPointX);
                                 player.getRobot().setyPosition(restartPointY);
-                                //TODO Check the orientation of the robot
                                 break;
                             }
                         }
@@ -864,7 +861,6 @@ public class Game {
                     //If the restart point is free
                     player.getRobot().setxPosition(restartPointX);
                     player.getRobot().setyPosition(restartPointY);
-                    //TODO Check the orientation of the robot
                 }
             }
         }
