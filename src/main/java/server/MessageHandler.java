@@ -325,6 +325,10 @@ public class MessageHandler {
                     }
                     if (canStartNewRound) {
                         //New Round
+                        //TODO: Check if all deadRobotsIDs chose a direction
+                        //      -> If yes, delete from deadRobotsIDs, set new direction using changeOrientation()
+                        //      -> if not, set direction top using changeOrientation()
+                        //      send PlayerTurning
                         server.getCurrentGame().getDeadRobotsIDs().clear();
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
@@ -350,7 +354,10 @@ public class MessageHandler {
 
     public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
+        String direction = rebootDirectionBody.getDirection();
 
+        //TODO: Add player to the rebootDirection HashMap after he chose a direction
+        //      delete the players from deadRobotsIDs
     }
 
     public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {

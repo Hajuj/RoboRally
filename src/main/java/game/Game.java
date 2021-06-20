@@ -61,6 +61,7 @@ public class Game {
     private Map<Point2D, Robot> robotMap = new HashMap<>();
     private Map<Robot, Point2D> startingPointMap = new HashMap<>();
     private Map<Player, Integer> checkPointReached = new HashMap<>();
+    private Map<Player, String> rebootDirection = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -72,7 +73,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
