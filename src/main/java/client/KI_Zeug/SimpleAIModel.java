@@ -4,13 +4,15 @@ import client.model.ClientModel;
 import game.boardelements.StartPoint;
 import javafx.geometry.Point2D;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -42,7 +44,7 @@ public class SimpleAIModel {
             cardsInRegister.put(i, null);
         }
         clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-//        clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52019);
+        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52019);
     }
 
     public void chooseRobotRoutine () {
@@ -102,6 +104,20 @@ public class SimpleAIModel {
         clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
     }
 
+
+    public void pickDamageRoutine () {
+        Random random = new Random();
+        ArrayList<String> pickedDamage = new ArrayList();
+        ArrayList<String> availableDamage = new ArrayList<>();
+        availableDamage.add("Virus");
+        availableDamage.add("Trojan");
+        availableDamage.add("Worm");
+        for (int i = 0; i < clientModel.getClientGameModel().getDamageCount(); i++) {
+            int cardInx = random.nextInt(3);
+            pickedDamage.add(availableDamage.get(cardInx));
+        }
+        clientModel.getClientGameModel().sendSelectedDamage(pickedDamage);
+    }
 
     public static HashMap<Integer, String> getCardsInRegister () {
         return cardsInRegister;

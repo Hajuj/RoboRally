@@ -18,6 +18,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -92,7 +94,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     @FXML
     public AnchorPane paneA;
     @FXML
-    public Label playerInfo;
+    public Text Playerinfo;
 
 
     public ClientModel model = ClientModel.getInstance();
@@ -102,10 +104,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
 
+
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
+    ObservableList<ImageView> damages;
     Dragboard dbImage = null;
     ImageView returnSource;
+    int count = 0;
+
     public BooleanProperty laserShootProperty;
 
     public BooleanProperty gameOn = new SimpleBooleanProperty(false);
@@ -113,14 +119,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
+        dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
 
+    /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
+        paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
+        paneA.prefHeightProperty().bind(pane.heightProperty());
+        paneA.prefWidthProperty().bind(pane.widthProperty());
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
-            //yourRobot.setImage(yourRobot());
-            //yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
+            yourRobot.setImage(yourRobot());
+            yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
             // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
 
@@ -324,6 +336,21 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         return regNumber;
     }
+    private void disableAllRegisters(boolean b) {
+        for (ImageView register:registers) {
+            register.setDisable(b);
+        }
+    }
+
+    private void disableHand(boolean b) {
+        for (ImageView hand : cards) {
+            hand.setDisable(b);
+        }
+    }
+
+    public void setCount (){
+        this.count = clientGameModel.getDamageCount();
+    }
 
     @Override
     public void propertyChange (PropertyChangeEvent evt) {
@@ -336,6 +363,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     e.printStackTrace();
                 }
             });
+            Playerinfo.setText(null);
+            Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
         }
         if (evt.getPropertyName().equals("handCards")) {
             clientGameModel.setHandCards(false);
@@ -359,12 +388,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                //showPopup("Programming Phase has begin");
-                //playerInfo.setText("Please choose your programming cards");
+                /*  showPopup("Programming Phase has begin");*/
+                Playerinfo.setText("Please choose your programming cards");
             });
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
+
+                dummesButton.setDisable(false);
                 dummesButton.setText(Integer.toString(1 + clientGameModel.getValueActualRegister()));
             });
         }
@@ -381,17 +412,71 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             clientGameModel.setLatePlayers(false);
         }
-    }
-}
-        /*if (evt.getPropertyName().equals("yourTurn")){
+        if (evt.getPropertyName().equals("yourTurn")) {
+
             Platform.runLater(() -> {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
-                if(model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID()).equals(yourRobot.getId())){
-                    playerInfo.setText("Its your turn :)");
+                if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
+                    //System.out.println("ICH BIN HERE");
+                    Playerinfo.setText(null);
+                    Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
                 }
+                clientGameModel.switchPlayer(false);
             });
-        }*/
+            Playerinfo.setText(null);
+            yourRobot.setEffect(new DropShadow(0.0, Color.GREEN));
+        }
+        if (evt.getPropertyName().equals("ActualPhase")) {
+            Platform.runLater(() -> {
+                if (evt.getNewValue().equals(2)) {
+                    disableHand(false);
+                    disableAllRegisters(false);
+                    showPopup("Programming Phase has begin");
+                }
+                if(evt.getNewValue().equals(3)){
+                    disableHand(true);
+                    showPopup("Activation Phase has begun");
+                    disableAllRegisters(true);
+                }
+            });
+        }
+       if (evt.getPropertyName().equals("PickDamage")) {
+           Platform.runLater(() -> {
+               setCount();
+               FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+               Parent root1 = null;
+               try {
+                   root1 = fxmlLoader.load();
+               } catch (IOException ioException) {
+                   ioException.printStackTrace();
+               }
+               Stage newStage = new Stage();
+               newStage.setTitle("Damage");
+               newStage.setScene(new Scene(root1));
+               newStage.show();
+           });
+       }
+        if (evt.getPropertyName().equals("RebootDirection")) {
+            Platform.runLater(() -> {
+                setCount();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/RebootDirection.fxml"));
+                Parent root1 = null;
+                try {
+                    root1 = fxmlLoader.load();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                Stage newStage = new Stage();
+                newStage.setTitle("Choose Reboot Direction");
+                newStage.setScene(new Scene(root1));
+                newStage.show();
+            });
+        }
+    }
+}
+
+
 
 
 

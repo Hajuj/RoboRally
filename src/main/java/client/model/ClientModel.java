@@ -2,6 +2,8 @@ package client.model;
 
 import game.Game;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
@@ -46,8 +48,8 @@ public class ClientModel {
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private String playersStatus = "";
+    //private StringProperty chatHistory;
     private String chatHistory = "";
-
     private boolean canPlay = true;
     private boolean doChooseMap = false;
     private String selectedMap;
@@ -76,6 +78,7 @@ public class ClientModel {
         return -1;
     }
 
+
     /**
      * This method is responsible for connecting the client to the specified server.
      *
@@ -90,6 +93,7 @@ public class ClientModel {
             //Start new Threads for reading/writing messages from/to the server
             clientModelReaderThread = new ClientModelReaderThread(this, socket);
             clientModelWriterThread = new ClientModelWriterThread(this, socket);
+            //chatHistory = new SimpleStringProperty("");
 
             Thread readerThread = new Thread(clientModelReaderThread);
             readerThread.start();
@@ -156,6 +160,7 @@ public class ClientModel {
                         if (getIDbyUsername(playerPrivate) != 0) {
                             clientModelWriterThread.sendDirectMessage(clientGameModel.getPlayer().getName() + " : " + message, getIDbyUsername(playerPrivate));
                             setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
+                            setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                         } else {
                             setChatHistory(chatHistory + "No Player with name " + playerPrivate + " found." + "\n");
                         }
@@ -174,7 +179,7 @@ public class ClientModel {
     }
 
     public void receiveMessage (String message) {
-        setChatHistory(chatHistory + message + "\n");
+        setChatHistory(chatHistory+ message + "\n");
     }
 
     public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
@@ -215,7 +220,17 @@ public class ClientModel {
         }
     }
 
-    public void setChatHistory(String chatHistory) {
+   /* public void setChatHistory(String chat) {
+       String oldChatHistory = chatHistory.get();
+       String newChatHistroy= oldChatHistory+ "\n" + chat;
+        chatHistory.setValue(newChatHistroy);
+
+    }*/
+
+   /* public StringProperty getChatHistory() {
+        return chatHistory;
+    }*/
+     public void setChatHistory(String chatHistory) {
         String oldChatHistory = this.chatHistory;
         this.chatHistory = chatHistory;
 //        propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
