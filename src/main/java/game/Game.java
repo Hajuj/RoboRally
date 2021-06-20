@@ -10,17 +10,13 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
-
-import javafx.geometry.Point2D;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ilja Knis
@@ -442,10 +438,13 @@ public class Game {
     }
 
     public void activateRobotLasers() {
-        for (Player player : playerList) {
-            if(isRobotInLineOfSight(player.getRobot())){
-                //shoot laser
-            }
+        ArrayList<Player> activePlayers = new ArrayList<>();
+        for (Player player : playerList){
+            if(!deadRobotsIDs.contains(player.getPlayerID()))
+                activePlayers.add(player);
+        }
+        for (Player player : activePlayers) {
+            getRobotInLineOfSight(player.getRobot());
         }
 
         for (Player player : robotsHitByRobotLaser) {
@@ -458,8 +457,7 @@ public class Game {
         robotsHitByRobotLaser.clear();
     }
 
-    public boolean isRobotInLineOfSight(Robot robot){
-        boolean isInSight = false;
+    public void getRobotInLineOfSight(Robot robot){
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -472,7 +470,6 @@ public class Game {
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
@@ -499,7 +496,6 @@ public class Game {
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
@@ -526,7 +522,6 @@ public class Game {
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
@@ -553,7 +548,6 @@ public class Game {
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
@@ -574,7 +568,6 @@ public class Game {
             }
         }
 
-        return isInSight;
     }
 
 
