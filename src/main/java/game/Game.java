@@ -502,7 +502,7 @@ public class Game {
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("top"))){
+                                        .get(j).equals(getInverseOrientation("bottom"))){
                                     foundBlocker = true;
                                     break;
                                 }
@@ -526,7 +526,7 @@ public class Game {
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
                             for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("top"))){
+                                        .get(j).equals(getInverseOrientation("right"))){
                                     foundBlocker = true;
                                     break;
                                 }
@@ -550,7 +550,7 @@ public class Game {
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
                             for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("top"))){
+                                        .get(j).equals(getInverseOrientation("left"))){
                                     foundBlocker = true;
                                     break;
                                 }
