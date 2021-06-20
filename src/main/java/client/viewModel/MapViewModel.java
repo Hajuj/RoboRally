@@ -433,6 +433,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 }
             });
         }
+
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
@@ -443,7 +444,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
 
                 }
-
         }
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);

@@ -1,7 +1,6 @@
 package client.viewModel;
 
 import client.model.ClientModel;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -114,6 +112,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         newStage2.setScene(new Scene(root2));
         newStage2.show();
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

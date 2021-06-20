@@ -353,10 +353,10 @@ public class Game {
     public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
-        //push pannels hier
+        activatePushPanels();
         activateGears();
         activateWallLasers();
-        //robot lasers hier
+        activateRobotLasers();
         activateDamage();
         activateEnergySpaces();
         activateCheckpoints();
@@ -404,6 +404,7 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(5)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
                     }
                 }
             }
@@ -413,6 +414,7 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(4)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
                     }
                 }
             }
@@ -502,10 +504,8 @@ public class Game {
         }
 
         for (Player player : robotsHitByRobotLaser) {
-            if(deckSpam.getDeck().size() > 0) {
-                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
-                deckSpam.removeTopCard();
-            }
+            drawSpam(player, 1);
+
         }
 
         robotsHitByRobotLaser.clear();
@@ -622,16 +622,15 @@ public class Game {
 
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
-
         for (Player player : playerList) {
             if (player.getRobot().getxPosition() == (int) position.getX() &&
                     player.getRobot().getyPosition() == (int) position.getY()) {
                 robotsOnFields.add(player.getRobot());
             }
         }
-
         return robotsOnFields;
     }
+
 
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
@@ -1241,7 +1240,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            player.drawCardsProgramming(9);
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
