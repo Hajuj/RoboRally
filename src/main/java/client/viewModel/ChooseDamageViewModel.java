@@ -60,5 +60,6 @@ public class ChooseDamageViewModel implements Initializable {
         Platform.runLater(() -> {
             countButton.setText(tempCount + "  /  " + count);
         });
+        clientGameModel.setDamageCount(0);
     }
 }
