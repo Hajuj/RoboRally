@@ -494,7 +494,11 @@ public class ClientGameModel {
     }
 
     public void setDamageCount (int damageCount) {
+        int oldValue = this.damageCount;
         this.damageCount = damageCount;
+        if (!clientModel.isAI()) {
+            propertyChangeSupport.firePropertyChange("PickDamage", oldValue, damageCount);
+        }
     }
 
 }
