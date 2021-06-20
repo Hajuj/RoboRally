@@ -1,8 +1,9 @@
 package client.viewModel;
 
 import client.model.ClientModel;
-
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -42,10 +42,19 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     private String message;
 
+    public StringProperty chatOutput;
+
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        chatOutput = new SimpleStringProperty();
         model.addPropertyChangeListener(this);
+        /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
+        chatOutput.bind(model.getChatHistory());
+        chatField.textProperty().bind(chatOutputProperty());
+        }));*/
         chatField.setText(model.getChatHistory());
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         readyDisplay.setText(model.getPlayersStatus());
@@ -56,8 +65,11 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
             notReadyBtn.setVisible(false);
         }
         notReadyBtn.setDisable(true);
-    }
 
+    }
+    public StringProperty chatOutputProperty() {
+        return chatOutput;
+    }
     public void sendMessageButton(ActionEvent event) {
             message = messageField.getText();
             model.sendMsg(message);
@@ -115,13 +127,14 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         newStage2.show();
     }
 
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-//        if (evt.getPropertyName().equals("chatHistory")) {
-//            chatField.setText(evt.getNewValue().toString());
-//            chatField.appendText("");
-//            chatField.setScrollTop(Double.MAX_VALUE);
-//        }
+        if (evt.getPropertyName().equals("chatHistory")) {
+            chatField.setText(evt.getNewValue().toString());
+            chatField.appendText("");
+            chatField.setScrollTop(Double.MAX_VALUE);
+        }
         if (evt.getPropertyName().equals("playerStatus")) {
             readyDisplay.setText(evt.getNewValue().toString());
         }

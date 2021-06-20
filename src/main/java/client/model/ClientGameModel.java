@@ -13,10 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
-import json.protocol.MapSelectedBody;
-import json.protocol.PlayCardBody;
-import json.protocol.SelectedCardBody;
-import json.protocol.SetStartingPointBody;
+import json.protocol.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -69,6 +66,8 @@ public class ClientGameModel {
     private volatile int actualPlayerID;
     private volatile int actualPhase;
 
+    private int damageCount = 0;
+
     private LinkedHashMap<Point2D, Antenna> antennaMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, CheckPoint> checkPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, ConveyorBelt> conveyorBeltMap = new LinkedHashMap<>();
@@ -85,8 +84,8 @@ public class ClientGameModel {
     private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
-    private boolean currentPlayer = false;
-   ;
+    private boolean currentPlayer ;
+
 
 
     //Singleton Zeug
@@ -109,6 +108,7 @@ public class ClientGameModel {
         JSONMessage startPointMessage = new JSONMessage("SetStartingPoint", new SetStartingPointBody(x, y));
         clientModel.sendMessage(startPointMessage);
     }
+
     public void setProgrammingPhase (boolean programmingPhase) {
         boolean progPhase = this.programmingPhase;
         this.programmingPhase = progPhase;
@@ -118,14 +118,18 @@ public class ClientGameModel {
 
     }
 
+    public void sendSelectedDamage (ArrayList<String> damageList) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedDamage", new SelectedDamageBody(damageList));
+        clientModel.sendMessage(jsonMessage);
+    }
 
     public void chooseMap (String mapName) {
         JSONMessage jsonMessage = new JSONMessage("MapSelected", new MapSelectedBody(mapName));
         clientModel.sendMessage(jsonMessage);
     }
 
-    public void setanimationType (String animationType){
-        switch (animationType){
+    public void setanimationType (String animationType) {
+        switch (animationType) {
             /*case "BlueConveyorBelt" ->{
                 extractData(conveyorBeltMap);
                 for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
@@ -147,8 +151,9 @@ public class ClientGameModel {
         return animType;
     }
 
-
-
+    public boolean isCurrentPlayer() {
+        return currentPlayer;
+    }
 
     public void sendPlayCard (String cardName) {
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(cardName));
@@ -405,13 +410,7 @@ public class ClientGameModel {
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;
         this.actualPhase = phase;
-        if (this.actualPhase == 2) {
-            propertyChangeSupport.firePropertyChange("ProgrammingPhase", currentPhase, actualPhase);
-        }
-        if(this.actualPhase==3){
-            propertyChangeSupport.firePropertyChange("ActivePhase", currentPhase, actualPhase);
-
-        }
+        propertyChangeSupport.firePropertyChange("ActualPhase", currentPhase, phase);
 
     }
 
@@ -467,15 +466,12 @@ public class ClientGameModel {
         return blueBeltAnimeProperty;
     }
 
-    public void switchPlayer (boolean currentPlayer) {
+    public void switchPlayer(boolean currentPlayer) {
         boolean oldPlayer = this.currentPlayer;
         this.currentPlayer = currentPlayer;
 
-        //propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, true);
-
+        propertyChangeSupport.firePropertyChange("yourTurn", oldPlayer, currentPlayer);
     }
-
-
     public int getEnergy () {
         return energy;
     }
@@ -491,4 +487,14 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("Gears", oldValue, true);
         }
     }
+
+
+    public int getDamageCount () {
+        return damageCount;
+    }
+
+    public void setDamageCount (int damageCount) {
+        this.damageCount = damageCount;
+    }
+
 }

@@ -176,7 +176,7 @@ public class MessageHandler {
 //            e.printStackTrace();
 //        }
         //TODO:CURRENT PLAYER
-        //clientModel.getClientGameModel().setActualPlayerID(playerID);
+        clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
 
@@ -423,7 +423,7 @@ public class MessageHandler {
 
     public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
         logger.info(ANSI_CYAN + "PickDamage Message received." + ANSI_RESET);
-
+        clientModel.getClientGameModel().setDamageCount(pickDamageBody.getCount());
     }
 
 }

@@ -77,12 +77,13 @@ public class Game {
     private final boolean IS_LAZY = true;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
+    private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
 
-    private Game () {
+    private Game() {
 
     }
 
-    public static Game getInstance () {
+    public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
         }
@@ -158,6 +159,7 @@ public class Game {
             if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
                 return playerList.get(i).getPlayerID();
             }
+            System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
         }
         //No more players in the list / no more alive players in the list
         return -1;
@@ -321,7 +323,7 @@ public class Game {
                                 moveRobot(player.getRobot(), newOrientation, 1);
                             }
                         }
-                        if (!movedOnBelt) {
+                        if (!movedOnBelt){
                             moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         }
                         if (IS_LAZY) {
@@ -351,10 +353,10 @@ public class Game {
     public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
-        //push pannels hier
+        activatePushPanels();
         activateGears();
         activateWallLasers();
-        //robot lasers hier
+        activateRobotLasers();
         activateDamage();
         activateEnergySpaces();
         activateCheckpoints();
@@ -364,7 +366,8 @@ public class Game {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("green")) {
-                    if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+                    if (player.getRobot().getxPosition() == (int) position.getX() &&
+                            player.getRobot().getyPosition() == (int) position.getY()) {
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         sendNewPosition(player);
                         break;
@@ -401,6 +404,7 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(5)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
                     }
                 }
             }
@@ -410,6 +414,7 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(4)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
+                        sendNewPosition(player);
                     }
                 }
             }
@@ -430,8 +435,6 @@ public class Game {
                 }
             }
         }
-        JSONMessage animationGears = new JSONMessage("Animation", new AnimationBody("Gear"));
-        sendToAllPlayers(animationGears);
     }
 
     public void activateWallLasers() {
@@ -484,6 +487,7 @@ public class Game {
         clearDamage();
     }
 
+
     public void clearDamage () {
         currentDamage.clear();
         for (Player player : playerList) {
@@ -491,13 +495,154 @@ public class Game {
         }
     }
 
-    public void activateRobotLasers () {
-        for (Player player : playerList) {
+    public void activateRobotLasers() {
+        ArrayList<Player> activePlayers = new ArrayList<>();
+        for (Player player : playerList){
+            if(!deadRobotsIDs.contains(player.getPlayerID()))
+                activePlayers.add(player);
+        }
+        for (Player player : activePlayers) {
+            getRobotInLineOfSight(player.getRobot());
+        }
 
+        for (Player player : robotsHitByRobotLaser) {
+            drawSpam(player, 1);
+        }
+
+        robotsHitByRobotLaser.clear();
+    }
+
+
+    public void getRobotInLineOfSight(Robot robot){
+        boolean foundBlocker = false;
+        boolean reachedEndOfMap = false;
+        double tempPosition;
+        switch (robot.getOrientation()){
+            case "top" -> {
+                tempPosition = robot.getyPosition();
+
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
+                while (!foundBlocker && !reachedEndOfMap) {
+                    tempPosition--;
+                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
+                            break;
+                        }
+                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("top"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (tempPosition == 0){
+                            reachedEndOfMap = true;
+                        }
+                    }
+                }
+            }
+            case "bottom" -> {
+                tempPosition = robot.getyPosition();
+
+                if (tempPosition == (map.get(0).size()-1)){
+                    reachedEndOfMap = true;
+                }
+
+                while (!foundBlocker && !reachedEndOfMap) {
+                    tempPosition++;
+                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
+                            break;
+                        }
+                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("bottom"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (tempPosition == (map.get(0).size()-1)){
+                            reachedEndOfMap = true;
+                        }
+                    }
+                }
+            }
+            case "right" -> {
+                tempPosition = robot.getxPosition();
+
+                if (tempPosition == (map.size()-1)){
+                    reachedEndOfMap = true;
+                }
+
+                while (!foundBlocker && !reachedEndOfMap) {
+                    tempPosition++;
+                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                            foundBlocker = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
+                            break;
+                        }
+                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("right"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (tempPosition == (map.size()-1)){
+                            reachedEndOfMap = true;
+                        }
+                    }
+                }
+            }
+            case "left" -> {
+                tempPosition = robot.getxPosition();
+
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
+                while (!foundBlocker && !reachedEndOfMap) {
+                    tempPosition--;
+                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                            foundBlocker = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
+                            break;
+                        }
+                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("left"))) {
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (tempPosition == 0) {
+                            reachedEndOfMap = true;
+                        }
+                    }
+                }
+            }
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+
+    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -509,7 +654,6 @@ public class Game {
 
         return robotsOnFields;
     }
-
 
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
@@ -772,7 +916,6 @@ public class Game {
             upperYCap = robotYPosition + radius;
         }
 
-        //TODO what about the player that uses the virus card?
         for (Player player : playerList) {
             int robotX = player.getRobot().getxPosition();
             int robotY = player.getRobot().getyPosition();
@@ -785,24 +928,23 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)) {
-            if (element.getType().equals("Pit")) {
+        for (Element element : map.get(x).get(y)){
+            if (element.getType().equals("Pit")){
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
-                //TODO: Get RestartPoint and start Reboot routine
             }
-            if (element.getType().equals("Wall")) {
-                for (String orientation : element.getOrientations()) {
-                    if (orientation.equals(blockOrientation)) {
+            if (element.getType().equals("Wall")){
+                for (String orientation : element.getOrientations()){
+                    if(orientation.equals(blockOrientation)){
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")) {
+            if (element.getType().equals("Antenna")){
                 foundBlocker = true;
             }
         }
@@ -848,23 +990,20 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                         }
                     }
                     if (movement > 1) {
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
-
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition + 1 >= map.get(0).size()) {
@@ -874,23 +1013,20 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                         }
                     }
                     if (movement > 1) {
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
-
             case "left" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
@@ -906,17 +1042,14 @@ public class Game {
                         }
                     }
                     if (movement > 1) {
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
-
             case "right" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
@@ -932,12 +1065,10 @@ public class Game {
                         }
                     }
                     if (movement > 1) {
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -1035,13 +1166,15 @@ public class Game {
                         //Is a robot in the line of the laser?
                         if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
+                            //Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
                             break;
                         }
-
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
+                        }
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
+                            foundBlocker = true;
                         }
                     }
                 }
@@ -1052,9 +1185,16 @@ public class Game {
                     tempPosition++;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
                     for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
+                        }
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
+                            foundBlocker = true;
                         }
                     }
                 }
@@ -1065,9 +1205,16 @@ public class Game {
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
+                        }
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
+                            foundBlocker = true;
                         }
                     }
                 }
@@ -1078,9 +1225,16 @@ public class Game {
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
                     for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
                         if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
+                        }
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
+                            foundBlocker = true;
                         }
                     }
                 }
@@ -1150,9 +1304,6 @@ public class Game {
         }
     }
 
-    //TODO activateCard() method with switch
-    //     check discard consistency
-
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
@@ -1165,7 +1316,6 @@ public class Game {
             activePhaseOn = true;
         }
     }
-
 
     //TODO change get(0)
     public void startActivationPhase() {
@@ -1396,23 +1546,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs() {
+    public ArrayList<Integer> getDeadRobotsIDs () {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator() {
+    public Comparator<Player> getComparator () {
         return comparator;
     }
 }

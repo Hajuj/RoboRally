@@ -90,4 +90,9 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
     }
 
+    @Override
+    public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
+        super.handlePickDamage(clientModel, pickDamageBody);
+        simpleAIModel.pickDamageRoutine();
+    }
 }
