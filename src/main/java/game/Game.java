@@ -525,6 +525,10 @@ public class Game {
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
+                if (tempPosition == (map.size()-1)){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
