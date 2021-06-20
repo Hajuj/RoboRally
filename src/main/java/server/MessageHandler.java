@@ -362,6 +362,7 @@ public class MessageHandler {
         int leftCards = 0;
         String unavailableCard = "";
 
+
         int countTrojan = Collections.frequency(cards, "Trojan");
         int countVirus = Collections.frequency(cards, "Virus");
         int countWorm = Collections.frequency(cards, "Worm");
@@ -369,6 +370,9 @@ public class MessageHandler {
         int deckTrojanSize = server.getCurrentGame().getDeckTrojan().getDeck().size();
         int deckVirusSize = server.getCurrentGame().getDeckVirus().getDeck().size();
         int deckWormSize = server.getCurrentGame().getDeckWorm().getDeck().size();
+
+        System.out.println(countTrojan + " " + countVirus + " " + countWorm);
+        System.out.println(deckTrojanSize + " " + deckVirusSize + " " + deckWormSize);
 
         if (deckTrojanSize < countTrojan) {
             leftCards = leftCards + (countTrojan - deckTrojanSize);

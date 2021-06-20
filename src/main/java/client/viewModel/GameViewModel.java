@@ -95,10 +95,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public AnchorPane paneA;
     @FXML
     public Text Playerinfo;
-    public Button countButton;
-    public ImageView TrojanHorse;
-    public ImageView Virus;
-    public ImageView Worm;
+
 
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
@@ -106,7 +103,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String register;
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
-    public ArrayList<String> choosenDamageCards = new ArrayList<>();
 
 
     ObservableList<ImageView> cards;
@@ -345,19 +341,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             register.setDisable(b);
         }
     }
-    public void chooseDamageCards(MouseEvent event){
-       // damages = FXCollections.observableArrayList(TrojanHorse,Virus,Worm);
-        try {
-            for (int i = 0; i < this.count; i++) {
-                choosenDamageCards.add((String) event.getSource());
-            }
-            this.count--;
-        }catch(Exception e){
-            Alert a = new Alert(Alert.AlertType.NONE);
-            a.setAlertType(Alert.AlertType.ERROR);
-            a.setContentText("please pick only " +count + " damage cards" );
-        }
-    }
 
     public void setCount (){
         this.count = clientGameModel.getDamageCount();
@@ -450,20 +433,22 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             });
         }
-       if (evt.getPropertyName().equals("PickDamage")){
-           FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
-           Parent root1 = null;
-           try {
-               root1 = fxmlLoader.load();
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
-           Stage newStage = new Stage();
-           newStage.setTitle("RoboRally");
-           newStage.setScene(new Scene(root1));
-           newStage.show();
-           setCount();
-        }
+       if (evt.getPropertyName().equals("PickDamage")) {
+           Platform.runLater(() -> {
+               setCount();
+               FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+               Parent root1 = null;
+               try {
+                   root1 = fxmlLoader.load();
+               } catch (IOException ioException) {
+                   ioException.printStackTrace();
+               }
+               Stage newStage = new Stage();
+               newStage.setTitle("Damage");
+               newStage.setScene(new Scene(root1));
+               newStage.show();
+           });
+       }
     }
 }
 
