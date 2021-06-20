@@ -362,14 +362,17 @@ public class MessageHandler {
         int leftCards = 0;
         String unavailableCard = "";
 
+        //Count of the requested damage cards
         int countTrojan = Collections.frequency(cards, "Trojan");
         int countVirus = Collections.frequency(cards, "Virus");
         int countWorm = Collections.frequency(cards, "Worm");
 
+        //Size of the damage decks
         int deckTrojanSize = server.getCurrentGame().getDeckTrojan().getDeck().size();
         int deckVirusSize = server.getCurrentGame().getDeckVirus().getDeck().size();
         int deckWormSize = server.getCurrentGame().getDeckWorm().getDeck().size();
 
+        //Requested cards are more than the available cards
         if (deckTrojanSize < countTrojan) {
             leftCards = leftCards + (countTrojan - deckTrojanSize);
             for (int i = 0; i < deckTrojanSize; i++) {
@@ -377,13 +380,15 @@ public class MessageHandler {
                 server.getCurrentGame().getDeckTrojan().removeTopCard();
             }
             unavailableCard += "Trojan ";
-        } else if (deckTrojanSize >= countTrojan) {
+        } //Enough available cards
+        else if (deckTrojanSize >= countTrojan) {
             for (int i = 0; i < countTrojan; i++) {
                 currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckTrojan().getTopCard());
                 server.getCurrentGame().getDeckTrojan().removeTopCard();
             }
         }
 
+        //Requested cards are more than the available cards
         if (deckVirusSize < countVirus) {
             leftCards = leftCards + (countVirus - deckVirusSize);
             for (int i = 0; i < deckVirusSize; i++) {
@@ -391,13 +396,15 @@ public class MessageHandler {
                 server.getCurrentGame().getDeckVirus().removeTopCard();
             }
             unavailableCard += "Virus ";
-        } else if (deckVirusSize >= countVirus) {
+        } //Enough available cards
+        else if (deckVirusSize >= countVirus) {
             for (int i = 0; i < countVirus; i++) {
                 currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckVirus().getTopCard());
                 server.getCurrentGame().getDeckVirus().removeTopCard();
             }
         }
 
+        //Requested cards are more than the available cards
         if (deckWormSize < countWorm) {
             leftCards = leftCards + (countWorm - deckWormSize);
             for (int i = 0; i < deckWormSize; i++) {
@@ -405,13 +412,15 @@ public class MessageHandler {
                 server.getCurrentGame().getDeckWorm().removeTopCard();
             }
             unavailableCard += "Worm ";
-        } else if (deckWormSize >= countWorm) {
+        } //Enough available cards
+        else if (deckWormSize >= countWorm) {
             for (int i = 0; i < countWorm; i++) {
                 currentPlayer.getDeckDiscard().getDeck().add(server.getCurrentGame().getDeckWorm().getTopCard());
                 server.getCurrentGame().getDeckWorm().removeTopCard();
             }
         }
 
+        //When there is no enough cards available -> send PickDamage
         if (leftCards > 0) {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("The cards: " + unavailableCard + " are unavailable!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
@@ -423,6 +432,5 @@ public class MessageHandler {
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
     }
-
 
 }

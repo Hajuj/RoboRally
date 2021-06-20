@@ -454,7 +454,6 @@ public class Game {
                 player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                 deckSpam.removeTopCard();
                 currentDamage.get(player).add("Spam");
-                System.out.println("SPAM IN 453 " + deckSpam.getDeck().size());
             }
         } else {
             //If there is not enough spam cards
@@ -462,7 +461,6 @@ public class Game {
             for (int i = 0; i < deckSpam.getDeck().size(); i++) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
                 currentDamage.get(player).add("Spam");
-                System.out.println("SPAM IN 461 " + deckSpam.getDeck().size());
             }
             deckSpam.getDeck().clear();
 
