@@ -465,6 +465,10 @@ public class Game {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
@@ -490,6 +494,10 @@ public class Game {
             }
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
+
+                if (tempPosition == (map.get(0).size()-1)){
+                    reachedEndOfMap = true;
+                }
 
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
@@ -543,6 +551,10 @@ public class Game {
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
@@ -567,7 +579,6 @@ public class Game {
                 }
             }
         }
-
     }
 
 
