@@ -488,7 +488,6 @@ public class Game {
     }
 
 
-
     public void clearDamage () {
         currentDamage.clear();
         for (Player player : playerList) {
@@ -497,24 +496,24 @@ public class Game {
     }
 
     public void activateRobotLasers() {
-        for (Player player : playerList) {
-            if(isRobotInLineOfSight(player.getRobot())){
-                //shoot laser
-            }
+        ArrayList<Player> activePlayers = new ArrayList<>();
+        for (Player player : playerList){
+            if(!deadRobotsIDs.contains(player.getPlayerID()))
+                activePlayers.add(player);
+        }
+        for (Player player : activePlayers) {
+            getRobotInLineOfSight(player.getRobot());
         }
 
         for (Player player : robotsHitByRobotLaser) {
             drawSpam(player, 1);
-
         }
 
         robotsHitByRobotLaser.clear();
     }
 
 
-
-    public boolean isRobotInLineOfSight(Robot robot){
-        boolean isInSight = false;
+    public void getRobotInLineOfSight(Robot robot){
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -522,12 +521,15 @@ public class Game {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
@@ -549,12 +551,15 @@ public class Game {
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
 
+                if (tempPosition == (map.get(0).size()-1)){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
@@ -576,12 +581,15 @@ public class Game {
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
+                if (tempPosition == (map.size()-1)){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
@@ -603,12 +611,15 @@ public class Game {
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
+                if (tempPosition == 0){
+                    reachedEndOfMap = true;
+                }
+
                 while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
-                            isInSight = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
@@ -628,22 +639,21 @@ public class Game {
                 }
             }
         }
-
-        return isInSight;
     }
 
 
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
+
         for (Player player : playerList) {
             if (player.getRobot().getxPosition() == (int) position.getX() &&
                     player.getRobot().getyPosition() == (int) position.getY()) {
                 robotsOnFields.add(player.getRobot());
             }
         }
+
         return robotsOnFields;
     }
-
 
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
@@ -869,7 +879,6 @@ public class Game {
         sendToAllPlayers(jsonMessage1);
     }
 
-
     public Point2D firstFreeStartingPoint() {
         for (Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
             if (getRobotsOnFields(entry.getKey()).size() == 0) {
@@ -926,7 +935,6 @@ public class Game {
             if (element.getType().equals("Pit")){
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
-                //TODO: Get RestartPoint and start Reboot routine
             }
             if (element.getType().equals("Wall")){
                 for (String orientation : element.getOrientations()){
@@ -1253,7 +1261,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9);
+            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
