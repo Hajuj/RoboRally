@@ -74,6 +74,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
+    private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
 
     private Game() {
 
@@ -442,9 +443,127 @@ public class Game {
 
     public void activateRobotLasers() {
         for (Player player : playerList) {
-
+            if(isRobotInLineOfSight(player.getRobot())){
+                //shoot laser
+            }
         }
+
+        for (Player player : robotsHitByRobotLaser) {
+            if(deckSpam.getDeck().size() > 0) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+            }
+        }
+
+        robotsHitByRobotLaser.clear();
     }
+
+    public boolean isRobotInLineOfSight(Robot robot){
+        boolean isInSight = false;
+        boolean foundBlocker = false;
+        double tempPosition;
+        switch (robot.getOrientation()){
+            case "top" -> {
+                tempPosition = robot.getyPosition();
+
+                while (!foundBlocker) {
+                    tempPosition--;
+                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            isInSight = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
+                            break;
+                        }
+                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("top"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            case "bottom" -> {
+                tempPosition = robot.getyPosition();
+
+                while (!foundBlocker) {
+                    tempPosition++;
+                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            isInSight = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
+                            break;
+                        }
+                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("top"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            case "right" -> {
+                tempPosition = robot.getxPosition();
+
+                while (!foundBlocker) {
+                    tempPosition++;
+                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                            foundBlocker = true;
+                            isInSight = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
+                            break;
+                        }
+                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("top"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            case "left" -> {
+                tempPosition = robot.getxPosition();
+
+                while (!foundBlocker) {
+                    tempPosition--;
+                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                            foundBlocker = true;
+                            isInSight = true;
+                            robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
+                            break;
+                        }
+                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals(getInverseOrientation("top"))){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return isInSight;
+    }
+
 
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
