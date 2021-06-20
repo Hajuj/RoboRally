@@ -516,12 +516,13 @@ public class Game {
     public boolean isRobotInLineOfSight(Robot robot){
         boolean isInSight = false;
         boolean foundBlocker = false;
+        boolean reachedEndOfMap = false;
         double tempPosition;
         switch (robot.getOrientation()){
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
-                while (!foundBlocker) {
+                while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
@@ -539,13 +540,16 @@ public class Game {
                                 }
                             }
                         }
+                        if (tempPosition == 0){
+                            reachedEndOfMap = true;
+                        }
                     }
                 }
             }
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
 
-                while (!foundBlocker) {
+                while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
                     for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
@@ -563,13 +567,16 @@ public class Game {
                                 }
                             }
                         }
+                        if (tempPosition == (map.get(0).size()-1)){
+                            reachedEndOfMap = true;
+                        }
                     }
                 }
             }
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
-                while (!foundBlocker) {
+                while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
@@ -587,13 +594,16 @@ public class Game {
                                 }
                             }
                         }
+                        if (tempPosition == (map.size()-1)){
+                            reachedEndOfMap = true;
+                        }
                     }
                 }
             }
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
-                while (!foundBlocker) {
+                while (!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
                     for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
                         if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
@@ -610,6 +620,9 @@ public class Game {
                                     break;
                                 }
                             }
+                        }
+                        if (tempPosition == 0){
+                            reachedEndOfMap = true;
                         }
                     }
                 }
