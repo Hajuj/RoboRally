@@ -12,7 +12,7 @@ import java.util.Random;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
-    private final boolean IS_LAZY = true;
+    private final boolean IS_LAZY = false;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;

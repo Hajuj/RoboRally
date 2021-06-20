@@ -59,9 +59,7 @@ public class Game {
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
-    private Map<Player, Integer> checkPoint = new HashMap<>();
     private Map<Robot, Point2D> startingPointMap = new HashMap<>();
-
     private Map<Player, Integer> checkPointReached = new HashMap<>();
 
     private int roundCounter = 1;
@@ -74,7 +72,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = true;
+    private final boolean IS_LAZY = false;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
@@ -323,7 +321,7 @@ public class Game {
                                 moveRobot(player.getRobot(), newOrientation, 1);
                             }
                         }
-                        if (!movedOnBelt){
+                        if (!movedOnBelt) {
                             moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         }
                         if (IS_LAZY) {
@@ -473,12 +471,12 @@ public class Game {
         }
     }
 
-    public void sendDamage (Player player, ArrayList<String> damageCards) {
+    public void sendDamage(Player player, ArrayList<String> damageCards) {
         JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
         sendToAllPlayers(damageMessage);
     }
 
-    public void activateDamage () {
+    public void activateDamage() {
         for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
             if (entry.getValue().size() != 0) {
                 sendDamage(entry.getKey(), entry.getValue());
@@ -488,7 +486,7 @@ public class Game {
     }
 
 
-    public void clearDamage () {
+    public void clearDamage() {
         currentDamage.clear();
         for (Player player : playerList) {
             currentDamage.put(player, new ArrayList<String>());
@@ -497,8 +495,8 @@ public class Game {
 
     public void activateRobotLasers() {
         ArrayList<Player> activePlayers = new ArrayList<>();
-        for (Player player : playerList){
-            if(!deadRobotsIDs.contains(player.getPlayerID()))
+        for (Player player : playerList) {
+            if (!deadRobotsIDs.contains(player.getPlayerID()))
                 activePlayers.add(player);
         }
         for (Player player : activePlayers) {
@@ -513,15 +511,15 @@ public class Game {
     }
 
 
-    public void getRobotInLineOfSight(Robot robot){
+    public void getRobotInLineOfSight(Robot robot) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (robot.getOrientation()){
+        switch (robot.getOrientation()) {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == 0){
+                if (tempPosition == 0) {
                     reachedEndOfMap = true;
                 }
 
@@ -534,15 +532,15 @@ public class Game {
                             break;
                         }
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                            for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("top"))){
+                                        .get(j).equals(getInverseOrientation("top"))) {
                                     foundBlocker = true;
                                     break;
                                 }
                             }
                         }
-                        if (tempPosition == 0){
+                        if (tempPosition == 0) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -551,7 +549,7 @@ public class Game {
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == (map.get(0).size()-1)){
+                if (tempPosition == (map.get(0).size() - 1)) {
                     reachedEndOfMap = true;
                 }
 
@@ -564,15 +562,15 @@ public class Game {
                             break;
                         }
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                            for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("bottom"))){
+                                        .get(j).equals(getInverseOrientation("bottom"))) {
                                     foundBlocker = true;
                                     break;
                                 }
                             }
                         }
-                        if (tempPosition == (map.get(0).size()-1)){
+                        if (tempPosition == (map.get(0).size() - 1)) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -581,7 +579,7 @@ public class Game {
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == (map.size()-1)){
+                if (tempPosition == (map.size() - 1)) {
                     reachedEndOfMap = true;
                 }
 
@@ -594,15 +592,15 @@ public class Game {
                             break;
                         }
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                            for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("right"))){
+                                        .get(j).equals(getInverseOrientation("right"))) {
                                     foundBlocker = true;
                                     break;
                                 }
                             }
                         }
-                        if (tempPosition == (map.size()-1)){
+                        if (tempPosition == (map.size() - 1)) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -611,7 +609,7 @@ public class Game {
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == 0){
+                if (tempPosition == 0) {
                     reachedEndOfMap = true;
                 }
 
@@ -743,13 +741,15 @@ public class Game {
                 JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
                 sendToAllPlayers(jsonMessage);
                 //TODO: Repair Move and Turning Queues.
-                try {
-                    Thread.sleep(80);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (IS_LAZY) {
+                    try {
+                        Thread.sleep(80);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                    sendToAllPlayers(jsonMessage2);
                 }
-                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
-                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
@@ -928,23 +928,23 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)){
-            if (element.getType().equals("Pit")){
+        for (Element element : map.get(x).get(y)) {
+            if (element.getType().equals("Pit")) {
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
             }
-            if (element.getType().equals("Wall")){
-                for (String orientation : element.getOrientations()){
-                    if(orientation.equals(blockOrientation)){
+            if (element.getType().equals("Wall")) {
+                for (String orientation : element.getOrientations()) {
+                    if (orientation.equals(blockOrientation)) {
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")){
+            if (element.getType().equals("Antenna")) {
                 foundBlocker = true;
             }
         }
@@ -990,16 +990,18 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                         }
                     }
-                    if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    if (IS_LAZY) {
+                        if (movement > 1) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -1013,16 +1015,18 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
+                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                         }
                     }
-                    if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    if (IS_LAZY) {
+                        if (movement > 1) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -1041,11 +1045,13 @@ public class Game {
                             robotXPosition--;
                         }
                     }
-                    if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    if (IS_LAZY) {
+                        if (movement > 1) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -1064,11 +1070,13 @@ public class Game {
                             robotXPosition++;
                         }
                     }
-                    if (movement > 1) {
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    if (IS_LAZY) {
+                        if (movement > 1) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -1173,7 +1181,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1193,7 +1201,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1213,7 +1221,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1233,7 +1241,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1546,23 +1554,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap () {
+    public Map<Point2D, Wall> getWallMap() {
         return wallMap;
     }
 
-    public Server getServer () {
+    public Server getServer() {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs () {
+    public ArrayList<Integer> getDeadRobotsIDs() {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap () {
+    public Map<Robot, Point2D> getStartingPointMap() {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator () {
+    public Comparator<Player> getComparator() {
         return comparator;
     }
 }
