@@ -624,15 +624,15 @@ public class Game {
                             break;
                         }
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                            for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("left"))){
+                                        .get(j).equals(getInverseOrientation("left"))) {
                                     foundBlocker = true;
                                     break;
                                 }
                             }
                         }
-                        if (tempPosition == 0){
+                        if (tempPosition == 0) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -1261,7 +1261,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
+            player.drawCardsProgramming(9);
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 

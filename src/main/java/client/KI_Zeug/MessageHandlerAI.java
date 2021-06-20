@@ -93,5 +93,6 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
         super.handlePickDamage(clientModel, pickDamageBody);
+        simpleAIModel.pickDamageRoutine();
     }
 }

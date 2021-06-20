@@ -17,7 +17,7 @@ public class DeckSpam extends Deck {
     public void initializeDeck() {
         this.deckSpam = new ArrayList<Card>();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 36; i++) {
             deckSpam.add(new Spam());
         }
     }
