@@ -53,7 +53,7 @@ public class RebootDirectionViewModel {
      */
     @FXML
     public void chooseBottom () {
-        clientModel.getClientGameModel().sendRebootDirection("botton");
+        clientModel.getClientGameModel().sendRebootDirection("bottom");
         Stage stage = (Stage) bottom.getScene().getWindow();
         stage.close();
     }

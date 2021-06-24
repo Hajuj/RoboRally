@@ -34,7 +34,7 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
-    private ArrayList<String> cardsInHand = new ArrayList();
+    private ArrayList<String> cardsInHand = new ArrayList<>();
     private boolean handCards = false;
 
     private int energy = 0;
@@ -85,7 +85,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
-    private boolean currentPlayer ;
+    private boolean currentPlayer;
 
 
 
@@ -99,6 +99,48 @@ public class ClientGameModel {
             instance = new ClientGameModel();
         }
         return instance;
+    }
+
+    public void refreshModel() {
+        queueMove = false;
+        handCards = false;
+        latePlayer = false;
+        animateGears = false;
+        queueTurning = false;
+        startingPoint = false;
+        programmingPhase = false;
+        chooseRebootDirection = false;
+        energy = 0;
+        damageCount = 0;
+        lateCard = "";
+
+        robotMap = new HashMap<>();
+        moveQueue = new HashMap<>();
+        lateCards = new ArrayList<>();
+        turningQueue = new HashMap<>();
+        cardsInHand = new ArrayList<>();
+        startingPointQueue = new HashMap<>();
+
+        pitMap = new LinkedHashMap<>();
+        gearMap = new LinkedHashMap<>();
+        wallMap = new LinkedHashMap<>();
+        laserMap = new LinkedHashMap<>();
+        emptyMap = new LinkedHashMap<>();
+        antennaMap = new LinkedHashMap<>();
+        pushPanelMap = new LinkedHashMap<>();
+        checkPointMap = new LinkedHashMap<>();
+        startPointMap = new LinkedHashMap<>();
+        energySpaceMap = new LinkedHashMap<>();
+        conveyorBeltMap = new LinkedHashMap<>();
+        restartPointMap = new LinkedHashMap<>();
+
+        animType = new SimpleBooleanProperty(false);
+        pushPanelProperty = new SimpleBooleanProperty(false);
+        laserAnimeProperty = new SimpleBooleanProperty(false);
+        blueBeltAnimeProperty= new SimpleBooleanProperty(false);
+        actualRegister = new AtomicInteger(-1);
+
+        clientModel.setAvailableMaps(new ArrayList<String>());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -453,6 +495,19 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("queueMove", oldQueueMove, true);
         }
     }
+
+
+    public int getAntennaOrientation () {
+        for (Map.Entry<Point2D, Antenna> entry : antennaMap.entrySet()) {
+            if (entry.getValue().getOrientations().contains("left")) {
+                return 90;
+            } else if (entry.getValue().getOrientations().contains("right")) {
+                return -90;
+            }
+        }
+        return 0;
+    }
+
 
     public boolean isRobotOnField (Point2D position) {
         for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
