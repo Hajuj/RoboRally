@@ -1268,22 +1268,36 @@ public class Game {
         }
     }
 
+    public Player getRobotOwner (Robot robot) {
+        for (Player player : playerList) {
+            if (player.getRobot().equals(robot)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     //TODO: add to moveRobot and find robots on new field -> use pushRobot()
-    public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration){
+    public void pushRobot (Robot pusher, Robot robotGettingPushed, int iteration) {
         int initX = robotGettingPushed.getxPosition();
         int initY = robotGettingPushed.getyPosition();
 
-        if(iteration == 1) {
+        if (iteration == 1) {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
+            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if(iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
+            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if(iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
+            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if(iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
+            sendNewPosition(getRobotOwner(robotGettingPushed));
+            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
 
         if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
