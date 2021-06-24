@@ -39,6 +39,7 @@ import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
@@ -107,7 +108,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     ObservableList<ImageView> cards;
     ObservableList<ImageView> registers;
-    ObservableList<ImageView> damages;
     Dragboard dbImage = null;
     ImageView returnSource;
     int count = 0;
@@ -133,20 +133,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
             yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
-            // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
         });
-
-      /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if(clientGameModel.actualPlayerTurnProperty().getValue().equals())
-                    yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
-
-            }
-        });
-
-*/
-
     }
 
     public void showPopup(String popupText) {
@@ -262,7 +249,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    public void handledropped(DragEvent dragEvent) {
+    public void handledropped(DragEvent dragEvent)   {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
         //TODO 2 Karten auf einem Register
@@ -273,8 +260,21 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             target.setImage(dbImage.getImage());
 
         } else {
-            handlewithdraw(target, image);
-            collectingCards();
+            try {// try code
+                handlewithdraw ( target, image );
+                collectingCards ( );
+
+            } /*catch (InvocationTargetException e) {
+
+                // Answer:
+                e.getCause().printStackTrace();
+            }*/ catch (Exception e) {
+
+                // generic exception handling
+                e.printStackTrace();
+                e.getCause ();
+            }
+
         }
     }
 
@@ -347,8 +347,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             hand.setDisable(b);
         }
     }
-
-    public void setCount (){
+    public void setCount () {
         this.count = clientGameModel.getDamageCount();
     }
 
@@ -358,7 +357,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-                    pane.setCenter(fxmlLoader.load());
+                        pane.setCenter(fxmlLoader.load());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -472,6 +471,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 newStage.setScene(new Scene(root1));
                 newStage.show();
             });
+        }
+        if (evt.getPropertyName ().equals ( "GameFinished" )){
+            Stage stage = (Stage) pane.getScene().getWindow();
+            Parent root = null;
+            try {
+                root = FXMLLoader.load( Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
+            } catch (IOException e) {
+                e.printStackTrace ( );
+            }
+            stage.setScene(new Scene(root, 1100, 665));
+
         }
     }
 }

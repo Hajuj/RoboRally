@@ -4,6 +4,7 @@ import game.Element;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -55,7 +56,7 @@ public class ClientGameModel {
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
-
+    private boolean animateBelts = false;
     private boolean animateGears = false;
 
 
@@ -86,7 +87,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer ;
-
+    private boolean gameFinished;
 
 
     //Singleton Zeug
@@ -513,4 +514,20 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("RebootDirection", oldValue, true);
         }
     }
+
+    public void setAnimateBelts (boolean belts) {
+        boolean oldValue = this.animateBelts;
+        this.animateBelts = belts;
+        if (this.animateBelts) {
+            propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+        }
+    }
+
+
+    public void gameFinished(boolean b) {
+        boolean oldValue = this.gameFinished ;
+        this.gameFinished = b;
+        propertyChangeSupport.firePropertyChange("GameFinished", oldValue, true);
+    }
+
 }
