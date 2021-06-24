@@ -46,6 +46,24 @@ public class Player {
         deckRegister.shuffleDeck();
     }
 
+    public void refreshPlayer() {
+        this.deckDiscard = new DeckDiscard();
+        deckDiscard.initializeDeck();
+        deckDiscard.shuffleDeck();
+
+        this.deckProgramming = new DeckProgramming();
+        deckProgramming.initializeDeck();
+        deckProgramming.shuffleDeck();
+
+        this.deckHand = new DeckHand();
+        deckHand.initializeDeck();
+        deckHand.shuffleDeck();
+
+        this.deckRegister = new DeckRegister();
+        deckRegister.initializeDeck();
+        deckRegister.shuffleDeck();
+    }
+
     //TODO shuffle cards
     //TODO draw cards
     public boolean isRegisterFull() {

@@ -418,6 +418,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         clientModel.getClientGameModel().setStartingPoint(false);
+        if (evt.getPropertyName().equals("gameFinished")) {
+            fieldMap.clear();
+        }
         if (evt.getPropertyName().equals("startingPoint")) {
             Platform.runLater(() -> {
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
