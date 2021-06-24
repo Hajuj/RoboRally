@@ -39,6 +39,7 @@ import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
@@ -234,6 +235,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (event.getDragboard().hasImage()) {
             event.acceptTransferModes(TransferMode.MOVE);
         }
+       // if (event.getTarget () == is crads sollte er kein collectingCards (); )
 
     }
 
@@ -248,7 +250,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    public void handledropped(DragEvent dragEvent)   {
+    public void handledropped(DragEvent dragEvent) throws InvocationTargetException {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
         //TODO 2 Karten auf einem Register
@@ -259,20 +261,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             target.setImage(dbImage.getImage());
 
         } else {
-            try {// try code
-                handlewithdraw ( target, image );
-                collectingCards ( );
-
-            } /*catch (InvocationTargetException e) {
-
-                // Answer:
-                e.getCause().printStackTrace();
-            }*/ catch (Exception e) {
-
-                // generic exception handling
-                e.printStackTrace();
-                e.getCause ();
-            }
+            // try code
+            handlewithdraw ( target, image );
+            collectingCards ( );
 
         }
     }
@@ -282,6 +273,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void collectingCards() {
+
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
@@ -443,7 +435,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
-                    disableHand(false);
+                    //disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }
