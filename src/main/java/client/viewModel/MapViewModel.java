@@ -139,6 +139,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
+       
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(50);
