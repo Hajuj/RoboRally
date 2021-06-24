@@ -496,6 +496,19 @@ public class ClientGameModel {
         }
     }
 
+
+    public int getAntennaOrientation () {
+        for (Map.Entry<Point2D, Antenna> entry : antennaMap.entrySet()) {
+            if (entry.getValue().getOrientations().contains("left")) {
+                return 90;
+            } else if (entry.getValue().getOrientations().contains("right")) {
+                return -90;
+            }
+        }
+        return 0;
+    }
+
+
     public boolean isRobotOnField (Point2D position) {
         for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
             if (position.getX() == entry.getValue().getX() && position.getY() == entry.getValue().getY()) {

@@ -123,7 +123,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setImage(image2);
         imageView.setFitWidth(46);
         imageView.setFitHeight(46);
-        imageView.setRotate(-90);
+        imageView.setRotate(clientGameModel.getAntennaOrientation());
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
 
@@ -139,7 +139,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
-       
+
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(50);
