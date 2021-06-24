@@ -25,12 +25,12 @@ public class Server {
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 1.0";
-    private final ArrayList<Player> waitingPlayer = new ArrayList<>();
-    private final ArrayList<Player> readyPlayer = new ArrayList<>();
+    private ArrayList<Player> waitingPlayer = new ArrayList<>();
+    private ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
-    private final ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
 
     private Server () {
     }
@@ -133,6 +133,10 @@ public class Server {
 
     public ArrayList<Player> getReadyPlayer () {
         return readyPlayer;
+    }
+
+    public void setReadyPlayer(ArrayList<Player> readyPlayer) {
+        this.readyPlayer = readyPlayer;
     }
 
     public ArrayList<Player> getWaitingPlayer () {

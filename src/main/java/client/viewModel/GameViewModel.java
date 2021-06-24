@@ -39,7 +39,6 @@ import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
@@ -357,7 +356,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-                        pane.setCenter(fxmlLoader.load());
+                    pane.setCenter(fxmlLoader.load());
+                    model.setGameOn(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -365,6 +365,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Playerinfo.setText(null);
             Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
         }
+
+        if (evt.getPropertyName().equals("gameFinished")) {
+            for (ImageView cards : cards) {
+                cards.setImage(null);
+            }
+            for (ImageView register : registers) {
+                register.setImage(null);
+            }
+            Platform.runLater(() -> {
+                pane.setCenter(null);
+                model.setGameFinished(false);
+            });
+        }
+
         if (evt.getPropertyName().equals("handCards")) {
             clientGameModel.setHandCards(false);
             regToCard.put(0, null);
@@ -457,6 +471,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
            });
        }
         if (evt.getPropertyName().equals("RebootDirection")) {
+            clientGameModel.setChooseRebootDirection(false);
             Platform.runLater(() -> {
                 setCount();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/RebootDirection.fxml"));
@@ -472,7 +487,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 newStage.show();
             });
         }
-        if (evt.getPropertyName ().equals ( "GameFinished" )){
+  /*      if (evt.getPropertyName ().equals ( "GameFinished" )){
             Stage stage = (Stage) pane.getScene().getWindow();
             Parent root = null;
             try {
@@ -482,7 +497,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             stage.setScene(new Scene(root, 1100, 665));
 
-        }
+        }*/
     }
 }
 

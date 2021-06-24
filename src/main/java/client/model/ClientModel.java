@@ -56,6 +56,7 @@ public class ClientModel {
     private ArrayList<String> availableMaps = new ArrayList<>();
 
     private boolean gameOn = false;
+    private boolean gameFinished = false;
 
     private ClientModel () {
         propertyChangeSupport = new PropertyChangeSupport(this);
@@ -67,7 +68,6 @@ public class ClientModel {
         }
         return instance;
     }
-
 
     public int getIDfromRobotName (String name) {
         for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
@@ -220,7 +220,15 @@ public class ClientModel {
         }
     }
 
-   /* public void setChatHistory(String chat) {
+    public void setGameFinished(boolean gameFinished) {
+        boolean oldGameFinished = this.gameFinished;
+        this.gameFinished = gameFinished;
+        if (this.gameFinished) {
+            propertyChangeSupport.firePropertyChange("gameFinished", oldGameFinished, true);
+        }
+    }
+
+    /* public void setChatHistory(String chat) {
        String oldChatHistory = chatHistory.get();
        String newChatHistroy= oldChatHistory+ "\n" + chat;
         chatHistory.setValue(newChatHistroy);
@@ -233,7 +241,7 @@ public class ClientModel {
      public void setChatHistory(String chatHistory) {
         String oldChatHistory = this.chatHistory;
         this.chatHistory = chatHistory;
-//        propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
+        propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
     }
 
     public String getChatHistory () {
@@ -276,6 +284,10 @@ public class ClientModel {
 
     public HashMap<Integer, Boolean> getPlayersStatusMap () {
         return playersStatusMap;
+    }
+
+    public void setPlayersStatusMap(HashMap<Integer, Boolean> playersStatusMap) {
+        this.playersStatusMap = playersStatusMap;
     }
 
     public String getSelectedMap () {
