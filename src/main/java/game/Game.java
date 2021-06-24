@@ -671,6 +671,19 @@ public class Game {
         }
     }
 
+    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot){
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+
+        for (Player player : playerList) {
+            if (player.getRobot().getxPosition() == (int) position.getX() &&
+                    player.getRobot().getyPosition() == (int) position.getY()) {
+                robotsOnFields.add(player.getRobot());
+            }
+        }
+        robotsOnFields.remove(withoutRobot);
+
+        return robotsOnFields;
+    }
 
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
@@ -822,9 +835,8 @@ public class Game {
                 //TODO access current register and play top card from deckProgramming
                 //     JSON Messages senden
             }
-            case "Worm" -> {
-                rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
-            }
+            case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
+
         }
     }
 
@@ -1149,6 +1161,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                                pushRobot(robot,
+                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                            }
                         }
                     }
                     if (IS_LAZY) {
@@ -1174,6 +1190,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                                pushRobot(robot,
+                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                            }
                         }
                     }
                     if (IS_LAZY) {
@@ -1199,6 +1219,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                                pushRobot(robot,
+                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                            }
                         }
                     }
                     if (IS_LAZY) {
@@ -1224,6 +1248,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                                pushRobot(robot,
+                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                            }
                         }
                     }
                     if (IS_LAZY) {
@@ -1238,6 +1266,47 @@ public class Game {
                 }
             }
         }
+    }
+
+    //TODO: add to moveRobot and find robots on new field -> use pushRobot()
+    public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration){
+        int initX = robotGettingPushed.getxPosition();
+        int initY = robotGettingPushed.getyPosition();
+
+        if(iteration == 1) {
+            moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
+        }
+        if(iteration == 2) {
+            moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
+        }
+        if(iteration == 3) {
+            moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
+        }
+        if(iteration == 4) {
+            moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
+        }
+
+        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
+            switch (iteration){
+                case 1 -> pushRobot(pusher, robotGettingPushed, 2);
+                case 2 -> pushRobot(pusher, robotGettingPushed, 3);
+                case 3 -> pushRobot(pusher, robotGettingPushed, 4);
+            }
+        }
+    }
+
+    public String rotateClockwise(String orientation){
+        String rotatedOrientation;
+
+        switch (orientation){
+            case "top" -> rotatedOrientation = "right";
+            case "right" -> rotatedOrientation = "bottom";
+            case "bottom" -> rotatedOrientation = "left";
+            case "left" -> rotatedOrientation = "top";
+            default -> rotatedOrientation = orientation;
+        }
+
+        return rotatedOrientation;
     }
 
     private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
@@ -1259,54 +1328,42 @@ public class Game {
         switch (robot.getOrientation()) {
             case "top" -> {
                 switch (direction) {
-                    case "left" -> {
-                        robot.setOrientation("left");
-                    }
-                    case "right" -> {
-                        robot.setOrientation("right");
-                    }
-                    case "uturn" -> {
-                        robot.setOrientation("bottom");
-                    }
+                    case "left" -> robot.setOrientation("left");
+
+                    case "right" -> robot.setOrientation("right");
+
+                    case "uturn" -> robot.setOrientation("bottom");
+
                 }
             }
             case "bottom" -> {
                 switch (direction) {
-                    case "left" -> {
-                        robot.setOrientation("right");
-                    }
-                    case "right" -> {
-                        robot.setOrientation("left");
-                    }
-                    case "uturn" -> {
-                        robot.setOrientation("top");
-                    }
+                    case "left" -> robot.setOrientation("right");
+
+                    case "right" -> robot.setOrientation("left");
+
+                    case "uturn" -> robot.setOrientation("top");
+
                 }
             }
             case "left" -> {
                 switch (direction) {
-                    case "left" -> {
-                        robot.setOrientation("bottom");
-                    }
-                    case "right" -> {
-                        robot.setOrientation("top");
-                    }
-                    case "uturn" -> {
-                        robot.setOrientation("right");
-                    }
+                    case "left" -> robot.setOrientation("bottom");
+
+                    case "right" -> robot.setOrientation("top");
+
+                    case "uturn" -> robot.setOrientation("right");
+
                 }
             }
             case "right" -> {
                 switch (direction) {
-                    case "left" -> {
-                        robot.setOrientation("top");
-                    }
-                    case "right" -> {
-                        robot.setOrientation("bottom");
-                    }
-                    case "uturn" -> {
-                        robot.setOrientation("left");
-                    }
+                    case "left" -> robot.setOrientation("top");
+
+                    case "right" -> robot.setOrientation("bottom");
+
+                    case "uturn" -> robot.setOrientation("left");
+
                 }
             }
         }
