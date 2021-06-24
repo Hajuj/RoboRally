@@ -10,17 +10,13 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
-
-import javafx.geometry.Point2D;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Ilja Knis
@@ -61,7 +57,7 @@ public class Game {
     private Map<Point2D, Robot> robotMap = new HashMap<>();
     private Map<Robot, Point2D> startingPointMap = new HashMap<>();
     private Map<Player, Integer> checkPointReached = new HashMap<>();
-    private Map<Player, String> rebootDirection = new HashMap<>();
+    private Map<Player, String> robotsRebootDirection = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -139,6 +135,43 @@ public class Game {
 
         informAboutActivePhase();
         informAboutCurrentPlayer();
+    }
+
+    public void refreshGame() {
+        antennaMap = new HashMap<>();
+        checkPointMap = new HashMap<>();
+        conveyorBeltMap = new HashMap<>();
+        emptyMap = new HashMap<>();
+        energySpaceMap = new HashMap<>();
+        gearMap = new HashMap<>();
+        laserMap = new HashMap<>();
+        pitMap = new HashMap<>();
+        pushPanelMap = new HashMap<>();
+        restartPointMap = new HashMap<>();
+        startPointMap = new HashMap<>();
+        wallMap = new HashMap<>();
+        robotMap = new HashMap<>();
+        startingPointMap = new HashMap<>();
+        checkPointReached = new HashMap<>();
+        robotsRebootDirection = new HashMap<>();
+        currentDamage = new HashMap<>();
+        robotsHitByRobotLaser = new ArrayList<>();
+        deadRobotsIDs = new ArrayList<>();
+
+        roundCounter = 1;
+        currentRegister = 0;
+        activePhaseOn = false;
+
+        server.setReadyPlayer(new ArrayList<>());
+
+        for (Player player : playerList) {
+            player.setReady(false);
+            player.refreshPlayer();
+            for (Player player1 : server.getWaitingPlayer()) {
+                JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), false));
+                server.sendMessage(jsonMessage, server.getConnectionWithID(player1.getPlayerID()).getWriter());
+            }
+        }
     }
 
     public ArrayList<Integer> tooLateClients() {
@@ -883,6 +916,133 @@ public class Game {
         return null;
     }
 
+    public void setRebootDirection() {
+        //Set players who chose a direction, players who didn't set on top by default
+        for (Integer deadRobotsID : deadRobotsIDs) {
+            setRebootOrientation(server.getPlayerWithID(deadRobotsID), robotsRebootDirection.getOrDefault(server.getPlayerWithID(deadRobotsID), "top"));
+        }
+        robotsRebootDirection.clear();
+        deadRobotsIDs.clear();
+    }
+
+    public void setRebootOrientation(Player player, String orientation) {
+        switch (player.getRobot().getOrientation()) {
+            case "top" -> {
+                switch (orientation) {
+                    case "left" -> {
+                        player.getRobot().setOrientation("left");
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                    }
+                    case "right" -> {
+                        player.getRobot().setOrientation("right");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                    case "top" -> {
+                        player.getRobot().setOrientation("top");
+                    }
+                    case "bottom" -> {
+                        player.getRobot().setOrientation("bottom");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                }
+            }
+            case "bottom" -> {
+                switch (orientation) {
+                    case "left" -> {
+                        player.getRobot().setOrientation("left");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                    case "right" -> {
+                        player.getRobot().setOrientation("right");
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                    }
+                    case "top" -> {
+                        player.getRobot().setOrientation("top");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                    case "bottom" -> {
+                        player.getRobot().setOrientation("bottom");
+                    }
+                }
+            }
+            case "left" -> {
+                switch (orientation) {
+                    case "left" -> {
+                        player.getRobot().setOrientation("left");
+                    }
+                    case "right" -> {
+                        player.getRobot().setOrientation("right");
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                    }
+                    case "top" -> {
+                        player.getRobot().setOrientation("top");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                    case "bottom" -> {
+                        player.getRobot().setOrientation("bottom");
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                    }
+                }
+            }
+            case "right" -> {
+                switch (orientation) {
+                    case "left" -> {
+                        player.getRobot().setOrientation("left");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                        if (IS_LAZY) {
+                            try {
+                                Thread.sleep(80);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                    case "right" -> {
+                        player.getRobot().setOrientation("right");
+                    }
+                    case "top" -> {
+                        player.getRobot().setOrientation("top");
+                        sendRotation(player.getPlayerID(), "counterclockwise");
+                    }
+                    case "bottom" -> {
+                        player.getRobot().setOrientation("bottom");
+                        sendRotation(player.getPlayerID(), "clockwise");
+                    }
+                }
+            }
+        }
+    }
+
+    public void sendRotation(int playerID, String rotation) {
+        JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(playerID, rotation));
+        sendToAllPlayers(jsonMessage);
+    }
+
     public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
@@ -961,6 +1121,7 @@ public class Game {
                             sendToAllPlayers(checkpointReached);
                             JSONMessage finishedGame = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
                             sendToAllPlayers(finishedGame);
+                            refreshGame();
                         } else {
                             JSONMessage checkpointReached = new JSONMessage("CheckPointReached", new CheckPointReachedBody(player.getPlayerID(), lastCheckpoint + 1));
                             sendToAllPlayers(checkpointReached);
@@ -1303,7 +1464,6 @@ public class Game {
         } else {
             throw new ClassCastException(object + " is not an Element!" +
                     "Can't cast this method on Objects other than Elements!");
-
         }
     }
 
@@ -1567,5 +1727,9 @@ public class Game {
 
     public Comparator<Player> getComparator() {
         return comparator;
+    }
+
+    public Map<Player, String> getRobotsRebootDirection() {
+        return robotsRebootDirection;
     }
 }

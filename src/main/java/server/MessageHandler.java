@@ -1,6 +1,5 @@
 package server;
 
-import client.model.ClientModel;
 import game.*;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
@@ -325,11 +324,7 @@ public class MessageHandler {
                     }
                     if (canStartNewRound) {
                         //New Round
-                        //TODO: Check if all deadRobotsIDs chose a direction
-                        //      -> If yes, delete from deadRobotsIDs, set new direction using changeOrientation()
-                        //      -> if not, set direction top using changeOrientation()
-                        //      send PlayerTurning
-                        server.getCurrentGame().getDeadRobotsIDs().clear();
+                        server.getCurrentGame().setRebootDirection();
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -356,8 +351,10 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
         String direction = rebootDirectionBody.getDirection();
 
-        //TODO: Add player to the rebootDirection HashMap after he chose a direction
-        //      delete the players from deadRobotsIDs
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        //Add the player to the rebootDirection HashMap
+        server.getCurrentGame().getRobotsRebootDirection().put(player, direction);
     }
 
     public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
