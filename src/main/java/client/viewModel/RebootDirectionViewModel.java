@@ -7,19 +7,40 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 
+/**
+ * The type Reboot direction view model.
+ */
 public class RebootDirectionViewModel {
+    /**
+     * The Client model.
+     */
     ClientModel clientModel = ClientModel.getInstance();
 
+    /**
+     * The Top.
+     */
     @FXML
     public Button top;
 
+    /**
+     * The Bottom.
+     */
     @FXML
     public Button bottom;
+    /**
+     * The Right.
+     */
     @FXML
     public Button right;
+    /**
+     * The Left.
+     */
     @FXML
     public Button left;
 
+    /**
+     * Choose top.
+     */
     @FXML
     public void chooseTop () {
         clientModel.getClientGameModel().sendRebootDirection("top");
@@ -27,6 +48,9 @@ public class RebootDirectionViewModel {
         stage.close();
     }
 
+    /**
+     * Choose bottom.
+     */
     @FXML
     public void chooseBottom () {
         clientModel.getClientGameModel().sendRebootDirection("botton");
@@ -34,6 +58,9 @@ public class RebootDirectionViewModel {
         stage.close();
     }
 
+    /**
+     * Choose left.
+     */
     @FXML
     public void chooseLeft () {
         clientModel.getClientGameModel().sendRebootDirection("left");
@@ -41,6 +68,9 @@ public class RebootDirectionViewModel {
         stage.close();
     }
 
+    /**
+     * Choose right.
+     */
     @FXML
     public void chooseRight () {
         clientModel.getClientGameModel().sendRebootDirection("right");

@@ -47,76 +47,182 @@ import json.protocol.PlayCardBody;
 
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
+/**
+ * The type Game view model.
+ */
 public class GameViewModel implements Initializable, PropertyChangeListener {
 
 
+    /**
+     * The Card 0.
+     */
     @FXML
     public ImageView card_0;
+    /**
+     * The Card 1.
+     */
     @FXML
     public ImageView card_1;
+    /**
+     * The Card 2.
+     */
     @FXML
     public ImageView card_2;
+    /**
+     * The Card 3.
+     */
     @FXML
     public ImageView card_3;
+    /**
+     * The Card 4.
+     */
     @FXML
     public ImageView card_4;
+    /**
+     * The Card 5.
+     */
     @FXML
     public ImageView card_5;
+    /**
+     * The Card 6.
+     */
     @FXML
     public ImageView card_6;
+    /**
+     * The Card 7.
+     */
     @FXML
     public ImageView card_7;
+    /**
+     * The Card 8.
+     */
     @FXML
     public ImageView card_8;
 
 
+    /**
+     * The Dummes button.
+     */
     @FXML
     public Button dummesButton;
 
+    /**
+     * The Pane.
+     */
     @FXML
     public BorderPane pane;
 
+    /**
+     * The Chat.
+     */
     @FXML
     public BorderPane chat;
 
+    /**
+     * The Reg 0.
+     */
     @FXML
     public ImageView reg_0;
+    /**
+     * The Reg 1.
+     */
     @FXML
     public ImageView reg_1;
+    /**
+     * The Reg 2.
+     */
     @FXML
     public ImageView reg_2;
+    /**
+     * The Reg 3.
+     */
     @FXML
     public ImageView reg_3;
+    /**
+     * The Reg 4.
+     */
     @FXML
     public ImageView reg_4;
+    /**
+     * The Your robot.
+     */
     @FXML
     public ImageView yourRobot;
+    /**
+     * The Pane a.
+     */
     @FXML
     public AnchorPane paneA;
+    /**
+     * The Playerinfo.
+     */
     @FXML
     public Text Playerinfo;
 
 
+    /**
+     * The Model.
+     */
     public ClientModel model = ClientModel.getInstance();
+    /**
+     * The Client game model.
+     */
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
+    /**
+     * The Card name.
+     */
     public String cardName;
+    /**
+     * The Register.
+     */
     public String register;
 
+    /**
+     * The Reg to card.
+     */
     public HashMap<Integer, String> regToCard = new HashMap<>();
 
 
+    /**
+     * The Cards.
+     */
     ObservableList<ImageView> cards;
+    /**
+     * The Registers.
+     */
     ObservableList<ImageView> registers;
+    /**
+     * The Damages.
+     */
     ObservableList<ImageView> damages;
+    /**
+     * The Db image.
+     */
     Dragboard dbImage = null;
+    /**
+     * The Return source.
+     */
     ImageView returnSource;
+    /**
+     * The Count.
+     */
     int count = 0;
 
+    /**
+     * The Laser shoot property.
+     */
     public BooleanProperty laserShootProperty;
 
+    /**
+     * The Game on.
+     */
     public BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
-
+    /**
+     * Sets the values of the buttons,properties and panes.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -125,30 +231,24 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
 
-    /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
-        paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
         paneA.prefHeightProperty().bind(pane.heightProperty());
         paneA.prefWidthProperty().bind(pane.widthProperty());
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
             yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
-            // yourRobot.setImage(yourRobot(clientGameModel.getActualPlayerID()));
+
         });
 
-      /*  clientGameModel.actualPlayerTurnProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if(clientGameModel.actualPlayerTurnProperty().getValue().equals())
-                    yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
-
-            }
-        });
-
-*/
 
     }
 
+    /**
+     * Show popup.
+     * Initiates a new Popup
+     *
+     * @param popupText the popup text
+     */
     public void showPopup(String popupText) {
         Text text = new Text(popupText);
         text.setFill(Color.RED);
@@ -169,15 +269,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         not.setTitle("Player Notification");
         not.setScene(scene);
         not.show();
-     /*   try {
-            not.wait(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        not.close();*/
+
 
     }
 
+    /**
+     * Your robot image.
+     * Gets the players values and sets its robot.Figure gets called.
+     *
+     * @return the image
+     */
     public Image yourRobot() {
 
         int figure = clientGameModel.getPlayer().getFigure();
@@ -194,6 +295,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Load image image.
+     * Loads the required image.
+     *
+     * @param cardName the card name
+     * @return the image
+     * @throws FileNotFoundException the file not found exception
+     */
     public Image loadImage(String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
@@ -207,20 +316,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    /*private void loadScene(String scene) throws IOException {
-        if (scene.equals("Map")) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-
-            pane.setCenter(fxmlLoader.load());
-
-        }
-    }*/
-
 
     /**
-     * drag was detected, start a drag-and-drop gesture
-     * /* allow any transfer mode
-     **/
+     * Handles the cards put in the register.
+     * @param event the event
+     */
     public void handle(MouseEvent event) {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
@@ -237,12 +337,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         handleSource(source);
     }
 
+
     /**
-     * data is dragged over the target
-     * /* accept it only if it is not dragged from the same node
-     * and if it has a image data
-     * /* allow for moving
-     **/
+     * Handles the draged cards.
+     *
+     * @param event the event
+     */
     public void handleTarget(DragEvent event) {
 
         if (event.getDragboard().hasImage()) {
@@ -251,6 +351,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Handles the source of the draged image.
+     *
+     * @param source the source
+     */
     public void handleSource(ImageView source) {
         Dragboard db = source.startDragAndDrop(TransferMode.MOVE);
         dbImage = source.startDragAndDrop(TransferMode.MOVE);
@@ -262,11 +367,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Handles the dropped image.
+     * This image is the card.
+     *
+     * @param dragEvent the drag event
+     */
     public void handledropped(DragEvent dragEvent) {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
-        //TODO 2 Karten auf einem Register
-        //TODO TargetId nehemn und überprüfen
+
         this.register = target.getId();
         if (target.getImage() != null) {
             returnSource.setImage(target.getImage());
@@ -278,10 +388,19 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Handlewithdraw.
+     *
+     * @param target the target
+     * @param image  the image
+     */
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
     }
 
+    /**
+     * Sends the selected cards to be played to the server
+     */
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
@@ -292,11 +411,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Puts the selected card in the selected register
+     */
     public void playCard() {
         int currentRegister = clientGameModel.getValueActualRegister();
-        //TODO:  java.lang.reflect.InvocationTargetException?
+
         try {
-            //TODO Lilas hier ist ein Nullpointerexception
+
             String card = regToCard.get(currentRegister);
             clientGameModel.sendPlayCard(card);
         } catch (Exception e) {
@@ -304,21 +426,39 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Sets card name.
+     *
+     * @param cardName the card name
+     */
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
 
+    /**
+     * Gets card name.
+     *
+     * @return the card name
+     */
     public String getCardName() {
         return cardName;
     }
 
 
+    /**
+     * Drag exited.
+     *
+     * @param dragEvent the drag event
+     */
     public void dragExited(DragEvent dragEvent) {
         if (dragEvent.getTarget() == null || dragEvent.getGestureTarget() == null) {
             returnSource.setImage(dbImage.getImage());
         }
     }
 
+    /**
+     * Clear registers.
+     */
     public void clearRegisters () {
         for (ImageView register : registers) {
             register.setImage(null);
@@ -326,6 +466,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Gets next available register.
+     *
+     * @return the next available register
+     */
     public int getNextAvailableRegister () {
         int regNumber = 0;
         for (ImageView register : registers) {
@@ -348,10 +493,23 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Set count.
+     */
     public void setCount (){
         this.count = clientGameModel.getDamageCount();
     }
 
+    /**
+     * Handles the property changes and their values
+     * Loads the map
+     * Registers are set to null as they are empty
+     * Card images are set.
+     * It's your turn label is set when it is player's turn.
+     * Shows pop ups for the actual phase.
+     * Sets the damage and robot direction.
+     * @param evt
+     */
     @Override
     public void propertyChange (PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("gameOn")) {
@@ -388,7 +546,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                /*  showPopup("Programming Phase has begin");*/
+
                 Playerinfo.setText("Please choose your programming cards");
             });
         }
@@ -415,7 +573,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("yourTurn")) {
 
             Platform.runLater(() -> {
-                //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
+
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
                     //System.out.println("ICH BIN HERE");
                     Playerinfo.setText(null);
@@ -483,27 +641,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
 
 
-    /*    if (evt.getPropertyName().equals("yourTurn")){
-            playerInfo.setText("it's Your turn");
-            yourRobot.setEffect(new DropShadow(15.0, Color.GREEN));
-            try {
-                wait(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            playerInfo.setText(null);
 
-        }
-    }
-        if (evt.getPropertyName().equals("ActualRegister")){
-            int currentRegister = (int) evt.getNewValue();
-            for (ImageView register: registers) {
-                if (String.valueOf(currentRegister).equals(String.valueOf(register.getId().charAt(4)))) {
-                    register.setDisable(true);
-                }
-            }
-
-        }*/
 
 
 

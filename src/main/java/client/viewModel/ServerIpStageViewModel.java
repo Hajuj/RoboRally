@@ -25,23 +25,47 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+/**
+ * The type Server ip stage view model.
+ */
 public class ServerIpStageViewModel implements Initializable {
+    /**
+     * The Model.
+     */
     ClientModel model = ClientModel.getInstance();
 
     private int serverPort;
     private String serverIP;
     private StringProperty serverAddress;
 
+    /**
+     * The Server address field.
+     */
     @FXML
     public TextField serverAddressField;
+    /**
+     * The Server port field.
+     */
     @FXML
     public TextField serverPortField;
+    /**
+     * The Connect button.
+     */
     @FXML
     public Button connectButton;
+    /**
+     * The Logo.
+     */
     @FXML
     public ImageView logo;
+    /**
+     * The Lmu button.
+     */
     @FXML
     public Button LMUButton;
+    /**
+     * The B button.
+     */
     @FXML
     public Button BButton;
 
@@ -54,15 +78,33 @@ public class ServerIpStageViewModel implements Initializable {
         BButton = new Button();
     }
 
+    /**
+     * Finds path of the file
+     *
+     * @param fileName the file name
+     * @return the file
+     */
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
+    /**
+     * Server address property string property.
+     *
+     * @return the string property
+     */
     public StringProperty serverAddressProperty () {
         return serverAddress;
     }
 
+    /**
+     * Hnadles the event of connect button clicked.
+     * Gets the IP and port given by the client and connects the client to the server.
+     * Loads the chooseRobot screen and alerts if it does not succeed.
+     *
+     * @param event the event
+     */
     @FXML
     public void connectButtonAction (ActionEvent event) {
         try {
@@ -93,18 +135,34 @@ public class ServerIpStageViewModel implements Initializable {
         }
     }
 
+    /**
+     * Checks if the given IP adress is valid
+     * @param IP
+     * @param port
+     * @return
+     */
     private boolean validateIpAdress (String IP, int port) {
         String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
         Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
         return IP_PATTERN.matcher(IP).matches();
     }
 
+    /**
+     * Lmu button action.
+     *
+     * @param event the event
+     */
     @FXML
     public void LMUButtonAction (ActionEvent event) {
         serverAddressField.setText("sep21.dbs.ifi.lmu.de");
         serverPortField.setText("52021");
     }
 
+    /**
+     * Bb button action.
+     *
+     * @param event the event
+     */
     @FXML
     public void BBButtonAction (ActionEvent event) {
         serverAddressField.setText("127.0.0.1");

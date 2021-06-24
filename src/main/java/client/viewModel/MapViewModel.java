@@ -28,11 +28,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * The type Map view model.
+ */
 public class MapViewModel implements Initializable, PropertyChangeListener {
 
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+    /**
+     * The Map grid.
+     */
     @FXML
     public GridPane mapGrid;
 
@@ -52,50 +58,17 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             ioException.printStackTrace();
         }
 
-        // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
-  /*      clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                handleLaserAnime();
-            }
-        });*/
-//        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
-//            @Override
-//            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-//                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
-//                    Platform.runLater(() -> {
-//                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-//                            }
-//                    );
-//                    clientGameModel.canSetStartingPointProperty().setValue(false);
-//                }
-//            }
-//        });
+
     }
 
-//    private void startAnimation(String type) {
-//        Double toX = null;
-//        Double toY = null;
-//        switch (type) {
-//            case "BlueBelt" -> {
-//
-//            }
-//
-//        }
-//
-//        ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
-//        TranslateTransition transition = new TranslateTransition();
-//        transition.setDuration(Duration.seconds(3));
-//        transition.setToX(laserPath.indexOf(0));
-//        transition.setToY(laserPath.size());
-//        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-//        transition.setNode(imageGroup);
-//        transition.play();
-//
-//    }
 
-
-    //startings points
+    /**
+     * Sets the robot and its image for each player and loads their image.
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
     public void setRobot (int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
@@ -128,12 +101,26 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Finds the paths for files,nice tool for loading images.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
     public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
 
+    /**
+     * Loads image views for the realted imaged.
+     *
+     * @param element      the element
+     * @param orientations the orientations
+     * @return the image view
+     * @throws FileNotFoundException the file not found exception
+     */
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
@@ -182,6 +169,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Hnadles the click event on the grid.
+     *
+     * @param event the event
+     */
     public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
@@ -192,6 +184,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Important method for turning the robot.
+     * Gets the location of the robot and turns it right or left.
+     *
+     * @param playerID the player id
+     * @param rotation the rotation
+     */
     public void turnRobot(int playerID, String rotation) {
         Platform.runLater(() -> {
             Robot robot = null;
@@ -218,6 +217,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Important method to move the robots.Gets the robots location and replaces it with the new one.
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
     public void moveRobot(int playerID, int x, int y) {
         Robot robot = null;
         for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
@@ -240,6 +246,14 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         clientGameModel.getRobotMap().replace(robot, newPosition);
     }
 
+    /**
+     * Creates the map objects on the map.
+     * Reads the map obejects and according to their type loads their images on the according coordinate.
+     * @param map
+     * @param mapX
+     * @param mapY
+     * @throws IOException
+     */
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
 
@@ -248,7 +262,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 Group imageGroup = new Group();
                 ImageView imageView = loadImage("normal1", "null");
                 imageGroup.getChildren().add(imageView);
-                // ImageView imageView2 = new ImageView();
+
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
                     switch (map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
@@ -407,14 +421,17 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                 fieldMap.put(new Point2D(x, y), imageGroup);
                 mapGrid.setConstraints(imageGroup, x, y);
-                // mapGrid.setAlignment(Pos.CENTER);
+
                 mapGrid.getChildren().add(imageGroup);
-                /*GridPane.setHalignment(imageGroup, HPos.CENTER);
-                GridPane.setValignment(imageGroup, VPos.CENTER);*/
+
             }
         }
     }
 
+    /**
+     * Handles the property changes for Starting point, move queue and turning queue.
+     * @param evt
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         clientModel.getClientGameModel().setStartingPoint(false);
@@ -425,8 +442,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                    //handleAnimation("BlueConveyorBelt");
-                    // handleLaserAnime();
+
                 }
             });
         }
@@ -434,7 +450,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
                 for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                    //nullpointer hier. warum=
+
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
@@ -461,6 +477,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Handles the animations of the board elements.
+     * Reads the orientations of the elements and calls the related animation.
+     *
+     * @param type the type
+     */
     public void handleAnimation(String type) {
         double ToX = 0;
         double ToY = 0;
@@ -488,54 +510,26 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 ToY = entry.getKey().getY() + move;
                 ToX = 0.0;
             }
-           // System.out.println("Bis HERE IST ALLES GUT GELAUFEN");
+
             TranslateTransition transition = new TranslateTransition();
             transition.setDuration(Duration.INDEFINITE);
             transition.setToX(ToX);
             transition.setToY(ToY);
             Group imageGroup = fieldMap.get(entry.getKey());
-            // moveRobot(clientGameModel.getActualPlayerID(), (int)ToX, (int)ToY );
             ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
             ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
             transition.setNode(robotV);
-            //transition.setNode(robotOrientation);
-            //System.out.println("ANIMATION BIS HERE IST GUT");
+
             transition.play();
 
         }
     }
 
-   /* public void handleLaserAnime() {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
 
-        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
-            Laser laser = entry.getValue();
-            ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(), laser);
-
-            TranslateTransition transition = new TranslateTransition();
-            transition.setDuration(Duration.INDEFINITE);
-            transition.setToX(laserPath.indexOf(0));
-            transition.setToY(laserPath.size());
-            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
-
-            //Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-            //ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-
-            laserBeam.setImage(image);
-            transition.setNode(laserBeam);
-            transition.play();
-        }
-
-
-    }*/
-
+    /**
+     * Laser animations handler
+     * Puts a onelaserbeam on the laser path.
+     */
     public void handleLaserAnime() {
         FileInputStream input = null;
         Image image;
@@ -562,25 +556,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
 
     }
-            //(Point2D laserPosition, Laser laser);
-    // Point2D laserPosition = null;
 
-    //hier Kriege ich den Laser Position x,y
-       /* for (Point2D pos: clientGameModel.getLaserMap().keySet()  ) {
-         laserPosition.add(pos);
-
-        }*/
-
-
-       /* ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
-        TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(3));
-        transition.setToX(laserPath.indexOf(0));
-        transition.setToY(laserPath.size());
-        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-        transition.setNode(imageGroup);
-        transition.play();*/
-
+    /**
+     * Gear animations
+     * Gears turn clockwise or counter clockwise thanks to this method.
+     */
 
     private void animateGears () {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
@@ -605,30 +585,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 }
-   /* public void start(Stage primaryStage)
-    {
-        ImageView iv = new ImageView();
-        Image image = new Image("file:res/flowers.jpg");
-        iv.setImage(image);
-
-        FadeTransition ft = new FadeTransition();
-        ft.setNode(iv);
-        ft.setDuration(new Duration(2000));
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
-        ft.setCycleCount(6);
-        ft.setAutoReverse(true);
-
-        iv.setOnMouseClicked(me -> ft.play());
-
-        Group root = new Group();
-        root.getChildren().add(iv);
-        Scene scene = new Scene(root, image.getWidth(), image.getHeight());
-
-        primaryStage.setTitle("FadeTransition Demo");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }*/
 
 
 
