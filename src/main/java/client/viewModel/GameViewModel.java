@@ -406,6 +406,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 /*  showPopup("Programming Phase has begin");*/
                 Playerinfo.setText("Please choose your programming cards");
             });
+            disableHand(false);
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
@@ -432,7 +433,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
-                    //System.out.println("ICH BIN HERE");
                     Playerinfo.setText(null);
                     Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
@@ -445,7 +445,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
-                    disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }
