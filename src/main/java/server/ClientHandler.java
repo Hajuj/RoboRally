@@ -101,11 +101,13 @@ public class ClientHandler extends Thread {
         logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
 
         //The next player can choose a map after the first one disconnects
-        if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
-            if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 2) {
-                Player nextOne = server.getReadyPlayer().get(1);
-                JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
-                server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+        if (server.getConnections().size() > 0) {
+            if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
+                if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 2) {
+                    Player nextOne = server.getReadyPlayer().get(1);
+                    JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
+                    server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
+                }
             }
         }
 
