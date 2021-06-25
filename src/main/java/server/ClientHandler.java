@@ -101,9 +101,12 @@ public class ClientHandler extends Thread {
         logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
 
         //The next player can choose a map after the first one disconnects
-        if (server.getConnections().size() > 0) {
+        if (!server.getPlayerWithID(this.getPlayer_id()).isAI() && server.getConnections().size() > 0) {
             if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
-                if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 2) {
+                if (this.getPlayer_id() == server.readyPlayerWithoutAI().get(0).getPlayerID()) {
+                    server.getCurrentGame().setMapName(null);
+                }
+                if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() > 2) {
                     Player nextOne = server.getReadyPlayer().get(1);
                     JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                     server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
@@ -111,30 +114,32 @@ public class ClientHandler extends Thread {
             }
         }
 
-        //If there are two players in the game, and one goes out
-        if (server.getCurrentGame().getPlayerList().size() <= 2) {
-            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
-            server.getCurrentGame().setGameOn(false);
-            for (Player player : server.getCurrentGame().getPlayerList()) {
-                if (player.getPlayerID() != this.getPlayer_id()) {
-                    JSONMessage gameFinished = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
-                    server.getCurrentGame().sendToAllPlayers(gameFinished);
-                    server.getCurrentGame().refreshGame();
+        if (server.getCurrentGame().isGameOn()) {
+            //If there are two players in the game, and one goes out
+            if (server.getCurrentGame().getPlayerList().size() <= 2) {
+                server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
+                server.getCurrentGame().setGameOn(false);
+                for (Player player : server.getCurrentGame().getPlayerList()) {
+                    if (player.getPlayerID() != this.getPlayer_id()) {
+                        JSONMessage gameFinished = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
+                        server.getCurrentGame().sendToAllPlayers(gameFinished);
+                        server.getCurrentGame().refreshGame();
+                    }
                 }
             }
-        }
-        //More than 2 players, and the current player got out
-        else if (server.getCurrentGame().getCurrentPlayer() == this.player_id) {
-            //If the player was the last one
-            if (server.getCurrentGame().nextPlayerID() == -1) {
-                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().getPlayerList().get(0).getPlayerID());
+            //More than 2 players, and the current player got out
+            else if (server.getCurrentGame().getCurrentPlayer() == this.player_id) {
+                //If the player was the last one
+                if (server.getCurrentGame().nextPlayerID() == -1) {
+                    server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().getPlayerList().get(0).getPlayerID());
+                } else {
+                    server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+                }
+                server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
             } else {
-                server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+                //Not the current player disconnects
+                server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
             }
-            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
-        } else {
-            //Not the current player disconnects
-            server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
         }
         server.getConnections().remove(server.getConnectionWithID(this.getPlayer_id()));
         server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));

@@ -369,11 +369,15 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
 
         if (evt.getPropertyName().equals("gameFinished")) {
-            for (ImageView cards : cards) {
-                cards.setImage(null);
+            if (cards != null) {
+                for (ImageView cards : cards) {
+                    cards.setImage(null);
+                }
             }
-            for (ImageView register : registers) {
-                register.setImage(null);
+            if (register != null) {
+                for (ImageView register : registers) {
+                    register.setImage(null);
+                }
             }
             Platform.runLater(() -> {
                 pane.setCenter(null);

@@ -10,6 +10,7 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
+import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -1558,6 +1559,28 @@ public class Game {
         sendCurrentCards(currentRegister);
         currentPlayer = playerList.get(0).getPlayerID();
         informAboutCurrentPlayer();
+    }
+
+    public void canStartTheGame() {
+        if (server.canStartTheGame()) {
+            try {
+                if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
+                    ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
+                    int random = (int) (Math.random() * maps.size());
+                    String mapName = maps.get(random);
+                    server.getCurrentGame().selectMap(mapName);
+                    for (Connection connection : server.getConnections()) {
+                        server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
+                    }
+                }
+                if (server.getCurrentGame().getMapName() != null) {
+                    server.getCurrentGame().setGameOn(true);
+                    server.getCurrentGame().startGame(server.getReadyPlayer());
+                }
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 
     public String getInverseOrientation(String orientation) {

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Mohamad, Viktoria
@@ -50,6 +51,7 @@ public class MessageHandler {
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
+                player.setAI(helloServerBody.isAI());
 
                 //informieren den neuen Client über alle anderen clients im chat
                 for (Player player1 : server.getWaitingPlayer()) {
@@ -160,20 +162,11 @@ public class MessageHandler {
         }
         if (ready) {
             server.getReadyPlayer().add(player);
-            if (server.getReadyPlayer().size() == 1) {
+            if (server.readyPlayerWithoutAI().size() == 1 && !player.isAI()) {
                 JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
-            if (server.canStartTheGame()) {
-                try {
-                    server.getCurrentGame().setGameOn(true);
-                    server.getCurrentGame().startGame(server.getReadyPlayer());
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                logger.info("I CAN START THE GAME");
-            }
-
+            server.getCurrentGame().canStartTheGame();
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
@@ -183,18 +176,14 @@ public class MessageHandler {
             server.getReadyPlayer().remove(player);
         }
 
-
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
         logger.info("Player " + player.getName() + " is " + isReady);
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
-        //TODO: SEND NOT ZU DEN SPIELER
-        for (Connection connection : server.getConnections()) {
-            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
-        }
         server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        server.getCurrentGame().canStartTheGame();
     }
 
     public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
