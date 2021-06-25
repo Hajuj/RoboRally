@@ -22,10 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Ilja Knis
  */
 
-//TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
-//     IT DIDN'T WORK LOOOOOOL
-//     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
-//     search in the link for -> PauseTransition
 
 public class Game {
     private static Game instance;
@@ -74,18 +70,18 @@ public class Game {
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
 
-    private Game() {
+    private Game () {
 
     }
 
-    public static Game getInstance() {
+    public static Game getInstance () {
         if (instance == null) {
             instance = new Game();
         }
         return instance;
     }
 
-    public Game(Server server) {
+    public Game (Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
         availableMaps.add("DeathTrap");
@@ -95,7 +91,7 @@ public class Game {
     }
 
 
-    public void startGame(ArrayList<Player> players) throws IOException {
+    public void startGame (ArrayList<Player> players) throws IOException {
         //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -137,7 +133,7 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public void refreshGame() {
+    public void refreshGame () {
         antennaMap = new HashMap<>();
         checkPointMap = new HashMap<>();
         conveyorBeltMap = new HashMap<>();
@@ -174,7 +170,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Integer> tooLateClients() {
+    public ArrayList<Integer> tooLateClients () {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
             if (!player.isRegisterFull()) {
@@ -184,7 +180,15 @@ public class Game {
         return tooLateClients;
     }
 
-    public int nextPlayerID() {
+    public boolean specialRebootRules () {
+        if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
+            System.out.println("!!!!!");
+            return true;
+        } else return false;
+    }
+
+
+    public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
         for (int i = currentIndex + 1; i < playerList.size(); i++) {
@@ -197,12 +201,12 @@ public class Game {
         return -1;
     }
 
-    public void informAboutActivePhase() {
+    public void informAboutActivePhase () {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
-    public void informAboutCurrentPlayer() {
+    public void informAboutCurrentPlayer () {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
@@ -218,13 +222,13 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers(JSONMessage jsonMessage) {
-        for (Player player : playerList) {
-            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (int i = 0; i < playerList.size(); i++) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
-    public void selectMap(String mapName) throws IOException {
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -240,7 +244,7 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
-    private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
+    private void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
@@ -328,7 +332,7 @@ public class Game {
         }
     }
 
-    public void activateBlueBelts() {
+    public void activateBlueBelts () {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("blue")) {
@@ -374,7 +378,7 @@ public class Game {
     }
 
 
-    public void sendNewPosition(Player player) {
+    public void sendNewPosition (Player player) {
         int clientID = player.getPlayerID();
         int newX = player.getRobot().getxPosition();
         int newY = player.getRobot().getyPosition();
@@ -382,7 +386,7 @@ public class Game {
         sendToAllPlayers(jsonMessage);
     }
 
-    public void activateBoardElements() {
+    public void activateBoardElements () {
         activateBlueBelts();
         activateGreenBelts();
         activatePushPanels();
@@ -394,7 +398,7 @@ public class Game {
         activateCheckpoints();
     }
 
-    public void activateGreenBelts() {
+    public void activateGreenBelts () {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
                 if (conveyorBeltMap.get(position).getColour().equals("green")) {
@@ -409,7 +413,7 @@ public class Game {
         }
     }
 
-    public void activateEnergySpaces() {
+    public void activateEnergySpaces () {
         for (Point2D position : energySpaceMap.keySet()) {
             for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (currentRegister != 4) {
@@ -428,7 +432,7 @@ public class Game {
         }
     }
 
-    public void activatePushPanels() {
+    public void activatePushPanels () {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
@@ -453,7 +457,7 @@ public class Game {
         }
     }
 
-    public void activateGears() {
+    public void activateGears () {
         for (Point2D position : gearMap.keySet()) {
             for (Player player : getRobotsOnFieldsOwner(position)) {
                 if (gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
@@ -469,7 +473,7 @@ public class Game {
         }
     }
 
-    public void activateWallLasers() {
+    public void activateWallLasers () {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
                 for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
@@ -479,7 +483,7 @@ public class Game {
         }
     }
 
-    public void drawSpam(Player player, int amount) {
+    public void drawSpam (Player player, int amount) {
         //TODO: Check why draw damage more than deckSpam.size() is.
         int amountLeft;
         //If there is enough spam cards
@@ -503,12 +507,12 @@ public class Game {
         }
     }
 
-    public void sendDamage(Player player, ArrayList<String> damageCards) {
+    public void sendDamage (Player player, ArrayList<String> damageCards) {
         JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
         sendToAllPlayers(damageMessage);
     }
 
-    public void activateDamage() {
+    public void activateDamage () {
         for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
             if (entry.getValue().size() != 0) {
                 sendDamage(entry.getKey(), entry.getValue());
@@ -518,14 +522,14 @@ public class Game {
     }
 
 
-    public void clearDamage() {
+    public void clearDamage () {
         currentDamage.clear();
         for (Player player : playerList) {
             currentDamage.put(player, new ArrayList<String>());
         }
     }
 
-    public void activateRobotLasers() {
+    public void activateRobotLasers () {
         ArrayList<Player> activePlayers = new ArrayList<>();
         for (Player player : playerList) {
             if (!deadRobotsIDs.contains(player.getPlayerID()))
@@ -543,7 +547,7 @@ public class Game {
     }
 
 
-    public void getRobotInLineOfSight(Robot robot) {
+    public void getRobotInLineOfSight (Robot robot) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -671,7 +675,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot){
+    public ArrayList<Robot> getRobotsOnFieldsWithout (Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -685,7 +689,7 @@ public class Game {
         return robotsOnFields;
     }
 
-    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -698,7 +702,7 @@ public class Game {
         return robotsOnFields;
     }
 
-    public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
+    public ArrayList<Player> getRobotsOnFieldsOwner (Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -712,7 +716,7 @@ public class Game {
 
 
     //TODO messageBodies verwenden
-    public void activateCardEffect(String card) {
+    public void activateCardEffect (String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -841,47 +845,53 @@ public class Game {
     }
 
 
-    public void rebootRobot(Player player) {
+    public void rebootRobot (Player player) {
         deadRobotsIDs.add(player.getPlayerID());
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
         String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
-
+        boolean rebooted = false;
         boolean fieldIsTaken = false;
         //If a robot dies on the starting map
-        if (boardName.equals("Start A") || boardName.equals("Start B")) {
-            int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
-            int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
-            for (Player player1 : playerList) {
-                int robotHereX = player1.getRobot().getxPosition();
-                int robotHereY = player1.getRobot().getyPosition();
-                //If another robot is already on the start point
-                if (robotHereX == startingPointX && robotHereY == startingPointY) {
-                    fieldIsTaken = true;
-                    //If the robot can move up
-                    if (canRobotMove(robotHereX, robotHereY, "top")) {
-                        player1.getRobot().setyPosition(robotHereY - 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
+        if (!specialRebootRules()) {
+            if (boardName.equals("Start A") || boardName.equals("Start B")) {
+                System.out.println(1);
+                int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
+                int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
+                for (Player player1 : playerList) {
+                    int robotHereX = player1.getRobot().getxPosition();
+                    int robotHereY = player1.getRobot().getyPosition();
+                    //If another robot is already on the start point
+                    if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                        fieldIsTaken = true;
+                        //If the robot can move up
+                        if (canRobotMove(robotHereX, robotHereY, "top")) {
+                            player1.getRobot().setyPosition(robotHereY - 1);
+                            JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
+                            sendToAllPlayers(jsonMessage);
 
-                        player.getRobot().setxPosition(startingPointX);
-                        player.getRobot().setyPosition(startingPointY);
-                    } else {
-                        //Robot can not move up because of wall, look for another free starting point
-                        int newStartingPointX = (int) firstFreeStartingPoint().getX();
-                        int newStartingPointY = (int) firstFreeStartingPoint().getY();
-                        player.getRobot().setxPosition(newStartingPointX);
-                        player.getRobot().setyPosition(newStartingPointY);
+                            player.getRobot().setxPosition(startingPointX);
+                            player.getRobot().setyPosition(startingPointY);
+                        } else {
+                            //Robot can not move up because of wall, look for another free starting point
+                            int newStartingPointX = (int) firstFreeStartingPoint().getX();
+                            int newStartingPointY = (int) firstFreeStartingPoint().getY();
+                            player.getRobot().setxPosition(newStartingPointX);
+                            player.getRobot().setyPosition(newStartingPointY);
+                        }
                     }
                 }
+                //No another robot on the starting point
+                if (!fieldIsTaken) {
+                    player.getRobot().setxPosition(startingPointX);
+                    player.getRobot().setyPosition(startingPointY);
+                }
+                rebooted = true;
             }
-            //No another robot on the starting point
-            if (!fieldIsTaken) {
-                player.getRobot().setxPosition(startingPointX);
-                player.getRobot().setyPosition(startingPointY);
-            }
-        } else {
+        }
+        if (specialRebootRules() || !rebooted) {
+            System.out.println(2);
             //If robot dies on the game map
             for (HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
                 if (entry.getValue() != null) {
@@ -893,15 +903,14 @@ public class Game {
                         //If another robot already on the restart point
                         if (restartPointX == robotX && restartPointY == robotY) {
                             //If the robot can move up
-                            if (canRobotMove(robotX, robotY, "top")) {
-                                player1.getRobot().setyPosition(robotY - 1);
-                                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                                sendToAllPlayers(jsonMessage);
-
-                                player.getRobot().setxPosition(restartPointX);
-                                player.getRobot().setyPosition(restartPointY);
+                            String rebootPointOrientation = "";
+                            for (Map.Entry<Point2D, RestartPoint> entryRestart : restartPointMap.entrySet()) {
+                                rebootPointOrientation = entryRestart.getValue().getOrientations().get(0);
                                 break;
                             }
+
+                            moveRobot(player1.getRobot(), rebootPointOrientation, 1);
+                            sendNewPosition(player1);
                         }
                     }
                     //If the restart point is free
@@ -919,7 +928,7 @@ public class Game {
         sendToAllPlayers(jsonMessage1);
     }
 
-    public Point2D firstFreeStartingPoint() {
+    public Point2D firstFreeStartingPoint () {
         for (Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
             if (getRobotsOnFields(entry.getKey()).size() == 0) {
                 return entry.getKey();
@@ -928,7 +937,7 @@ public class Game {
         return null;
     }
 
-    public void setRebootDirection() {
+    public void setRebootDirection () {
         //Set players who chose a direction, players who didn't set on top by default
         for (Integer deadRobotsID : deadRobotsIDs) {
             setRebootOrientation(server.getPlayerWithID(deadRobotsID), robotsRebootDirection.getOrDefault(server.getPlayerWithID(deadRobotsID), "top"));
@@ -937,7 +946,7 @@ public class Game {
         deadRobotsIDs.clear();
     }
 
-    public void setRebootOrientation(Player player, String orientation) {
+    public void setRebootOrientation (Player player, String orientation) {
         switch (player.getRobot().getOrientation()) {
             case "top" -> {
                 switch (orientation) {
@@ -1050,12 +1059,12 @@ public class Game {
         }
     }
 
-    public void sendRotation(int playerID, String rotation) {
+    public void sendRotation (int playerID, String rotation) {
         JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(playerID, rotation));
         sendToAllPlayers(jsonMessage);
     }
 
-    public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius) {
+    public ArrayList<Player> getPlayersInRadius (Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
         int robotYPosition = currentPlayer.getRobot().getyPosition();
@@ -1095,7 +1104,7 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
+    public boolean isFieldNotBlocked (Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
         for (Element element : map.get(x).get(y)) {
@@ -1121,7 +1130,7 @@ public class Game {
 
 
     //TODO: ich kann auch den anderen spieler auf ein checkpoint schieben
-    public void activateCheckpoints() {
+    public void activateCheckpoints () {
         for (Player player : playerList) {
             for (Point2D position : checkPointMap.keySet()) {
                 if (player.getRobot().getxPosition() == position.getX() && player.getRobot().getyPosition() == position.getY()) {
@@ -1144,7 +1153,7 @@ public class Game {
         }
     }
 
-    public void moveRobot(Robot robot, String orientation, int movement) {
+    public void moveRobot (Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         boolean canMove;
@@ -1161,9 +1170,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                                System.out.println("push push");
                             }
                         }
                     }
@@ -1190,9 +1200,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                                System.out.println("push push");
                             }
                         }
                     }
@@ -1219,9 +1230,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                                System.out.println("push push");
                             }
                         }
                     }
@@ -1248,9 +1260,10 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
+                                System.out.println("push push");
                             }
                         }
                     }
@@ -1286,22 +1299,22 @@ public class Game {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 2) {
+        if (iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 3) {
+        if (iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 4) {
+        if (iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
 
-        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
-            switch (iteration){
+        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
+            switch (iteration) {
                 case 1 -> pushRobot(pusher, robotGettingPushed, 2);
                 case 2 -> pushRobot(pusher, robotGettingPushed, 3);
                 case 3 -> pushRobot(pusher, robotGettingPushed, 4);
@@ -1309,10 +1322,10 @@ public class Game {
         }
     }
 
-    public String rotateClockwise(String orientation){
+    public String rotateClockwise (String orientation) {
         String rotatedOrientation;
 
-        switch (orientation){
+        switch (orientation) {
             case "top" -> rotatedOrientation = "right";
             case "right" -> rotatedOrientation = "bottom";
             case "bottom" -> rotatedOrientation = "left";
@@ -1323,7 +1336,7 @@ public class Game {
         return rotatedOrientation;
     }
 
-    private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
+    private boolean canRobotMove (int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
             if ("Wall".equals(element.getType())) {
@@ -1338,7 +1351,7 @@ public class Game {
         return canPass;
     }
 
-    public void changeOrientation(Robot robot, String direction) {
+    public void changeOrientation (Robot robot, String direction) {
         switch (robot.getOrientation()) {
             case "top" -> {
                 switch (direction) {
@@ -1386,7 +1399,7 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
@@ -1493,7 +1506,7 @@ public class Game {
 
     //TODO find next wall with laser
 
-    public void startProgrammingPhase() {
+    public void startProgrammingPhase () {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
             player.drawCardsProgramming(9);
@@ -1509,7 +1522,7 @@ public class Game {
         }
     }
 
-    public boolean valideStartingPoint(int x, int y) {
+    public boolean valideStartingPoint (int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -1527,7 +1540,7 @@ public class Game {
         }
     }
 
-    public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
+    public void replaceElementInMap (ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
             map.get(x).get(y).remove(element);
@@ -1538,7 +1551,7 @@ public class Game {
         }
     }
 
-    public void setActivePhase(int activePhase) {
+    public void setActivePhase (int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
@@ -1552,7 +1565,7 @@ public class Game {
     }
 
     //TODO change get(0)
-    public void startActivationPhase() {
+    public void startActivationPhase () {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentRegister = 0;
         sendCurrentCards(currentRegister);
@@ -1560,7 +1573,7 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public String getInverseOrientation(String orientation) {
+    public String getInverseOrientation (String orientation) {
         String inverseOrientation;
         switch (orientation) {
             case "top" -> inverseOrientation = "bottom";
@@ -1572,7 +1585,7 @@ public class Game {
         return inverseOrientation;
     }
 
-    public void sendCurrentCards(int register) {
+    public void sendCurrentCards (int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
             if (!deadRobotsIDs.contains(player.getPlayerID())) {
@@ -1588,19 +1601,19 @@ public class Game {
         //informAboutCurrentPlayer();
     }
 
-    public int getActivePhase() {
+    public int getActivePhase () {
         return activePhase;
     }
 
     public static class Helper implements java.util.Comparator<Player> {
         private Game game;
 
-        private Helper(Game game) {
+        private Helper (Game game) {
             this.game = game;
         }
 
         @Override
-        public int compare(Player o1, Player o2) {
+        public int compare (Player o1, Player o2) {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
@@ -1627,39 +1640,39 @@ public class Game {
         }
     }
 
-    public Integer getCurrentRegister() {
+    public Integer getCurrentRegister () {
         return currentRegister;
     }
 
-    public void setCurrentRegister(int currentRegister) {
+    public void setCurrentRegister (int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
-    public GameTimer getGameTimer() {
+    public GameTimer getGameTimer () {
         return gameTimer;
     }
 
-    public boolean getTimerOn() {
+    public boolean getTimerOn () {
         return timerOn.get();
     }
 
-    public synchronized void setTimerOn(AtomicBoolean timerOn) {
+    public synchronized void setTimerOn (AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
-    public int getCurrentRound() {
+    public int getCurrentRound () {
         return currentRound;
     }
 
-    public void setCurrentRound(int currentRound) {
+    public void setCurrentRound (int currentRound) {
         this.currentRound = currentRound;
     }
 
-    public boolean isActivePhaseOn() {
+    public boolean isActivePhaseOn () {
         return activePhaseOn;
     }
 
-    public void setNewRoundCounter() {
+    public void setNewRoundCounter () {
         this.roundCounter++;
         System.out.println("************************************************************************");
         System.out.println("******************************   ROUND " + roundCounter + "   ******************************");
@@ -1667,140 +1680,140 @@ public class Game {
 
     }
 
-    public void setActivePhaseOn(boolean activePhaseOn) {
+    public void setActivePhaseOn (boolean activePhaseOn) {
         this.activePhaseOn = activePhaseOn;
     }
 
-    public int getCurrentPlayer() {
+    public int getCurrentPlayer () {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(int currentPlayer) {
+    public void setCurrentPlayer (int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
-    public String getMapName() {
+    public String getMapName () {
         return mapName;
     }
 
-    public void setMapName(String mapName) {
+    public void setMapName (String mapName) {
         this.mapName = mapName;
     }
 
 
-    public Map<Player, Integer> getCheckPointReached() {
+    public Map<Player, Integer> getCheckPointReached () {
         return checkPointReached;
     }
 
-    public void setCheckPointReached(Map<Player, Integer> checkPointReached) {
+    public void setCheckPointReached (Map<Player, Integer> checkPointReached) {
         this.checkPointReached = checkPointReached;
     }
 
-    public boolean isGameOn() {
+    public boolean isGameOn () {
         return gameOn;
     }
 
-    public void setGameOn(boolean gameOn) {
+    public void setGameOn (boolean gameOn) {
         this.gameOn = gameOn;
     }
 
-    public ArrayList<String> getAvailableMaps() {
+    public ArrayList<String> getAvailableMaps () {
         return availableMaps;
     }
 
-    public static ArrayList<String> getRobotNames() {
+    public static ArrayList<String> getRobotNames () {
         return robotNames;
     }
 
-    public ArrayList<Player> getPlayerList() {
+    public ArrayList<Player> getPlayerList () {
         return playerList;
     }
 
-    public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
+    public ArrayList<ArrayList<ArrayList<Element>>> getMap () {
         return map;
     }
 
-    public Map<Point2D, Laser> getLaserMap() {
+    public Map<Point2D, Laser> getLaserMap () {
         return laserMap;
     }
 
-    public Map<Point2D, Antenna> getAntennaMap() {
+    public Map<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
     }
 
-    public DeckWorm getDeckWorm() {
+    public DeckWorm getDeckWorm () {
         return deckWorm;
     }
 
-    public DeckVirus getDeckVirus() {
+    public DeckVirus getDeckVirus () {
         return deckVirus;
     }
 
-    public DeckTrojan getDeckTrojan() {
+    public DeckTrojan getDeckTrojan () {
         return deckTrojan;
     }
 
-    public DeckSpam getDeckSpam() {
+    public DeckSpam getDeckSpam () {
         return deckSpam;
     }
 
-    public Map<Point2D, CheckPoint> getCheckPointMap() {
+    public Map<Point2D, CheckPoint> getCheckPointMap () {
         return checkPointMap;
     }
 
-    public Map<Point2D, ConveyorBelt> getConveyorBeltMap() {
+    public Map<Point2D, ConveyorBelt> getConveyorBeltMap () {
         return conveyorBeltMap;
     }
 
-    public Map<Point2D, Empty> getEmptyMap() {
+    public Map<Point2D, Empty> getEmptyMap () {
         return emptyMap;
     }
 
-    public Map<Point2D, EnergySpace> getEnergySpaceMap() {
+    public Map<Point2D, EnergySpace> getEnergySpaceMap () {
         return energySpaceMap;
     }
 
-    public Map<Point2D, Gear> getGearMap() {
+    public Map<Point2D, Gear> getGearMap () {
         return gearMap;
     }
 
-    public Map<Point2D, Pit> getPitMap() {
+    public Map<Point2D, Pit> getPitMap () {
         return pitMap;
     }
 
-    public Map<Point2D, PushPanel> getPushPanelMap() {
+    public Map<Point2D, PushPanel> getPushPanelMap () {
         return pushPanelMap;
     }
 
-    public Map<Point2D, RestartPoint> getRestartPointMap() {
+    public Map<Point2D, RestartPoint> getRestartPointMap () {
         return restartPointMap;
     }
 
-    public Map<Point2D, StartPoint> getStartPointMap() {
+    public Map<Point2D, StartPoint> getStartPointMap () {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs() {
+    public ArrayList<Integer> getDeadRobotsIDs () {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator() {
+    public Comparator<Player> getComparator () {
         return comparator;
     }
 
-    public Map<Player, String> getRobotsRebootDirection() {
+    public Map<Player, String> getRobotsRebootDirection () {
         return robotsRebootDirection;
     }
 }
