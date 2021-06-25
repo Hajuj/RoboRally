@@ -174,6 +174,14 @@ public class Game {
         }
     }
 
+    public void inverseOrientation() {
+        if (mapName.equals("DeathTrap")) {
+            for (Player player : playerList) {
+                player.getRobot().setOrientation("left");
+            }
+        }
+    }
+
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
