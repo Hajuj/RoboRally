@@ -22,14 +22,14 @@ import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
- * ClientModel realisiert Singelton-Pattern,
- * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
+ *
  */
 
 public class ClientModel {
     private static ClientModel instance;
     private static ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+    private static Logger logger = Logger.getLogger(ClientModel.class.getName());
     protected PropertyChangeSupport propertyChangeSupport;
 
     private Socket socket;
@@ -37,10 +37,11 @@ public class ClientModel {
     private ClientModelWriterThread clientModelWriterThread;
     private boolean waitingForServer = true;
 
-    private static Logger logger = Logger.getLogger(ClientModel.class.getName());
+
     private String protocolVersion = "Version 1.0";
     private String group = "BlindeBonbons";
     private boolean isAI = false;
+
     private MessageHandler messageHandler = new MessageHandler();
 
     private HashMap<Integer, Boolean> playersStatusMap = new HashMap<Integer, Boolean>();
@@ -48,20 +49,29 @@ public class ClientModel {
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
     private String playersStatus = "";
-    //private StringProperty chatHistory;
     private String chatHistory = "";
+
     private boolean canPlay = true;
     private boolean doChooseMap = false;
     private String selectedMap;
+
     private ArrayList<String> availableMaps = new ArrayList<>();
 
     private boolean gameOn = false;
     private boolean gameFinished = false;
 
+
     private ClientModel () {
         propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
+
+    /**
+     * ClientModel realisiert Singelton-Pattern,
+     * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
+     *
+     * @return instace of ClientModel Klasse
+     */
     public static ClientModel getInstance () {
         if (instance == null) {
             instance = new ClientModel();
@@ -69,19 +79,12 @@ public class ClientModel {
         return instance;
     }
 
-    public int getIDfromRobotName (String name) {
-        for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
-            if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
-                return entry.getKey();
-            }
-        }
-        return -1;
-    }
-
 
     /**
      * This method is responsible for connecting the client to the specified server.
      *
+     * @param server_ip
+     * @param server_port
      * @return true if connection could be established.
      */
     public boolean connectClient (String server_ip, int server_port) {
@@ -109,6 +112,7 @@ public class ClientModel {
                 }
             }
 
+            //falls Client von dem Server mit einem HalloClient-Message notified wird, schickt er ein HalloServer-Message an den Server
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, isAI, protocolVersion)));
             return true;
 
@@ -123,23 +127,48 @@ public class ClientModel {
         }
     }
 
+    /**
+     * Falls Client ein PlayerAdded Message kriegt, tut er den neuen Player in alle Spieler-HashMaps
+     *
+     * @param clientID - ID des neuen Players
+     * @param name     - Name des neuen PLayers
+     * @param figure   - Robot, den der neue Player ausgewählt hat.
+     */
     public void addPlayer (int clientID, String name, int figure) {
         getPlayersNamesMap().put(clientID, name);
         getPlayersFigureMap().put(clientID, figure);
         getPlayersStatusMap().put(clientID, false);
     }
 
-
+    /**
+     * Schick message in JSON-Format mit dem WriterThread vob clientSocket an den Server.
+     *
+     * @param message
+     */
     public void sendMessage (JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
     }
 
 
+    /**
+     * Falls der Spieler erfolgreich ein Nickname und Figur ausgewählt hat, wird ein PlayerValues-Message geschickt.
+     *
+     * @param username
+     * @param figure
+     */
     public void sendUsernameAndRobot (String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
 
+
+    /**
+     * Eine Hilfsmethode, um ID von dem Player mit dem Nickname username zu kriegen.
+     * Die wird beim "Private-Nachrichten schicken" benutzt.
+     *
+     * @param username
+     * @return ID der Spielers, falls er in dem HashMap gefunden wurde, oder 0 falls nicht.
+     */
     public int getIDbyUsername (String username) {
         for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
             if (entry.getValue().equals(username)) {
@@ -149,6 +178,12 @@ public class ClientModel {
         return 0;
     }
 
+
+    /**
+     * Methode, um offentliche / private Nachrichten in Chat zu schicken.
+     *
+     * @param message - Nachricht zu schicken
+     */
     public void sendMsg (String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
@@ -173,15 +208,27 @@ public class ClientModel {
             } else {
                 //öffentliche nachricht.
                 clientModelWriterThread.sendChatMessage(clientGameModel.getPlayer().getName() + " : " + message);
-               setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
+                setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
             }
         }
     }
 
+    /**
+     * Update den Text, der in chatHistory TextArea in dem ViewModell angezeigt wird.
+     *
+     * @param message - Neue Nachricht in Chat
+     */
     public void receiveMessage (String message) {
-        setChatHistory(chatHistory+ message + "\n");
+        setChatHistory(chatHistory + message + "\n");
     }
 
+    /**
+     * Update den Text, der in playerStatusDisplay TextArea in dem ViewModell angezeiget wird. Dass passiert jedes mal,
+     * wenn der Client ein neues PlayerStatus-Message von dem Server kriegt.
+     *
+     * @param playerID
+     * @param newPlayerStatus
+     */
     public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
         setPlayersStatus("");
@@ -196,6 +243,27 @@ public class ClientModel {
         }
     }
 
+    /**
+     * Sucht nach dem ID des Spielers, der einen Roboter mit dem Namen name hat
+     *
+     * @param name
+     * @return ID des Spielers, falls er gefunden wurde und -1, falls nicht.
+     */
+    public int getIDfromRobotName (String name) {
+        for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
+            if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Wenn ein Player von dem Server weggeht oder es ein Verbindungsverlust passiert, werden alle anderen Spieler mit
+     * einem ConnectionUpdate-Message darüber informiert. Dann entfernen sie diesen User aus allen HashMaps.
+     *
+     * @param playerID
+     */
     public void removePlayer (int playerID) {
         playersStatusMap.remove(playerID);
         playersFigureMap.remove(playerID);
@@ -204,11 +272,16 @@ public class ClientModel {
         playersNamesMap.remove(playerID);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    /**
+     * PropertyChangeListener, damit alle ViewModels, die Changes in dem ClientModel observieren, über diese changes notified werden.
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener (PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
-    public boolean isGameOn() {
+    public boolean isGameOn () {
         return gameOn;
     }
 
