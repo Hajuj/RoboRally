@@ -15,14 +15,14 @@ public class MessageHandlerAI extends client.model.MessageHandler {
 
 
     @Override
-    public void handleWelcome(ClientModel clientmodel, WelcomeBody welcomeBody) {
+    public void handleWelcome (ClientModel clientmodel, WelcomeBody welcomeBody) {
         super.handleWelcome(clientmodel, welcomeBody);
         simpleAIModel.setName("SimpleAI_" + welcomeBody.getClientID());
         clientmodel.sendUsernameAndRobot(simpleAIModel.getName(), simpleAIModel.getFigureCounter());
     }
 
     @Override
-    public void handlePlayerAdded(ClientModel clientModel, PlayerAddedBody playerAddedBody) {
+    public void handlePlayerAdded (ClientModel clientModel, PlayerAddedBody playerAddedBody) {
         super.handlePlayerAdded(clientModel, playerAddedBody);
         if (simpleAIModel.isHasPlayerValues()) {
             clientModel.sendMsg("Hi " + playerAddedBody.getName() + "! I'm Simple AI and I love you!");
@@ -41,7 +41,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
 
     //Wegen Alert-Fenster
     @Override
-    public void handleError(ClientModel clientmodel, ErrorBody errorBody) {
+    public void handleError (ClientModel clientmodel, ErrorBody errorBody) {
         System.out.println(errorBody.getError());
         //für die Automatische Figur Auswählen
         if (errorBody.getError().equals("Figure is already taken") && !simpleAIModel.isHasPlayerValues()) {
@@ -53,7 +53,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     }
 
     @Override
-    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+    public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         super.handleCurrentPlayer(clientModel, currentPlayerBody);
         if (currentPlayerBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             if (clientModel.getClientGameModel().getActualPhase() == 0) {
@@ -65,7 +65,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     }
 
     @Override
-    public void handleYourCards(ClientModel clientModel, YourCardsBody yourCardsBody) {
+    public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         for (int i = 0; i < 5; i++) {
             SimpleAIModel.getCardsInRegister().replace(i, null);
@@ -77,16 +77,16 @@ public class MessageHandlerAI extends client.model.MessageHandler {
 
     //wegen Timer Alert
     @Override
-    public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
+    public void handleTimerStarted (ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
     }
 
     @Override
-    public void handleGameFinished(ClientModel clientModel, GameFinishedBody gameFinishedBody) {
+    public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
     }
 
     @Override
-    public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
+    public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
         super.handlePickDamage(clientModel, pickDamageBody);
         simpleAIModel.pickDamageRoutine();
     }

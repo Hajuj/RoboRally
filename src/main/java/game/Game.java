@@ -10,7 +10,6 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -185,7 +184,14 @@ public class Game {
         return tooLateClients;
     }
 
-    public int nextPlayerID() {
+    public boolean specialRebootRules () {
+        if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
+            return true;
+        } else return false;
+    }
+
+
+    public int nextPlayerID () {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
         for (int i = currentIndex + 1; i < playerList.size(); i++) {
@@ -219,9 +225,9 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers(JSONMessage jsonMessage) {
-        for (Player player : playerList) {
-            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
+        for (int i = 0; i < playerList.size(); i++) {
+            server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
@@ -848,41 +854,47 @@ public class Game {
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
         String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
-
+        boolean rebooted = false;
         boolean fieldIsTaken = false;
         //If a robot dies on the starting map
-        if (boardName.equals("Start A") || boardName.equals("Start B")) {
-            int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
-            int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
-            for (Player player1 : playerList) {
-                int robotHereX = player1.getRobot().getxPosition();
-                int robotHereY = player1.getRobot().getyPosition();
-                //If another robot is already on the start point
-                if (robotHereX == startingPointX && robotHereY == startingPointY) {
-                    fieldIsTaken = true;
-                    //If the robot can move up
-                    if (canRobotMove(robotHereX, robotHereY, "top")) {
-                        player1.getRobot().setyPosition(robotHereY - 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
+        if (!specialRebootRules()) {
+            if (boardName.equals("Start A") || boardName.equals("Start B")) {
+                System.out.println(1);
+                int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
+                int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
+                for (Player player1 : playerList) {
+                    int robotHereX = player1.getRobot().getxPosition();
+                    int robotHereY = player1.getRobot().getyPosition();
+                    //If another robot is already on the start point
+                    if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                        fieldIsTaken = true;
+                        //If the robot can move up
+                        if (canRobotMove(robotHereX, robotHereY, "top")) {
+                            player1.getRobot().setyPosition(robotHereY - 1);
+                            JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
+                            sendToAllPlayers(jsonMessage);
 
-                        player.getRobot().setxPosition(startingPointX);
-                        player.getRobot().setyPosition(startingPointY);
-                    } else {
-                        //Robot can not move up because of wall, look for another free starting point
-                        int newStartingPointX = (int) firstFreeStartingPoint().getX();
-                        int newStartingPointY = (int) firstFreeStartingPoint().getY();
-                        player.getRobot().setxPosition(newStartingPointX);
-                        player.getRobot().setyPosition(newStartingPointY);
+                            player.getRobot().setxPosition(startingPointX);
+                            player.getRobot().setyPosition(startingPointY);
+                        } else {
+                            //Robot can not move up because of wall, look for another free starting point
+                            int newStartingPointX = (int) firstFreeStartingPoint().getX();
+                            int newStartingPointY = (int) firstFreeStartingPoint().getY();
+                            player.getRobot().setxPosition(newStartingPointX);
+                            player.getRobot().setyPosition(newStartingPointY);
+                        }
                     }
                 }
+                //No another robot on the starting point
+                if (!fieldIsTaken) {
+                    player.getRobot().setxPosition(startingPointX);
+                    player.getRobot().setyPosition(startingPointY);
+                }
+                rebooted = true;
             }
-            //No another robot on the starting point
-            if (!fieldIsTaken) {
-                player.getRobot().setxPosition(startingPointX);
-                player.getRobot().setyPosition(startingPointY);
-            }
-        } else {
+        }
+        if (specialRebootRules() || !rebooted) {
+            System.out.println(2);
             //If robot dies on the game map
             for (HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
                 if (entry.getValue() != null) {
@@ -894,15 +906,14 @@ public class Game {
                         //If another robot already on the restart point
                         if (restartPointX == robotX && restartPointY == robotY) {
                             //If the robot can move up
-                            if (canRobotMove(robotX, robotY, "top")) {
-                                player1.getRobot().setyPosition(robotY - 1);
-                                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                                sendToAllPlayers(jsonMessage);
-
-                                player.getRobot().setxPosition(restartPointX);
-                                player.getRobot().setyPosition(restartPointY);
+                            String rebootPointOrientation = "";
+                            for (Map.Entry<Point2D, RestartPoint> entryRestart : restartPointMap.entrySet()) {
+                                rebootPointOrientation = entryRestart.getValue().getOrientations().get(0);
                                 break;
                             }
+
+                            moveRobot(player1.getRobot(), rebootPointOrientation, 1);
+                            sendNewPosition(player1);
                         }
                     }
                     //If the restart point is free
