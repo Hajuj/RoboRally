@@ -527,11 +527,15 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
 
         if (evt.getPropertyName().equals("gameFinished")) {
-            for (ImageView cards : cards) {
-                cards.setImage(null);
+            if (cards != null) {
+                for (ImageView cards : cards) {
+                    cards.setImage(null);
+                }
             }
-            for (ImageView register : registers) {
-                register.setImage(null);
+            if (register != null) {
+                for (ImageView register : registers) {
+                    register.setImage(null);
+                }
             }
             Platform.runLater(() -> {
                 pane.setCenter(null);
@@ -564,6 +568,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
                 Playerinfo.setText("Please choose your programming cards");
             });
+            disableHand(false);
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
@@ -590,7 +595,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
 
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
-                    //System.out.println("ICH BIN HERE");
                     Playerinfo.setText(null);
                     Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
@@ -603,7 +607,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
-                    disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }

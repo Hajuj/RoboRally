@@ -14,7 +14,7 @@ public class HelloServerBody implements ClientMessageAction<HelloServerBody> {
     @Expose
     private final String group;
     @Expose
-    private final Boolean isAI;
+    private final boolean isAI;
     @Expose
     private final String protocol;
 
@@ -31,5 +31,9 @@ public class HelloServerBody implements ClientMessageAction<HelloServerBody> {
 
     public String getProtocol () {
         return this.protocol;
+    }
+
+    public boolean isAI() {
+        return isAI;
     }
 }
