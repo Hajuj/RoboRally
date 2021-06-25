@@ -230,7 +230,6 @@ public class MessageHandler {
                     server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
                 } else {
                     server.getCurrentGame().setActivePhase(2);
-                    server.getCurrentGame().inverseOrientation();
                 }
             }
 
