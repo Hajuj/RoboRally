@@ -1,6 +1,7 @@
 package server;
 
 import game.*;
+import game.boardelements.Antenna;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
@@ -206,6 +208,16 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+
+                for (Map.Entry<Point2D, Antenna> entry : server.getCurrentGame().getAntennaMap().entrySet()) {
+                    if (entry.getValue().getOrientations().contains("left")) {
+                        player.getRobot().setOrientation("left");
+                    } else if (entry.getValue().getOrientations().contains("right")) {
+                        player.getRobot().setOrientation("right");
+                    }
+                    break;
+                }
+
                 server.getCurrentGame().getStartingPointMap().put(player.getRobot(), new Point2D(x, y));
 
                 //sage allen wo der Spieler mit playerID started
