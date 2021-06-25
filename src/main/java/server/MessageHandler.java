@@ -431,8 +431,10 @@ public class MessageHandler {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("The cards: " + unavailableCard + " are unavailable!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
 
-            JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
-            server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+            if (deckTrojanSize + deckWormSize + deckVirusSize != 0) {
+                JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
+                server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+            }
         } else {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("All damage cards are picked!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());

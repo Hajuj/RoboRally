@@ -10,6 +10,7 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
+import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -184,14 +185,14 @@ public class Game {
         return tooLateClients;
     }
 
-    public boolean specialRebootRules () {
+    public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
             return true;
         } else return false;
     }
 
 
-    public int nextPlayerID () {
+    public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
         for (int i = currentIndex + 1; i < playerList.size(); i++) {
@@ -225,7 +226,7 @@ public class Game {
     //     phases
 
 
-    public void sendToAllPlayers (JSONMessage jsonMessage) {
+    public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
@@ -409,6 +410,13 @@ public class Game {
                             player.getRobot().getyPosition() == (int) position.getY()) {
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         sendNewPosition(player);
+                        try {
+                            if (IS_LAZY) {
+                                Thread.sleep(80);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                 }
@@ -678,7 +686,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot){
+    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -893,33 +901,37 @@ public class Game {
                 rebooted = true;
             }
         }
+        boolean isFree = true;
         if (specialRebootRules() || !rebooted) {
-            System.out.println(2);
             //If robot dies on the game map
             for (HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
                 if (entry.getValue() != null) {
                     int restartPointX = (int) entry.getKey().getX();
                     int restartPointY = (int) entry.getKey().getY();
                     for (Player player1 : playerList) {
-                        int robotX = player1.getRobot().getxPosition();
-                        int robotY = player1.getRobot().getyPosition();
-                        //If another robot already on the restart point
-                        if (restartPointX == robotX && restartPointY == robotY) {
-                            //If the robot can move up
-                            String rebootPointOrientation = "";
-                            for (Map.Entry<Point2D, RestartPoint> entryRestart : restartPointMap.entrySet()) {
-                                rebootPointOrientation = entryRestart.getValue().getOrientations().get(0);
-                                break;
-                            }
+                        if (player1.getPlayerID() != player.getPlayerID()) {
+                            int robotX = player1.getRobot().getxPosition();
+                            int robotY = player1.getRobot().getyPosition();
+                            //If another robot already on the restart point
+                            if (restartPointX == robotX && restartPointY == robotY) {
+                                isFree = false;
+                                //If the robot can move up
+                                String rebootPointOrientation = entry.getValue().getOrientations().get(0);
 
-                            moveRobot(player1.getRobot(), rebootPointOrientation, 1);
-                            sendNewPosition(player1);
+                                System.out.println("OMG I CRY ALL THE TIME");
+                                moveRobot(player1.getRobot(), rebootPointOrientation, 1);
+                                sendNewPosition(player1);
+                            }
                         }
                     }
-                    //If the restart point is free
-                    player.getRobot().setxPosition(restartPointX);
-                    player.getRobot().setyPosition(restartPointY);
+                    if (isFree) {
+                        System.out.println("IM LOST WTF");
+                        //If the restart point is free
+                        player.getRobot().setxPosition(restartPointX);
+                        player.getRobot().setyPosition(restartPointY);
+                    }
                 }
+                break;
             }
         }
         drawSpam(player, 2);
@@ -1173,7 +1185,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -1202,7 +1214,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -1231,7 +1243,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -1260,7 +1272,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -1280,7 +1292,7 @@ public class Game {
         }
     }
 
-    public Player getRobotOwner (Robot robot) {
+    public Player getRobotOwner(Robot robot) {
         for (Player player : playerList) {
             if (player.getRobot().equals(robot)) {
                 return player;
@@ -1290,7 +1302,7 @@ public class Game {
     }
 
     //TODO: add to moveRobot and find robots on new field -> use pushRobot()
-    public void pushRobot (Robot pusher, Robot robotGettingPushed, int iteration) {
+    public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration) {
         int initX = robotGettingPushed.getxPosition();
         int initY = robotGettingPushed.getyPosition();
 
@@ -1298,22 +1310,22 @@ public class Game {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 2) {
+        if (iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 3) {
+        if (iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
-        if(iteration == 4) {
+        if (iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
             sendNewPosition(getRobotOwner(robotGettingPushed));
             sendNewPosition(getRobotOwner(robotGettingPushed));
         }
 
-        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
-            switch (iteration){
+        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
+            switch (iteration) {
                 case 1 -> pushRobot(pusher, robotGettingPushed, 2);
                 case 2 -> pushRobot(pusher, robotGettingPushed, 3);
                 case 3 -> pushRobot(pusher, robotGettingPushed, 4);
@@ -1321,10 +1333,10 @@ public class Game {
         }
     }
 
-    public String rotateClockwise(String orientation){
+    public String rotateClockwise(String orientation) {
         String rotatedOrientation;
 
-        switch (orientation){
+        switch (orientation) {
             case "top" -> rotatedOrientation = "right";
             case "right" -> rotatedOrientation = "bottom";
             case "bottom" -> rotatedOrientation = "left";
