@@ -313,7 +313,7 @@ public class Game {
                                 moveRobot(player.getRobot(), newOrientation, 1);
                             }
                         }
-                        if (!movedOnBelt) {
+                        if (!movedOnBelt){
                             moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         }
                         try {
@@ -437,11 +437,10 @@ public class Game {
         }
     }
 
-    //TODO: Wall as blocker
     public void activateRobotLasers() {
         ArrayList<Player> activePlayers = new ArrayList<>();
-        for (Player player : playerList) {
-            if (!deadRobotsIDs.contains(player.getPlayerID()))
+        for (Player player : playerList){
+            if(!deadRobotsIDs.contains(player.getPlayerID()))
                 activePlayers.add(player);
         }
         for (Player player : activePlayers) {
@@ -449,7 +448,7 @@ public class Game {
         }
 
         for (Player player : robotsHitByRobotLaser) {
-            if (deckSpam.getDeck().size() > 0) {
+            if(deckSpam.getDeck().size() > 0) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                 deckSpam.removeTopCard();
             }
@@ -458,16 +457,15 @@ public class Game {
         robotsHitByRobotLaser.clear();
     }
 
-    //TODO fix wall blocker (no orientation check needed)
-    public void getRobotInLineOfSight(Robot robot) {
+    public void getRobotInLineOfSight(Robot robot){
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (robot.getOrientation()) {
+        switch (robot.getOrientation()){
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == 0) {
+                if (tempPosition == 0){
                     reachedEndOfMap = true;
                 }
 
@@ -480,10 +478,17 @@ public class Game {
                             break;
                         }
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            foundBlocker = true;
-                            break;
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals("top") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("bottom")){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
                         }
-                        if (tempPosition == 0) {
+                        if (tempPosition == 0){
                             reachedEndOfMap = true;
                         }
                     }
@@ -492,7 +497,7 @@ public class Game {
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == (map.get(0).size() - 1)) {
+                if (tempPosition == (map.get(0).size()-1)){
                     reachedEndOfMap = true;
                 }
 
@@ -505,10 +510,17 @@ public class Game {
                             break;
                         }
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            foundBlocker = true;
-                            break;
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        .get(j).equals("bottom") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("top")) {
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
                         }
-                        if (tempPosition == (map.get(0).size() - 1)) {
+                        if (tempPosition == (map.get(0).size()-1)){
                             reachedEndOfMap = true;
                         }
                     }
@@ -517,7 +529,7 @@ public class Game {
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == (map.size() - 1)) {
+                if (tempPosition == (map.size()-1)){
                     reachedEndOfMap = true;
                 }
 
@@ -530,10 +542,17 @@ public class Game {
                             break;
                         }
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            foundBlocker = true;
-                            break;
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals("right") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("left")){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
                         }
-                        if (tempPosition == (map.size() - 1)) {
+                        if (tempPosition == (map.size()-1)){
                             reachedEndOfMap = true;
                         }
                     }
@@ -542,7 +561,7 @@ public class Game {
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == 0) {
+                if (tempPosition == 0){
                     reachedEndOfMap = true;
                 }
 
@@ -555,10 +574,17 @@ public class Game {
                             break;
                         }
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            foundBlocker = true;
-                            break;
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                        .get(j).equals("left") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("right")){
+                                    foundBlocker = true;
+                                    break;
+                                }
+                            }
                         }
-                        if (tempPosition == 0) {
+                        if (tempPosition == 0){
                             reachedEndOfMap = true;
                         }
                     }
@@ -567,7 +593,7 @@ public class Game {
         }
     }
 
-    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
+    public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot){
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Player player : playerList) {
@@ -688,7 +714,7 @@ public class Game {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
                 deckSpam.getDeck().add(spam);
                 //TODO test if-statement for consistency when deck is empty
-                if (!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)) {
+                if(!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)){
                     playerList.get(indexCurrentPlayer).shuffleDiscardIntoProgramming();
                 }
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
@@ -703,7 +729,7 @@ public class Game {
             }
             case "Trojan" -> {
                 for (int i = 0; i < 2; i++) {
-                    if (deckSpam.getDeck().size() > 0) {
+                    if(deckSpam.getDeck().size() > 0) {
                         playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                         deckSpam.removeTopCard();
                     }
@@ -715,7 +741,7 @@ public class Game {
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
                 for (Player player : playersWithinRadius) {
-                    if (deckSpam.getDeck().size() > 0) {
+                    if(deckSpam.getDeck().size() > 0) {
                         player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                         deckSpam.removeTopCard();
                     }
@@ -733,7 +759,7 @@ public class Game {
         deadRobotsIDs.add(player.getPlayerID());
         for (int i = 0; i < 2; i++) {
             //TODO: what if es keine Karten in deckSpam gibt?
-            if (deckSpam.getDeck().size() > 0) {
+            if(deckSpam.getDeck().size() > 0) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                 deckSpam.removeTopCard();
             }
@@ -868,23 +894,23 @@ public class Game {
         return playersInRadius;
     }
 
-    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
+    public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation){
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)) {
-            if (element.getType().equals("Pit")) {
+        for (Element element : map.get(x).get(y)){
+            if (element.getType().equals("Pit")){
                 foundBlocker = true;
                 rebootRobot(server.getPlayerWithID(currentPlayer));
             }
-            if (element.getType().equals("Wall")) {
-                for (String orientation : element.getOrientations()) {
-                    if (orientation.equals(blockOrientation)) {
+            if (element.getType().equals("Wall")){
+                for (String orientation : element.getOrientations()){
+                    if(orientation.equals(blockOrientation)){
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")) {
+            if (element.getType().equals("Antenna")){
                 foundBlocker = true;
             }
         }
@@ -930,10 +956,10 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -957,10 +983,10 @@ public class Game {
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)){
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -987,7 +1013,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
@@ -1014,10 +1040,9 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()){
                                 pushRobot(robot,
-                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0),
-                                        1);
+                                        getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
                         }
                     }
@@ -1033,25 +1058,26 @@ public class Game {
         }
     }
 
-    public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration) {
+    //TODO: add to moveRobot and find robots on new field -> use pushRobot()
+    public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration){
         int initX = robotGettingPushed.getxPosition();
         int initY = robotGettingPushed.getyPosition();
 
-        if (iteration == 1) {
+        if(iteration == 1) {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
         }
-        if (iteration == 2) {
+        if(iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
         }
-        if (iteration == 3) {
+        if(iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
         }
-        if (iteration == 4) {
+        if(iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
         }
 
-        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
-            switch (iteration) {
+        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
+            switch (iteration){
                 case 1 -> pushRobot(pusher, robotGettingPushed, 2);
                 case 2 -> pushRobot(pusher, robotGettingPushed, 3);
                 case 3 -> pushRobot(pusher, robotGettingPushed, 4);
@@ -1059,10 +1085,10 @@ public class Game {
         }
     }
 
-    public String rotateClockwise(String orientation) {
+    public String rotateClockwise(String orientation){
         String rotatedOrientation;
 
-        switch (orientation) {
+        switch (orientation){
             case "top" -> rotatedOrientation = "right";
             case "right" -> rotatedOrientation = "bottom";
             case "bottom" -> rotatedOrientation = "left";
@@ -1136,8 +1162,6 @@ public class Game {
     //TODO: expand method for laser hits robot (robotMap)
     //      check for coordination consistency
     //      check for possible exception handling
-
-    //TODO: does the blocker work? damage although wall ends the path
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
@@ -1160,7 +1184,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1180,7 +1204,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1200,7 +1224,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1220,7 +1244,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1533,23 +1557,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs() {
+    public ArrayList<Integer> getDeadRobotsIDs () {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator() {
+    public Comparator<Player> getComparator () {
         return comparator;
     }
 }
