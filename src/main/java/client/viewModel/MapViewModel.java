@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -28,7 +29,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MapViewModel implements Initializable, PropertyChangeListener {
 
@@ -38,22 +38,20 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     @FXML
     public GridPane mapGrid;
 
-    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group> ( );
-    private Element Wall;
-    private int wallCount = 0 ;
+    private Map<Point2D, Group> fieldMap = new HashMap<Point2D, Group>();
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        clientModel.addPropertyChangeListener ( this );
-        clientGameModel.addPropertyChangeListener ( this );
-        //handleAnimation();
-        int mapX = clientGameModel.getMap ( ).size ( );
-        int mapY = clientGameModel.getMap ( ).get ( 0 ).size ( );
+        clientModel.addPropertyChangeListener(this);
+        clientGameModel.addPropertyChangeListener(this);
+
+        int mapX = clientGameModel.getMap().size();
+        int mapY = clientGameModel.getMap().get(0).size();
         try {
-            createMapObjects ( clientGameModel.getMap ( ), mapX, mapY );
+            createMapObjects(clientGameModel.getMap(), mapX, mapY);
         } catch (IOException ioException) {
-            ioException.printStackTrace ( );
+            ioException.printStackTrace();
         }
 
         // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
@@ -100,22 +98,22 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     //startings points
-    public void setRobot(int playerID, int x, int y) {
-        int figure = clientModel.getPlayersFigureMap ( ).get ( playerID );
+    public void setRobot (int playerID, int x, int y) {
+        int figure = clientModel.getPlayersFigureMap().get(playerID);
         FileInputStream input = null;
         Image image;
         try {
-            input = new FileInputStream ( findPath ( "Robots/robot" + figure + ".png" ) );
+            input = new FileInputStream(findPath("Robots/robot" + figure + ".png"));
         } catch (FileNotFoundException e) {
-            e.printStackTrace ( );
+            e.printStackTrace();
         }
-        image = new Image ( input );
-        ImageView imageView = new ImageView ( );
-        imageView.setImage ( image );
-        imageView.setFitWidth ( 46 );
-        imageView.setFitHeight ( 46 );
+        image = new Image(input);
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(46);
+        imageView.setFitHeight(46);
 
-        fieldMap.get ( new Point2D ( x, y ) ).getChildren ( ).add ( imageView );
+        fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
 
         try {
             input = new FileInputStream(findPath("images/TransparentElements/RobotDirectionArrowHUGE.png"));
@@ -127,7 +125,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setImage(image2);
         imageView.setFitWidth(46);
         imageView.setFitHeight(46);
-        imageView.setRotate(-90);
+        imageView.setRotate(clientGameModel.getAntennaOrientation());
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
 
@@ -143,6 +141,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
+
+        if (element.equals("BlueBelt")) {
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));
+            image = new Image(path);
+        }
 
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -234,7 +237,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         Point2D oldPosition = clientGameModel.getRobotMap().get(robot);
         Point2D newPosition = new Point2D(x, y);
         Platform.runLater(() -> {
-
             Group imageGroup = fieldMap.get(oldPosition);
             ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
             ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
@@ -463,12 +465,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 animateGears();
             });
-        }
-        if (evt.getPropertyName ( ).equals ( "BlueConveyorBelt" )) {
-            clientModel.getClientGameModel ( ).setAnimateBelts ( false );
-            Platform.runLater ( () -> {
-                //handleAnimation ( );
-            } );
         }
     }
 

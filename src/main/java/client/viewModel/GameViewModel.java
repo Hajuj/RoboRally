@@ -39,14 +39,11 @@ import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
 import json.JSONMessage;
 import json.protocol.PlayCardBody;
-
-import static java.lang.System.err;
 
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
@@ -210,7 +207,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
      * drag was detected, start a drag-and-drop gesture
      * /* allow any transfer mode
      **/
-    public void handle(MouseEvent event) throws InvocationTargetException {
+    public void handle(MouseEvent event) {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
         if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
@@ -249,7 +246,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-    public void handledropped(DragEvent dragEvent) throws InvocationTargetException {
+    public void handledropped(DragEvent dragEvent) {
         Image image = dragEvent.getDragboard().getImage();
         ImageView target = (ImageView) dragEvent.getTarget();
         //TODO 2 Karten auf einem Register
@@ -277,13 +274,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void collectingCards() {
-        //try {
-        int registerNum = Integer.parseInt ( String.valueOf ( this.register.charAt ( 4 ) ) );
-        if (!cardName.equals ( "Null" )) {
-            regToCard.replace ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
-            clientGameModel.sendSelectedCards ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
+        int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
+        if (!cardName.equals("Null")) {
+            regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
+            clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
         } else {
-            clientGameModel.sendSelectedCards ( registerNum, "Null" );
+            clientGameModel.sendSelectedCards(registerNum, "Null");
         }
     }
 
@@ -368,11 +364,15 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
 
         if (evt.getPropertyName().equals("gameFinished")) {
-            for (ImageView cards : cards) {
-                cards.setImage(null);
+            if (cards != null) {
+                for (ImageView cards : cards) {
+                    cards.setImage(null);
+                }
             }
-            for (ImageView register : registers) {
-                register.setImage(null);
+            if (register != null) {
+                for (ImageView register : registers) {
+                    register.setImage(null);
+                }
             }
             Platform.runLater(() -> {
                 pane.setCenter(null);
@@ -390,7 +390,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             for (ImageView register : registers) {
                 register.setImage(null);
             }
-
             cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8);
             Platform.runLater(() -> {
@@ -406,7 +405,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 /*  showPopup("Programming Phase has begin");*/
                 Playerinfo.setText("Please choose your programming cards");
             });
-            disableHand ( false );
+            disableHand(false);
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
@@ -433,7 +432,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
-                    //System.out.println("ICH BIN HERE");
                     Playerinfo.setText(null);
                     Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
@@ -446,7 +444,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
-                    //disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }
