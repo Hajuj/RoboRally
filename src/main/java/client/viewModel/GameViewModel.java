@@ -46,6 +46,8 @@ import java.util.*;
 import json.JSONMessage;
 import json.protocol.PlayCardBody;
 
+import static java.lang.System.err;
+
 //TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
 public class GameViewModel implements Initializable, PropertyChangeListener {
@@ -208,7 +210,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
      * drag was detected, start a drag-and-drop gesture
      * /* allow any transfer mode
      **/
-    public void handle(MouseEvent event) {
+    public void handle(MouseEvent event) throws InvocationTargetException {
         ImageView source = (ImageView) event.getSource();
         returnSource = source;
         if (source.getId().equals(reg_0.getId()) || source.getId().equals(reg_1.getId())
@@ -231,12 +233,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
      * /* allow for moving
      **/
     public void handleTarget(DragEvent event) {
-
         if (event.getDragboard().hasImage()) {
             event.acceptTransferModes(TransferMode.MOVE);
         }
-       // if (event.getTarget () == is crads sollte er kein collectingCards (); )
-
     }
 
     public void handleSource(ImageView source) {
@@ -260,11 +259,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             returnSource.setImage(target.getImage());
             target.setImage(dbImage.getImage());
 
-        } else {
-            // try code
+        }
+         /*else if(dragEvent.getGestureTarget ().equals ( card_0 )||dragEvent.getGestureTarget ().equals ( card_1 )||
+                dragEvent.getGestureTarget ().equals ( card_2 )||dragEvent.getGestureTarget ().equals ( card_3 )||dragEvent.getGestureTarget ().equals ( card_4 )||
+                dragEvent.getGestureTarget ().equals ( card_5 )||dragEvent.getGestureTarget ().equals ( card_6 )||dragEvent.getGestureTarget ().equals ( card_7 )||
+                dragEvent.getGestureTarget ().equals ( card_8 )){
+            handlewithdraw ( target, image );
+        }*/
+        else{
             handlewithdraw ( target, image );
             collectingCards ( );
-
         }
     }
 
@@ -273,15 +277,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void collectingCards() {
-
-        int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
-        if (!cardName.equals("Null")) {
-            regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
-            clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
+        //try {
+        int registerNum = Integer.parseInt ( String.valueOf ( this.register.charAt ( 4 ) ) );
+        if (!cardName.equals ( "Null" )) {
+            regToCard.replace ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
+            clientGameModel.sendSelectedCards ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
         } else {
-            clientGameModel.sendSelectedCards(registerNum, "Null");
+            clientGameModel.sendSelectedCards ( registerNum, "Null" );
         }
     }
+
+      /*  }catch( Exception ine){
+            System.err.println("Robot.waitForIdle, non-fatal exception caught:");
+            ine.printStackTrace();
+        }*/
 
     public void playCard() {
         int currentRegister = clientGameModel.getValueActualRegister();
@@ -381,6 +390,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             for (ImageView register : registers) {
                 register.setImage(null);
             }
+
             cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8);
             Platform.runLater(() -> {
@@ -396,6 +406,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 /*  showPopup("Programming Phase has begin");*/
                 Playerinfo.setText("Please choose your programming cards");
             });
+            disableHand ( false );
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
@@ -493,34 +504,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 }
 
-
-
-
-
-
-
-
-    /*    if (evt.getPropertyName().equals("yourTurn")){
-            playerInfo.setText("it's Your turn");
-            yourRobot.setEffect(new DropShadow(15.0, Color.GREEN));
-            try {
-                wait(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            playerInfo.setText(null);
-
-        }
-    }
-        if (evt.getPropertyName().equals("ActualRegister")){
-            int currentRegister = (int) evt.getNewValue();
-            for (ImageView register: registers) {
-                if (String.valueOf(currentRegister).equals(String.valueOf(register.getId().charAt(4)))) {
-                    register.setDisable(true);
-                }
-            }
-
-        }*/
 
 
 
