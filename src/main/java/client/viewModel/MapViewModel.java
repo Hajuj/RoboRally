@@ -140,6 +140,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
 
+        if (element.equals("BlueBelt")) {
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));
+            image = new Image(path);
+        }
+
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(50);
