@@ -142,11 +142,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
 
-        if (element.equals("BlueBelt")) {
-            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));
-            image = new Image(path);
-        }
-
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(50);
@@ -435,37 +430,33 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-//                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     //handleAnimation("BlueConveyorBelt");
                     // handleLaserAnime();
                 }
-                clientGameModel.getStartingPointQueue().clear();
             });
         }
 
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
-                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                    //nullpointer hier. warum=
-                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                    moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                    clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-//                    clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
-                }
-                clientGameModel.getMoveQueue().clear();
+            for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
+                //nullpointer hier. warum=
+                int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
+                clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+            }
         }
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);
             Platform.runLater(() -> {
-                //TODO: ConcurrentModificationException
                 for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
                     //TODO check NullPointerException here
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     turnRobot(playerID, entry.getValue());
                     //TODO: wo muss ich die orientation ändern in ClientGameModel?
-//                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
                 }
-                clientGameModel.getTurningQueue().clear();
             });
         }
         if (evt.getPropertyName().equals("Gears")) {
@@ -503,7 +494,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 ToY = entry.getKey().getY() + move;
                 ToX = 0.0;
             }
-           // System.out.println("Bis HERE IST ALLES GUT GELAUFEN");
+            // System.out.println("Bis HERE IST ALLES GUT GELAUFEN");
             TranslateTransition transition = new TranslateTransition();
             transition.setDuration(Duration.INDEFINITE);
             transition.setToX(ToX);
@@ -577,7 +568,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
 
     }
-            //(Point2D laserPosition, Laser laser);
+    //(Point2D laserPosition, Laser laser);
     // Point2D laserPosition = null;
 
     //hier Kriege ich den Laser Position x,y
