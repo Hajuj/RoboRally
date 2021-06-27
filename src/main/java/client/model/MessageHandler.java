@@ -344,11 +344,10 @@ public class MessageHandler {
         switch (type) {
             case "BlueConveyorBelt": {
                 clientModel.getClientGameModel().setAnimateBelts(true);
-                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
-                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
                 break;
             }
             case "GreenConveyorBelt": {
+                clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "PushPanel": {

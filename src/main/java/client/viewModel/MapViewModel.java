@@ -137,13 +137,25 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
+
         FileInputStream path = null;
         Image image;
-        path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
-        image = new Image(path);
 
         if (element.equals("BlueBelt")) {
-            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));            image = new Image(path);
+        }
+        else if (element.equals ( "OneLaserBeam" )){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/OneLaserBeamAnimated.gif")).getFile()));
+            image = new Image(path);
+        }else if (element.equals ( "DoppleLaserBeam")){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/TwoLaserBeam_transparent_animated.gif")).getFile()));
+            image = new Image(path);
+        }
+        else if (element.equals ( "TribleLaserBeam" )){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/ThreeLaserBeam_transparent_animated.gif")).getFile()));
+            image = new Image(path);
+        }else{
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
             image = new Image(path);
         }
 
@@ -433,6 +445,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                         activateLasers ( );
+                    animateEnergySpaces();
 
                 }
             });
@@ -652,7 +665,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 FileInputStream input = null;
                 Image image;
                 try {
-                    input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
+                    input = new FileInputStream(findPath("images/mapElements/Elements/OneLaserBeamAnimated.gif"));
                     laserBeam = loadImage ( "OneLaserBeam", String.valueOf ( entry.getValue ( ).getOrientations ( ) ) );
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -677,17 +690,49 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     fieldMap.get(newPosition).getChildren().add(laserBeam1);
                 });
 
-                FadeTransition fT = new FadeTransition (  );
+               /* FadeTransition fT = new FadeTransition (  );
                 fT.setCycleCount ( Animation.INDEFINITE );
                 fT.setNode ( laserBeam1 );
                 fT.setDuration ( Duration.INDEFINITE );
                 fT.setFromValue ( 0.0);
                 fT.setToValue ( 1.0 );
                 fT.setAutoReverse (true);
-                fT.play ();
+                fT.play ();*/
 
             }
         }
+    }
+
+    public void animateEnergySpaces() {
+        ImageView energySpace = new ImageView (  );
+        for (Map.Entry<Point2D, EnergySpace> entry : clientGameModel.getEnergySpaceMap ( ).entrySet ( )) {
+            int x = (int) entry.getKey ().getX() ;
+            int y = (int) entry.getKey ().getY();
+            FileInputStream input = null;
+            Image image;
+            try {
+                input = new FileInputStream(findPath("images/mapElements/Elements/GreenEnergySpace.png"));
+                energySpace = loadImage ( "GreenEnergySpace", String.valueOf ( entry.getValue ( ).getOrientations ( ) ) );
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            image = new Image(input);
+            energySpace = new ImageView();
+            energySpace.setImage(image);
+            energySpace.setFitWidth(50);
+            energySpace.setFitHeight(50);
+            Point2D energySpacePos = new Point2D ( entry.getKey ().getX (),entry.getKey ().getY () );
+            fieldMap.get(energySpacePos).getChildren().add(energySpace);
+            FadeTransition fT = new FadeTransition (  );
+            fT.setCycleCount ( Animation.INDEFINITE );
+            fT.setNode ( energySpace );
+            fT.setDuration ( Duration.INDEFINITE );
+            fT.setFromValue ( 0.0);
+            fT.setToValue ( 1.0 );
+            fT.setAutoReverse (true);
+            fT.play ();
+        }
+
     }
 
 }
