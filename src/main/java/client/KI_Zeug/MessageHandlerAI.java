@@ -90,4 +90,9 @@ public class MessageHandlerAI extends client.model.MessageHandler {
         super.handlePickDamage(clientModel, pickDamageBody);
         simpleAIModel.pickDamageRoutine();
     }
+
+    @Override
+    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+
+    }
 }

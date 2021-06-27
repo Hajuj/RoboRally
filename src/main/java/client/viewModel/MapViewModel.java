@@ -428,10 +428,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+//                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
                     //handleAnimation("BlueConveyorBelt");
                     // handleLaserAnime();
                 }
+                clientGameModel.getStartingPointQueue().clear();
             });
         }
 
@@ -442,19 +443,22 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-                    clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+//                    clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
                 }
+                clientGameModel.getMoveQueue().clear();
         }
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);
             Platform.runLater(() -> {
+                //TODO: ConcurrentModificationException
                 for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
                     //TODO check NullPointerException here
                     int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
                     turnRobot(playerID, entry.getValue());
                     //TODO: wo muss ich die orientation ändern in ClientGameModel?
-                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+//                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
                 }
+                clientGameModel.getTurningQueue().clear();
             });
         }
         if (evt.getPropertyName().equals("Gears")) {

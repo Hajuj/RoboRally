@@ -198,6 +198,7 @@ public class MessageHandler {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
 
+                //Set orientation of the robots depends on the Antenna
                 for (Map.Entry<Point2D, Antenna> entry : server.getCurrentGame().getAntennaMap().entrySet()) {
                     if (entry.getValue().getOrientations().contains("left")) {
                         player.getRobot().setOrientation("left");

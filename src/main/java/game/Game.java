@@ -351,30 +351,30 @@ public class Game {
                                 e.printStackTrace();
                             }
                         }
-                        sendNewPosition(player);
-                        //second move: need to find new position and new orientation first
-                        double xRobotPos = player.getRobot().getxPosition();
-                        double yRobotPos = player.getRobot().getyPosition();
-                        for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
-                            if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
-                                movedOnBelt = true;
-                                Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                                String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                                moveRobot(player.getRobot(), newOrientation, 1);
+                        if (!deadRobotsIDs.contains(player.getPlayerID())) {
+                            //second move: need to find new position and new orientation first
+                            double xRobotPos = player.getRobot().getxPosition();
+                            double yRobotPos = player.getRobot().getyPosition();
+                            for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                                if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                                    movedOnBelt = true;
+                                    Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                                    String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                                    moveRobot(player.getRobot(), newOrientation, 1);
+                                }
                             }
-                        }
-                        if (!movedOnBelt) {
-                            moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        }
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            if (!movedOnBelt) {
+                                moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                             }
+                            if (IS_LAZY) {
+                                try {
+                                    Thread.sleep(80);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
                         }
-                        sendNewPosition(player);
-                        break;
                     }
                 }
             }
@@ -409,7 +409,6 @@ public class Game {
                     if (player.getRobot().getxPosition() == (int) position.getX() &&
                             player.getRobot().getyPosition() == (int) position.getY()) {
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                         try {
                             if (IS_LAZY) {
                                 Thread.sleep(80);
@@ -451,7 +450,6 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(5)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                     }
                 }
             }
@@ -461,7 +459,6 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(4)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                     }
                 }
             }
@@ -747,40 +744,26 @@ public class Game {
                 switch (robotOrientation) {
                     case "top" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "bottom" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "top", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "left" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "right", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "right" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "left", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
             case "MoveI" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "MoveII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "MoveIII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "PowerUp" -> {
                 playerList.get(indexCurrentPlayer).increaseEnergy(1);
@@ -864,32 +847,33 @@ public class Game {
         String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
         boolean rebooted = false;
         boolean fieldIsTaken = false;
-        //If a robot dies on the starting map
         if (!specialRebootRules()) {
+            //If a robot dies on the starting map
             if (boardName.equals("Start A") || boardName.equals("Start B")) {
                 System.out.println(1);
                 int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
                 int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
                 for (Player player1 : playerList) {
-                    int robotHereX = player1.getRobot().getxPosition();
-                    int robotHereY = player1.getRobot().getyPosition();
-                    //If another robot is already on the start point
-                    if (robotHereX == startingPointX && robotHereY == startingPointY) {
-                        fieldIsTaken = true;
-                        //If the robot can move up
-                        if (canRobotMove(robotHereX, robotHereY, "top")) {
-                            player1.getRobot().setyPosition(robotHereY - 1);
-                            JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                            sendToAllPlayers(jsonMessage);
+                    if (player1.getPlayerID() != player.getPlayerID()) {
+                        int robotHereX = player1.getRobot().getxPosition();
+                        int robotHereY = player1.getRobot().getyPosition();
+                        //If another robot is already on the start point
+                        if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                            fieldIsTaken = true;
+                            //If the robot can move up
+                            if (canRobotMove(robotHereX, robotHereY, "top")) {
+                                player1.getRobot().setyPosition(robotHereY - 1);
+                                sendNewPosition(player1);
 
-                            player.getRobot().setxPosition(startingPointX);
-                            player.getRobot().setyPosition(startingPointY);
-                        } else {
-                            //Robot can not move up because of wall, look for another free starting point
-                            int newStartingPointX = (int) firstFreeStartingPoint().getX();
-                            int newStartingPointY = (int) firstFreeStartingPoint().getY();
-                            player.getRobot().setxPosition(newStartingPointX);
-                            player.getRobot().setyPosition(newStartingPointY);
+                                player.getRobot().setxPosition(startingPointX);
+                                player.getRobot().setyPosition(startingPointY);
+                            } else {
+                                //Robot can not move up because of wall, look for another free starting point
+                                int newStartingPointX = (int) firstFreeStartingPoint().getX();
+                                int newStartingPointY = (int) firstFreeStartingPoint().getY();
+                                player.getRobot().setxPosition(newStartingPointX);
+                                player.getRobot().setyPosition(newStartingPointY);
+                            }
                         }
                     }
                 }
@@ -920,7 +904,9 @@ public class Game {
 
                                 System.out.println("OMG I CRY ALL THE TIME");
                                 moveRobot(player1.getRobot(), rebootPointOrientation, 1);
-                                sendNewPosition(player1);
+
+                                player.getRobot().setxPosition(restartPointX);
+                                player.getRobot().setyPosition(restartPointY);
                             }
                         }
                     }
@@ -939,8 +925,7 @@ public class Game {
         JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
         sendToAllPlayers(jsonMessage);
 
-        JSONMessage jsonMessage1 = new JSONMessage("Movement", new MovementBody(player.getPlayerID(), player.getRobot().getxPosition(), player.getRobot().getyPosition()));
-        sendToAllPlayers(jsonMessage1);
+        sendNewPosition(player);
     }
 
     public Point2D firstFreeStartingPoint() {
@@ -1125,7 +1110,8 @@ public class Game {
         for (Element element : map.get(x).get(y)) {
             if (element.getType().equals("Pit")) {
                 foundBlocker = true;
-                rebootRobot(server.getPlayerWithID(currentPlayer));
+                rebootRobot(getRobotOwner(robot));
+                break;
             }
             if (element.getType().equals("Wall")) {
                 for (String orientation : element.getOrientations()) {
@@ -1185,6 +1171,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1214,6 +1201,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1243,6 +1231,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1272,6 +1261,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1308,20 +1298,15 @@ public class Game {
 
         if (iteration == 1) {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
 
         if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
