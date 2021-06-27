@@ -433,6 +433,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
                     Playerinfo.setText(null);
+                    //if ()
                     Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
                 }

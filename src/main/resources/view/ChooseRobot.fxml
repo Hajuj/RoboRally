@@ -127,7 +127,7 @@
                   </VBox>
                </children>
             </HBox>
-            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="36.0" prefWidth="220.0" stylesheets="@../button.css" text="Play" translateY="50.0">
+            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="36.0" prefWidth="220.0" text="Play" translateY="50.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
