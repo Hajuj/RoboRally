@@ -1,7 +1,7 @@
 package server;
 
-import client.model.ClientModel;
 import game.*;
+import game.boardelements.Antenna;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Mohamad, Viktoria
@@ -49,6 +51,7 @@ public class MessageHandler {
 
                 Player player = new Player(actual_id);
                 server.getWaitingPlayer().add(player);
+                player.setAI(helloServerBody.isAI());
 
                 //informieren den neuen Client über alle anderen clients im chat
                 for (Player player1 : server.getWaitingPlayer()) {
@@ -159,20 +162,11 @@ public class MessageHandler {
         }
         if (ready) {
             server.getReadyPlayer().add(player);
-            if (server.getReadyPlayer().size() == 1) {
+            if (server.readyPlayerWithoutAI().size() == 1 && !player.isAI()) {
                 JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                 server.sendMessage(selectMapMessage, clientHandler.getWriter());
             }
-            if (server.canStartTheGame()) {
-                try {
-                    server.getCurrentGame().setGameOn(true);
-                    server.getCurrentGame().startGame(server.getReadyPlayer());
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                logger.info("I CAN START THE GAME");
-            }
-
+            server.getCurrentGame().canStartTheGame();
         } else {
             if (player.getPlayerID() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() != 1) {
                 Player nextOne = server.getReadyPlayer().get(1);
@@ -182,18 +176,14 @@ public class MessageHandler {
             server.getReadyPlayer().remove(player);
         }
 
-
         String isReady = setStatusBody.isReady() ? "ready" : "not ready";
         logger.info("Player " + player.getName() + " is " + isReady);
     }
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
-        //TODO: SEND NOT ZU DEN SPIELER
-        for (Connection connection : server.getConnections()) {
-            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
-        }
         server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        server.getCurrentGame().canStartTheGame();
     }
 
     public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
@@ -207,6 +197,17 @@ public class MessageHandler {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
+
+                //Set orientation of the robots depends on the Antenna
+                for (Map.Entry<Point2D, Antenna> entry : server.getCurrentGame().getAntennaMap().entrySet()) {
+                    if (entry.getValue().getOrientations().contains("left")) {
+                        player.getRobot().setOrientation("left");
+                    } else if (entry.getValue().getOrientations().contains("right")) {
+                        player.getRobot().setOrientation("right");
+                    }
+                    break;
+                }
+
                 server.getCurrentGame().getStartingPointMap().put(player.getRobot(), new Point2D(x, y));
 
                 //sage allen wo der Spieler mit playerID started
@@ -325,11 +326,8 @@ public class MessageHandler {
                     }
                     if (canStartNewRound) {
                         //New Round
-                        //TODO: Check if all deadRobotsIDs chose a direction
-                        //      -> If yes, delete from deadRobotsIDs, set new direction using changeOrientation()
-                        //      -> if not, set direction top using changeOrientation()
-                        //      send PlayerTurning
-                        server.getCurrentGame().getDeadRobotsIDs().clear();
+                        server.getCurrentGame().setRebootDirection();
+                        //server.getCurrentGame().getDeadRobotsIDs().add(1);
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
@@ -356,8 +354,10 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
         String direction = rebootDirectionBody.getDirection();
 
-        //TODO: Add player to the rebootDirection HashMap after he chose a direction
-        //      delete the players from deadRobotsIDs
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        //Add the player to the rebootDirection HashMap
+        server.getCurrentGame().getRobotsRebootDirection().put(player, direction);
     }
 
     public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
@@ -432,8 +432,10 @@ public class MessageHandler {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("The cards: " + unavailableCard + " are unavailable!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
 
-            JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
-            server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+            if (deckTrojanSize + deckWormSize + deckVirusSize != 0) {
+                JSONMessage jsonMessage1 = new JSONMessage("PickDamage", new PickDamageBody(leftCards));
+                server.sendMessage(jsonMessage1, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
+            }
         } else {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("All damage cards are picked!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());

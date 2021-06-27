@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -45,8 +46,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public StringProperty chatOutput;
 
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chatOutput = new SimpleStringProperty();
@@ -67,13 +66,15 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         notReadyBtn.setDisable(true);
 
     }
+
     public StringProperty chatOutputProperty() {
         return chatOutput;
     }
+
     public void sendMessageButton(ActionEvent event) {
-            message = messageField.getText();
-            model.sendMsg(message);
-            messageField.clear();
+        message = messageField.getText();
+        model.sendMsg(message);
+        messageField.clear();
     }
 
     public void goToGameGuide(ActionEvent event) throws IOException {
@@ -85,13 +86,13 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         rootStage.show();
     }
 
-    public void sendReadyStatus (ActionEvent event) {
+    public void sendReadyStatus(ActionEvent event) {
         model.setNewStatus(true);
         readyButton.setDisable(true);
         notReadyBtn.setDisable(false);
     }
 
-    public void showMaps () throws IOException {
+    public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
@@ -100,14 +101,14 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         newStage.show();
     }
 
-    public void changeStatusButton (ActionEvent event) {
+    public void changeStatusButton(ActionEvent event) {
         model.setNewStatus(false);
         notReadyBtn.setDisable(true);
         readyButton.setDisable(false);
         model.setDoChooseMap(false);
     }
 
-    public void loadGameScene () throws IOException {
+    public void loadGameScene() throws IOException {
        /* ClassLoader classLoader = getClass().getClassLoader();
         InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");*/
 
@@ -131,20 +132,36 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("chatHistory")) {
-            chatField.setText(evt.getNewValue().toString());
-            chatField.appendText("");
-            chatField.setScrollTop(Double.MAX_VALUE);
+            Platform.runLater(() -> {
+                chatField.setText(evt.getNewValue().toString());
+                chatField.appendText("");
+                chatField.setScrollTop(Double.MAX_VALUE);
+            });
         }
         if (evt.getPropertyName().equals("playerStatus")) {
-            readyDisplay.setText(evt.getNewValue().toString());
+            Platform.runLater(() -> {
+                readyDisplay.setText(evt.getNewValue().toString());
+            });
         }
         if (evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
             Platform.runLater(() -> {
                 try {
                     showMaps();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
+            });
+        }
+        if (evt.getPropertyName().equals("gameOn")) {
+            Platform.runLater(() -> {
+                readyButton.setDisable(true);
+                notReadyBtn.setDisable(true);
+            });
+        }
+        if (evt.getPropertyName().equals("gameFinished")) {
+            Platform.runLater(() -> {
+                readyButton.setDisable(false);
             });
         }
     }

@@ -20,6 +20,7 @@ public class Player {
     private int figure;
     private boolean isReady;
     private int energy = 0;
+    private boolean isAI = false;
 
     private DeckDiscard deckDiscard;
     private DeckProgramming deckProgramming;
@@ -29,6 +30,24 @@ public class Player {
     public Player(int playerID) {
         this.playerID = playerID;
         this.isReady = false;
+        this.deckDiscard = new DeckDiscard();
+        deckDiscard.initializeDeck();
+        deckDiscard.shuffleDeck();
+
+        this.deckProgramming = new DeckProgramming();
+        deckProgramming.initializeDeck();
+        deckProgramming.shuffleDeck();
+
+        this.deckHand = new DeckHand();
+        deckHand.initializeDeck();
+        deckHand.shuffleDeck();
+
+        this.deckRegister = new DeckRegister();
+        deckRegister.initializeDeck();
+        deckRegister.shuffleDeck();
+    }
+
+    public void refreshPlayer() {
         this.deckDiscard = new DeckDiscard();
         deckDiscard.initializeDeck();
         deckDiscard.shuffleDeck();
@@ -223,13 +242,11 @@ public class Player {
         this.energy += amount;
     }
 
-    public void decreaseEnergy(int amount) {
-        if (this.energy < amount) {
-            //TODO can't use if not enough energy
-            this.energy = 0;
-        } else {
-            this.energy -= amount;
-        }
+    public boolean isAI() {
+        return isAI;
     }
 
+    public void setAI(boolean AI) {
+        isAI = AI;
+    }
 }

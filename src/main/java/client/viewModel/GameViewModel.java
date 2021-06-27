@@ -359,6 +359,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
                     pane.setCenter(fxmlLoader.load());
+                    model.setGameOn(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -366,6 +367,24 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Playerinfo.setText(null);
             Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
         }
+
+        if (evt.getPropertyName().equals("gameFinished")) {
+            if (cards != null) {
+                for (ImageView cards : cards) {
+                    cards.setImage(null);
+                }
+            }
+            if (register != null) {
+                for (ImageView register : registers) {
+                    register.setImage(null);
+                }
+            }
+            Platform.runLater(() -> {
+                pane.setCenter(null);
+                model.setGameFinished(false);
+            });
+        }
+
         if (evt.getPropertyName().equals("handCards")) {
             clientGameModel.setHandCards(false);
             regToCard.put(0, null);
@@ -391,6 +410,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 /*  showPopup("Programming Phase has begin");*/
                 Playerinfo.setText("Please choose your programming cards");
             });
+            disableHand(false);
         }
         if (evt.getPropertyName().equals("currentRegister")) {
             Platform.runLater(() -> {
@@ -417,7 +437,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
-                    //System.out.println("ICH BIN HERE");
                     Playerinfo.setText(null);
                     Playerinfo.setText("Its your turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
@@ -430,7 +449,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("ActualPhase")) {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
-                    disableHand(false);
                     disableAllRegisters(false);
                     showPopup("Programming Phase has begin");
                 }
@@ -458,6 +476,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
            });
        }
         if (evt.getPropertyName().equals("RebootDirection")) {
+            clientGameModel.setChooseRebootDirection(false);
             Platform.runLater(() -> {
                 setCount();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/RebootDirection.fxml"));

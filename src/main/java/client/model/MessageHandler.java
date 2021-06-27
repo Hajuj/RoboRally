@@ -122,6 +122,7 @@ public class MessageHandler {
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
     public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
         logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
+        clientModel.getAvailableMaps().clear();
         for (String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
@@ -413,6 +414,8 @@ public class MessageHandler {
             alert.setContentText("Game finished! The Player with ID " + gameFinishedBody.getClientID() + " is the best");
             alert.show();
         });
+        clientModel.setGameFinished(true);
+        clientModel.getClientGameModel().refreshModel();
     }
 
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {

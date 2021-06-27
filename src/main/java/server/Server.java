@@ -25,12 +25,12 @@ public class Server {
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
     private final String protocolVersion = "Version 1.0";
-    private final ArrayList<Player> waitingPlayer = new ArrayList<>();
-    private final ArrayList<Player> readyPlayer = new ArrayList<>();
+    private ArrayList<Player> waitingPlayer = new ArrayList<>();
+    private ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);
 
     private int clientsCounter = 1;
-    private final ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
 
     private Server () {
     }
@@ -99,7 +99,6 @@ public class Server {
     }
 
     public boolean canStartTheGame () {
-        //TODO more than 6 players -> one loses connection -> the one who only allowed to chat can join the the game now
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();
@@ -123,6 +122,25 @@ public class Server {
         return null;
     }
 
+    public ArrayList<Player> readyPlayerWithoutAI() {
+        ArrayList<Player> readyPlayerWithoutAI = new ArrayList<>();
+        for (Player player : readyPlayer) {
+            if (!player.isAI()) {
+                readyPlayerWithoutAI.add(player);
+            }
+        }
+        return readyPlayerWithoutAI;
+    }
+
+    public boolean onlyAI() {
+        for (Player player : readyPlayer) {
+            if (!player.isAI()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Game getCurrentGame () {
         return currentGame;
     }
@@ -133,6 +151,10 @@ public class Server {
 
     public ArrayList<Player> getReadyPlayer () {
         return readyPlayer;
+    }
+
+    public void setReadyPlayer(ArrayList<Player> readyPlayer) {
+        this.readyPlayer = readyPlayer;
     }
 
     public ArrayList<Player> getWaitingPlayer () {

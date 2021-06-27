@@ -6,6 +6,7 @@ import game.Game;
 import json.protocol.*;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class MessageHandlerAI extends client.model.MessageHandler {
@@ -81,12 +82,6 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     }
 
     @Override
-    public void handleSelectMap (ClientModel clientModel, SelectMapBody selectMapBody) {
-        super.handleSelectMap(clientModel, selectMapBody);
-        clientModel.getClientGameModel().chooseMap(selectMapBody.getAvailableMaps().get(0));
-    }
-
-    @Override
     public void handleGameFinished (ClientModel clientModel, GameFinishedBody gameFinishedBody) {
     }
 
@@ -94,5 +89,10 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
         super.handlePickDamage(clientModel, pickDamageBody);
         simpleAIModel.pickDamageRoutine();
+    }
+
+    @Override
+    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+
     }
 }
