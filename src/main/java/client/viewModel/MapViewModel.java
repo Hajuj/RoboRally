@@ -4,6 +4,7 @@ import client.model.ClientGameModel;
 import client.model.ClientModel;
 import game.Element;
 import game.Game;
+import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.animation.*;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -139,6 +141,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         Image image;
         path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
         image = new Image(path);
+
+        if (element.equals("BlueBelt")) {
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/BlueBelt_transparent_animated.gif")).getFile()));
+            image = new Image(path);
+        }
 
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -610,6 +617,144 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             rotateTransition.play();
 
 
+        }
+    }
+
+
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+
+        for (Map.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
+            if (entry.getKey().getxPosition() == (int) position.getX() &&
+                    entry.getKey().getyPosition() == (int) position.getY()) {
+                robotsOnFields.add(entry.getKey());
+            }
+        }
+        return robotsOnFields;
+    }
+
+
+    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
+        ArrayList<Point2D> laserPath = new ArrayList<>();
+        laserPath.add(laserPosition);
+        boolean foundBlocker = false;
+        double tempPosition;
+        switch (laser.getOrientations().get(0)) {
+            case "top" -> {
+                tempPosition = laserPosition.getY();
+                while (!foundBlocker) {
+                    tempPosition--;
+                    laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
+                    for (int i = 0; i < clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        //Is a robot in the line of the laser?
+                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            //Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                            foundBlocker = true;
+                        }
+                    }
+                }
+            }
+            case "bottom" -> {
+                tempPosition = laserPosition.getY();
+                while (!foundBlocker) {
+                    tempPosition++;
+                    laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
+                    for (int i = 0; i < clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                            foundBlocker = true;
+                        }
+                    }
+                }
+            }
+            case "left" -> {
+                tempPosition = laserPosition.getX();
+                while (!foundBlocker) {
+                    tempPosition--;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for (int i = 0; i < clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                            foundBlocker = true;
+                        }
+                    }
+                }
+            }
+            case "right" -> {
+                tempPosition = laserPosition.getX();
+                while (!foundBlocker) {
+                    tempPosition++;
+                    laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
+                    for (int i = 0; i < clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                            foundBlocker = true;
+                            break;
+                        }
+                        if (clientGameModel.getMap().get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                            foundBlocker = true;
+                        }
+                    }
+                }
+            }
+            default -> {
+                //Place for exception handling
+            }
+        }
+
+        return laserPath;
+    }
+
+
+    public void activateLasers () {
+        for (Point2D position : clientGameModel.getLaserMap().keySet()) {
+            for (Point2D beamPosition : getLaserPath(clientGameModel.getLaserMap().get(position), position)) {
+                int x = (int) beamPosition.getX();
+                int y = (int) beamPosition.getY();
+                FileInputStream input = null;
+                Image image;
+                try {
+                    input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                image = new Image(input);
+                ImageView imageView = new ImageView();
+                imageView.setImage(image);
+                imageView.setFitWidth(46);
+                imageView.setFitHeight(46);
+                Point2D newPosition = new Point2D(x, y);
+                Platform.runLater(() -> {
+                    fieldMap.get(newPosition).getChildren().add(imageView);
+                });
+
+
+            }
         }
     }
 }
