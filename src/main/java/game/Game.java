@@ -798,9 +798,9 @@ public class Game {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
-                    sendToAllPlayers(jsonMessage2);
                 }
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
