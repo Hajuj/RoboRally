@@ -447,6 +447,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 clientGameModel.getMoveQueue().remove(i);
             }
         }
+
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);
             Platform.runLater(() -> {
@@ -459,12 +460,14 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 }
             });
         }
+
         if (evt.getPropertyName().equals("Gears")) {
             clientModel.getClientGameModel().setAnimateGears(false);
             Platform.runLater(() -> {
                 animateGears();
             });
         }
+
     }
 
     public void handleAnimation(String type) {
