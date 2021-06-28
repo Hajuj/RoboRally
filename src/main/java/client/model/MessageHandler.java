@@ -308,13 +308,9 @@ public class MessageHandler {
     public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
         int clientID = playerTurningBody.getClientID();
         String rotation = playerTurningBody.getRotation();
-        Robot robot = null;
-        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
-                robot = entry.getKey();
-            }
-        }
-        clientModel.getClientGameModel().getTurningQueue().put(robot, rotation);
+
+        ClientGameModel.TurnTask turnTask = new ClientGameModel.TurnTask(clientID, rotation);
+        clientModel.getClientGameModel().getTurningQueue().add(turnTask);
         clientModel.getClientGameModel().setQueueTurning(true);
 
         logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
@@ -326,14 +322,10 @@ public class MessageHandler {
         int clientID = movementBody.getClientID();
         int newX = movementBody.getX();
         int newY = movementBody.getY();
-        Robot robot = null;
 
-        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
-                robot = entry.getKey();
-            }
-        }
-        clientModel.getClientGameModel().getMoveQueue().put(robot, new Point2D(newX, newY));
+        ClientGameModel.MoveTask moveTask = new ClientGameModel.MoveTask(clientID, new Point2D(newX, newY));
+
+        clientModel.getClientGameModel().getMoveQueue().add(moveTask);
         clientModel.getClientGameModel().setQueueMove(true);
 
     }

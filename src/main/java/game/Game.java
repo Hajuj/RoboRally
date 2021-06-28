@@ -70,7 +70,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = true;
+    private final boolean IS_LAZY = false;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
@@ -555,7 +555,7 @@ public class Game {
     }
 
 
-    public void getRobotInLineOfSight(Robot robot) {
+    public void getRobotInLineOfSight (Robot robot) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -580,7 +580,7 @@ public class Game {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("top") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("bottom")){
+                                                .get(j).equals("bottom")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -643,8 +643,8 @@ public class Game {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
-                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("left")){
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                                .get(j).equals("left")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -675,8 +675,8 @@ public class Game {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
-                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("right")){
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                                .get(j).equals("right")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -690,6 +690,7 @@ public class Game {
             }
         }
     }
+
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
@@ -798,9 +799,9 @@ public class Game {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
-                    sendToAllPlayers(jsonMessage2);
                 }
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
