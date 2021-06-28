@@ -643,7 +643,7 @@ public class Game {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
-                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                                 .get(j).equals("left")){
                                     foundBlocker = true;
                                     break;
@@ -675,7 +675,7 @@ public class Game {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
-                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                                 .get(j).equals("right")){
                                     foundBlocker = true;
                                     break;
@@ -798,9 +798,9 @@ public class Game {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
-                    sendToAllPlayers(jsonMessage2);
                 }
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
