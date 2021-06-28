@@ -580,7 +580,7 @@ public class Game {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("top") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("bottom")){
+                                                .get(j).equals("bottom")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -644,7 +644,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("left")){
+                                                .get(j).equals("left")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -676,7 +676,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("right")){
+                                                .get(j).equals("right")) {
                                     foundBlocker = true;
                                     break;
                                 }

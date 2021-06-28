@@ -49,10 +49,10 @@ public class ClientGameModel {
     private boolean latePlayer = false;
     private String lateCard = "";
 
-    private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
+    private ArrayList<MoveTask> moveQueue = new ArrayList<MoveTask>();
     private boolean queueMove = false;
 
-    private HashMap<Robot, String> turningQueue = new HashMap<>();
+    private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
 
@@ -115,9 +115,9 @@ public class ClientGameModel {
         lateCard = "";
 
         robotMap = new HashMap<>();
-        moveQueue = new HashMap<>();
+        moveQueue = new ArrayList<MoveTask>();
         lateCards = new ArrayList<>();
-        turningQueue = new HashMap<>();
+        turningQueue = new ArrayList<TurnTask>();
         cardsInHand = new ArrayList<>();
         startingPointQueue = new HashMap<>();
 
@@ -365,7 +365,7 @@ public class ClientGameModel {
         return wallMap;
     }
 
-    public HashMap<Robot, String> getTurningQueue () {
+    public ArrayList<TurnTask> getTurningQueue () {
         return turningQueue;
     }
 
@@ -484,7 +484,7 @@ public class ClientGameModel {
         }
     }
 
-    public HashMap<Robot, Point2D> getMoveQueue () {
+    public ArrayList<MoveTask> getMoveQueue () {
         return moveQueue;
     }
 
@@ -568,4 +568,42 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("RebootDirection", oldValue, true);
         }
     }
+
+
+    public static class TurnTask {
+        private int playerID;
+        private String rotation;
+
+        public TurnTask (int playerID, String rotation) {
+            this.playerID = playerID;
+            this.rotation = rotation;
+        }
+
+        public int getplayerID () {
+            return playerID;
+        }
+
+        public String getRotation () {
+            return rotation;
+        }
+    }
+
+    public static class MoveTask {
+        private int playerID;
+        private Point2D newPosition;
+
+        public MoveTask (int playerID, Point2D newPosition) {
+            this.playerID = playerID;
+            this.newPosition = newPosition;
+        }
+
+        public int getPlayerID () {
+            return playerID;
+        }
+
+        public Point2D getNewPosition () {
+            return newPosition;
+        }
+    }
+
 }
