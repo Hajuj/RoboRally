@@ -240,6 +240,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
             ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
             fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
+            fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - 1);
             fieldMap.get(newPosition).getChildren().add(robotV);
             fieldMap.get(newPosition).getChildren().add(robotOrientation);
         });

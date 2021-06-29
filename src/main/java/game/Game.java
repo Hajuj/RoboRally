@@ -75,9 +75,7 @@ public class Game {
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
 
-    private Game() {
-
-    }
+    private Game() { }
 
     public static Game getInstance() {
         if (instance == null) {
