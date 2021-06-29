@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -21,110 +22,61 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-/**
- * The type Chat view model.
- */
 public class ChatViewModel implements Initializable, PropertyChangeListener {
 
-    /**
-     * The Model.
-     */
     ClientModel model = ClientModel.getInstance();
 
-    /**
-     * The Ready display.
-     */
     @FXML
     public TextArea readyDisplay = new TextArea("");
-    /**
-     * The Ready button.
-     */
     @FXML
     public Button readyButton;
-    /**
-     * The Game guide btn.
-     */
     @FXML
     public Button gameGuideBtn;
-    /**
-     * The Chat field.
-     */
     @FXML
     public TextArea chatField = new TextArea("");
-    /**
-     * The Message field.
-     */
     @FXML
     public TextField messageField;
-    /**
-     * The Send button.
-     */
     @FXML
     public Button sendButton;
-    /**
-     * The Not ready btn.
-     */
     @FXML
     public Button notReadyBtn;
 
     private String message;
 
-    /**
-     * The Chat output.
-     */
     public StringProperty chatOutput;
 
 
-    /**
-     * Sets the properties to their values.
-     * @param location
-     * @param resources
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chatOutput = new SimpleStringProperty();
         model.addPropertyChangeListener(this);
+        /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
+        chatOutput.bind(model.getChatHistory());
+        chatField.textProperty().bind(chatOutputProperty());
+        }));*/
         chatField.setText(model.getChatHistory());
-        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        readyDisplay.setText(model.getPlayersStatus());
+
+        //readyDisplay.setText(model.getPlayersStatus());
         chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        sendButton.setDefaultButton(true);
-        messageField.requestFocus();
-        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
+        //readyDisplay.setEditable(false);
+        //if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+          //  readyButton.setVisible(false);
+            //notReadyBtn.setVisible(false);
+       // }
+        //notReadyBtn.setDisable(true);
 
     }
 
-    /**
-     * Chat output property string property.
-     *
-     * @return the string property
-     */
     public StringProperty chatOutputProperty() {
         return chatOutput;
     }
 
-    /**
-     * Send message button.
-     *
-     * @param event the event
-     */
     public void sendMessageButton(ActionEvent event) {
-            message = messageField.getText();
-            model.sendMsg(message);
-            messageField.clear();
+        message = messageField.getText();
+        model.sendMsg(message);
+        messageField.clear();
     }
 
-    /**
-     * Go to game guide.Opens the game guide when the button is clicked
-     *
-     * @param event the event
-     * @throws IOException the io exception
-     */
     public void goToGameGuide(ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
         Parent root;
@@ -134,49 +86,31 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         rootStage.show();
     }
 
-    /**
-     * Send ready status.
-     *
-     * @param event the event
-     */
-    public void sendReadyStatus (ActionEvent event) {
+    public void sendReadyStatus(ActionEvent event) {
         model.setNewStatus(true);
         readyButton.setDisable(true);
         notReadyBtn.setDisable(false);
     }
 
-    /**
-     * Shows maps.
-     *
-     * @throws IOException the io exception
-     */
-    public void showMaps () throws IOException {
+  /*  public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
-    }
+    }*/
 
-    /**
-     * Change status button.
-     *
-     * @param event the event
-     */
-    public void changeStatusButton (ActionEvent event) {
+    public void changeStatusButton(ActionEvent event) {
         model.setNewStatus(false);
         notReadyBtn.setDisable(true);
         readyButton.setDisable(false);
         model.setDoChooseMap(false);
     }
 
-    /**
-     * Load game scene.Opens the whole screen for game and your cards.
-     *
-     * @throws IOException the io exception
-     */
-    public void loadGameScene () throws IOException {
+    public void loadGameScene() throws IOException {
+       /* ClassLoader classLoader = getClass().getClassLoader();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");*/
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
@@ -194,21 +128,23 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         newStage2.show();
     }
 
-    /**
-     * Changes the properties of chat elements.
-     * @param evt
-     */
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("chatHistory")) {
-            chatField.setText(evt.getNewValue().toString());
-            chatField.appendText("");
-            chatField.setScrollTop(Double.MAX_VALUE);
+            Platform.runLater(() -> {
+                chatField.setText(evt.getNewValue().toString());
+                chatField.appendText("");
+                chatField.setScrollTop(Double.MAX_VALUE);
+            });
         }
         if (evt.getPropertyName().equals("playerStatus")) {
-            readyDisplay.setText(evt.getNewValue().toString());
+            Platform.runLater(() -> {
+                readyDisplay.setText(evt.getNewValue().toString());
+            });
         }
-        if (evt.getPropertyName().equals("doChooseMap")) {
+     /*   if (evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
             Platform.runLater(() -> {
                 try {
                     showMaps();
@@ -216,6 +152,17 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
                     ioException.printStackTrace();
                 }
             });
-        }
+        }*/
+       /* if (evt.getPropertyName().equals("gameOn")) {
+            Platform.runLater(() -> {
+                readyButton.setDisable(true);
+                //notReadyBtn.setDisable(true);
+            });
+        }*/
+        /*if (evt.getPropertyName().equals("gameFinished")) {
+            Platform.runLater(() -> {
+                readyButton.setDisable(false);
+            });
+        }*/
     }
 }

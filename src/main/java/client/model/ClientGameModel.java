@@ -5,12 +5,7 @@ import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -55,7 +50,7 @@ public class ClientGameModel {
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
-
+    private boolean animateBelts = false;
     private boolean animateGears = false;
 
 
@@ -86,7 +81,8 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
-
+    private boolean gameFinished;
+    private boolean rebooting = false;
 
 
     //Singleton Zeug
@@ -173,7 +169,15 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
+        setRebootingSetting (true);
+        rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
+    }
+    public boolean getRebootSetting (){
+        return rebooting;
+    }
+    public void setRebootingSetting(boolean b){
+        this.rebooting = b;
     }
 
     public void setanimationType (String animationType) {
@@ -568,4 +572,22 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("RebootDirection", oldValue, true);
         }
     }
+
+    public void setAnimateBelts (boolean belts) {
+        boolean oldValue = this.animateBelts;
+        this.animateBelts = belts;
+        if (this.animateBelts) {
+            propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+        }
+    }
+
+
+    public void rebootSetting (boolean b) {
+        boolean oldValue = this.rebooting ;
+        this.rebooting = b;
+        if (this.rebooting) {
+            propertyChangeSupport.firePropertyChange ( "rebootFinished", oldValue, true );
+        }
+    }
+
 }

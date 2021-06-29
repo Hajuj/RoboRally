@@ -343,12 +343,11 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-
-                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
-                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
+                clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "GreenConveyorBelt": {
+                clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "PushPanel": {
@@ -368,7 +367,6 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
-                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
@@ -416,6 +414,7 @@ public class MessageHandler {
         });
         clientModel.setGameFinished(true);
         clientModel.getClientGameModel().refreshModel();
+       // clientModel.getClientGameModel ().gameFinished(true);
     }
 
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
