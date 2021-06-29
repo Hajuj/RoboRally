@@ -103,6 +103,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public String register;
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
+    public BorderPane right_Side;
+    public ImageView chat_Button;
+    public ImageView readyButton;
 
 
     ObservableList<ImageView> cards;
@@ -118,11 +121,15 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        right_Side.setCenter ( null );
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
+        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+          readyButton.setVisible(false);
+         }
 
     /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
         paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
@@ -183,25 +190,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public Image loadImage(String cardName) throws FileNotFoundException {
         FileInputStream path = null;
         Image image;
-        try {
-            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/ProgrammingCards/" + cardName + ".png")).getFile()));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (cardName.equals ( "ready" )){
+                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
+
+        }else{
+                path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
         }
         image = new Image(path);
         return image;
 
     }
-
-    /*private void loadScene(String scene) throws IOException {
-        if (scene.equals("Map")) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-
-            pane.setCenter(fxmlLoader.load());
-
-        }
-    }*/
-
 
     /**
      * drag was detected, start a drag-and-drop gesture
@@ -315,12 +313,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
-    public void clearRegisters () {
-        for (ImageView register : registers) {
-            register.setImage(null);
 
-        }
-    }
 
     public int getNextAvailableRegister () {
         int regNumber = 0;
@@ -346,6 +339,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void setCount () {
         this.count = clientGameModel.getDamageCount();
     }
+    public void showMaps() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
+        Parent root1 = fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("Available Maps");
+        newStage.setScene(new Scene(root1));
+        newStage.show();
+    }
 
     @Override
     public void propertyChange (PropertyChangeEvent evt) {
@@ -354,6 +355,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
                     pane.setCenter(fxmlLoader.load());
+                    readyButton.setDisable(true);
                     model.setGameOn(false);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -376,6 +378,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             Platform.runLater(() -> {
                 pane.setCenter(null);
+                readyButton.setDisable(false);
                 model.setGameFinished(false);
             });
         }
@@ -458,8 +461,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
        if (evt.getPropertyName().equals("PickDamage")) {
            Platform.runLater(() -> {
                setCount();
-               FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
-               Parent root1 = null;
+               try {
+                   FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+                   right_Side.setCenter ( fxmlLoader.load () );
+               } catch (IOException e) {
+                   e.printStackTrace ( );
+               }
+              /* Parent root1 = null;
                try {
                    root1 = fxmlLoader.load();
                } catch (IOException ioException) {
@@ -468,15 +476,35 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                Stage newStage = new Stage();
                newStage.setTitle("Damage");
                newStage.setScene(new Scene(root1));
-               newStage.show();
+               newStage.show();*/
            });
        }
-        if (evt.getPropertyName().equals("RebootDirection")) {
-            clientGameModel.setChooseRebootDirection(false);
+        if (evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
             Platform.runLater(() -> {
-                setCount();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/RebootDirection.fxml"));
-                Parent root1 = null;
+                try {
+                    showMaps();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            });
+        }
+        if (evt.getPropertyName().equals("RebootDirection")) {
+            clientGameModel.setChooseRebootDirection ( false );
+            Platform.runLater ( () -> {
+                setCount ( );
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/RebootDirection.fxml" ) );
+                    right_Side.setCenter ( fxmlLoader.load ( ) );
+                } catch (IOException e) {
+                    e.printStackTrace ( );
+                }
+            } );
+        }
+        if (evt.getPropertyName ().equals ( ("rebootFinished") )){
+            right_Side.setCenter ( null );
+        }
+               /* Parent root1 = null;
                 try {
                     root1 = fxmlLoader.load();
                 } catch (IOException ioException) {
@@ -486,8 +514,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 newStage.setTitle("Choose Reboot Direction");
                 newStage.setScene(new Scene(root1));
                 newStage.show();
-            });
-        }
+            });*/
+
   /*      if (evt.getPropertyName ().equals ( "GameFinished" )){
             Stage stage = (Stage) pane.getScene().getWindow();
             Parent root = null;
@@ -500,6 +528,29 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         }*/
     }
+
+    public void open_chat(MouseEvent mouseEvent) {
+        Platform.runLater ( () -> {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/newChat.fxml"));
+            if (right_Side.getClass ().getClassLoader ().equals ( fxmlLoader )){
+                right_Side.setCenter ( null );
+            }else {
+                right_Side.setCenter ( fxmlLoader.load ( ) );
+            }
+        } catch (IOException e) {
+            e.printStackTrace ( );
+        }
+        } );
+    }
+
+    public void sendReadyStatus(MouseEvent mouseEvent) throws FileNotFoundException {
+        readyButton.setImage ( loadImage ( "ready" ) );
+        readyButton.setDisable(true);
+        model.setNewStatus(true);
+        // notReadyBtn.setDisable(false);
+        }
+
 }
 
 

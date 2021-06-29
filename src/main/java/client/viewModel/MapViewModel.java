@@ -444,8 +444,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                     setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
                     clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
                     clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                        activateLasers ( );
-                    animateEnergySpaces();
+                       // activateLasers ( );
+                    //animateEnergySpaces();
 
                 }
             });

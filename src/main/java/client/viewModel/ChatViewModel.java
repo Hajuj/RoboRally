@@ -55,15 +55,15 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         chatField.textProperty().bind(chatOutputProperty());
         }));*/
         chatField.setText(model.getChatHistory());
-        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        readyDisplay.setText(model.getPlayersStatus());
+
+        //readyDisplay.setText(model.getPlayersStatus());
         chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
+        //readyDisplay.setEditable(false);
+        //if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+          //  readyButton.setVisible(false);
+            //notReadyBtn.setVisible(false);
+       // }
+        //notReadyBtn.setDisable(true);
 
     }
 
@@ -92,14 +92,14 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         notReadyBtn.setDisable(false);
     }
 
-    public void showMaps() throws IOException {
+  /*  public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
-    }
+    }*/
 
     public void changeStatusButton(ActionEvent event) {
         model.setNewStatus(false);
@@ -143,7 +143,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
                 readyDisplay.setText(evt.getNewValue().toString());
             });
         }
-        if (evt.getPropertyName().equals("doChooseMap")) {
+     /*   if (evt.getPropertyName().equals("doChooseMap")) {
             model.setDoChooseMap(false);
             Platform.runLater(() -> {
                 try {
@@ -152,17 +152,17 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
                     ioException.printStackTrace();
                 }
             });
-        }
-        if (evt.getPropertyName().equals("gameOn")) {
+        }*/
+       /* if (evt.getPropertyName().equals("gameOn")) {
             Platform.runLater(() -> {
                 readyButton.setDisable(true);
-                notReadyBtn.setDisable(true);
+                //notReadyBtn.setDisable(true);
             });
-        }
-        if (evt.getPropertyName().equals("gameFinished")) {
+        }*/
+        /*if (evt.getPropertyName().equals("gameFinished")) {
             Platform.runLater(() -> {
                 readyButton.setDisable(false);
             });
-        }
+        }*/
     }
 }

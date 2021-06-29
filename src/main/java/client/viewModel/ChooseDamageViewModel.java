@@ -47,7 +47,8 @@ public class ChooseDamageViewModel implements Initializable {
             if (tempCount == count) {
                 clientGameModel.sendSelectedDamage(choosenDamageCards);
                 Stage stage = (Stage) countDisplay.getScene().getWindow();
-                stage.close();
+                stage.setScene ( null );
+                //stage.close();
             }
         }
     }

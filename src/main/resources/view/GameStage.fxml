@@ -12,19 +12,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
+<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
     <children>
-        <ImageView fitHeight="388.0" fitWidth="1104.0" layoutY="-1.0" pickOnBounds="true">
+        <ImageView fitHeight="668.0" fitWidth="1223.0" layoutY="-2.0" pickOnBounds="true">
             <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png" />
+                <Image url="@../images/Gui/tAHjs3.jpg" />
             </image>
         </ImageView>
-        <ImageView fitHeight="283.0" fitWidth="1110.0" layoutX="-4.0" layoutY="384.0" pickOnBounds="true">
-            <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png" />
-            </image>
-        </ImageView>
-        <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="110.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
+        <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="300.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
       <Text fx:id="Playerinfo" layoutX="234.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
          <font>
             <Font name="Consolas" size="20.0" />
@@ -32,7 +27,7 @@
       </Text>
         <Label layoutX="231.0" layoutY="485.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="480.0" style="-fx-border-color: grey;" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
         </Label>
-        <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1100.0">
+        <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0">
             <bottom>
                 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="890.0" BorderPane.alignment="CENTER">
                     <children>
@@ -76,9 +71,7 @@
                                 <ImageView fx:id="reg_4" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                                minWidth="-Infinity" mnemonicParsing="false" onAction="#playCard"
-                                prefHeight="67.0" prefWidth="85.0">
+                        <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playCard" prefHeight="67.0" prefWidth="85.0">
                             <HBox.margin>
                                 <Insets left="23.0" top="55.0" />
                             </HBox.margin>
@@ -95,9 +88,6 @@
                     </BorderPane.margin>
                 </HBox>
             </bottom>
-            <right>
-                <fx:include fx:id="chat" source="RoboChat.fxml" />
-            </right>
             <center>
                 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="525.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -219,6 +209,58 @@
                </opaqueInsets>
             </VBox>
          </left>
+         <right>
+            <BorderPane fx:id="right_Side" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="405.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <bottom>
+                  <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="342.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="88.0">
+                           <children>
+                              <ImageView fx:id="chat_Button" fitHeight="78.0" fitWidth="91.0" onMouseClicked="#open_chat" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/chatIcon.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets left="3.0" top="-1.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="93.0">
+                           <children>
+                              <ImageView fitHeight="73.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/Unbenannt.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets left="13.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="124.0">
+                           <children>
+                              <ImageView fx:id="readyButton" fitHeight="69.0" fitWidth="132.0" onMouseClicked="#sendReadyStatus" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/steampunk-off.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets top="-10.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="21.0" top="18.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </bottom>
+            </BorderPane>
+         </right>
       </BorderPane>
    </children>
 </AnchorPane>

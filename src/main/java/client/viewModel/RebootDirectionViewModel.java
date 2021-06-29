@@ -37,29 +37,31 @@ public class RebootDirectionViewModel implements Initializable{
     @FXML
     public void chooseTop () {
         clientModel.getClientGameModel().sendRebootDirection("top");
-        Stage stage = (Stage) top.getScene().getWindow();
-        stage.close();
+      //  Stage stage = (Stage) top.getScene().getWindow();
+        //stage.close();
     }
 
     @FXML
     public void chooseBottom () {
         clientModel.getClientGameModel().sendRebootDirection("bottom");
-        Stage stage = (Stage) bottom.getScene().getWindow();
-        stage.close();
+        //Stage stage = (Stage) bottom.getScene().getWindow();
+        //stage.setScene ( null );
+      //  stage.close();
     }
 
     @FXML
     public void chooseLeft () {
         clientModel.getClientGameModel().sendRebootDirection("left");
         Stage stage = (Stage) left.getScene().getWindow();
-        stage.close();
+       // stage.setScene ( null );
+        //stage.close();
     }
 
     @FXML
     public void chooseRight () {
         clientModel.getClientGameModel().sendRebootDirection("right");
-        Stage stage = (Stage) right.getScene().getWindow();
-        stage.close();
+        //Stage stage = (Stage) right.getScene().getWindow();
+
     }
 
     public Image yourRobot() {
