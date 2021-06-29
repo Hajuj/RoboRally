@@ -336,6 +336,35 @@ public class Game {
         }
     }
 
+    private void moveCheckPoints() {
+        if (getMapName().equals("Twister")) {
+            for (Point2D positionCheckPoint : checkPointMap.keySet()) {
+                for (Point2D position : conveyorBeltMap.keySet()) {
+                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
+                        //move checkPoint 2 spaces ahead (1 each) in orientation of conveyorBelt
+                        //it always stays on conveyorBelt (no outside check needed)
+                        //no blocker needed
+                        //adjust hashMap
+                        //adjust map with removeElementFromMap() and placeElementOnMap()
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeElementFromMap(Element element, int x, int y){
+        for(int i = 0; i < map.get(x).get(y).size(); i++){
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())){
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    public void placeElementOnMap(Element element, int x, int y){
+        map.get(x).get(y).add(element);
+    }
+
     public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
@@ -580,7 +609,7 @@ public class Game {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("top") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("bottom")){
+                                                .get(j).equals("bottom")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -644,7 +673,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("left")){
+                                                .get(j).equals("left")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -676,7 +705,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("right")){
+                                                .get(j).equals("right")) {
                                     foundBlocker = true;
                                     break;
                                 }
