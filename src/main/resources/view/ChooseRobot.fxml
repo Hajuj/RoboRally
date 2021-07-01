@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChooseRobotViewModel">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0" styleClass="bodybg" stylesheets="@../ChooseRobot.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChooseRobotViewModel">
   <columnConstraints>
     <ColumnConstraints minWidth="10.0" />
   </columnConstraints>
@@ -20,23 +20,16 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <ImageView fitHeight="584.0" fitWidth="751.0" pickOnBounds="true" style="-fx-effect: dropshadow(gaussian, dimgrey, 5.5);">
-         <image>
-            <Image url="@../images/Gui/360_F_407523301_LvNpBwN9XlbPgQtImEg1yXP77QP2X81i.jpg" />
-         </image>
-      </ImageView>
-      <TextField fx:id="nameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="274.0" promptText="Please enter your name">
-         <padding>
-            <Insets left="23.0" />
-         </padding>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <GridPane.margin>
-            <Insets left="450.0" top="-450.0" />
-         </GridPane.margin></TextField>
-      <VBox alignment="CENTER" prefHeight="593.0" prefWidth="764.0">
+      <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1223.0">
          <children>
+            <TextField fx:id="nameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="274.0" promptText="Please enter your name">
+               <padding>
+                  <Insets left="23.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </TextField>
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="695.0" style="-fx-effect: dropshadow(gaussian, dimgrey, 5.5);">
                <children>
                   <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="125.0">
@@ -133,7 +126,7 @@
                   <Insets top="18.0" />
                </VBox.margin>
             </HBox>
-            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="36.0" prefWidth="220.0" text="Play" translateY="50.0">
+            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="50.0" prefWidth="226.0" text="Play" translateY="50.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

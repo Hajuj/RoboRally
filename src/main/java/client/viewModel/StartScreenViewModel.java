@@ -8,12 +8,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -54,7 +59,9 @@ public class StartScreenViewModel implements Initializable {
         //sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
         //sound.setCycleCount(AudioClip.INDEFINITE);
         //sound.play();
+
     }
+
 
     /**
      * Loads the ServerIpStage window to start the game
