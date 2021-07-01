@@ -45,6 +45,7 @@ public class Game {
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
     private Map<Point2D, Empty> emptyMap = new HashMap<>();
     private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
@@ -341,15 +342,26 @@ public class Game {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
                 for (Point2D position : conveyorBeltMap.keySet()) {
                     if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
-                        //move checkPoint 2 spaces ahead (1 each) in orientation of conveyorBelt
-                        //it always stays on conveyorBelt (no outside check needed)
-                        //no blocker needed
-                        //adjust hashMap
-                        //adjust map with removeElementFromMap() and placeElementOnMap()
+                        //calculate new checkPoint position
+                        //first movement:
+                        Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        //second movement:
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
+
+                        //save new positions
+                        checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
+                        //adjust map
+                        removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
+                        placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
                     }
                 }
             }
         }
+
+        //change old CheckPoint positions in HashMap to new positions
+        checkPointMap.clear();
+        checkPointMap.putAll(checkPointMovedMap);
+        checkPointMovedMap.clear();
     }
 
     public void removeElementFromMap(Element element, int x, int y){
@@ -363,6 +375,19 @@ public class Game {
 
     public void placeElementOnMap(Element element, int x, int y){
         map.get(x).get(y).add(element);
+    }
+
+    public Point2D getMoveInDirection(Point2D position, String orientation){
+        double x = position.getX();
+        double y = position.getY();
+        switch (orientation){
+            case "left" -> x -= 1;
+            case "right" -> x += 1;
+            case "top" -> y -= 1;
+            case "bottom" -> y += 1;
+        }
+
+        return new Point2D(x, y);
     }
 
     public void activateBlueBelts() {
@@ -408,6 +433,7 @@ public class Game {
                 }
             }
         }
+        moveCheckPoints();
     }
 
 
