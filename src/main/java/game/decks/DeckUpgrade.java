@@ -23,7 +23,7 @@ public class DeckUpgrade extends Deck {
     }
 
     public void shuffleDeck() {
-        Collections.shuffle(deckUpgrade);
+        Collections.shuffle(this.deckUpgrade);
     }
 
     protected ArrayList<Card> getDeck() {
