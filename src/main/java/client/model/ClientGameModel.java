@@ -5,7 +5,12 @@ import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -44,13 +49,13 @@ public class ClientGameModel {
     private boolean latePlayer = false;
     private String lateCard = "";
 
-    private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
+    private ArrayList<MoveTask> moveQueue = new ArrayList<MoveTask>();
     private boolean queueMove = false;
 
-    private HashMap<Robot, String> turningQueue = new HashMap<>();
+    private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
-    private boolean animateBelts = false;
+
     private boolean animateGears = false;
 
 
@@ -81,8 +86,7 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
-    private boolean gameFinished;
-    private boolean rebooting = false;
+
 
 
     //Singleton Zeug
@@ -111,9 +115,9 @@ public class ClientGameModel {
         lateCard = "";
 
         robotMap = new HashMap<>();
-        moveQueue = new HashMap<>();
+        moveQueue = new ArrayList<MoveTask>();
         lateCards = new ArrayList<>();
-        turningQueue = new HashMap<>();
+        turningQueue = new ArrayList<TurnTask>();
         cardsInHand = new ArrayList<>();
         startingPointQueue = new HashMap<>();
 
@@ -169,15 +173,7 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
-        setRebootingSetting (true);
-        rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
-    }
-    public boolean getRebootSetting (){
-        return rebooting;
-    }
-    public void setRebootingSetting(boolean b){
-        this.rebooting = b;
     }
 
     public void setanimationType (String animationType) {
@@ -369,7 +365,7 @@ public class ClientGameModel {
         return wallMap;
     }
 
-    public HashMap<Robot, String> getTurningQueue () {
+    public ArrayList<TurnTask> getTurningQueue () {
         return turningQueue;
     }
 
@@ -488,7 +484,7 @@ public class ClientGameModel {
         }
     }
 
-    public HashMap<Robot, Point2D> getMoveQueue () {
+    public ArrayList<MoveTask> getMoveQueue () {
         return moveQueue;
     }
 
@@ -573,20 +569,40 @@ public class ClientGameModel {
         }
     }
 
-    public void setAnimateBelts (boolean belts) {
-        boolean oldValue = this.animateBelts;
-        this.animateBelts = belts;
-        if (this.animateBelts) {
-            propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+
+    public static class TurnTask {
+        private int playerID;
+        private String rotation;
+
+        public TurnTask (int playerID, String rotation) {
+            this.playerID = playerID;
+            this.rotation = rotation;
+        }
+
+        public int getplayerID () {
+            return playerID;
+        }
+
+        public String getRotation () {
+            return rotation;
         }
     }
 
+    public static class MoveTask {
+        private int playerID;
+        private Point2D newPosition;
 
-    public void rebootSetting (boolean b) {
-        boolean oldValue = this.rebooting ;
-        this.rebooting = b;
-        if (this.rebooting) {
-            propertyChangeSupport.firePropertyChange ( "rebootFinished", oldValue, true );
+        public MoveTask (int playerID, Point2D newPosition) {
+            this.playerID = playerID;
+            this.newPosition = newPosition;
+        }
+
+        public int getPlayerID () {
+            return playerID;
+        }
+
+        public Point2D getNewPosition () {
+            return newPosition;
         }
     }
 
