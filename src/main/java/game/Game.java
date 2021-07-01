@@ -70,12 +70,14 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
 
-    private Game() { }
+    private Game() {
+
+    }
 
     public static Game getInstance() {
         if (instance == null) {
@@ -553,7 +555,7 @@ public class Game {
     }
 
 
-    public void getRobotInLineOfSight (Robot robot) {
+    public void getRobotInLineOfSight(Robot robot) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -578,7 +580,7 @@ public class Game {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("top") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                                .get(j).equals("bottom")) {
+                                                .get(j).equals("bottom")){
                                     foundBlocker = true;
                                     break;
                                 }
@@ -642,7 +644,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("left")) {
+                                                .get(j).equals("left")){
                                     foundBlocker = true;
                                     break;
                                 }
@@ -674,7 +676,7 @@ public class Game {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                                .get(j).equals("right")) {
+                                                .get(j).equals("right")){
                                     foundBlocker = true;
                                     break;
                                 }
@@ -688,7 +690,6 @@ public class Game {
             }
         }
     }
-
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
