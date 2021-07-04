@@ -898,6 +898,7 @@ public class Game {
             }
             case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
 
+
         }
     }
 

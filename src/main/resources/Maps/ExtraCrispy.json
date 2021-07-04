@@ -660,11 +660,7 @@
         ],
         [
           {
-            "speed": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "ConveyorBelt",
+            "type": "Empty",
             "isOnBoard": "4A"
           }
         ],
@@ -751,8 +747,7 @@
           {
             "speed": 1,
             "orientations": [
-              "top",
-              "left"
+              "right"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "4A"
@@ -833,7 +828,12 @@
         ],
         [
           {
-            "type": "Empty",
+            "speed": 1,
+            "orientations": [
+              "top",
+              "left"
+            ],
+            "type": "ConveyorBelt",
             "isOnBoard": "4A"
           }
         ],
