@@ -1012,8 +1012,8 @@
           {
             "speed": 2,
             "orientations": [
-              "bottom",
-              "left"
+              "left",
+              "bottom"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "4A"
