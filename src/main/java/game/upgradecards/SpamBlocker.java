@@ -8,10 +8,6 @@ public class SpamBlocker extends Card {
         cardName = "SpamBlocker";
     }
 
-    public void activateCard() {
-
-    }
-
     public boolean isDamageCard() {
         return false;
     }

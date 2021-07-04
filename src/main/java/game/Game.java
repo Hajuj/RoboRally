@@ -357,14 +357,13 @@ public class Game {
                 }
             }
         }
-
         //change old CheckPoint positions in HashMap to new positions
         checkPointMap.clear();
         checkPointMap.putAll(checkPointMovedMap);
         checkPointMovedMap.clear();
     }
 
-    public void removeElementFromMap(Element element, int x, int y){
+    private void removeElementFromMap(Element element, int x, int y){
         for(int i = 0; i < map.get(x).get(y).size(); i++){
             if (element.getType().equals(map.get(x).get(y).get(i).getType())){
                 map.get(x).get(y).remove(i);
@@ -373,11 +372,11 @@ public class Game {
         }
     }
 
-    public void placeElementOnMap(Element element, int x, int y){
+    private void placeElementOnMap(Element element, int x, int y){
         map.get(x).get(y).add(element);
     }
 
-    public Point2D getMoveInDirection(Point2D position, String orientation){
+    private Point2D getMoveInDirection(Point2D position, String orientation){
         double x = position.getX();
         double y = position.getY();
         switch (orientation){

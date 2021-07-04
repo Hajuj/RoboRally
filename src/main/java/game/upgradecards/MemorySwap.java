@@ -8,10 +8,6 @@ public class MemorySwap extends Card {
         cardName = "MemorySwap";
     }
 
-    public void activateCard() {
-
-    }
-
     public boolean isDamageCard() {
         return false;
     }

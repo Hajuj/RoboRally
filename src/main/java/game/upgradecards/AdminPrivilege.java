@@ -8,10 +8,6 @@ public class AdminPrivilege extends Card {
         cardName = "AdminPrivilege";
     }
 
-    public void activateCard() {
-
-    }
-
     public boolean isDamageCard() {
         return false;
     }

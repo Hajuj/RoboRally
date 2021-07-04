@@ -8,10 +8,6 @@ public class RearLaser extends Card {
         cardName = "RearLaser";
     }
 
-    public void activateCard() {
-
-    }
-
     public boolean isDamageCard() {
         return false;
     }
