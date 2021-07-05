@@ -56,7 +56,9 @@ public class Game {
     private Map<Point2D, StartPoint> startPointMap = new HashMap<>();
     private Map<Point2D, Wall> wallMap = new HashMap<>();
     private Map<Point2D, Robot> robotMap = new HashMap<>();
+    private Map<Player, Integer> checkPoint = new HashMap<>();
     private Map<Robot, Point2D> startingPointMap = new HashMap<>();
+
     private Map<Player, Integer> checkPointReached = new HashMap<>();
     private Map<Player, String> robotsRebootDirection = new HashMap<>();
 
@@ -138,6 +140,8 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    
+    
     public void refreshGame() {
         antennaMap = new HashMap<>();
         checkPointMap = new HashMap<>();
@@ -199,7 +203,6 @@ public class Game {
             if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
                 return playerList.get(i).getPlayerID();
             }
-            System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
         }
         //No more players in the list / no more alive players in the list
         return -1;
@@ -618,7 +621,7 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == (map.get(0).size() - 1)) {
+                        if (tempPosition == (map.get(0).size()-1)){
                             reachedEndOfMap = true;
                         }
                     }
@@ -682,7 +685,7 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == 0) {
+                        if (tempPosition == 0){
                             reachedEndOfMap = true;
                         }
                     }
@@ -827,6 +830,7 @@ public class Game {
                 activateCardEffect(top.cardName);
                 JSONMessage jsonMessage1 = new JSONMessage("CardPlayed", new PlayCardBody(top.cardName));
                 sendToAllPlayers(jsonMessage1);
+
             }
             case "Trojan" -> {
                 drawSpam(server.getPlayerWithID(currentPlayer), 2);
@@ -847,9 +851,19 @@ public class Game {
         }
     }
 
-
     public void rebootRobot(Player player) {
+        System.out.println("DUMM ALLES");
         deadRobotsIDs.add(player.getPlayerID());
+        for (int i = 0; i < 2; i++) {
+            //TODO: what if es keine Karten in deckSpam gibt?
+            if(deckSpam.getDeck().size() > 0) {
+                player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
+                deckSpam.removeTopCard();
+            }
+        }
+//        player.discardRegisterCards();
+//        player.discardHandCards();
+//        player.getRobot().setOrientation("top");
 
         int robotPlacementX = player.getRobot().getxPosition();
         int robotPlacementY = player.getRobot().getyPosition();
@@ -916,6 +930,8 @@ public class Game {
 
                                 player.getRobot().setxPosition(restartPointX);
                                 player.getRobot().setyPosition(restartPointY);
+                                //TODO Check the orientation of the robot
+                                break;
                             }
                         }
                     }
@@ -1152,7 +1168,6 @@ public class Game {
                             sendToAllPlayers(checkpointReached);
                             JSONMessage finishedGame = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
                             sendToAllPlayers(finishedGame);
-                            refreshGame();
                         } else {
                             JSONMessage checkpointReached = new JSONMessage("CheckPointReached", new CheckPointReachedBody(player.getPlayerID(), lastCheckpoint + 1));
                             sendToAllPlayers(checkpointReached);
@@ -1311,15 +1326,15 @@ public class Game {
         if (iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
         }
-        if (iteration == 3) {
+        if(iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
         }
-        if (iteration == 4) {
+        if(iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
         }
 
-        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
-            switch (iteration) {
+        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()){
+            switch (iteration){
                 case 1 -> pushRobot(pusher, robotGettingPushed, 2);
                 case 2 -> pushRobot(pusher, robotGettingPushed, 3);
                 case 3 -> pushRobot(pusher, robotGettingPushed, 4);
@@ -1327,10 +1342,10 @@ public class Game {
         }
     }
 
-    public String rotateClockwise(String orientation) {
+    public String rotateClockwise(String orientation){
         String rotatedOrientation;
 
-        switch (orientation) {
+        switch (orientation){
             case "top" -> rotatedOrientation = "right";
             case "right" -> rotatedOrientation = "bottom";
             case "bottom" -> rotatedOrientation = "left";
@@ -1426,7 +1441,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1446,7 +1461,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1466,7 +1481,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1486,7 +1501,7 @@ public class Game {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")){
                             foundBlocker = true;
                         }
                     }
@@ -1514,7 +1529,7 @@ public class Game {
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
-            player.drawCardsProgramming(9);
+            player.drawCardsProgramming(9 - player.getRobot().getSchadenPunkte());
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
@@ -1553,6 +1568,7 @@ public class Game {
         } else {
             throw new ClassCastException(object + " is not an Element!" +
                     "Can't cast this method on Objects other than Elements!");
+
         }
     }
 
@@ -1820,23 +1836,23 @@ public class Game {
         return startPointMap;
     }
 
-    public Map<Point2D, Wall> getWallMap() {
+    public Map<Point2D, Wall> getWallMap () {
         return wallMap;
     }
 
-    public Server getServer() {
+    public Server getServer () {
         return server;
     }
 
-    public ArrayList<Integer> getDeadRobotsIDs() {
+    public ArrayList<Integer> getDeadRobotsIDs () {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator() {
+    public Comparator<Player> getComparator () {
         return comparator;
     }
 
