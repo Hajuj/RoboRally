@@ -20,7 +20,7 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <ImageView fitHeight="584.0" fitWidth="751.0" pickOnBounds="true" style="-fx-effect: dropshadow(gaussian, dimgrey, 5.5);">
+      <ImageView fitHeight="584.0" fitWidth="751.0" pickOnBounds="true">
          <image>
             <Image url="@../images/Gui/360_F_407523301_LvNpBwN9XlbPgQtImEg1yXP77QP2X81i.jpg" />
          </image>
@@ -37,7 +37,7 @@
          </GridPane.margin></TextField>
       <VBox alignment="CENTER" prefHeight="593.0" prefWidth="764.0">
          <children>
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="695.0" style="-fx-effect: dropshadow(gaussian, dimgrey, 5.5);">
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="695.0" >
                <children>
                   <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="125.0">
                      <children>

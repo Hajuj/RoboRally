@@ -49,9 +49,9 @@ public class ClientGameModel {
 
     private HashMap<Robot, String> turningQueue = new HashMap<>();
     private boolean queueTurning = false;
-    private BooleanProperty animType = new SimpleBooleanProperty(false);
     private boolean animateBelts = false;
     private boolean animateGears = false;
+    private boolean animateSpaces = false;
 
 
     private boolean programmingPhase = false;
@@ -83,6 +83,7 @@ public class ClientGameModel {
     private boolean currentPlayer;
     private boolean gameFinished;
     private boolean rebooting = false;
+
 
 
     //Singleton Zeug
@@ -130,7 +131,6 @@ public class ClientGameModel {
         conveyorBeltMap = new LinkedHashMap<>();
         restartPointMap = new LinkedHashMap<>();
 
-        animType = new SimpleBooleanProperty(false);
         pushPanelProperty = new SimpleBooleanProperty(false);
         laserAnimeProperty = new SimpleBooleanProperty(false);
         blueBeltAnimeProperty= new SimpleBooleanProperty(false);
@@ -169,7 +169,6 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
-        setRebootingSetting (true);
         rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
     }
@@ -180,28 +179,6 @@ public class ClientGameModel {
         this.rebooting = b;
     }
 
-    public void setanimationType (String animationType) {
-        switch (animationType) {
-            /*case "BlueConveyorBelt" ->{
-                extractData(conveyorBeltMap);
-                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
-                    Point2D position =entry.getKey();
-                    ConveyorBelt belt =entry.getValue();
-
-                }
-            }*/
-            case "WallShooting" -> {
-                animType.set(true);
-            }
-        }
-
-    }
-    public void extractData(LinkedHashMap elementMap){
-
-    }
-    public BooleanProperty getanimationType(){
-        return animType;
-    }
 
     public boolean isCurrentPlayer() {
         return currentPlayer;
@@ -289,12 +266,6 @@ public class ClientGameModel {
         }
     }
 
-   /* public void setActualPlayerID (int actualPlayerID) {
-        int currentPlayer = this.actualPlayerID;
-        this.actualPlayerID = actualPlayerID;
-        propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
-
-    }*/
 
     public void setActualPlayerID (int actualPlayerID){
         this.actualPlayerID=actualPlayerID;
@@ -308,18 +279,10 @@ public class ClientGameModel {
         return actualPhase;
     }
 
- /*   public void setActualPhase (int actualPhase) {
-        this.actualPhase = actualPhase;
-
-    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
-
-    /*public void setProgrammingPhase(boolean programmingPhase) {
-        this.programmingPhase = programmingPhase;
-    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -429,9 +392,7 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
-  /*  public void setLateCard(String card) {
-        this.lateCard = card;
-    }*/
+
     public String getLateCard (){
         return this.lateCard;
     }
@@ -578,6 +539,14 @@ public class ClientGameModel {
         this.animateBelts = belts;
         if (this.animateBelts) {
             propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+        }
+    }
+
+    public void setAnimateEnergySpaces (boolean spaces) {
+        boolean oldValue = this.animateSpaces;
+        this.animateSpaces = spaces;
+        if (this.animateSpaces) {
+            propertyChangeSupport.firePropertyChange("EnergySpaces", oldValue, true);
         }
     }
 

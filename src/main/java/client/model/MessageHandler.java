@@ -347,7 +347,7 @@ public class MessageHandler {
                 break;
             }
             case "GreenConveyorBelt": {
-                clientModel.getClientGameModel().setAnimateBelts(true);
+               // clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "PushPanel": {
@@ -371,7 +371,7 @@ public class MessageHandler {
                 break;
             }
             case "EnergySpace": {
-                //animation für EnergySpace
+                clientModel.getClientGameModel().setAnimateEnergySpaces (true);
                 break;
             }
         }

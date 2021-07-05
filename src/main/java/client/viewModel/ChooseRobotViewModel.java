@@ -203,7 +203,7 @@ public class ChooseRobotViewModel implements Initializable {
             model.sendUsernameAndRobot(username, figureProperty.getValue());
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
             Stage window = (Stage) playButton.getScene().getWindow();
-            window.setScene(new Scene(root, 1100, 665));
+            window.setScene(new Scene(root, 1223, 665));
             //window.setResizable(false);
             //window.maxHeightProperty().bind(window.getScene().heightProperty());
            // window.sizeToScene();
