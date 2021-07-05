@@ -87,6 +87,12 @@ public class Game {
         return instance;
     }
 
+    /**
+     * Constructor for the game
+     * adds available Maps to availableMaps
+     * creates a game timer
+     * @param server    is the server where the game is started
+     */
     public Game(Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
@@ -897,8 +903,23 @@ public class Game {
             }
             case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
 
+            case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
 
         }
+    }
+
+    public void replaceSpamCardsHand(Player player){
+        int counter = 0;
+        for(Card card : player.getDeckHand().getDeck()){
+            //throw all Spam cards from hand to DeckSpam
+            if(card.getCardName().equals("Spam")){
+                deckSpam.getDeck().add(card);
+                player.getDeckHand().getDeck().remove(card);
+                counter++;
+            }
+        }
+        //draw a new card from deck for each discarded Spam card
+        player.drawCardsProgramming(counter);
     }
 
 
