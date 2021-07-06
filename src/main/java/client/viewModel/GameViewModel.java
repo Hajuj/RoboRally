@@ -41,6 +41,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import json.JSONMessage;
 import json.protocol.PlayCardBody;
@@ -96,7 +99,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     @FXML
     public Text Playerinfo;
     @FXML
-    public Text popUpText;
+    public Text popUpText = null;
 
 
     public ClientModel model = ClientModel.getInstance();
@@ -143,38 +146,31 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         });
     }
 
-    public void showPopup(String popupText) throws IOException {
-        Text text = new Text(popupText);
-       // text.setFill(Color.RED);
-        //text.setStroke(Color.BLACK);
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/popUp.fxml"));
-        pane.setCenter(fxmlLoader.load());
+    public void showPopup(String popText) throws IOException, InterruptedException {
+        Text text = new Text ( popText );
 
-        ScaleTransition scaleTransition = new ScaleTransition();
-        scaleTransition.setDuration(Duration.seconds(2));
-        scaleTransition.setNode(text);
-        scaleTransition.setByY(1.0);
-        scaleTransition.setByX(1.0);
-        scaleTransition.setCycleCount(-1);
-        scaleTransition.setAutoReverse(true);
-        scaleTransition.play();
-        StackPane root = new StackPane();
-        root.getChildren().addAll(text);
+        StackPane root = new StackPane ( );
+        root.getChildren ( ).addAll ( text );
         root.setStyle ( "-fx-background-image: url('/images/Gui/phase.gif');" );
-        Scene scene = new Scene(root, 350, 350 );
-        Stage not = new Stage();
-        scene.setFill(Color.DARKGRAY);
-        not.setTitle("Player Notification");
-        not.setScene(scene);
+        Scene scene = new Scene ( root, 600, 350 );
+        Stage not = new Stage ( );
+        not.setTitle ( "Player Notification" );
+        not.setScene ( scene );
         //not.show();
-        try {
-            not.centerOnScreen ();
-            not.showAndWait ();
-            not.wait(3);
-            not.close();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ScaleTransition scaleTransition = new ScaleTransition ( );
+        scaleTransition.setDuration ( Duration.seconds ( 2 ) );
+        scaleTransition.setNode ( text );
+        scaleTransition.setByY ( 1.0 );
+        scaleTransition.setByX ( 1.0 );
+        scaleTransition.setCycleCount ( -1 );
+        scaleTransition.setAutoReverse ( true );
+        scaleTransition.play ( );
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor ( );
+        executor.submit ( () -> Platform.runLater ( not::show ) );
+        executor.schedule (
+                () -> Platform.runLater ( () -> not.close ())
+                , 3
+                , TimeUnit.SECONDS );
 
     }
 
@@ -476,11 +472,19 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
                     disableAllRegisters(false);
-                    showPopup("Programming Phase has begin");
+                    try {
+                        showPopup("Programming Phase has begin");
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace ( );
+                    }
                 }
                 if(evt.getNewValue().equals(3)){
                     disableHand(true);
-                    showPopup("Activation Phase has begun");
+                    try {
+                        showPopup("Activation Phase has begun");
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace ( );
+                    }
                     disableAllRegisters(true);
                 }
             });
