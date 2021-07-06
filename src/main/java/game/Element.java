@@ -1,32 +1,74 @@
 package game;
 
 import com.google.gson.annotations.Expose;
-import javafx.geometry.Orientation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Ilja Knis
  */
 public class Element {
-
+    @Expose
     private String type;
+    @Expose
     private String isOnBoard;
+    @Expose
     private int speed;
+    @Expose
     private ArrayList<String> orientations;
+    @Expose
     private int count;
+    @Expose
     private ArrayList<Integer> registers;
 
-    public Element(){
+    public Element(String type, String isOnBoard) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+    }
+
+    public Element(String type, String isOnBoard, ArrayList<String> orientations) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.orientations = new ArrayList<>();
+        this.orientations.addAll(orientations);
+    }
+
+    public Element(String type, String isOnBoard, int count) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.count = count;
+    }
+
+    public Element(String type, String isOnBoard, int speed, ArrayList<String> orientations) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.speed = speed;
+        this.orientations = new ArrayList<>();
+        this.orientations.addAll(orientations);
+    }
+
+    public Element(String type, String isOnBoard, ArrayList<String> orientations, int count) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.count = count;
+        this.orientations = new ArrayList<>();
+        this.orientations.addAll(orientations);
+    }
+
+    public Element(String type, String isOnBoard, ArrayList<String> orientations, ArrayList<Integer> registers) {
+        this.type = type;
+        this.isOnBoard = isOnBoard;
+        this.registers = registers;
+        this.orientations = new ArrayList<>();
+        this.orientations.addAll(orientations);
     }
 
 
-    public String getType(){
+    public String getType() {
         return this.type;
     }
 
-    public String getIsOnBoard(){
+    public String getIsOnBoard() {
         return this.isOnBoard;
     }
 
@@ -38,11 +80,15 @@ public class Element {
         return this.speed;
     }
 
-    public int getCount () {
+    public int getCount() {
         return this.count;
     }
 
-    public ArrayList<Integer> getRegisters () {
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public ArrayList<Integer> getRegisters() {
         return this.registers;
     }
 
@@ -59,4 +105,3 @@ public class Element {
         }
     }*/
 }
-

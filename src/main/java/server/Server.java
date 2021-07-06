@@ -98,7 +98,7 @@ public class Server {
         writer.flush();
     }
 
-    public boolean canStartTheGame () {
+    public boolean areAllPlayersReady() {
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();
