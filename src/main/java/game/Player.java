@@ -26,6 +26,8 @@ public class Player {
     private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
+    private ArrayList<Card> installedPermanentUpgrades;
+    private ArrayList<Card> temporaryUpgrades;
 
     public Player(int playerID) {
         this.playerID = playerID;
@@ -45,6 +47,9 @@ public class Player {
         this.deckRegister = new DeckRegister();
         deckRegister.initializeDeck();
         deckRegister.shuffleDeck();
+
+        this.installedPermanentUpgrades = new ArrayList<>();
+        this.temporaryUpgrades = new ArrayList<>();
     }
 
     public void refreshPlayer() {
@@ -63,6 +68,9 @@ public class Player {
         this.deckRegister = new DeckRegister();
         deckRegister.initializeDeck();
         deckRegister.shuffleDeck();
+
+        this.installedPermanentUpgrades = new ArrayList<>();
+        this.temporaryUpgrades = new ArrayList<>();
     }
 
     //TODO shuffle cards
@@ -143,7 +151,7 @@ public class Player {
         }
 
         //ShuffleCodingBody
-        //If there is no enough cards in deckProgramming
+        //If there is not enough cards in deckProgramming
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
 

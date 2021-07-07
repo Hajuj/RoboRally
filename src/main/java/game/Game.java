@@ -75,6 +75,7 @@ public class Game {
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
+    private ArrayList<Player> rearLasers = new ArrayList<>();
 
     private Game() {
 
@@ -604,22 +605,19 @@ public class Game {
                 activePlayers.add(player);
         }
         for (Player player : activePlayers) {
-            getRobotInLineOfSight(player.getRobot());
+            triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
+            //TODO further usage with rearLasers ArrayList for consistency
+            if(rearLasers.contains(player)){
+                triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
+            }
         }
-
-        for (Player player : robotsHitByRobotLaser) {
-            drawSpam(player, 1);
-        }
-
-        robotsHitByRobotLaser.clear();
     }
 
-
-    public void getRobotInLineOfSight(Robot robot) {
+    public void triggerLasersInSight(Robot robot, String orientation) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (robot.getOrientation()) {
+        switch (orientation) {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
@@ -749,6 +747,11 @@ public class Game {
                 }
             }
         }
+        for(Player player : robotsHitByRobotLaser){
+            drawSpam(player, 1);
+        }
+
+        robotsHitByRobotLaser.clear();
     }
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
@@ -905,6 +908,15 @@ public class Game {
 
             case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
 
+            //Permanent UpgradeCard -> should it be covered in this case?
+            case "RearLaser" -> rearLasers.add(server.getPlayerWithID(currentPlayer));
+
+            //Permanent UpgradeCard -> should it be covered in this case?
+            //TODO: add hashMap
+            //      should only be used once per round/per player (either here or in view)
+            case "AdminPrivilege" -> {}
+
+            case "MemorySwap" -> {}
         }
     }
 
@@ -920,6 +932,7 @@ public class Game {
         }
         //draw a new card from deck for each discarded Spam card
         player.drawCardsProgramming(counter);
+
     }
 
 
