@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,7 +20,7 @@
     <children>
         <ImageView fitHeight="668.0" fitWidth="1223.0" layoutY="-2.0" pickOnBounds="true">
             <image>
-                <Image url="@../images/Gui/tAHjs3.jpg" />
+                <Image url="@../images/Gui/DfoMsE.jpg" />
             </image>
         </ImageView>
         <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="300.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
@@ -44,7 +45,7 @@
             </LinearGradient>
          </fill>
       </Text>
-        <Label layoutX="231.0" layoutY="485.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="480.0" style="-fx-border-color: yellow;" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+        <Label layoutX="231.0" layoutY="475.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="480.0" style="-fx-border-color: yellow;" styleClass="bodybg" stylesheets="@../images/Gui/playerInfo.css" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
         </Label>
         <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0">
             <bottom>
@@ -278,6 +279,13 @@
                      </children>
                   </HBox>
                </bottom>
+               <top>
+                  <TextArea fx:id="readyDisplay" prefHeight="124.0" prefWidth="405.0" stylesheets="@../images/Gui/readyDisplay.css" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Yu Gothic Bold" size="14.0" />
+                     </font>
+                  </TextArea>
+               </top>
             </BorderPane>
          </right>
       </BorderPane>

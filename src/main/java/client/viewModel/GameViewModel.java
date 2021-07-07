@@ -346,6 +346,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void setCount () {
         this.count = clientGameModel.getDamageCount();
     }
+
     public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
@@ -505,6 +506,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 try {
                     showMaps();
+                    Playerinfo.setText ( "please set a Starting Point" );
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
