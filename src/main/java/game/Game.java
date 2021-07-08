@@ -70,7 +70,7 @@ public class Game {
     private boolean activePhaseOn = false;
     private AtomicBoolean timerOn = new AtomicBoolean();
     private Comparator<Player> comparator = new Helper(this);
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
@@ -555,7 +555,7 @@ public class Game {
     }
 
 
-    public void getRobotInLineOfSight (Robot robot) {
+    public void getRobotInLineOfSight(Robot robot) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
@@ -690,7 +690,6 @@ public class Game {
             }
         }
     }
-
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
@@ -1579,7 +1578,7 @@ public class Game {
     }
 
     public void canStartTheGame() {
-        if (server.canStartTheGame()) {
+        if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
