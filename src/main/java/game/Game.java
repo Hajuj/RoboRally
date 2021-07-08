@@ -1718,7 +1718,7 @@ public class Game {
     }
 
     public void canStartTheGame() {
-        if (server.canStartTheGame()) {
+        if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
