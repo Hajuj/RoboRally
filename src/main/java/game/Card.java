@@ -14,9 +14,6 @@ public abstract class Card{
         this.cardName = "Card";
     }
 
-    //TODO: implement input types
-    public abstract void activateCard();
-
     public abstract boolean isDamageCard();
 
     public String getCardName(){

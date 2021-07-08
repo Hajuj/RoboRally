@@ -1,10 +1,7 @@
 package game;
 
 import game.boardelements.*;
-import game.decks.DeckSpam;
-import game.decks.DeckTrojan;
-import game.decks.DeckVirus;
-import game.decks.DeckWorm;
+import game.decks.*;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
@@ -35,6 +32,7 @@ public class Game {
     private DeckTrojan deckTrojan;
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
+    private DeckUpgrade deckUpgrade;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
@@ -45,6 +43,7 @@ public class Game {
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
     private Map<Point2D, Empty> emptyMap = new HashMap<>();
     private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
@@ -74,6 +73,7 @@ public class Game {
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
+    private ArrayList<Player> rearLasers = new ArrayList<>();
 
     private Game() {
 
@@ -86,6 +86,12 @@ public class Game {
         return instance;
     }
 
+    /**
+     * Constructor for the game
+     * adds available Maps to availableMaps
+     * creates a game timer
+     * @param server    is the server where the game is started
+     */
     public Game(Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
@@ -95,9 +101,15 @@ public class Game {
         gameTimer = new GameTimer(server);
     }
 
-
+    /**
+     * Method to start the game
+     * initializes all global game decks (Damage cards and Upgrade cards)
+     * initializes global variables to initial value
+     * sends GameStartedMessage to all participating players
+     * @param players   are the players who joined the game
+     * @throws IOException  handles IO exceptions
+     */
     public void startGame(ArrayList<Player> players) throws IOException {
-        //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
 
@@ -109,6 +121,10 @@ public class Game {
 
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
+
+        this.deckUpgrade = new DeckUpgrade();
+        this.deckUpgrade.initializeDeck();
+        this.deckUpgrade.shuffleDeck();
 
         this.playerList = players;
 
@@ -138,6 +154,10 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    /**
+     * Method to refresh the game to an initial state
+     * necessary to start a new game from scratch
+     */
     public void refreshGame() {
         antennaMap = new HashMap<>();
         checkPointMap = new HashMap<>();
@@ -175,6 +195,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method to add clients who are too late for the game
+     * into an ArrayList
+     * @return  an ArrayList of PlayerIDs
+     */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
@@ -185,13 +210,22 @@ public class Game {
         return tooLateClients;
     }
 
+    /**
+     * Method to check if special reboot rules are needed
+     * for the current game
+     * depends on the chosen map
+     * @return  true if special reboot rules are needed
+     */
     public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
             return true;
         } else return false;
     }
 
-
+    /**
+     * Method to iterate over the active players
+     * @return  the next active player ID
+     */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
@@ -205,33 +239,42 @@ public class Game {
         return -1;
     }
 
+    /**
+     * Method to communicate the currently
+     * active phase of the game
+     */
     public void informAboutActivePhase() {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
+    /**
+     * Method to communicate the
+     * currently active player of the game
+     */
     public void informAboutCurrentPlayer() {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
 
-    //TODO select map
-    //     if (Player player:playerList) isAI -> pickRandomMap
-    //     else playerList.get(0)... pickMap
-
-    //TODO at least 2 players ready to start game (max 6)
-
-    //TODO game logic with startGame()
-    //     map creation with elements (deserialization)
-    //     phases
-
-
+    /**
+     * Method to send a JSONMessage to all players
+     * @param jsonMessage   is the message that is sent to all players
+     */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
+    /**
+     * Method to select a map for the game
+     * loads the dimensions of the map
+     * uses a deserializer to load the map from a JSON
+     * calls method createMapObjects() to build map
+     * @param mapName   is the chosen map
+     * @throws IOException  handles IO exceptions
+     */
     public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
@@ -248,6 +291,20 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
+    /**
+     * Method to build the map
+     * takes a three dimensional ArrayList map
+     * first dimension: x; second dimension: y; third dimension: Element.class
+     * iterates over x, then y coordinates of the map
+     * checks the type of every element on every square of the map
+     * creates elements of the corresponding type and adds them to hashmaps
+     * initially elements are creates as superclass Element.class
+     * calls method replaceElementInMap() in order to replace elements of
+     * superclass Element.class with corresponding subclass
+     * @param map   is the deserialized 3D ArrayList from the JSON message
+     * @param mapX  is the x dimension of the map
+     * @param mapY  is the y dimension of the map
+     */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
@@ -336,6 +393,58 @@ public class Game {
         }
     }
 
+    private void moveCheckPoints() {
+        if (getMapName().equals("Twister")) {
+            for (Point2D positionCheckPoint : checkPointMap.keySet()) {
+                for (Point2D position : conveyorBeltMap.keySet()) {
+                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
+                        //calculate new checkPoint position
+                        //first movement:
+                        Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        //second movement:
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
+
+                        //save new positions
+                        checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
+                        //adjust map
+                        removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
+                        placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+                    }
+                }
+            }
+        }
+        //change old CheckPoint positions in HashMap to new positions
+        checkPointMap.clear();
+        checkPointMap.putAll(checkPointMovedMap);
+        checkPointMovedMap.clear();
+    }
+
+    private void removeElementFromMap(Element element, int x, int y){
+        for(int i = 0; i < map.get(x).get(y).size(); i++){
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())){
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    private void placeElementOnMap(Element element, int x, int y){
+        map.get(x).get(y).add(element);
+    }
+
+    private Point2D getMoveInDirection(Point2D position, String orientation){
+        double x = position.getX();
+        double y = position.getY();
+        switch (orientation){
+            case "left" -> x -= 1;
+            case "right" -> x += 1;
+            case "top" -> y -= 1;
+            case "bottom" -> y += 1;
+        }
+
+        return new Point2D(x, y);
+    }
+
     public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
@@ -379,6 +488,7 @@ public class Game {
                 }
             }
         }
+        moveCheckPoints();
     }
 
 
@@ -544,22 +654,21 @@ public class Game {
                 activePlayers.add(player);
         }
         for (Player player : activePlayers) {
-            getRobotInLineOfSight(player.getRobot());
-        }
-
-        for (Player player : robotsHitByRobotLaser) {
-            drawSpam(player, 1);
+            triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
+            //TODO further usage with rearLasers ArrayList for consistency
+            if(rearLasers.contains(player)){
+                triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
+            }
         }
 
         robotsHitByRobotLaser.clear();
     }
 
-
-    public void getRobotInLineOfSight(Robot robot) {
+    public void triggerLasersInSight(Robot robot, String orientation) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (robot.getOrientation()) {
+        switch (orientation) {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
@@ -689,6 +798,11 @@ public class Game {
                 }
             }
         }
+        for(Player player : robotsHitByRobotLaser){
+            drawSpam(player, 1);
+        }
+
+        robotsHitByRobotLaser.clear();
     }
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
@@ -843,7 +957,33 @@ public class Game {
             }
             case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
 
+            case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
+
+            //Permanent UpgradeCard -> should it be covered in this case?
+            case "RearLaser" -> rearLasers.add(server.getPlayerWithID(currentPlayer));
+
+            //Permanent UpgradeCard -> should it be covered in this case?
+            //TODO: add hashMap
+            //      should only be used once per round/per player (either here or in view)
+            case "AdminPrivilege" -> {}
+
+            case "MemorySwap" -> {}
         }
+    }
+
+    public void replaceSpamCardsHand(Player player){
+        int counter = 0;
+        for(Card card : player.getDeckHand().getDeck()){
+            //throw all Spam cards from hand to DeckSpam
+            if(card.getCardName().equals("Spam")){
+                deckSpam.getDeck().add(card);
+                player.getDeckHand().getDeck().remove(card);
+                counter++;
+            }
+        }
+        //draw a new card from deck for each discarded Spam card
+        player.drawCardsProgramming(counter);
+
     }
 
 
@@ -1578,7 +1718,7 @@ public class Game {
     }
 
     public void canStartTheGame() {
-        if (server.areAllPlayersReady()) {
+        if (server.canStartTheGame()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
