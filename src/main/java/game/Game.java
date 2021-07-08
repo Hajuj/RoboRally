@@ -1,10 +1,7 @@
 package game;
 
 import game.boardelements.*;
-import game.decks.DeckSpam;
-import game.decks.DeckTrojan;
-import game.decks.DeckVirus;
-import game.decks.DeckWorm;
+import game.decks.*;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
@@ -35,6 +32,7 @@ public class Game {
     private DeckTrojan deckTrojan;
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
+    private DeckUpgrade deckUpgrade;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
@@ -105,7 +103,6 @@ public class Game {
 
 
     public void startGame(ArrayList<Player> players) throws IOException {
-        //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
 
@@ -117,6 +114,10 @@ public class Game {
 
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
+
+        this.deckUpgrade = new DeckUpgrade();
+        this.deckUpgrade.initializeDeck();
+        this.deckUpgrade.shuffleDeck();
 
         this.playerList = players;
 
