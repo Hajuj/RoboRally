@@ -101,7 +101,14 @@ public class Game {
         gameTimer = new GameTimer(server);
     }
 
-
+    /**
+     * Method to start the game
+     * initializes all global game decks (Damage cards and Upgrade cards)
+     * initializes global variables to initial value
+     * sends GameStartedMessage to all participating players
+     * @param players   are the players who joined the game
+     * @throws IOException  handles IO exceptions
+     */
     public void startGame(ArrayList<Player> players) throws IOException {
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
@@ -147,6 +154,10 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    /**
+     * Method to refresh the game to an initial state
+     * necessary to start a new game from scratch
+     */
     public void refreshGame() {
         antennaMap = new HashMap<>();
         checkPointMap = new HashMap<>();
@@ -184,6 +195,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method to add clients who are too late for the game
+     * into an ArrayList
+     * @return  an ArrayList of PlayerIDs
+     */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
@@ -194,13 +210,22 @@ public class Game {
         return tooLateClients;
     }
 
+    /**
+     * Method to check if special reboot rules are needed
+     * for the current game
+     * depends on the chosen map
+     * @return  true if special reboot rules are needed
+     */
     public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
             return true;
         } else return false;
     }
 
-
+    /**
+     * Method to iterate over the active players
+     * @return  the next active player ID
+     */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
@@ -214,33 +239,42 @@ public class Game {
         return -1;
     }
 
+    /**
+     * Method to communicate the currently
+     * active phase of the game
+     */
     public void informAboutActivePhase() {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
+    /**
+     * Method to communicate the
+     * currently active player of the game
+     */
     public void informAboutCurrentPlayer() {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
 
-    //TODO select map
-    //     if (Player player:playerList) isAI -> pickRandomMap
-    //     else playerList.get(0)... pickMap
-
-    //TODO at least 2 players ready to start game (max 6)
-
-    //TODO game logic with startGame()
-    //     map creation with elements (deserialization)
-    //     phases
-
-
+    /**
+     * Method to send a JSONMessage to all players
+     * @param jsonMessage   is the message that is sent to all players
+     */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
+    /**
+     * Method to select a map for the game
+     * loads the dimensions of the map
+     * uses a deserializer to load the map from a JSON
+     * calls method createMapObjects() to build map
+     * @param mapName   is the chosen map
+     * @throws IOException  handles IO exceptions
+     */
     public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
@@ -257,6 +291,20 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
+    /**
+     * Method to build the map
+     * takes an three dimensional ArrayList map
+     * first dimension: x; second dimension: y; third dimension: Element.class
+     * iterates over x, then y coordinates of the map
+     * checks the type of every element on every square of the map
+     * creates elements of the corresponding type and adds them to hashmaps
+     * initially elements are creates as superclass Element.class
+     * calls method replaceElementInMap() in order to replace elements of
+     * superclass Element.class with corresponding subclass
+     * @param map   is the deserialized 3D ArrayList from the JSON message
+     * @param mapX  is the x dimension of the map
+     * @param mapY  is the y dimension of the map
+     */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
