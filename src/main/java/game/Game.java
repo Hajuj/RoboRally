@@ -612,6 +612,8 @@ public class Game {
                 triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
             }
         }
+
+        robotsHitByRobotLaser.clear();
     }
 
     public void triggerLasersInSight(Robot robot, String orientation) {
