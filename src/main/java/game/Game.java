@@ -293,7 +293,7 @@ public class Game {
 
     /**
      * Method to build the map
-     * takes an three dimensional ArrayList map
+     * takes a three dimensional ArrayList map
      * first dimension: x; second dimension: y; third dimension: Element.class
      * iterates over x, then y coordinates of the map
      * checks the type of every element on every square of the map
