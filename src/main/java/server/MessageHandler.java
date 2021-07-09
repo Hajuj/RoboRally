@@ -450,4 +450,18 @@ public class MessageHandler {
         server.getCurrentGame().setCurrentRegister(0);
     }
 
+
+    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+        //schauen ob diser spieler echt AdminPrivilegie hat
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        if (player.checkAdmin()) {
+            int register = chooseRegisterBody.getRegister();
+            server.getCurrentGame().getAdminPriorityMap().put(register, player);
+            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
+            server.getCurrentGame().sendToAllPlayers(adminMessage);
+        }
+
+    }
+
+
 }

@@ -432,6 +432,17 @@ public class MessageHandler {
         }
     }
 
+    public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
+        clientModel.getClientGameModel().setMoveCheckpoints(true);
+    }
+
+    public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
+        int id = registerChosenBody.getClientID();
+        int register = registerChosenBody.getRegister();
+        String newAdmitMessage = "Player " + id + " is Admin in " + register + " register!";
+        clientModel.receiveMessage(newAdmitMessage);
+    }
+
     public void handleUpgradeBought(ClientModel clientModel, UpgradeBoughtBody upgradeBoughtBody) {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();

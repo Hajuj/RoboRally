@@ -59,6 +59,8 @@ public class Game {
     private Map<Player, Integer> checkPointReached = new HashMap<>();
     private Map<Player, String> robotsRebootDirection = new HashMap<>();
 
+    private Map<Integer, Player> adminPriorityMap = new HashMap<>();
+
     private int roundCounter = 1;
     private String mapName;
     private boolean gameOn;
@@ -201,8 +203,7 @@ public class Game {
     /**
      * Method to add clients who are too late for the game
      * into an ArrayList
-     *
-     * @return an ArrayList of PlayerIDs
+     * @return  an ArrayList of PlayerIDs
      */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
@@ -218,8 +219,7 @@ public class Game {
      * Method to check if special reboot rules are needed
      * for the current game
      * depends on the chosen map
-     *
-     * @return true if special reboot rules are needed
+     * @return  true if special reboot rules are needed
      */
     public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
@@ -229,8 +229,7 @@ public class Game {
 
     /**
      * Method to iterate over the active players
-     *
-     * @return the next active player ID
+     * @return  the next active player ID
      */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
@@ -265,12 +264,19 @@ public class Game {
 
     /**
      * Method to send a JSONMessage to all players
-     *
-     * @param jsonMessage is the message that is sent to all players
+     * @param jsonMessage   is the message that is sent to all players
      */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
+        }
+    }
+
+
+    public void refreshAdminPrivilege () {
+        adminPriorityMap.clear();
+        for (Player player : playerList) {
+            player.setActiveAdminPrivilege(0);
         }
     }
 
@@ -279,9 +285,8 @@ public class Game {
      * loads the dimensions of the map
      * uses a deserializer to load the map from a JSON
      * calls method createMapObjects() to build map
-     *
-     * @param mapName is the chosen map
-     * @throws IOException handles IO exceptions
+     * @param mapName   is the chosen map
+     * @throws IOException  handles IO exceptions
      */
     public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
@@ -309,10 +314,9 @@ public class Game {
      * initially elements are creates as superclass Element.class
      * calls method replaceElementInMap() in order to replace elements of
      * superclass Element.class with corresponding subclass
-     *
-     * @param map  is the deserialized 3D ArrayList from the JSON message
-     * @param mapX is the x dimension of the map
-     * @param mapY is the y dimension of the map
+     * @param map   is the deserialized 3D ArrayList from the JSON message
+     * @param mapX  is the x dimension of the map
+     * @param mapY  is the y dimension of the map
      */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
@@ -437,14 +441,14 @@ public class Game {
         }
     }
 
-    private void placeElementOnMap(Element element, int x, int y) {
+    private void placeElementOnMap(Element element, int x, int y){
         map.get(x).get(y).add(element);
     }
 
-    private Point2D getMoveInDirection(Point2D position, String orientation) {
+    private Point2D getMoveInDirection(Point2D position, String orientation){
         double x = position.getX();
         double y = position.getY();
-        switch (orientation) {
+        switch (orientation){
             case "left" -> x -= 1;
             case "right" -> x += 1;
             case "top" -> y -= 1;
@@ -498,6 +502,8 @@ public class Game {
             }
         }
         moveCheckPoints();
+        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(0, 0, 0));
+        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -665,7 +671,7 @@ public class Game {
         for (Player player : activePlayers) {
             triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
             //TODO further usage with rearLasers ArrayList for consistency
-            if (rearLasers.contains(player)) {
+            if(rearLasers.contains(player)){
                 triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
             }
         }
@@ -807,7 +813,7 @@ public class Game {
                 }
             }
         }
-        for (Player player : robotsHitByRobotLaser) {
+        for(Player player : robotsHitByRobotLaser){
             drawSpam(player, 1);
         }
 
@@ -974,19 +980,17 @@ public class Game {
             //Permanent UpgradeCard -> should it be covered in this case?
             //TODO: add hashMap
             //      should only be used once per round/per player (either here or in view)
-            case "AdminPrivilege" -> {
-            }
+            case "AdminPrivilege" -> {}
 
-            case "MemorySwap" -> {
-            }
+            case "MemorySwap" -> {}
         }
     }
 
-    public void replaceSpamCardsHand(Player player) {
+    public void replaceSpamCardsHand(Player player){
         int counter = 0;
-        for (Card card : player.getDeckHand().getDeck()) {
+        for(Card card : player.getDeckHand().getDeck()){
             //throw all Spam cards from hand to DeckSpam
-            if (card.getCardName().equals("Spam")) {
+            if(card.getCardName().equals("Spam")){
                 deckSpam.getDeck().add(card);
                 player.getDeckHand().getDeck().remove(card);
                 counter++;
@@ -1827,7 +1831,7 @@ public class Game {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
-            } else {
+            } else if (game.getActivePhase() == 1) {
                 // Compare distance to Antenna
                 for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
                     if (entry.getValue() != null) {
@@ -1842,6 +1846,36 @@ public class Game {
 
                         int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
                         int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        return Integer.compare(distance, oDistance);
+                    }
+                }
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            } else {
+                Player admin = null;
+                if (game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
+                    admin = game.getAdminPriorityMap().get(game.getCurrentRegister());
+                }
+                // Compare distance to Antenna
+                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if (entry.getValue() != null) {
+                        int antennaX = (int) entry.getKey().getX();
+                        int antennaY = (int) entry.getKey().getY();
+
+                        int robotX = o1.getRobot().getxPosition();
+                        int robotY = o1.getRobot().getyPosition();
+
+                        int oRobotX = o2.getRobot().getxPosition();
+                        int oRobotY = o2.getRobot().getyPosition();
+
+                        int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
+                        int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        if (admin != null) {
+                            if (o1.equals(admin)) {
+                                return 1;
+                            } else if (o2.equals((admin))) {
+                                return -1;
+                            }
+                        }
                         return Integer.compare(distance, oDistance);
                     }
                 }
@@ -2029,5 +2063,13 @@ public class Game {
 
     public DeckUpgrade getDeckUpgrade() {
         return deckUpgrade;
+    }
+
+    public Map<Integer, Player> getAdminPriorityMap () {
+        return adminPriorityMap;
+    }
+
+    public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
+        this.adminPriorityMap = adminPriorityMap;
     }
 }
