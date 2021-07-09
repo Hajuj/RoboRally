@@ -332,7 +332,6 @@ public class MessageHandler {
                     if (canStartNewRound) {
                         //New Round
                         server.getCurrentGame().setRebootDirection();
-                        //server.getCurrentGame().getDeadRobotsIDs().add(1);
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();

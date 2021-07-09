@@ -7,7 +7,6 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -37,6 +36,7 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
     private GameTimer gameTimer;
+    private ArrayList<String> upgradeCardsShop = new ArrayList<>();
     private ArrayList<String> availableMaps = new ArrayList<>();
     private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
@@ -1733,14 +1733,35 @@ public class Game {
     }
 
     public void startUpgradePhase() {
-        ArrayList<String> upgradeCards = new ArrayList<>();
-        deckUpgrade.shuffleDeck();
-        for (int i = 0; i < playerList.size(); i++) {
-            upgradeCards.add(deckUpgrade.getTopCard().getCardName());
-            deckUpgrade.removeTopCard();
+        //When all players chose Starting Point
+        if (roundCounter == 1) {
+            deckUpgrade.shuffleDeck();
+            for (int i = 0; i < playerList.size(); i++) {
+                upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                deckUpgrade.removeTopCard();
+            }
+            JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+            sendToAllPlayers(jsonMessage);
+        } else {
+            //After the first round and If no one bought an Upgrade Card
+            if (upgradeCardsShop.size() == playerList.size()) {
+                upgradeCardsShop.clear();
+                for (int i = 0; i < playerList.size(); i++) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            } else {
+                //If the Upgrade Shop not full
+                while (upgradeCardsShop.size() != playerList.size()) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            }
         }
-        JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCards));
-        sendToAllPlayers(jsonMessage);
     }
 
     public void canStartTheGame() {
