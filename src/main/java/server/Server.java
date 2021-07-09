@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -28,11 +29,18 @@ public class Server {
     private ArrayList<Player> waitingPlayer = new ArrayList<>();
     private ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);
+    private static String loggerStamp = "Server";
 
     private int clientsCounter = 1;
     private ArrayList<Connection> connections = new ArrayList<>();
 
+
     private Server () {
+        Date date = new Date();
+        String workIt = date.toString().replaceAll("\\s+", "_");
+        workIt = workIt.replace(":", "-");
+        loggerStamp += workIt;
+        System.out.println(loggerStamp);
     }
 
     public static Server getInstance () {
@@ -98,7 +106,7 @@ public class Server {
         writer.flush();
     }
 
-    public boolean canStartTheGame () {
+    public boolean areAllPlayersReady() {
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();

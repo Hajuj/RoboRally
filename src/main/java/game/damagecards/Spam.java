@@ -9,10 +9,6 @@ public class Spam extends game.Card {
         cardName = "Spam";
     }
 
-    public void activateCard(){
-        //TODO: implement logic for Spam Card activation
-    }
-
     public boolean isDamageCard() {
         return true;
     }

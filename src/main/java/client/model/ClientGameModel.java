@@ -5,12 +5,7 @@ import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -33,6 +28,9 @@ public class ClientGameModel {
 
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
+
+    private ArrayList<String> refillShopCards = new ArrayList<>();
+    private ArrayList<String> exchangeShopCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private boolean handCards = false;
@@ -58,6 +56,7 @@ public class ClientGameModel {
 
     private boolean animateGears = false;
 
+    private boolean moveCheckpoints = false;
 
     private boolean programmingPhase = false;
 
@@ -69,6 +68,7 @@ public class ClientGameModel {
 
     private int damageCount = 0;
 
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private LinkedHashMap<Point2D, Antenna> antennaMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, CheckPoint> checkPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, ConveyorBelt> conveyorBeltMap = new LinkedHashMap<>();
@@ -174,6 +174,12 @@ public class ClientGameModel {
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
         clientModel.sendMessage(rebootDirection);
+    }
+
+
+    public void activateAdminPrivilege (int register) {
+        JSONMessage adminMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody(register));
+        clientModel.sendMessage(adminMessage);
     }
 
     public void setanimationType (String animationType) {
@@ -283,6 +289,19 @@ public class ClientGameModel {
                 }
             }
         }
+    }
+
+    public void removeElementFromMap (Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    public void placeElementOnMap (Element element, int x, int y) {
+        map.get(x).get(y).add(element);
     }
 
    /* public void setActualPlayerID (int actualPlayerID) {
@@ -497,6 +516,17 @@ public class ClientGameModel {
     }
 
 
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+        for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
+            if (entry.getValue().equals(position)) {
+                robotsOnFields.add(entry.getKey());
+            }
+        }
+        return robotsOnFields;
+    }
+
+
     public int getAntennaOrientation () {
         for (Map.Entry<Point2D, Antenna> entry : antennaMap.entrySet()) {
             if (entry.getValue().getOrientations().contains("left")) {
@@ -569,6 +599,33 @@ public class ClientGameModel {
         }
     }
 
+    public ArrayList<String> getRefillShopCards() {
+        return refillShopCards;
+    }
+
+    public ArrayList<String> getExchangeShopCards() {
+        return exchangeShopCards;
+    }
+
+    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
+        return checkPointMovedMap;
+    }
+
+    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
+        this.checkPointMovedMap = checkPointMovedMap;
+    }
+
+    public boolean isMoveCheckpoints () {
+        return moveCheckpoints;
+    }
+
+    public void setMoveCheckpoints (boolean moveCheckpoints) {
+        boolean old = this.moveCheckpoints;
+        this.moveCheckpoints = moveCheckpoints;
+        if (this.moveCheckpoints) {
+            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
+        }
+    }
 
     public static class TurnTask {
         private int playerID;
@@ -605,5 +662,4 @@ public class ClientGameModel {
             return newPosition;
         }
     }
-
 }

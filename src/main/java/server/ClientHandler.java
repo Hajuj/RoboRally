@@ -150,11 +150,12 @@ public class ClientHandler extends Thread {
             server.sendMessage(removeMessage, connection.getWriter());
         }
 
-        if (server.canStartTheGame() && !server.getCurrentGame().isGameOn()) {
+        if (server.areAllPlayersReady() && !server.getCurrentGame().isGameOn()) {
             for (Connection connection : server.getConnections()) {
                 JSONMessage startMessage = new JSONMessage("GameStarted", new GameStartedBody(server.getCurrentGame().getMap()));
                 server.sendMessage(startMessage, connection.getWriter());
             }
+            server.getCurrentGame().canStartTheGame();
             logger.info("I CAN START THE GAME");
         }
 

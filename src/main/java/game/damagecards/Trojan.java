@@ -9,10 +9,6 @@ public class Trojan extends game.Card {
         cardName = "Trojan";
     }
 
-    public void activateCard() {
-        //TODO: implement logic for Spam Card activation
-    }
-
     public boolean isDamageCard() {
         return true;
     }

@@ -467,6 +467,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 animateGears();
             });
         }
+        if (evt.getPropertyName().equals("moveCheckpoints")) {
+            clientModel.getClientGameModel().setMoveCheckpoints(false);
+            Platform.runLater(() -> {
+                moveCheckPoints();
+            });
+        }
 
     }
 
@@ -724,6 +730,63 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         return laserPath;
     }
 
+    private Point2D getMoveInDirection (Point2D position, String orientation) {
+        double x = position.getX();
+        double y = position.getY();
+        switch (orientation) {
+            case "left" -> x -= 1;
+            case "right" -> x += 1;
+            case "top" -> y -= 1;
+            case "bottom" -> y += 1;
+        }
+
+        return new Point2D(x, y);
+    }
+
+
+    public void moveCheckPoint (Point2D oldPosition, Point2D newPosition) {
+        int layer;
+        if (clientGameModel.getRobotsOnFields(oldPosition).size() == 0) {
+            layer = 1;
+        } else {
+            layer = 2;
+        }
+
+        ImageView checkPoint = (ImageView) fieldMap.get(oldPosition).getChildren().get(fieldMap.get(oldPosition).getChildren().size() - layer);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - layer);
+        fieldMap.get(newPosition).getChildren().add(checkPoint);
+
+    }
+
+
+    private void moveCheckPoints () {
+        if (clientModel.getSelectedMap().equals("AlmostTwister")) {
+            for (Point2D positionCheckPoint : clientGameModel.getCheckPointMap().keySet()) {
+                for (Point2D position : clientGameModel.getConveyorBeltMap().keySet()) {
+                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
+                        //calculate new checkPoint position
+                        //first movement:
+                        Point2D newPosition = getMoveInDirection(positionCheckPoint, clientGameModel.getConveyorBeltMap().get(position).getOrientations().get(0));
+                        moveCheckPoint(position, newPosition);
+                        Point2D old = newPosition;
+                        //second movement:
+                        newPosition = getMoveInDirection(newPosition, clientGameModel.getConveyorBeltMap().get(position).getOrientations().get(0));
+                        moveCheckPoint(old, newPosition);
+                        //save new positions
+                        clientGameModel.getCheckPointMovedMap().put(newPosition, clientGameModel.getCheckPointMap().get(positionCheckPoint));
+                        //adjust map
+                        clientGameModel.removeElementFromMap(clientGameModel.getCheckPointMap().get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
+                        clientGameModel.placeElementOnMap(clientGameModel.getCheckPointMap().get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+                    }
+                }
+            }
+        }
+        //change old CheckPoint positions in HashMap to new positions
+        clientGameModel.getCheckPointMap().clear();
+        clientGameModel.getCheckPointMap().putAll(clientGameModel.getCheckPointMovedMap());
+        clientGameModel.getCheckPointMovedMap().clear();
+    }
+
 
     public void activateLasers () {
         for (Point2D position : clientGameModel.getLaserMap().keySet()) {
@@ -752,6 +815,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 }
+
+
+
+
    /* public void start(Stage primaryStage)
     {
         ImageView iv = new ImageView();
