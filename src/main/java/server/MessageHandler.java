@@ -182,7 +182,12 @@ public class MessageHandler {
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
-        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        String mapName = mapSelectedBody.getMap();
+        server.getCurrentGame().selectMap(mapName);
+        //Inform all other players about the selected map
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
+        }
         server.getCurrentGame().canStartTheGame();
     }
 
@@ -218,8 +223,8 @@ public class MessageHandler {
                 if (server.getCurrentGame().getCurrentPlayer() != -1) {
                     JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
                     server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
-                } else {
-                    server.getCurrentGame().setActivePhase(2);
+                } else { //All players have chose a starting point
+                    server.getCurrentGame().setActivePhase(1);
                 }
             }
 
@@ -332,12 +337,9 @@ public class MessageHandler {
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
                             player.discardRegisterCards();
-                            //TODO test if the cards get really discarded
                         }
                         server.getCurrentGame().setActivePhaseOn(false);
-                        server.getCurrentGame().setActivePhase(2);
-                        server.getCurrentGame().setCurrentRegister(0);
-                        //TODO when does the game stops? -> Ilja
+                        server.getCurrentGame().setActivePhase(1);
                     }
                 }
             } else {
@@ -440,6 +442,13 @@ public class MessageHandler {
             JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody("All damage cards are picked!"));
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
+    }
+
+    public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
+        logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
+        //TODO: When all players bought cards, start ActivePhase(2)
+        server.getCurrentGame().setActivePhase(2);
+        server.getCurrentGame().setCurrentRegister(0);
     }
 
 }

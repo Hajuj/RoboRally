@@ -5,12 +5,7 @@ import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -33,6 +28,9 @@ public class ClientGameModel {
 
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
+
+    private ArrayList<String> refillShopCards = new ArrayList<>();
+    private ArrayList<String> exchangeShopCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private boolean handCards = false;
@@ -569,6 +567,13 @@ public class ClientGameModel {
         }
     }
 
+    public ArrayList<String> getRefillShopCards() {
+        return refillShopCards;
+    }
+
+    public ArrayList<String> getExchangeShopCards() {
+        return exchangeShopCards;
+    }
 
     public static class TurnTask {
         private int playerID;
@@ -605,5 +610,4 @@ public class ClientGameModel {
             return newPosition;
         }
     }
-
 }

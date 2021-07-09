@@ -90,7 +90,8 @@ public class Game {
      * Constructor for the game
      * adds available Maps to availableMaps
      * creates a game timer
-     * @param server    is the server where the game is started
+     *
+     * @param server is the server where the game is started
      */
     public Game(Server server) {
         this.server = server;
@@ -98,6 +99,7 @@ public class Game {
         availableMaps.add("DeathTrap");
         availableMaps.add("ExtraCrispy");
         availableMaps.add("LostBearings");
+        availableMaps.add("AlmostTwister");
         gameTimer = new GameTimer(server);
     }
 
@@ -106,8 +108,9 @@ public class Game {
      * initializes all global game decks (Damage cards and Upgrade cards)
      * initializes global variables to initial value
      * sends GameStartedMessage to all participating players
-     * @param players   are the players who joined the game
-     * @throws IOException  handles IO exceptions
+     *
+     * @param players are the players who joined the game
+     * @throws IOException handles IO exceptions
      */
     public void startGame(ArrayList<Player> players) throws IOException {
         this.deckSpam = new DeckSpam();
@@ -198,7 +201,8 @@ public class Game {
     /**
      * Method to add clients who are too late for the game
      * into an ArrayList
-     * @return  an ArrayList of PlayerIDs
+     *
+     * @return an ArrayList of PlayerIDs
      */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
@@ -214,7 +218,8 @@ public class Game {
      * Method to check if special reboot rules are needed
      * for the current game
      * depends on the chosen map
-     * @return  true if special reboot rules are needed
+     *
+     * @return true if special reboot rules are needed
      */
     public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
@@ -224,7 +229,8 @@ public class Game {
 
     /**
      * Method to iterate over the active players
-     * @return  the next active player ID
+     *
+     * @return the next active player ID
      */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
@@ -259,7 +265,8 @@ public class Game {
 
     /**
      * Method to send a JSONMessage to all players
-     * @param jsonMessage   is the message that is sent to all players
+     *
+     * @param jsonMessage is the message that is sent to all players
      */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
@@ -272,8 +279,9 @@ public class Game {
      * loads the dimensions of the map
      * uses a deserializer to load the map from a JSON
      * calls method createMapObjects() to build map
-     * @param mapName   is the chosen map
-     * @throws IOException  handles IO exceptions
+     *
+     * @param mapName is the chosen map
+     * @throws IOException handles IO exceptions
      */
     public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
@@ -301,9 +309,10 @@ public class Game {
      * initially elements are creates as superclass Element.class
      * calls method replaceElementInMap() in order to replace elements of
      * superclass Element.class with corresponding subclass
-     * @param map   is the deserialized 3D ArrayList from the JSON message
-     * @param mapX  is the x dimension of the map
-     * @param mapY  is the y dimension of the map
+     *
+     * @param map  is the deserialized 3D ArrayList from the JSON message
+     * @param mapX is the x dimension of the map
+     * @param mapY is the y dimension of the map
      */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
@@ -394,10 +403,10 @@ public class Game {
     }
 
     private void moveCheckPoints() {
-        if (getMapName().equals("Twister")) {
+        if (getMapName().equals("AlmostTwister")) {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
                 for (Point2D position : conveyorBeltMap.keySet()) {
-                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
+                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
@@ -419,23 +428,23 @@ public class Game {
         checkPointMovedMap.clear();
     }
 
-    private void removeElementFromMap(Element element, int x, int y){
-        for(int i = 0; i < map.get(x).get(y).size(); i++){
-            if (element.getType().equals(map.get(x).get(y).get(i).getType())){
+    private void removeElementFromMap(Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
                 map.get(x).get(y).remove(i);
                 break;
             }
         }
     }
 
-    private void placeElementOnMap(Element element, int x, int y){
+    private void placeElementOnMap(Element element, int x, int y) {
         map.get(x).get(y).add(element);
     }
 
-    private Point2D getMoveInDirection(Point2D position, String orientation){
+    private Point2D getMoveInDirection(Point2D position, String orientation) {
         double x = position.getX();
         double y = position.getY();
-        switch (orientation){
+        switch (orientation) {
             case "left" -> x -= 1;
             case "right" -> x += 1;
             case "top" -> y -= 1;
@@ -656,7 +665,7 @@ public class Game {
         for (Player player : activePlayers) {
             triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
             //TODO further usage with rearLasers ArrayList for consistency
-            if(rearLasers.contains(player)){
+            if (rearLasers.contains(player)) {
                 triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
             }
         }
@@ -798,7 +807,7 @@ public class Game {
                 }
             }
         }
-        for(Player player : robotsHitByRobotLaser){
+        for (Player player : robotsHitByRobotLaser) {
             drawSpam(player, 1);
         }
 
@@ -965,17 +974,19 @@ public class Game {
             //Permanent UpgradeCard -> should it be covered in this case?
             //TODO: add hashMap
             //      should only be used once per round/per player (either here or in view)
-            case "AdminPrivilege" -> {}
+            case "AdminPrivilege" -> {
+            }
 
-            case "MemorySwap" -> {}
+            case "MemorySwap" -> {
+            }
         }
     }
 
-    public void replaceSpamCardsHand(Player player){
+    public void replaceSpamCardsHand(Player player) {
         int counter = 0;
-        for(Card card : player.getDeckHand().getDeck()){
+        for (Card card : player.getDeckHand().getDeck()) {
             //throw all Spam cards from hand to DeckSpam
-            if(card.getCardName().equals("Spam")){
+            if (card.getCardName().equals("Spam")) {
                 deckSpam.getDeck().add(card);
                 player.getDeckHand().getDeck().remove(card);
                 counter++;
@@ -1697,7 +1708,11 @@ public class Game {
 
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
-        if (activePhase == 2 && !activePhaseOn) {
+        if (activePhase == 1 && !activePhaseOn) {
+            informAboutActivePhase();
+            startUpgradePhase();
+            activePhaseOn = true;
+        } else if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
@@ -1717,6 +1732,17 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    public void startUpgradePhase() {
+        ArrayList<String> upgradeCards = new ArrayList<>();
+        deckUpgrade.shuffleDeck();
+        for (int i = 0; i < playerList.size(); i++) {
+            upgradeCards.add(deckUpgrade.getTopCard().getCardName());
+            deckUpgrade.removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCards));
+        sendToAllPlayers(jsonMessage);
+    }
+
     public void canStartTheGame() {
         if (server.areAllPlayersReady()) {
             try {
@@ -1725,9 +1751,6 @@ public class Game {
                     int random = (int) (Math.random() * maps.size());
                     String mapName = maps.get(random);
                     server.getCurrentGame().selectMap(mapName);
-                    for (Connection connection : server.getConnections()) {
-                        server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
-                    }
                 }
                 if (server.getCurrentGame().getMapName() != null) {
                     server.getCurrentGame().setGameOn(true);
@@ -1981,5 +2004,9 @@ public class Game {
 
     public Map<Player, String> getRobotsRebootDirection() {
         return robotsRebootDirection;
+    }
+
+    public DeckUpgrade getDeckUpgrade() {
+        return deckUpgrade;
     }
 }
