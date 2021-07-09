@@ -415,7 +415,7 @@ public class Game {
                         //first movement:
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
                         //second movement:
-                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(newPosition).getOrientations().get(0));
 
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
