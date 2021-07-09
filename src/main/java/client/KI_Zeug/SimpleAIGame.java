@@ -6,7 +6,7 @@ import game.Player;
 
 import java.util.ArrayList;
 
-public class SimpleAIGame extends Game {
+/**public class SimpleAIGame extends Game {
 
     public void activateCardEffect(String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
@@ -115,4 +115,4 @@ public class SimpleAIGame extends Game {
 
         }
     }
-}
+}*/

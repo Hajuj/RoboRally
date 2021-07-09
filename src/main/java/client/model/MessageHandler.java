@@ -323,11 +323,11 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-                clientModel.getClientGameModel().setAnimateBelts(true);
+
                 break;
             }
             case "GreenConveyorBelt": {
-                clientModel.getClientGameModel().setAnimateBelts(true);
+
                 break;
             }
             case "PushPanel": {

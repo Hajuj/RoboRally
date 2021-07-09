@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  * @author Ilja Knis
- */
+
 public abstract class Belt extends Element {
 
     @Expose
@@ -48,4 +48,4 @@ public abstract class Belt extends Element {
     public int getSpeed() {
         return speed;
     }
-}
+}*/

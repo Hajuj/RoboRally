@@ -45,7 +45,6 @@ public class SimpleAIModel {
     public static void main (String[] args) {
         clientModel.setMessageHandler(new MessageHandlerAI());
         clientModel.setAI(true);
-        game = new Game;
         for (int i = 0; i < 5; i++) {
             cardsInRegister.put(i, null);
         }

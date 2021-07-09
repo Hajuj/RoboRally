@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  * @author Ilja Knis
- */
+
 public abstract class RotatingBelt extends Element {
 
     @Expose
@@ -50,4 +50,4 @@ public abstract class RotatingBelt extends Element {
     public Boolean getCrossing() {
         return isCrossing;
     }
-}
+}*/
