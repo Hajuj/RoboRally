@@ -1,6 +1,7 @@
 package client.KI_Zeug;
 
 import client.model.ClientModel;
+import game.Game;
 import game.boardelements.StartPoint;
 import javafx.geometry.Point2D;
 
@@ -13,6 +14,8 @@ public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
     private final boolean IS_LAZY = false;
+
+    private static Game game;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 507;
@@ -42,6 +45,7 @@ public class SimpleAIModel {
     public static void main (String[] args) {
         clientModel.setMessageHandler(new MessageHandlerAI());
         clientModel.setAI(true);
+        game = new Game;
         for (int i = 0; i < 5; i++) {
             cardsInRegister.put(i, null);
         }
@@ -220,5 +224,13 @@ public class SimpleAIModel {
 
     public static void setClientModel (ClientModel clientModel) {
         SimpleAIModel.clientModel = clientModel;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

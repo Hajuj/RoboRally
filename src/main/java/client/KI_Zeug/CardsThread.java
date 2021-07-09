@@ -1,6 +1,14 @@
 package client.KI_Zeug;
 
 import client.model.ClientModel;
+import game.Card;
+import game.Game;
+import game.Player;
+import json.JSONMessage;
+import json.protocol.EnergyBody;
+import json.protocol.PlayCardBody;
+import json.protocol.PlayerTurningBody;
+import json.protocol.ReplaceCardBody;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -25,8 +33,16 @@ public class CardsThread extends Thread {
         if (againInZeroRegister()) {
             simpleAIModel.getMyBabyList().remove(this);
             this.interrupt();
+        } else if (spamInRegister()) {
+            simpleAIModel.getMyBabyList().remove(this);
         } else {
             logger.warn(myCards);
+        }
+    }
+
+    public boolean spamInRegister(){
+        for (int i = 0; i <5; i++){
+            if()
         }
     }
 
@@ -53,3 +69,7 @@ public class CardsThread extends Thread {
     }
 
 }
+
+
+
+
