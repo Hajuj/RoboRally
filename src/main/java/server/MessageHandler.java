@@ -182,7 +182,12 @@ public class MessageHandler {
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
-        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        String mapName = mapSelectedBody.getMap();
+        server.getCurrentGame().selectMap(mapName);
+        //Inform all other players about the selected map
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
+        }
         server.getCurrentGame().canStartTheGame();
     }
 
@@ -198,6 +203,7 @@ public class MessageHandler {
                 Player player = server.getPlayerWithID(playerID);
                 player.setRobot(new Robot(Game.getRobotNames().get(player.getFigure()), x, y));
 
+                //Set orientation of the robots depends on the Antenna
                 for (Map.Entry<Point2D, Antenna> entry : server.getCurrentGame().getAntennaMap().entrySet()) {
                     if (entry.getValue().getOrientations().contains("left")) {
                         player.getRobot().setOrientation("left");
@@ -217,8 +223,8 @@ public class MessageHandler {
                 if (server.getCurrentGame().getCurrentPlayer() != -1) {
                     JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
                     server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
-                } else {
-                    server.getCurrentGame().setActivePhase(2);
+                } else { //All players have chose a starting point
+                    server.getCurrentGame().setActivePhase(1);
                 }
             }
 
@@ -326,17 +332,13 @@ public class MessageHandler {
                     if (canStartNewRound) {
                         //New Round
                         server.getCurrentGame().setRebootDirection();
-                        //server.getCurrentGame().getDeadRobotsIDs().add(1);
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
                             player.discardRegisterCards();
-                            //TODO test if the cards get really discarded
                         }
                         server.getCurrentGame().setActivePhaseOn(false);
-                        server.getCurrentGame().setActivePhase(2);
-                        server.getCurrentGame().setCurrentRegister(0);
-                        //TODO when does the game stops? -> Ilja
+                        server.getCurrentGame().setActivePhase(1);
                     }
                 }
             } else {
@@ -440,5 +442,26 @@ public class MessageHandler {
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
     }
+
+    public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
+        logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
+        //TODO: When all players bought cards, start ActivePhase(2)
+        server.getCurrentGame().setActivePhase(2);
+        server.getCurrentGame().setCurrentRegister(0);
+    }
+
+
+    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+        //schauen ob diser spieler echt AdminPrivilegie hat
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        if (player.checkAdmin()) {
+            int register = chooseRegisterBody.getRegister();
+            server.getCurrentGame().getAdminPriorityMap().put(register, player);
+            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
+            server.getCurrentGame().sendToAllPlayers(adminMessage);
+        }
+
+    }
+
 
 }

@@ -67,6 +67,7 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
+        simpleAIModel.setMyHandCards(yourCardsBody.getCardsInHand());
         for (int i = 0; i < 5; i++) {
             SimpleAIModel.getCardsInRegister().replace(i, null);
         }
@@ -89,5 +90,10 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
         super.handlePickDamage(clientModel, pickDamageBody);
         simpleAIModel.pickDamageRoutine();
+    }
+
+    @Override
+    public void handleReboot(ClientModel clientModel, RebootBody rebootBody) {
+
     }
 }

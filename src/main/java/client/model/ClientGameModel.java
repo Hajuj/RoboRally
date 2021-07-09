@@ -29,6 +29,9 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
+    private ArrayList<String> refillShopCards = new ArrayList<>();
+    private ArrayList<String> exchangeShopCards = new ArrayList<>();
+
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private boolean handCards = false;
 
@@ -44,15 +47,16 @@ public class ClientGameModel {
     private boolean latePlayer = false;
     private String lateCard = "";
 
-    private HashMap<Robot, Point2D> moveQueue = new HashMap<>();
+    private ArrayList<MoveTask> moveQueue = new ArrayList<MoveTask>();
     private boolean queueMove = false;
 
-    private HashMap<Robot, String> turningQueue = new HashMap<>();
+    private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
     private boolean animateBelts = false;
     private boolean animateGears = false;
     private boolean animateSpaces = false;
 
+    private boolean moveCheckpoints = false;
 
     private boolean programmingPhase = false;
 
@@ -64,6 +68,7 @@ public class ClientGameModel {
 
     private int damageCount = 0;
 
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private LinkedHashMap<Point2D, Antenna> antennaMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, CheckPoint> checkPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, ConveyorBelt> conveyorBeltMap = new LinkedHashMap<>();
@@ -112,9 +117,9 @@ public class ClientGameModel {
         lateCard = "";
 
         robotMap = new HashMap<>();
-        moveQueue = new HashMap<>();
+        moveQueue = new ArrayList<MoveTask>();
         lateCards = new ArrayList<>();
-        turningQueue = new HashMap<>();
+        turningQueue = new ArrayList<TurnTask>();
         cardsInHand = new ArrayList<>();
         startingPointQueue = new HashMap<>();
 
@@ -172,6 +177,14 @@ public class ClientGameModel {
         rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
     }
+
+
+    public void activateAdminPrivilege (int register) {
+        JSONMessage adminMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody(register));
+        clientModel.sendMessage(adminMessage);
+    }
+
+
     public boolean getRebootSetting (){
         return rebooting;
     }
@@ -266,6 +279,25 @@ public class ClientGameModel {
         }
     }
 
+    public void removeElementFromMap (Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    public void placeElementOnMap (Element element, int x, int y) {
+        map.get(x).get(y).add(element);
+    }
+
+   /* public void setActualPlayerID (int actualPlayerID) {
+        int currentPlayer = this.actualPlayerID;
+        this.actualPlayerID = actualPlayerID;
+        propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
+
+    }*/
 
     public void setActualPlayerID (int actualPlayerID){
         this.actualPlayerID=actualPlayerID;
@@ -332,7 +364,7 @@ public class ClientGameModel {
         return wallMap;
     }
 
-    public HashMap<Robot, String> getTurningQueue () {
+    public ArrayList<TurnTask> getTurningQueue () {
         return turningQueue;
     }
 
@@ -449,7 +481,7 @@ public class ClientGameModel {
         }
     }
 
-    public HashMap<Robot, Point2D> getMoveQueue () {
+    public ArrayList<MoveTask> getMoveQueue () {
         return moveQueue;
     }
 
@@ -459,6 +491,17 @@ public class ClientGameModel {
         if (this.queueMove) {
             propertyChangeSupport.firePropertyChange("queueMove", oldQueueMove, true);
         }
+    }
+
+
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+        for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
+            if (entry.getValue().equals(position)) {
+                robotsOnFields.add(entry.getKey());
+            }
+        }
+        return robotsOnFields;
     }
 
 
@@ -559,4 +602,68 @@ public class ClientGameModel {
         }
     }
 
+
+    public ArrayList<String> getRefillShopCards() {
+        return refillShopCards;
+    }
+
+    public ArrayList<String> getExchangeShopCards() {
+        return exchangeShopCards;
+    }
+
+    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
+        return checkPointMovedMap;
+    }
+
+    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
+        this.checkPointMovedMap = checkPointMovedMap;
+    }
+
+    public boolean isMoveCheckpoints () {
+        return moveCheckpoints;
+    }
+
+    public void setMoveCheckpoints (boolean moveCheckpoints) {
+        boolean old = this.moveCheckpoints;
+        this.moveCheckpoints = moveCheckpoints;
+        if (this.moveCheckpoints) {
+            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
+        }
+    }
+
+    public static class TurnTask {
+        private int playerID;
+        private String rotation;
+
+        public TurnTask (int playerID, String rotation) {
+            this.playerID = playerID;
+            this.rotation = rotation;
+        }
+
+        public int getplayerID () {
+            return playerID;
+        }
+
+        public String getRotation () {
+            return rotation;
+        }
+    }
+
+    public static class MoveTask {
+        private int playerID;
+        private Point2D newPosition;
+
+        public MoveTask (int playerID, Point2D newPosition) {
+            this.playerID = playerID;
+            this.newPosition = newPosition;
+        }
+
+        public int getPlayerID () {
+            return playerID;
+        }
+
+        public Point2D getNewPosition () {
+            return newPosition;
+        }
+    }
 }

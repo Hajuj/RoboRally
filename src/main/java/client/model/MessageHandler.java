@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 
 /**
@@ -171,12 +170,7 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //TODO:CURRENT PLAYER
+
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
@@ -186,11 +180,7 @@ public class MessageHandler {
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         int phase = activePhaseBody.getPhase();
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+
         clientModel.getClientGameModel().setActualPhase(phase);
         if (phase == 2) {
             clientModel.getClientGameModel().setActualRegister(-1);
@@ -300,21 +290,15 @@ public class MessageHandler {
 
     public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
         logger.info(ANSI_CYAN + "CardPlayed Message received." + ANSI_RESET);
-        int clientID = cardPlayedBody.getClientID();
-        String card = cardPlayedBody.getCard();
 
     }
 
     public void handlePlayerTurning (ClientModel clientModel, PlayerTurningBody playerTurningBody) {
         int clientID = playerTurningBody.getClientID();
         String rotation = playerTurningBody.getRotation();
-        Robot robot = null;
-        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
-                robot = entry.getKey();
-            }
-        }
-        clientModel.getClientGameModel().getTurningQueue().put(robot, rotation);
+
+        ClientGameModel.TurnTask turnTask = new ClientGameModel.TurnTask(clientID, rotation);
+        clientModel.getClientGameModel().getTurningQueue().add(turnTask);
         clientModel.getClientGameModel().setQueueTurning(true);
 
         logger.info(ANSI_CYAN + "PlayerTurning Message received." + ANSI_RESET);
@@ -326,14 +310,10 @@ public class MessageHandler {
         int clientID = movementBody.getClientID();
         int newX = movementBody.getX();
         int newY = movementBody.getY();
-        Robot robot = null;
 
-        for (Map.Entry<Robot, Point2D> entry : clientModel.getClientGameModel().getRobotMap().entrySet()) {
-            if (entry.getKey().getName().equals(Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(clientID)))) {
-                robot = entry.getKey();
-            }
-        }
-        clientModel.getClientGameModel().getMoveQueue().put(robot, new Point2D(newX, newY));
+        ClientGameModel.MoveTask moveTask = new ClientGameModel.MoveTask(clientID, new Point2D(newX, newY));
+
+        clientModel.getClientGameModel().getMoveQueue().add(moveTask);
         clientModel.getClientGameModel().setQueueMove(true);
 
     }
@@ -433,5 +413,41 @@ public class MessageHandler {
         clientModel.getClientGameModel().setDamageCount(pickDamageBody.getCount());
     }
 
-}
+    public void handleRefillShop(ClientModel clientModel, RefillShopBody refillShopBody) {
+        logger.info(ANSI_CYAN + "RefillShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = refillShopBody.getCards();
 
+        for (String card : cards) {
+            clientModel.getClientGameModel().getRefillShopCards().add(card);
+        }
+    }
+
+    public void handleExchangeShop(ClientModel clientModel, ExchangeShopBody exchangeShopBody) {
+        logger.info(ANSI_CYAN + "ExchangeShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = exchangeShopBody.getCards();
+
+        for (String card : cards) {
+            clientModel.getClientGameModel().getExchangeShopCards().add(card);
+        }
+    }
+
+    public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
+        clientModel.getClientGameModel().setMoveCheckpoints(true);
+    }
+
+    public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
+        int id = registerChosenBody.getClientID();
+        int register = registerChosenBody.getRegister();
+        String newAdmitMessage = "Player " + id + " is Admin in " + register + " register!";
+        clientModel.receiveMessage(newAdmitMessage);
+    }
+
+    public void handleUpgradeBought(ClientModel clientModel, UpgradeBoughtBody upgradeBoughtBody) {
+        logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
+        int clientID = upgradeBoughtBody.getClientID();
+        String card = upgradeBoughtBody.getCard();
+
+        clientModel.receiveMessage("Player " + clientID + " has bought " + card);
+    }
+
+}

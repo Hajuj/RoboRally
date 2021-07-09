@@ -1,16 +1,12 @@
 package game;
 
 import game.boardelements.*;
-import game.decks.DeckSpam;
-import game.decks.DeckTrojan;
-import game.decks.DeckVirus;
-import game.decks.DeckWorm;
+import game.decks.*;
 import javafx.geometry.Point2D;
 import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -35,16 +31,19 @@ public class Game {
     private DeckTrojan deckTrojan;
     private DeckVirus deckVirus;
     private DeckWorm deckWorm;
+    private DeckUpgrade deckUpgrade;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
     private ArrayList<Player> playerList;
     private Server server;
     private GameTimer gameTimer;
+    private ArrayList<String> upgradeCardsShop = new ArrayList<>();
     private ArrayList<String> availableMaps = new ArrayList<>();
     private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private Map<Point2D, ConveyorBelt> conveyorBeltMap = new HashMap<>();
     private Map<Point2D, Empty> emptyMap = new HashMap<>();
     private Map<Point2D, EnergySpace> energySpaceMap = new HashMap<>();
@@ -60,6 +59,8 @@ public class Game {
     private Map<Player, Integer> checkPointReached = new HashMap<>();
     private Map<Player, String> robotsRebootDirection = new HashMap<>();
 
+    private Map<Integer, Player> adminPriorityMap = new HashMap<>();
+
     private int roundCounter = 1;
     private String mapName;
     private boolean gameOn;
@@ -74,6 +75,7 @@ public class Game {
 
     private HashMap<Player, ArrayList<String>> currentDamage = new HashMap<>();
     private ArrayList<Player> robotsHitByRobotLaser = new ArrayList<>();
+    private ArrayList<Player> rearLasers = new ArrayList<>();
 
     private Game() {
 
@@ -86,18 +88,33 @@ public class Game {
         return instance;
     }
 
+    /**
+     * Constructor for the game
+     * adds available Maps to availableMaps
+     * creates a game timer
+     *
+     * @param server is the server where the game is started
+     */
     public Game(Server server) {
         this.server = server;
         availableMaps.add("DizzyHighway");
         availableMaps.add("DeathTrap");
         availableMaps.add("ExtraCrispy");
         availableMaps.add("LostBearings");
+        availableMaps.add("AlmostTwister");
         gameTimer = new GameTimer(server);
     }
 
-
+    /**
+     * Method to start the game
+     * initializes all global game decks (Damage cards and Upgrade cards)
+     * initializes global variables to initial value
+     * sends GameStartedMessage to all participating players
+     *
+     * @param players are the players who joined the game
+     * @throws IOException handles IO exceptions
+     */
     public void startGame(ArrayList<Player> players) throws IOException {
-        //TODO why do we need to initialize the decks here? @Ilja
         this.deckSpam = new DeckSpam();
         this.deckSpam.initializeDeck();
 
@@ -109,6 +126,10 @@ public class Game {
 
         this.deckWorm = new DeckWorm();
         this.deckWorm.initializeDeck();
+
+        this.deckUpgrade = new DeckUpgrade();
+        this.deckUpgrade.initializeDeck();
+        this.deckUpgrade.shuffleDeck();
 
         this.playerList = players;
 
@@ -138,6 +159,10 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    /**
+     * Method to refresh the game to an initial state
+     * necessary to start a new game from scratch
+     */
     public void refreshGame() {
         antennaMap = new HashMap<>();
         checkPointMap = new HashMap<>();
@@ -175,6 +200,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method to add clients who are too late for the game
+     * into an ArrayList
+     * @return  an ArrayList of PlayerIDs
+     */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
         for (Player player : this.playerList) {
@@ -185,13 +215,22 @@ public class Game {
         return tooLateClients;
     }
 
+    /**
+     * Method to check if special reboot rules are needed
+     * for the current game
+     * depends on the chosen map
+     * @return  true if special reboot rules are needed
+     */
     public boolean specialRebootRules() {
         if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
             return true;
         } else return false;
     }
 
-
+    /**
+     * Method to iterate over the active players
+     * @return  the next active player ID
+     */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
@@ -205,33 +244,50 @@ public class Game {
         return -1;
     }
 
+    /**
+     * Method to communicate the currently
+     * active phase of the game
+     */
     public void informAboutActivePhase() {
         JSONMessage currentPhase = new JSONMessage("ActivePhase", new ActivePhaseBody(getActivePhase()));
         sendToAllPlayers(currentPhase);
     }
 
+    /**
+     * Method to communicate the
+     * currently active player of the game
+     */
     public void informAboutCurrentPlayer() {
         JSONMessage currentPlayer = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(getCurrentPlayer()));
         sendToAllPlayers(currentPlayer);
     }
 
-    //TODO select map
-    //     if (Player player:playerList) isAI -> pickRandomMap
-    //     else playerList.get(0)... pickMap
-
-    //TODO at least 2 players ready to start game (max 6)
-
-    //TODO game logic with startGame()
-    //     map creation with elements (deserialization)
-    //     phases
-
-
+    /**
+     * Method to send a JSONMessage to all players
+     * @param jsonMessage   is the message that is sent to all players
+     */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
 
+
+    public void refreshAdminPrivilege () {
+        adminPriorityMap.clear();
+        for (Player player : playerList) {
+            player.setActiveAdminPrivilege(0);
+        }
+    }
+
+    /**
+     * Method to select a map for the game
+     * loads the dimensions of the map
+     * uses a deserializer to load the map from a JSON
+     * calls method createMapObjects() to build map
+     * @param mapName   is the chosen map
+     * @throws IOException  handles IO exceptions
+     */
     public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
@@ -248,6 +304,20 @@ public class Game {
         createMapObjects(map, mapX, mapY);
     }
 
+    /**
+     * Method to build the map
+     * takes a three dimensional ArrayList map
+     * first dimension: x; second dimension: y; third dimension: Element.class
+     * iterates over x, then y coordinates of the map
+     * checks the type of every element on every square of the map
+     * creates elements of the corresponding type and adds them to hashmaps
+     * initially elements are creates as superclass Element.class
+     * calls method replaceElementInMap() in order to replace elements of
+     * superclass Element.class with corresponding subclass
+     * @param map   is the deserialized 3D ArrayList from the JSON message
+     * @param mapX  is the x dimension of the map
+     * @param mapY  is the y dimension of the map
+     */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
@@ -336,6 +406,58 @@ public class Game {
         }
     }
 
+    private void moveCheckPoints() {
+        if (getMapName().equals("AlmostTwister")) {
+            for (Point2D positionCheckPoint : checkPointMap.keySet()) {
+                for (Point2D position : conveyorBeltMap.keySet()) {
+                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
+                        //calculate new checkPoint position
+                        //first movement:
+                        Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        //second movement:
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
+
+                        //save new positions
+                        checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
+                        //adjust map
+                        removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
+                        placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+                    }
+                }
+            }
+        }
+        //change old CheckPoint positions in HashMap to new positions
+        checkPointMap.clear();
+        checkPointMap.putAll(checkPointMovedMap);
+        checkPointMovedMap.clear();
+    }
+
+    private void removeElementFromMap(Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    private void placeElementOnMap(Element element, int x, int y){
+        map.get(x).get(y).add(element);
+    }
+
+    private Point2D getMoveInDirection(Point2D position, String orientation){
+        double x = position.getX();
+        double y = position.getY();
+        switch (orientation){
+            case "left" -> x -= 1;
+            case "right" -> x += 1;
+            case "top" -> y -= 1;
+            case "bottom" -> y += 1;
+        }
+
+        return new Point2D(x, y);
+    }
+
     public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
@@ -351,34 +473,37 @@ public class Game {
                                 e.printStackTrace();
                             }
                         }
-                        sendNewPosition(player);
-                        //second move: need to find new position and new orientation first
-                        double xRobotPos = player.getRobot().getxPosition();
-                        double yRobotPos = player.getRobot().getyPosition();
-                        for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
-                            if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
-                                movedOnBelt = true;
-                                Point2D newPos = new Point2D(xRobotPos, yRobotPos);
-                                String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
-                                moveRobot(player.getRobot(), newOrientation, 1);
+                        if (!deadRobotsIDs.contains(player.getPlayerID())) {
+                            //second move: need to find new position and new orientation first
+                            double xRobotPos = player.getRobot().getxPosition();
+                            double yRobotPos = player.getRobot().getyPosition();
+                            for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                                if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                                    movedOnBelt = true;
+                                    Point2D newPos = new Point2D(xRobotPos, yRobotPos);
+                                    String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
+                                    moveRobot(player.getRobot(), newOrientation, 1);
+                                }
                             }
-                        }
-                        if (!movedOnBelt) {
-                            moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        }
-                        if (IS_LAZY) {
-                            try {
-                                Thread.sleep(80);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            if (!movedOnBelt) {
+                                moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                             }
+                            if (IS_LAZY) {
+                                try {
+                                    Thread.sleep(80);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
                         }
-                        sendNewPosition(player);
-                        break;
                     }
                 }
             }
         }
+        moveCheckPoints();
+        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(0, 0, 0));
+        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -409,7 +534,6 @@ public class Game {
                     if (player.getRobot().getxPosition() == (int) position.getX() &&
                             player.getRobot().getyPosition() == (int) position.getY()) {
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                         try {
                             if (IS_LAZY) {
                                 Thread.sleep(80);
@@ -451,7 +575,6 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(5)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                     }
                 }
             }
@@ -461,7 +584,6 @@ public class Game {
                         pushPanelMap.get(position).getRegisters().contains(4)) {
                     for (Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
-                        sendNewPosition(player);
                     }
                 }
             }
@@ -547,22 +669,21 @@ public class Game {
                 activePlayers.add(player);
         }
         for (Player player : activePlayers) {
-            getRobotInLineOfSight(player.getRobot());
-        }
-
-        for (Player player : robotsHitByRobotLaser) {
-            drawSpam(player, 1);
+            triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
+            //TODO further usage with rearLasers ArrayList for consistency
+            if(rearLasers.contains(player)){
+                triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
+            }
         }
 
         robotsHitByRobotLaser.clear();
     }
 
-
-    public void getRobotInLineOfSight(Robot robot) {
+    public void triggerLasersInSight(Robot robot, String orientation) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (robot.getOrientation()) {
+        switch (orientation) {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
@@ -581,7 +702,9 @@ public class Game {
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("top"))) {
+                                        .get(j).equals("top") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("bottom")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -611,7 +734,9 @@ public class Game {
                         if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
                                 if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("bottom"))) {
+                                        .get(j).equals("bottom") ||
+                                        map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                                                .get(j).equals("top")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -641,7 +766,9 @@ public class Game {
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("right"))) {
+                                        .get(j).equals("right") ||
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                                .get(j).equals("left")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -671,7 +798,9 @@ public class Game {
                         if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
                             for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
                                 if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
-                                        .get(j).equals(getInverseOrientation("left"))) {
+                                        .get(j).equals("left") ||
+                                        map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                                                .get(j).equals("right")) {
                                     foundBlocker = true;
                                     break;
                                 }
@@ -684,6 +813,11 @@ public class Game {
                 }
             }
         }
+        for(Player player : robotsHitByRobotLaser){
+            drawSpam(player, 1);
+        }
+
+        robotsHitByRobotLaser.clear();
     }
 
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
@@ -747,40 +881,26 @@ public class Game {
                 switch (robotOrientation) {
                     case "top" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "bottom" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "top", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "left" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "right", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                     case "right" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "left", 1);
-                        JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
             case "MoveI" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 1);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "MoveII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 2);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "MoveIII" -> {
                 moveRobot(playerList.get(indexCurrentPlayer).getRobot(), robotOrientation, 3);
-                JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(currentPlayer, server.getPlayerWithID(currentPlayer).getRobot().getxPosition(), server.getPlayerWithID(currentPlayer).getRobot().getyPosition()));
-                sendToAllPlayers(jsonMessage);
             }
             case "PowerUp" -> {
                 playerList.get(indexCurrentPlayer).increaseEnergy(1);
@@ -807,9 +927,9 @@ public class Game {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
-                    sendToAllPlayers(jsonMessage2);
                 }
+                JSONMessage jsonMessage2 = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
+                sendToAllPlayers(jsonMessage2);
             }
             case "Spam" -> {
                 Card spam = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get(currentRegister);
@@ -852,7 +972,33 @@ public class Game {
             }
             case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
 
+            case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
+
+            //Permanent UpgradeCard -> should it be covered in this case?
+            case "RearLaser" -> rearLasers.add(server.getPlayerWithID(currentPlayer));
+
+            //Permanent UpgradeCard -> should it be covered in this case?
+            //TODO: add hashMap
+            //      should only be used once per round/per player (either here or in view)
+            case "AdminPrivilege" -> {}
+
+            case "MemorySwap" -> {}
         }
+    }
+
+    public void replaceSpamCardsHand(Player player){
+        int counter = 0;
+        for(Card card : player.getDeckHand().getDeck()){
+            //throw all Spam cards from hand to DeckSpam
+            if(card.getCardName().equals("Spam")){
+                deckSpam.getDeck().add(card);
+                player.getDeckHand().getDeck().remove(card);
+                counter++;
+            }
+        }
+        //draw a new card from deck for each discarded Spam card
+        player.drawCardsProgramming(counter);
+
     }
 
 
@@ -864,32 +1010,33 @@ public class Game {
         String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
         boolean rebooted = false;
         boolean fieldIsTaken = false;
-        //If a robot dies on the starting map
         if (!specialRebootRules()) {
+            //If a robot dies on the starting map
             if (boardName.equals("Start A") || boardName.equals("Start B")) {
                 System.out.println(1);
                 int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
                 int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
                 for (Player player1 : playerList) {
-                    int robotHereX = player1.getRobot().getxPosition();
-                    int robotHereY = player1.getRobot().getyPosition();
-                    //If another robot is already on the start point
-                    if (robotHereX == startingPointX && robotHereY == startingPointY) {
-                        fieldIsTaken = true;
-                        //If the robot can move up
-                        if (canRobotMove(robotHereX, robotHereY, "top")) {
-                            player1.getRobot().setyPosition(robotHereY - 1);
-                            JSONMessage jsonMessage = new JSONMessage("Movement", new MovementBody(player1.getPlayerID(), player1.getRobot().getxPosition(), player1.getRobot().getyPosition()));
-                            sendToAllPlayers(jsonMessage);
+                    if (player1.getPlayerID() != player.getPlayerID()) {
+                        int robotHereX = player1.getRobot().getxPosition();
+                        int robotHereY = player1.getRobot().getyPosition();
+                        //If another robot is already on the start point
+                        if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                            fieldIsTaken = true;
+                            //If the robot can move up
+                            if (canRobotMove(robotHereX, robotHereY, "top")) {
+                                player1.getRobot().setyPosition(robotHereY - 1);
+                                sendNewPosition(player1);
 
-                            player.getRobot().setxPosition(startingPointX);
-                            player.getRobot().setyPosition(startingPointY);
-                        } else {
-                            //Robot can not move up because of wall, look for another free starting point
-                            int newStartingPointX = (int) firstFreeStartingPoint().getX();
-                            int newStartingPointY = (int) firstFreeStartingPoint().getY();
-                            player.getRobot().setxPosition(newStartingPointX);
-                            player.getRobot().setyPosition(newStartingPointY);
+                                player.getRobot().setxPosition(startingPointX);
+                                player.getRobot().setyPosition(startingPointY);
+                            } else {
+                                //Robot can not move up because of wall, look for another free starting point
+                                int newStartingPointX = (int) firstFreeStartingPoint().getX();
+                                int newStartingPointY = (int) firstFreeStartingPoint().getY();
+                                player.getRobot().setxPosition(newStartingPointX);
+                                player.getRobot().setyPosition(newStartingPointY);
+                            }
                         }
                     }
                 }
@@ -920,7 +1067,9 @@ public class Game {
 
                                 System.out.println("OMG I CRY ALL THE TIME");
                                 moveRobot(player1.getRobot(), rebootPointOrientation, 1);
-                                sendNewPosition(player1);
+
+                                player.getRobot().setxPosition(restartPointX);
+                                player.getRobot().setyPosition(restartPointY);
                             }
                         }
                     }
@@ -939,8 +1088,7 @@ public class Game {
         JSONMessage jsonMessage = new JSONMessage("Reboot", new RebootBody(player.getPlayerID()));
         sendToAllPlayers(jsonMessage);
 
-        JSONMessage jsonMessage1 = new JSONMessage("Movement", new MovementBody(player.getPlayerID(), player.getRobot().getxPosition(), player.getRobot().getyPosition()));
-        sendToAllPlayers(jsonMessage1);
+        sendNewPosition(player);
     }
 
     public Point2D firstFreeStartingPoint() {
@@ -1125,7 +1273,8 @@ public class Game {
         for (Element element : map.get(x).get(y)) {
             if (element.getType().equals("Pit")) {
                 foundBlocker = true;
-                rebootRobot(server.getPlayerWithID(currentPlayer));
+                rebootRobot(getRobotOwner(robot));
+                break;
             }
             if (element.getType().equals("Wall")) {
                 for (String orientation : element.getOrientations()) {
@@ -1185,6 +1334,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1214,6 +1364,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1243,6 +1394,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1272,6 +1424,7 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
+                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
@@ -1308,20 +1461,15 @@ public class Game {
 
         if (iteration == 1) {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
         if (iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
-            sendNewPosition(getRobotOwner(robotGettingPushed));
-            sendNewPosition(getRobotOwner(robotGettingPushed));
         }
 
         if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
@@ -1564,7 +1712,11 @@ public class Game {
 
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
-        if (activePhase == 2 && !activePhaseOn) {
+        if (activePhase == 1 && !activePhaseOn) {
+            informAboutActivePhase();
+            startUpgradePhase();
+            activePhaseOn = true;
+        } else if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
@@ -1584,17 +1736,46 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    public void startUpgradePhase() {
+        //When all players chose Starting Point
+        if (roundCounter == 1) {
+            deckUpgrade.shuffleDeck();
+            for (int i = 0; i < playerList.size(); i++) {
+                upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                deckUpgrade.removeTopCard();
+            }
+            JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+            sendToAllPlayers(jsonMessage);
+        } else {
+            //After the first round and If no one bought an Upgrade Card
+            if (upgradeCardsShop.size() == playerList.size()) {
+                upgradeCardsShop.clear();
+                for (int i = 0; i < playerList.size(); i++) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            } else {
+                //If the Upgrade Shop not full
+                while (upgradeCardsShop.size() != playerList.size()) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            }
+        }
+    }
+
     public void canStartTheGame() {
-        if (server.canStartTheGame()) {
+        if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
                     int random = (int) (Math.random() * maps.size());
                     String mapName = maps.get(random);
                     server.getCurrentGame().selectMap(mapName);
-                    for (Connection connection : server.getConnections()) {
-                        server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
-                    }
                 }
                 if (server.getCurrentGame().getMapName() != null) {
                     server.getCurrentGame().setGameOn(true);
@@ -1650,7 +1831,7 @@ public class Game {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
-            } else {
+            } else if (game.getActivePhase() == 1) {
                 // Compare distance to Antenna
                 for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
                     if (entry.getValue() != null) {
@@ -1665,6 +1846,36 @@ public class Game {
 
                         int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
                         int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        return Integer.compare(distance, oDistance);
+                    }
+                }
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            } else {
+                Player admin = null;
+                if (game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
+                    admin = game.getAdminPriorityMap().get(game.getCurrentRegister());
+                }
+                // Compare distance to Antenna
+                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if (entry.getValue() != null) {
+                        int antennaX = (int) entry.getKey().getX();
+                        int antennaY = (int) entry.getKey().getY();
+
+                        int robotX = o1.getRobot().getxPosition();
+                        int robotY = o1.getRobot().getyPosition();
+
+                        int oRobotX = o2.getRobot().getxPosition();
+                        int oRobotY = o2.getRobot().getyPosition();
+
+                        int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
+                        int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        if (admin != null) {
+                            if (o1.equals(admin)) {
+                                return 1;
+                            } else if (o2.equals((admin))) {
+                                return -1;
+                            }
+                        }
                         return Integer.compare(distance, oDistance);
                     }
                 }
@@ -1848,5 +2059,17 @@ public class Game {
 
     public Map<Player, String> getRobotsRebootDirection() {
         return robotsRebootDirection;
+    }
+
+    public DeckUpgrade getDeckUpgrade() {
+        return deckUpgrade;
+    }
+
+    public Map<Integer, Player> getAdminPriorityMap () {
+        return adminPriorityMap;
+    }
+
+    public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
+        this.adminPriorityMap = adminPriorityMap;
     }
 }
