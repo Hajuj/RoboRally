@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -111,6 +112,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public BorderPane right_Side;
     public ImageView readyButton;
     public ImageView chatON;
+    public TextArea readyDisplay;
+    public ImageView imageView;
 
 
     ObservableList<ImageView> cards;
@@ -126,11 +129,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        pane.setMinSize ( 0,0 );
+        imageView.fitHeightProperty ().bind ( pane.heightProperty () );
+        imageView.fitWidthProperty ().bind ( pane.widthProperty () );
         right_Side.setCenter ( null );
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
+        readyDisplay.setText(model.getPlayersStatus());
+        readyDisplay.setEditable(false);
+
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
           readyButton.setVisible(false);

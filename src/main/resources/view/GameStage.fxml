@@ -18,35 +18,36 @@
 
 <AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
     <children>
-        <ImageView fitHeight="668.0" fitWidth="1223.0" layoutY="-2.0" pickOnBounds="true">
+        <ImageView fx:id="imageView" fitHeight="668.0" fitWidth="1223.0" layoutY="-2.0" pickOnBounds="true">
             <image>
                 <Image url="@../images/Gui/DfoMsE.jpg" />
             </image>
         </ImageView>
         <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="300.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
-      <Text fx:id="Playerinfo" layoutX="234.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
-         <font>
-            <Font name="Yu Gothic Bold" size="28.0" />
-         </font>
-         <fill>
-            <LinearGradient endX="1.0" endY="1.0">
-               <stops>
-                  <Stop>
-                     <color>
-                        <Color />
-                     </color>
-                  </Stop>
-                  <Stop offset="1.0">
-                     <color>
-                        <Color red="0.843137264251709" green="0.7411764860153198" blue="0.09803921729326248" />
-                     </color>
-                  </Stop>
-               </stops>
-            </LinearGradient>
-         </fill>
-      </Text>
         <Label layoutX="231.0" layoutY="475.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="480.0" style="-fx-border-color: yellow;" styleClass="bodybg" stylesheets="@../images/Gui/playerInfo.css" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
-        </Label>
+         <graphic>
+            <Text fx:id="Playerinfo" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
+               <font>
+                  <Font name="Yu Gothic Bold" size="20.0" />
+               </font>
+               <fill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.843137264251709" green="0.7411764860153198" blue="0.09803921729326248" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </LinearGradient>
+               </fill>
+            </Text>
+         </graphic></Label>
         <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0">
             <bottom>
                 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="890.0" style="-fx-background-color: rgba(0, 0, 0, 0.75);" BorderPane.alignment="CENTER">
@@ -282,7 +283,7 @@
                <top>
                   <TextArea fx:id="readyDisplay" prefHeight="124.0" prefWidth="405.0" stylesheets="@../images/Gui/readyDisplay.css" BorderPane.alignment="CENTER">
                      <font>
-                        <Font name="Yu Gothic Bold" size="14.0" />
+                        <Font name="Yu Gothic Bold" size="12.0" />
                      </font>
                   </TextArea>
                </top>
