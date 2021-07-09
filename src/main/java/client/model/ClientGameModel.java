@@ -52,6 +52,10 @@ public class ClientGameModel {
     private ArrayList<MoveTask> moveQueue = new ArrayList<MoveTask>();
     private boolean queueMove = false;
 
+
+    private ArrayList<MoveCPTask> moveCPQueue = new ArrayList<MoveCPTask>();
+    private boolean queueCPMove = false;
+
     private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
     private BooleanProperty animType = new SimpleBooleanProperty(false);
@@ -505,6 +509,24 @@ public class ClientGameModel {
     }
 
 
+    public void setCheckpointPositionByID (int checkpointID, Point2D newPosition) {
+        Point2D oldPosition = getCheckpointPositionByID(checkpointID);
+        CheckPoint checkPoint = checkPointMap.get(oldPosition);
+        checkPointMap.remove(oldPosition);
+        checkPointMap.put(newPosition, checkPoint);
+    }
+
+
+    public Point2D getCheckpointPositionByID (int checkpointID) {
+        for (Map.Entry<Point2D, CheckPoint> entry : checkPointMap.entrySet()) {
+            if (entry.getValue().getCount() == checkpointID) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
     public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
         for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
@@ -638,6 +660,25 @@ public class ClientGameModel {
         }
     }
 
+
+    public static class MoveCPTask {
+        private int numCP;
+        private Point2D newPosition;
+
+        public MoveCPTask (int numCP, Point2D newPosition) {
+            this.numCP = numCP;
+            this.newPosition = newPosition;
+        }
+
+        public int getnumCP () {
+            return numCP;
+        }
+
+        public Point2D getNewPosition () {
+            return newPosition;
+        }
+    }
+
     public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
         return checkPointMovedMap;
     }
@@ -646,15 +687,21 @@ public class ClientGameModel {
         this.checkPointMovedMap = checkPointMovedMap;
     }
 
-    public boolean isMoveCheckpoints () {
-        return moveCheckpoints;
+    public ArrayList<MoveCPTask> getMoveCPQueue () {
+        return moveCPQueue;
     }
 
-    public void setMoveCheckpoints (boolean moveCheckpoints) {
-        boolean old = this.moveCheckpoints;
-        this.moveCheckpoints = moveCheckpoints;
-        if (this.moveCheckpoints) {
-            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
+    public boolean isQueueCPMove () {
+        return queueCPMove;
+    }
+
+    public void setQueueCPMove (boolean queueCPMove) {
+        boolean oldQueueCPMove = this.queueCPMove;
+        this.queueCPMove = queueCPMove;
+        if (this.queueCPMove) {
+            propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
         }
     }
+
+
 }

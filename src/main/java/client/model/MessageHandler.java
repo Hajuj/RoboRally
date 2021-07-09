@@ -427,7 +427,15 @@ public class MessageHandler {
     }
 
     public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
-        clientModel.getClientGameModel().setMoveCheckpoints(true);
+        int numCP = checkpointMovedBody.getCheckpointID();
+        int x = checkpointMovedBody.getX();
+        int y = checkpointMovedBody.getY();
+
+
+        ClientGameModel.MoveCPTask moveCPTask = new ClientGameModel.MoveCPTask(numCP, new Point2D(x, y));
+        clientModel.getClientGameModel().getMoveCPQueue().add(moveCPTask);
+        clientModel.getClientGameModel().setQueueCPMove(true);
+
     }
 
     public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
