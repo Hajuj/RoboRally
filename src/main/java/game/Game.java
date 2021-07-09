@@ -59,6 +59,8 @@ public class Game {
     private Map<Player, Integer> checkPointReached = new HashMap<>();
     private Map<Player, String> robotsRebootDirection = new HashMap<>();
 
+    private Map<Integer, Player> adminPriorityMap = new HashMap<>();
+
     private int roundCounter = 1;
     private String mapName;
     private boolean gameOn;
@@ -98,6 +100,7 @@ public class Game {
         availableMaps.add("DeathTrap");
         availableMaps.add("ExtraCrispy");
         availableMaps.add("LostBearings");
+        availableMaps.add("AlmostTwister");
         gameTimer = new GameTimer(server);
     }
 
@@ -259,11 +262,20 @@ public class Game {
 
     /**
      * Method to send a JSONMessage to all players
-     * @param jsonMessage   is the message that is sent to all players
+     *
+     * @param jsonMessage is the message that is sent to all players
      */
-    public void sendToAllPlayers(JSONMessage jsonMessage) {
+    public void sendToAllPlayers (JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
+        }
+    }
+
+
+    public void refreshAdminPrivilege () {
+        adminPriorityMap.clear();
+        for (Player player : playerList) {
+            player.setActiveAdminPrivilege(0);
         }
     }
 
@@ -272,10 +284,11 @@ public class Game {
      * loads the dimensions of the map
      * uses a deserializer to load the map from a JSON
      * calls method createMapObjects() to build map
-     * @param mapName   is the chosen map
-     * @throws IOException  handles IO exceptions
+     *
+     * @param mapName is the chosen map
+     * @throws IOException handles IO exceptions
      */
-    public void selectMap(String mapName) throws IOException {
+    public void selectMap (String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -394,10 +407,10 @@ public class Game {
     }
 
     private void moveCheckPoints() {
-        if (getMapName().equals("Twister")) {
+        if (getMapName().equals("AlmostTwister")) {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
                 for (Point2D position : conveyorBeltMap.keySet()) {
-                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
+                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
@@ -489,6 +502,8 @@ public class Game {
             }
         }
         moveCheckPoints();
+        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(0, 0, 0));
+        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -1718,16 +1733,13 @@ public class Game {
     }
 
     public void canStartTheGame() {
-        if (server.canStartTheGame()) {
+        if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
                     int random = (int) (Math.random() * maps.size());
                     String mapName = maps.get(random);
                     server.getCurrentGame().selectMap(mapName);
-                    for (Connection connection : server.getConnections()) {
-                        server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
-                    }
                 }
                 if (server.getCurrentGame().getMapName() != null) {
                     server.getCurrentGame().setGameOn(true);
@@ -1783,7 +1795,7 @@ public class Game {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
-            } else {
+            } else if (game.getActivePhase() == 1) {
                 // Compare distance to Antenna
                 for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
                     if (entry.getValue() != null) {
@@ -1798,6 +1810,36 @@ public class Game {
 
                         int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
                         int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        return Integer.compare(distance, oDistance);
+                    }
+                }
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            } else {
+                Player admin = null;
+                if (game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
+                    admin = game.getAdminPriorityMap().get(game.getCurrentRegister());
+                }
+                // Compare distance to Antenna
+                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if (entry.getValue() != null) {
+                        int antennaX = (int) entry.getKey().getX();
+                        int antennaY = (int) entry.getKey().getY();
+
+                        int robotX = o1.getRobot().getxPosition();
+                        int robotY = o1.getRobot().getyPosition();
+
+                        int oRobotX = o2.getRobot().getxPosition();
+                        int oRobotY = o2.getRobot().getyPosition();
+
+                        int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
+                        int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        if (admin != null) {
+                            if (o1.equals(admin)) {
+                                return 1;
+                            } else if (o2.equals((admin))) {
+                                return -1;
+                            }
+                        }
                         return Integer.compare(distance, oDistance);
                     }
                 }
@@ -1971,15 +2013,23 @@ public class Game {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap() {
+    public Map<Robot, Point2D> getStartingPointMap () {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator() {
+    public Comparator<Player> getComparator () {
         return comparator;
     }
 
-    public Map<Player, String> getRobotsRebootDirection() {
+    public Map<Player, String> getRobotsRebootDirection () {
         return robotsRebootDirection;
+    }
+
+    public Map<Integer, Player> getAdminPriorityMap () {
+        return adminPriorityMap;
+    }
+
+    public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
+        this.adminPriorityMap = adminPriorityMap;
     }
 }

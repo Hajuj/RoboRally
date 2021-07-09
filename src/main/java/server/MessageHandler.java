@@ -183,6 +183,9 @@ public class MessageHandler {
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapSelectedBody.getMap())), connection.getWriter());
+        }
         server.getCurrentGame().canStartTheGame();
     }
 
@@ -337,6 +340,7 @@ public class MessageHandler {
                         server.getCurrentGame().setActivePhaseOn(false);
                         server.getCurrentGame().setActivePhase(2);
                         server.getCurrentGame().setCurrentRegister(0);
+                        server.getCurrentGame().refreshAdminPrivilege();
                         //TODO when does the game stops? -> Ilja
                     }
                 }
@@ -441,5 +445,19 @@ public class MessageHandler {
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
     }
+
+
+    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+        //schauen ob diser spieler echt AdminPrivilegie hat
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        if (player.checkAdmin()) {
+            int register = chooseRegisterBody.getRegister();
+            server.getCurrentGame().getAdminPriorityMap().put(register, player);
+            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
+            server.getCurrentGame().sendToAllPlayers(adminMessage);
+        }
+
+    }
+
 
 }

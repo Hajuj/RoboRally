@@ -421,9 +421,20 @@ public class MessageHandler {
         clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
     }
 
-    public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
+    public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
         logger.info(ANSI_CYAN + "PickDamage Message received." + ANSI_RESET);
         clientModel.getClientGameModel().setDamageCount(pickDamageBody.getCount());
+    }
+
+    public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
+        clientModel.getClientGameModel().setMoveCheckpoints(true);
+    }
+
+    public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
+        int id = registerChosenBody.getClientID();
+        int register = registerChosenBody.getRegister();
+        String newAdmitMessage = "Player " + id + " is Admin in " + register + " register!";
+        clientModel.receiveMessage(newAdmitMessage);
     }
 
 }
