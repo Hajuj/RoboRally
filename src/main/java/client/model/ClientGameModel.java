@@ -34,6 +34,9 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
+    private ArrayList<String> refillShopCards = new ArrayList<>();
+    private ArrayList<String> exchangeShopCards = new ArrayList<>();
+
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private boolean handCards = false;
 
@@ -295,6 +298,19 @@ public class ClientGameModel {
                 }
             }
         }
+    }
+
+    public void removeElementFromMap (Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    public void placeElementOnMap (Element element, int x, int y) {
+        map.get(x).get(y).add(element);
     }
 
    /* public void setActualPlayerID (int actualPlayerID) {
@@ -610,19 +626,33 @@ public class ClientGameModel {
         }
     }
 
-    public void removeElementFromMap (Element element, int x, int y) {
-        for (int i = 0; i < map.get(x).get(y).size(); i++) {
-            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
-                map.get(x).get(y).remove(i);
-                break;
-            }
+    public ArrayList<String> getRefillShopCards() {
+        return refillShopCards;
+    }
+
+    public ArrayList<String> getExchangeShopCards() {
+        return exchangeShopCards;
+    }
+
+    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
+        return checkPointMovedMap;
+    }
+
+    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
+        this.checkPointMovedMap = checkPointMovedMap;
+    }
+
+    public boolean isMoveCheckpoints () {
+        return moveCheckpoints;
+    }
+
+    public void setMoveCheckpoints (boolean moveCheckpoints) {
+        boolean old = this.moveCheckpoints;
+        this.moveCheckpoints = moveCheckpoints;
+        if (this.moveCheckpoints) {
+            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
         }
     }
-
-    public void placeElementOnMap (Element element, int x, int y) {
-        map.get(x).get(y).add(element);
-    }
-
 
     public static class TurnTask {
         private int playerID;
@@ -687,21 +717,15 @@ public class ClientGameModel {
         this.checkPointMovedMap = checkPointMovedMap;
     }
 
-    public ArrayList<MoveCPTask> getMoveCPQueue () {
-        return moveCPQueue;
+    public boolean isMoveCheckpoints () {
+        return moveCheckpoints;
     }
 
-    public boolean isQueueCPMove () {
-        return queueCPMove;
-    }
-
-    public void setQueueCPMove (boolean queueCPMove) {
-        boolean oldQueueCPMove = this.queueCPMove;
-        this.queueCPMove = queueCPMove;
-        if (this.queueCPMove) {
-            propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
+    public void setMoveCheckpoints (boolean moveCheckpoints) {
+        boolean old = this.moveCheckpoints;
+        this.moveCheckpoints = moveCheckpoints;
+        if (this.moveCheckpoints) {
+            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
         }
     }
-
-
 }

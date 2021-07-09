@@ -7,7 +7,6 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -37,6 +36,7 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
     private GameTimer gameTimer;
+    private ArrayList<String> upgradeCardsShop = new ArrayList<>();
     private ArrayList<String> availableMaps = new ArrayList<>();
     private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
@@ -92,7 +92,8 @@ public class Game {
      * Constructor for the game
      * adds available Maps to availableMaps
      * creates a game timer
-     * @param server    is the server where the game is started
+     *
+     * @param server is the server where the game is started
      */
     public Game(Server server) {
         this.server = server;
@@ -109,8 +110,9 @@ public class Game {
      * initializes all global game decks (Damage cards and Upgrade cards)
      * initializes global variables to initial value
      * sends GameStartedMessage to all participating players
-     * @param players   are the players who joined the game
-     * @throws IOException  handles IO exceptions
+     *
+     * @param players are the players who joined the game
+     * @throws IOException handles IO exceptions
      */
     public void startGame(ArrayList<Player> players) throws IOException {
         this.deckSpam = new DeckSpam();
@@ -262,10 +264,9 @@ public class Game {
 
     /**
      * Method to send a JSONMessage to all players
-     *
-     * @param jsonMessage is the message that is sent to all players
+     * @param jsonMessage   is the message that is sent to all players
      */
-    public void sendToAllPlayers (JSONMessage jsonMessage) {
+    public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
@@ -284,11 +285,10 @@ public class Game {
      * loads the dimensions of the map
      * uses a deserializer to load the map from a JSON
      * calls method createMapObjects() to build map
-     *
-     * @param mapName is the chosen map
-     * @throws IOException handles IO exceptions
+     * @param mapName   is the chosen map
+     * @throws IOException  handles IO exceptions
      */
-    public void selectMap (String mapName) throws IOException {
+    public void selectMap(String mapName) throws IOException {
         //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
@@ -437,9 +437,9 @@ public class Game {
         checkPointMovedMap.clear();
     }
 
-    private void removeElementFromMap(Element element, int x, int y){
-        for(int i = 0; i < map.get(x).get(y).size(); i++){
-            if (element.getType().equals(map.get(x).get(y).get(i).getType())){
+    private void removeElementFromMap(Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
                 map.get(x).get(y).remove(i);
                 break;
             }
@@ -1715,7 +1715,11 @@ public class Game {
 
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
-        if (activePhase == 2 && !activePhaseOn) {
+        if (activePhase == 1 && !activePhaseOn) {
+            informAboutActivePhase();
+            startUpgradePhase();
+            activePhaseOn = true;
+        } else if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
@@ -1733,6 +1737,38 @@ public class Game {
         sendCurrentCards(currentRegister);
         currentPlayer = playerList.get(0).getPlayerID();
         informAboutCurrentPlayer();
+    }
+
+    public void startUpgradePhase() {
+        //When all players chose Starting Point
+        if (roundCounter == 1) {
+            deckUpgrade.shuffleDeck();
+            for (int i = 0; i < playerList.size(); i++) {
+                upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                deckUpgrade.removeTopCard();
+            }
+            JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+            sendToAllPlayers(jsonMessage);
+        } else {
+            //After the first round and If no one bought an Upgrade Card
+            if (upgradeCardsShop.size() == playerList.size()) {
+                upgradeCardsShop.clear();
+                for (int i = 0; i < playerList.size(); i++) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            } else {
+                //If the Upgrade Shop not full
+                while (upgradeCardsShop.size() != playerList.size()) {
+                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                    deckUpgrade.removeTopCard();
+                }
+                JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+                sendToAllPlayers(jsonMessage);
+            }
+        }
     }
 
     public void canStartTheGame() {
@@ -2016,16 +2052,20 @@ public class Game {
         return deadRobotsIDs;
     }
 
-    public Map<Robot, Point2D> getStartingPointMap () {
+    public Map<Robot, Point2D> getStartingPointMap() {
         return startingPointMap;
     }
 
-    public Comparator<Player> getComparator () {
+    public Comparator<Player> getComparator() {
         return comparator;
     }
 
-    public Map<Player, String> getRobotsRebootDirection () {
+    public Map<Player, String> getRobotsRebootDirection() {
         return robotsRebootDirection;
+    }
+
+    public DeckUpgrade getDeckUpgrade() {
+        return deckUpgrade;
     }
 
     public Map<Integer, Player> getAdminPriorityMap () {

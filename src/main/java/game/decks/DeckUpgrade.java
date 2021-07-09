@@ -26,7 +26,7 @@ public class DeckUpgrade extends Deck {
         Collections.shuffle(this.deckUpgrade);
     }
 
-    protected ArrayList<Card> getDeck() {
+    public ArrayList<Card> getDeck() {
         return this.deckUpgrade;
     }
 }

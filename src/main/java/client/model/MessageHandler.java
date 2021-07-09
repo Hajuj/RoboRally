@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 
 /**
@@ -171,12 +170,7 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //TODO:CURRENT PLAYER
+
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         logger.info("Current Player: " + playerID);
@@ -186,11 +180,7 @@ public class MessageHandler {
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         int phase = activePhaseBody.getPhase();
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+
         clientModel.getClientGameModel().setActualPhase(phase);
         if (phase == 2) {
             clientModel.getClientGameModel().setActualRegister(-1);
@@ -300,8 +290,6 @@ public class MessageHandler {
 
     public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
         logger.info(ANSI_CYAN + "CardPlayed Message received." + ANSI_RESET);
-        int clientID = cardPlayedBody.getClientID();
-        String card = cardPlayedBody.getCard();
 
     }
 
@@ -421,9 +409,27 @@ public class MessageHandler {
         clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
     }
 
-    public void handlePickDamage (ClientModel clientModel, PickDamageBody pickDamageBody) {
+    public void handlePickDamage(ClientModel clientModel, PickDamageBody pickDamageBody) {
         logger.info(ANSI_CYAN + "PickDamage Message received." + ANSI_RESET);
         clientModel.getClientGameModel().setDamageCount(pickDamageBody.getCount());
+    }
+
+    public void handleRefillShop(ClientModel clientModel, RefillShopBody refillShopBody) {
+        logger.info(ANSI_CYAN + "RefillShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = refillShopBody.getCards();
+
+        for (String card : cards) {
+            clientModel.getClientGameModel().getRefillShopCards().add(card);
+        }
+    }
+
+    public void handleExchangeShop(ClientModel clientModel, ExchangeShopBody exchangeShopBody) {
+        logger.info(ANSI_CYAN + "ExchangeShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = exchangeShopBody.getCards();
+
+        for (String card : cards) {
+            clientModel.getClientGameModel().getExchangeShopCards().add(card);
+        }
     }
 
     public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
@@ -445,5 +451,12 @@ public class MessageHandler {
         clientModel.receiveMessage(newAdmitMessage);
     }
 
-}
+    public void handleUpgradeBought(ClientModel clientModel, UpgradeBoughtBody upgradeBoughtBody) {
+        logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
+        int clientID = upgradeBoughtBody.getClientID();
+        String card = upgradeBoughtBody.getCard();
 
+        clientModel.receiveMessage("Player " + clientID + " has bought " + card);
+    }
+
+}
