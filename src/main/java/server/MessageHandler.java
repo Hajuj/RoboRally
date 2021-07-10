@@ -2,6 +2,10 @@ package server;
 
 import game.*;
 import game.boardelements.Antenna;
+import game.upgradecards.AdminPrivilege;
+import game.upgradecards.MemorySwap;
+import game.upgradecards.RearLaser;
+import game.upgradecards.SpamBlocker;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -445,9 +449,59 @@ public class MessageHandler {
 
     public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
         logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
-        //TODO: When all players bought cards, start ActivePhase(2)
-        server.getCurrentGame().setActivePhase(2);
-        server.getCurrentGame().setCurrentRegister(0);
+        String cardName = buyUpgradeBody.getCard();
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        boolean allowToBuy = true;
+        // ob der dran ist
+        if (server.getCurrentGame().getCurrentPlayer() != clientHandler.getPlayer_id()) {
+            allowToBuy = false;
+        }
+        // ob er noch nicht 3 und 3 karten hat
+        if (cardName.equals("Null")) {
+            allowToBuy = false;
+        } else {
+            if (server.getCurrentGame().isPermanent(cardName) && player.getInstalledPermanentUpgrades().size() == 3) {
+                allowToBuy = false;
+            } else if ((!server.getCurrentGame().isPermanent(cardName)) && player.getTemporaryUpgrades().size() == 3) {
+                allowToBuy = false;
+            }
+        }
+
+        int energyCost = server.getCurrentGame().getUpgradeCost(cardName);
+        if (player.getEnergy() < energyCost) {
+            allowToBuy = false;
+        }
+
+        //sage allen wo der Spieler mit playerID started
+        if (buyUpgradeBody.isBuying() && allowToBuy) {
+            player.increaseEnergy(-energyCost);
+            JSONMessage cardBoughtMessage = new JSONMessage("UpgradeBought", new UpgradeBoughtBody(clientHandler.getPlayer_id(), buyUpgradeBody.getCard()));
+            server.getCurrentGame().sendToAllPlayers(cardBoughtMessage);
+
+            if (server.getCurrentGame().isPermanent(cardName)) {
+                if (cardName.equals("AdminPrivilege")) {
+                    player.getInstalledPermanentUpgrades().add(new AdminPrivilege());
+                } else {
+                    player.getInstalledPermanentUpgrades().add(new RearLaser());
+                    server.getCurrentGame().getRearLasers().add(player);
+                }
+            } else {
+                if (cardName.equals("MemorySwap")) {
+                    player.getTemporaryUpgrades().add(new MemorySwap());
+                } else {
+                    player.getTemporaryUpgrades().add(new SpamBlocker());
+                }
+            }
+        }
+
+        server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+        if (server.getCurrentGame().getCurrentPlayer() != -1) {
+            JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
+            server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
+        } else { //All players have chose a starting point
+            server.getCurrentGame().setActivePhase(2);
+            server.getCurrentGame().setCurrentRegister(0);
+        }
     }
 
 

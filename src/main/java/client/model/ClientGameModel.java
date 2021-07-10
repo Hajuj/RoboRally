@@ -320,11 +320,16 @@ public class ClientGameModel {
 
     }*/
 
-    public void setActualPlayerID (int actualPlayerID){
-        this.actualPlayerID=actualPlayerID;
+
+    public void activateSpamBlocker () {
+        sendPlayCard("SpamBlocker");
     }
 
-    public int getActualPlayerID() {
+    public void setActualPlayerID (int actualPlayerID) {
+        this.actualPlayerID = actualPlayerID;
+    }
+
+    public int getActualPlayerID () {
         return actualPlayerID;
     }
 
@@ -634,25 +639,6 @@ public class ClientGameModel {
         return exchangeShopCards;
     }
 
-    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
-        return checkPointMovedMap;
-    }
-
-    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
-        this.checkPointMovedMap = checkPointMovedMap;
-    }
-
-    public boolean isMoveCheckpoints () {
-        return moveCheckpoints;
-    }
-
-    public void setMoveCheckpoints (boolean moveCheckpoints) {
-        boolean old = this.moveCheckpoints;
-        this.moveCheckpoints = moveCheckpoints;
-        if (this.moveCheckpoints) {
-            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
-        }
-    }
 
     public static class TurnTask {
         private int playerID;
@@ -709,23 +695,20 @@ public class ClientGameModel {
         }
     }
 
-    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
-        return checkPointMovedMap;
+
+    public ArrayList<MoveCPTask> getMoveCPQueue () {
+        return moveCPQueue;
     }
 
-    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
-        this.checkPointMovedMap = checkPointMovedMap;
+    public boolean isQueueCPMove () {
+        return queueCPMove;
     }
 
-    public boolean isMoveCheckpoints () {
-        return moveCheckpoints;
-    }
-
-    public void setMoveCheckpoints (boolean moveCheckpoints) {
-        boolean old = this.moveCheckpoints;
-        this.moveCheckpoints = moveCheckpoints;
-        if (this.moveCheckpoints) {
-            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
+    public void setQueueCPMove (boolean queueCPMove) {
+        boolean oldQueueCPMove = this.queueCPMove;
+        this.queueCPMove = queueCPMove;
+        if (this.queueCPMove) {
+            propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
         }
     }
 }

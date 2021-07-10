@@ -78,11 +78,12 @@ public class ChooseRobotViewModel implements Initializable {
 
         disableUsedRobots();
 
-        if (isGameOn() || !model.isCanPlay()) {
-            playButton.setText("Chat!");
-            playButton.setDisable(false);
-            disableAllRobots();
-        }
+        //TODO: SCHAUEN WIE WIR DAS ANDERS machen
+        //  if (isGameOn() || !model.isCanPlay()) {
+        //     playButton.setText("Chat!");
+        //     playButton.setDisable(false);
+        //       disableAllRobots();
+        //   }
 
     }
 
