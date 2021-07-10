@@ -1257,7 +1257,7 @@ public class Game {
     }
 
     /**
-     * Method to set a reboot direction for the Robot.
+     * Method to set a reboot direction for the Robot to default: "top".
      */
     public void setRebootDirection() {
         //Set players who chose a direction, players who didn't set on top by default
@@ -1269,6 +1269,13 @@ public class Game {
         deadRobotsIDs.clear();
     }
 
+    /**
+     * Method to set a specified reboot direction for the Robot.
+     * Takes the player whose Robot gets rebooted and the orientation
+     * which he is set to.
+     * @param player        is the player whose Robot gets rebooted
+     * @param orientation   is the orientation the Robot gets rebooted to
+     */
     public void setRebootOrientation(Player player, String orientation) {
         switch (player.getRobot().getOrientation()) {
             case "top" -> {
@@ -1382,11 +1389,23 @@ public class Game {
         }
     }
 
+    /**
+     * Method to send a JSONMessage of rotations of a player.
+     * @param playerID  is the ID of the player
+     * @param rotation  is the rotation the players Robot takes
+     */
     public void sendRotation(int playerID, String rotation) {
         JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(playerID, rotation));
         sendToAllPlayers(jsonMessage);
     }
 
+    /**
+     * Method to calculate all players within the radius of a player.
+     * Primarily used for Virus card effect.
+     * @param currentPlayer is the player in the center
+     * @param radius        is the radius around the currentPlayer
+     * @return              a list of all players within the radius of currentPlayer
+     */
     public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
         int robotXPosition = currentPlayer.getRobot().getxPosition();
@@ -1427,6 +1446,17 @@ public class Game {
         return playersInRadius;
     }
 
+    /**
+     * Method to check if a field is blocked.
+     * Checks the specified field for the following Elements:
+     * Pit, Wall, Antenna
+     * Primarily used for moveRobot() method.
+     * @param robot             is the Robot that currently moves - relevant for reboot routine on Pit
+     * @param x                 is the x coordinate of the specified field
+     * @param y                 is the y coordinate of the specified field
+     * @param blockOrientation  is the blocked orientation - relevant for Walls
+     * @return                  true if the field is not blocked
+     */
     public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
@@ -1452,8 +1482,11 @@ public class Game {
         return !foundBlocker;
     }
 
-
-    //TODO: ich kann auch den anderen spieler auf ein checkpoint schieben
+    /**
+     * Method to activate CheckPoints.
+     * Every player on the corresponding CheckPoint gets the achievement
+     * and JSONMessages are sent to the server.
+     */
     public void activateCheckpoints() {
         for (Player player : playerList) {
             for (Point2D position : checkPointMap.keySet()) {
@@ -1477,6 +1510,17 @@ public class Game {
         }
     }
 
+    /**
+     * Method to perform Robot movements.
+     * Takes the robot that moves, an orientation and amount of movements.
+     * Checks if the movement can be made into the specified orientation.
+     * Calls isFieldNotBlocked() to check if the movement is valid.
+     * Iterates over the amount of movements to check for blockers
+     * after every movement.
+     * @param robot         is the Robot that makes the movement
+     * @param orientation   is the orientation in which the Robot should move
+     * @param movement      is the amount of movements the Robot should take
+     */
     public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
@@ -1485,7 +1529,6 @@ public class Game {
             case "top" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition - 1 < 0) {
-                        //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
@@ -1515,7 +1558,6 @@ public class Game {
             case "bottom" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotYPosition + 1 >= map.get(0).size()) {
-                        //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
@@ -1545,7 +1587,6 @@ public class Game {
             case "left" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition - 1 < 0) {
-                        //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
@@ -1575,7 +1616,6 @@ public class Game {
             case "right" -> {
                 for (int i = 0; i < movement; i++) {
                     if (robotXPosition + 1 >= map.size()) {
-                        //TODO: Test the rebootRobot method
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
@@ -1605,6 +1645,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method to find the owner (player) of a Robot.
+     * @param robot     is the Robot we check
+     * @return          the player who owns robot
+     */
     public Player getRobotOwner(Robot robot) {
         for (Player player : playerList) {
             if (player.getRobot().equals(robot)) {
@@ -1614,7 +1659,16 @@ public class Game {
         return null;
     }
 
-    //TODO: add to moveRobot and find robots on new field -> use pushRobot()
+    /**
+     * Method to push a Robot, when another Robot enters the same field.
+     * Always call the method with iteration: 1.
+     * Takes a Robot who pushes (pusher), a Robot that gets pushed
+     * (robotGettingPushed) and an iteration (from 1 to 4) which helps
+     * to specify the direction in which the push is being made.
+     * @param pusher                is the Robot that pushes the other Robot
+     * @param robotGettingPushed    is the Robot being pushed by pusher
+     * @param iteration             is the intrinsic iteration (always initially call with iteration: 1)
+     */
     public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration) {
         int initX = robotGettingPushed.getxPosition();
         int initY = robotGettingPushed.getyPosition();
@@ -1641,6 +1695,12 @@ public class Game {
         }
     }
 
+    /**
+     * Method to map orientation Strings on a clockwise rotation.
+     * Used for pushRobot()-
+     * @param orientation   is the current orientation
+     * @return              the clockwise rotated orientation
+     */
     public String rotateClockwise(String orientation) {
         String rotatedOrientation;
 
@@ -1655,6 +1715,16 @@ public class Game {
         return rotatedOrientation;
     }
 
+    /**
+     * Method to check if a robot can make a movement.
+     * Additional checker for the current field of the robot.
+     * Every other blocked is checked by isFieldNotBlocked().
+     * Only used within moveRobot().
+     * @param robotXPosition    is the x position of the Robot
+     * @param robotYPosition    is the y position of the Robot
+     * @param orientation       is the orientation in which the Robot should move
+     * @return                  if the Robot can move past its current field
+     */
     private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
         for (Element element : map.get(robotXPosition).get(robotYPosition)) {
@@ -1670,6 +1740,14 @@ public class Game {
         return canPass;
     }
 
+    /**
+     * Method to change the orientation of a Robot.
+     * Used to adjust orientation on movements.
+     * Uses logic on switch direction to determine
+     * the new orientation of the Robot.
+     * @param robot     is the Robot that changes its orientation
+     * @param direction is the direction in which the Robot changes its orientation
+     */
     public void changeOrientation(Robot robot, String direction) {
         switch (robot.getOrientation()) {
             case "top" -> {
@@ -1715,9 +1793,15 @@ public class Game {
         }
     }
 
-    //TODO: expand method for laser hits robot (robotMap)
-    //      check for coordination consistency
-    //      check for possible exception handling
+    /**
+     * Method to determine the LaserPath.
+     * Checks for blockers (Wall, CheckPoint, Robot).
+     * Ends the LaserPath on first blocker found.
+     * Laser should not shoot past Blockers.
+     * @param laser          is the current laser which path is checked
+     * @param laserPosition  is the position of  the laser
+     * @return               the LaserPath in a list of fields
+     */
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
@@ -1730,10 +1814,8 @@ public class Game {
                     tempPosition--;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
                     for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
-                        //Is a robot in the line of the laser?
                         if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            //Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
                             break;
                         }
                         if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
@@ -1814,17 +1896,11 @@ public class Game {
         return laserPath;
     }
 
-
-    //TODO if robot moves outside the map -> check map for RestartPoint
-    //     -> spawn robot at RestartPoint
-
-    //TODO element instanceOf Laser -> player draw Spam from DeckSpam
-
-    //TODO calculate distance from antenna -> method
-
-
-    //TODO find next wall with laser
-
+    /**
+     * Method to start the ProgrammingPhase.
+     * Sends JSONMessage for server communication.
+     * Makes every player draw 9 cards.
+     */
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
         for (Player player : playerList) {
@@ -1841,7 +1917,14 @@ public class Game {
         }
     }
 
-    public boolean valideStartingPoint(int x, int y) {
+    /**
+     * Method to check if a starting point is valid.
+     * Sends JSONMessages to server communication.
+     * @param x  is the x coordinate of the inquired starting point
+     * @param y  is the y coordinate of the inquired starting point
+     * @return   if the starting point is valid
+     */
+    public boolean validStartingPoint(int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -1859,6 +1942,18 @@ public class Game {
         }
     }
 
+    /**
+     * Method to replace elements on the map.
+     * Used to specify the correct subclass on the map
+     * and change it from the superclass to the subclass.
+     * Key to build the map with the correct types.
+     * Do not use outside of building the map in its initial state!
+     * @param map       is the map that is being built
+     * @param x         is the x coordinate of the element
+     * @param y         is the y coordinate of the element
+     * @param element   is the element in its superclass state
+     * @param object    is the element in its subclass state
+     */
     public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
         if (object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
@@ -1870,6 +1965,10 @@ public class Game {
         }
     }
 
+    /**
+     * Method to set the active phase within the game.
+     * @param activePhase   is the int of the active phase
+     */
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
         if (activePhase == 2 && !activePhaseOn) {
@@ -1883,7 +1982,9 @@ public class Game {
         }
     }
 
-    //TODO change get(0)
+    /**
+     * Method to start the activation phase
+     */
     public void startActivationPhase() {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentRegister = 0;
@@ -1892,6 +1993,9 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+    /**
+     * Method to check whether the game can start.
+     */
     public void canStartTheGame() {
         if (server.canStartTheGame()) {
             try {
@@ -1914,6 +2018,13 @@ public class Game {
         }
     }
 
+    /**
+     * Method to get the inverse orientation of a specified orientation.
+     * Logically maps via a switch the String orientation to the
+     * inverse orientation.
+     * @param orientation   is the original orientation
+     * @return              the inverse orientation
+     */
     public String getInverseOrientation(String orientation) {
         String inverseOrientation;
         switch (orientation) {
@@ -1926,6 +2037,10 @@ public class Game {
         return inverseOrientation;
     }
 
+    /**
+     * Method to send the current cards.
+     * @param register
+     */
     public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
         for (Player player : playerList) {
