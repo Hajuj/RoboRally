@@ -436,10 +436,16 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 animateGears();
             });
         }
-        if (evt.getPropertyName().equals("moveCheckpoints")) {
-            clientModel.getClientGameModel().setMoveCheckpoints(false);
+        if (evt.getPropertyName().equals("oldQueueCPMove")) {
+            clientModel.getClientGameModel().setQueueCPMove(false);
             Platform.runLater(() -> {
-                moveCheckPoints();
+                for (int i = 0; i < clientGameModel.getMoveCPQueue().size(); i++) {
+                    ClientGameModel.MoveCPTask newMoveCPTask = clientGameModel.getMoveCPQueue().get(i);
+                    int checkpointID = newMoveCPTask.getnumCP();
+                    Point2D point2D = newMoveCPTask.getNewPosition();
+                    moveCheckPoint(checkpointID, point2D);
+                    clientGameModel.getMoveCPQueue().remove(i);
+                }
             });
         }
 
@@ -619,47 +625,36 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void moveCheckPoint (Point2D oldPosition, Point2D newPosition) {
+    public void moveCheckPoint (int checkpointID, Point2D newPosition) {
+        Point2D oldPosition = clientGameModel.getCheckpointPositionByID(checkpointID);
         int layer;
         if (clientGameModel.getRobotsOnFields(oldPosition).size() == 0) {
             layer = 1;
         } else {
-            layer = 2;
+            layer = 3;
         }
 
         ImageView checkPoint = (ImageView) fieldMap.get(oldPosition).getChildren().get(fieldMap.get(oldPosition).getChildren().size() - layer);
         fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - layer);
-        fieldMap.get(newPosition).getChildren().add(checkPoint);
 
-    }
-
-
-    private void moveCheckPoints () {
-        if (clientModel.getSelectedMap().equals("AlmostTwister")) {
-            for (Point2D positionCheckPoint : clientGameModel.getCheckPointMap().keySet()) {
-                for (Point2D position : clientGameModel.getConveyorBeltMap().keySet()) {
-                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
-                        //calculate new checkPoint position
-                        //first movement:
-                        Point2D newPosition = getMoveInDirection(positionCheckPoint, clientGameModel.getConveyorBeltMap().get(position).getOrientations().get(0));
-                        moveCheckPoint(position, newPosition);
-                        Point2D old = newPosition;
-                        //second movement:
-                        newPosition = getMoveInDirection(newPosition, clientGameModel.getConveyorBeltMap().get(position).getOrientations().get(0));
-                        moveCheckPoint(old, newPosition);
-                        //save new positions
-                        clientGameModel.getCheckPointMovedMap().put(newPosition, clientGameModel.getCheckPointMap().get(positionCheckPoint));
-                        //adjust map
-                        clientGameModel.removeElementFromMap(clientGameModel.getCheckPointMap().get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
-                        clientGameModel.placeElementOnMap(clientGameModel.getCheckPointMap().get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
-                    }
-                }
-            }
+        boolean isRobotHere = false;
+        if (clientGameModel.getRobotsOnFields(newPosition).size() != 0) {
+            isRobotHere = true;
         }
-        //change old CheckPoint positions in HashMap to new positions
-        clientGameModel.getCheckPointMap().clear();
-        clientGameModel.getCheckPointMap().putAll(clientGameModel.getCheckPointMovedMap());
-        clientGameModel.getCheckPointMovedMap().clear();
+
+        if (!isRobotHere) {
+            fieldMap.get(newPosition).getChildren().add(checkPoint);
+        } else {
+            ImageView orientation = (ImageView) fieldMap.get(newPosition).getChildren().get(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().remove(fieldMap.get(newPosition).getChildren().size() - 1);
+            ImageView robot = (ImageView) fieldMap.get(newPosition).getChildren().get(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().remove(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().add(checkPoint);
+            fieldMap.get(newPosition).getChildren().add(robot);
+            fieldMap.get(newPosition).getChildren().add(orientation);
+        }
+        clientGameModel.setCheckpointPositionByID(checkpointID, newPosition);
+
     }
 
 

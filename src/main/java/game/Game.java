@@ -413,15 +413,20 @@ public class Game {
                     if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
+                        int numCP = checkPointMap.get(position).getCount();
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        System.out.println(conveyorBeltMap.get(position).getOrientations());
                         //second movement:
-                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
-
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(newPosition).getOrientations().get(0));
+                        System.out.println(conveyorBeltMap.get(newPosition).getOrientations());
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
                         //adjust map
                         removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
                         placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+
+                        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(numCP, (int) newPosition.getX(), (int) newPosition.getY()));
+                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
@@ -502,8 +507,6 @@ public class Game {
             }
         }
         moveCheckPoints();
-        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(0, 0, 0));
-        sendToAllPlayers(jsonMessage);
     }
 
 
