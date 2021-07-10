@@ -55,15 +55,15 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-    private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+    //private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
-        energyCount.bind ( energyCountProperty() );
-        cubesNum.setText ( energyCount.toString () );
+        //energyCount.bind ( energyCountProperty() );
+        //cubesNum.setText ( energyCount.toString () );
         upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6,
                 card_7, card_8, card_9, card_9, card_10 );
         Platform.runLater ( () -> {
@@ -101,31 +101,20 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
 
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
-            clientGameModel.getBoughtCards ( ).add ( getChoosenUpgradeCard ( ) );
-            clientGameModel.notBuying ( true );
+            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
-            clientGameModel.getBoughtCards ().add("Null");
-            clientGameModel.notBuying ( false );
+            clientGameModel.buyUpgradeCard ( "Null" );
         }
+        clientGameModel.finishBuyCard(true);
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
-       /* System.out.println ( choosenUpgradeCard.getValue () );
-        if (getChoosenUpgradeCard().equals ( "MemonrySwap" ) ||getChoosenUpgradeCard().equals ( "SpamBlocker" ) ) {
-
-           // model.getClientGameModel ( ).getPlayer ( ).getTemporaryUpgrades ( ).add (  ) );
-        }
-        else if(){
-
-        }*/
     }
 
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
-
         refreshShadow();
         choosenCard.setEffect(new DropShadow (20.0, Color.RED));
         setChoosenUpgradeCard (choosenCard.getId ());
-        
     }
     public void refreshShadow () {
         for (ImageView upgradeCard:upgradeCards) {
@@ -164,12 +153,12 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         return this.choosenUpgradeCard.get ( );
     }
 
-    public IntegerProperty energyCountProperty() {
+  /*  public IntegerProperty energyCountProperty() {
         this.energyCount.set ( clientGameModel.getEnergy () );
         return this.energyCount;
-    }
-
+    }*/
+/*
     public void setEnergyCount(final int energyCount) {
         this.energyCount.set ( energyCount );
-    }
+    }*/
 }

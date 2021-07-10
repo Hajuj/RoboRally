@@ -114,6 +114,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public ImageView chatON;
     public TextArea readyDisplay;
     public ImageView imageView;
+    public ImageView temporaryCard;
+    public ImageView permenantCard;
 
 
     ObservableList<ImageView> cards;
@@ -213,7 +215,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         } else if (cardName.equals ( "chatOff" )){
             path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/chatOff.png")).getFile()));
-
         }else {
                 path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
         }
@@ -544,15 +545,40 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     try {
                         showPopup("Upgrade Phase has begin");
                         root1 = fxmlLoader.load();
-
+                        Stage newStage = new Stage();
+                        newStage.setTitle("UpgradeShop");
+                        newStage.setScene(new Scene(root1));
+                        newStage.show();
                     } catch (IOException | InterruptedException ioException) {
                         ioException.printStackTrace();
                     }
-                    Stage newStage = new Stage();
-                    newStage.setTitle("UpgradeShop");
-                    newStage.setScene(new Scene(root1));
-                    newStage.show();
+
                 });
+        }
+        if (evt.getPropertyName ().equals ( "buyingCardFinished" )){
+            String upgradeCardName = clientGameModel.getBoughtCard ();
+            FileInputStream path = null;
+            Image image;
+            if (upgradeCardName.equals ( "AdminPrivilege" )||upgradeCardName.equals ( "RearLaser" )){
+                try {
+                    path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + upgradeCardName + ".png" )).getFile()));
+                    image = new Image ( path );
+                    permenantCard.setImage ( image );
+                    permenantCard.setId ( upgradeCardName );
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace ( );
+                }
+            }if (upgradeCardName.equals ( "MemorySwap") || upgradeCardName.equals ( "SpamBlocker" ) ){
+                try {
+                    path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + upgradeCardName + ".png" )).getFile()));
+                    image = new Image ( path );
+                    temporaryCard.setImage ( image );
+                    temporaryCard.setId ( upgradeCardName );
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace ( );
+                }
+            }
+
         }
     }
 
@@ -576,6 +602,25 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    public void handlePermanentCard(MouseEvent mouseEvent) throws IOException {
+        if (mouseEvent.getSource ().equals ( "AdminPrivilege" )){
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AdminPrivilegeEffekt.fxml"));
+            Parent root1 = fxmlLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root1));
+            newStage.show();
+        }else if (mouseEvent.getSource ().equals ( "RearLaser" )){
+            System.out.println ( "rearLaser" );
+        }
+    }
+
+    public void handleTemporaryCard(MouseEvent mouseEvent) {
+        if (mouseEvent.getSource ().equals ( "MemorySwap" )){
+            System.out.println ( "memorySwap" );
+        }else if (mouseEvent.getSource ().equals ( "SpamBlocker" )){
+            System.out.println ( "SpamBlocker" );
+        }
+    }
 }
 
 

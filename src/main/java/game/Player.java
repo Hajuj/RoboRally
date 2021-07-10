@@ -19,7 +19,7 @@ public class Player {
     private Robot robot;
     private int figure;
     private boolean isReady;
-    private int energy = 0;
+    private int energy = 5;
     private boolean isAI = false;
 
     private DeckDiscard deckDiscard;

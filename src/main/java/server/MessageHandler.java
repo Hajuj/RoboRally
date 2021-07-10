@@ -496,6 +496,7 @@ public class MessageHandler {
 
         server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
         if (server.getCurrentGame().getCurrentPlayer() != -1) {
+            System.out.println ( "hier sollte programming Phase" );
             JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
             server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
         } else { //All players have chose a starting point

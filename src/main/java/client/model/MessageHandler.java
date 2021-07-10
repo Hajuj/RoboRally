@@ -173,7 +173,6 @@ public class MessageHandler {
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         if ( clientModel.getClientGameModel ().getActualPhase ()==1 &&  clientModel.getClientGameModel().getPlayer().getPlayerID()== playerID){
-
             clientModel.getClientGameModel ().refillShop ( true );
         }
         //TODO phase 1 und Pkayer == selbst if ()

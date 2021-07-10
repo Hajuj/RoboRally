@@ -101,6 +101,8 @@ public class ClientGameModel {
     private boolean rebooting = false;
     private boolean refillShop = false;
     private boolean isBuying = false;
+    private String boughtCard;
+    private int choosenRegister;
 
 
     //Singleton Zeug
@@ -317,10 +319,14 @@ public class ClientGameModel {
         if (cardName.equals("Null")) {
             isBuying = false;
         }
+        this.boughtCard = cardName;
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
     }
 
+    public String getBoughtCard() {
+        return this.boughtCard;
+    }
 
     public void activateSpamBlocker () {
         sendPlayCard("SpamBlocker");
@@ -486,9 +492,9 @@ public class ClientGameModel {
     public void refillShop(boolean refill) {
         boolean oldShop = this.refillShop;
         this.refillShop = refill;
-
+        if (this.refillShop) {
             propertyChangeSupport.firePropertyChange ( "refillShop", oldShop, true );
-
+        }
     }
 
     public boolean isBuying() {
@@ -679,6 +685,24 @@ public class ClientGameModel {
 
     public ArrayList<String> getBoughtCards() {
         return this.boughtCards;
+    }
+
+    public void finishBuyCard(boolean b) {
+        boolean oldValue = this.isBuying ;
+        this.isBuying = b;
+        if (this.isBuying) {
+            propertyChangeSupport.firePropertyChange ( "buyingCardFinished", oldValue, true );
+        }
+    }
+
+    public void setChoosenRegister(int choosenRegister) {
+        this.choosenRegister= choosenRegister;
+        JSONMessage buyMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
+        clientModel.sendMessage(buyMessage);
+    }
+
+    public int getChoosenRegister(){
+        return this.choosenRegister;
     }
 
 
