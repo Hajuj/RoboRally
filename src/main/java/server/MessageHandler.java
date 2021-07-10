@@ -495,10 +495,13 @@ public class MessageHandler {
         }
 
         server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+        System.out.println("player id " + server.getCurrentGame().getCurrentPlayer());
         if (server.getCurrentGame().getCurrentPlayer() != -1) {
             JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
             server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
         } else { //All players have chose a starting point
+            System.out.println("new phase");
+            server.getCurrentGame().setActivePhaseOn(false);
             server.getCurrentGame().setActivePhase(2);
             server.getCurrentGame().setCurrentRegister(0);
         }

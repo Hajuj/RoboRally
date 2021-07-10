@@ -36,6 +36,7 @@ import java.util.*;
 public class UpgradeShop implements Initializable, PropertyChangeListener {
     public Tooltip toolTip1;
     public Text cubesNum;
+
     @FXML
     public ImageView card_1;
     public ImageView card_2;
@@ -55,25 +56,25 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-    private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+  //  private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
-        energyCount.bind ( energyCountProperty() );
-        cubesNum.setText ( energyCount.toString () );
-        upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6,
-                card_7, card_8, card_9, card_9, card_10 );
-        Platform.runLater ( () -> {
+        //       energyCount.bind ( energyCountProperty() );
+        //       cubesNum.setText ( energyCount.toString () );
+        upgradeCards = FXCollections.observableArrayList(card_1, card_2, card_3, card_4, card_5, card_6,
+                card_7, card_8, card_9, card_9, card_10);
+        Platform.runLater(() -> {
             try {
-                for (int j = 0; j < clientGameModel.getUpgradeCards ().size (); j++) {
-                    cardName = clientGameModel.getUpgradeCards ( ).get ( j );
-                    upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
-                    upgradeCards.get ( j ).setId (cardName);
+                for (int j = 0; j < clientGameModel.getUpgradeCards().size(); j++) {
+                    cardName = clientGameModel.getUpgradeCards().get(j);
+                    upgradeCards.get(j).setImage(loadImage(cardName));
+                    upgradeCards.get(j).setId(cardName);
                 }
-                for(int j =clientGameModel.getUpgradeCards ().size ();  j< upgradeCards.size (); j++){
+                for (int j = clientGameModel.getUpgradeCards().size(); j < upgradeCards.size(); j++) {
                     upgradeCards.get(j).setImage ( null );
                     upgradeCards.get ( j ).setId ( "null" );
                 }
@@ -101,11 +102,9 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
 
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
-            clientGameModel.getBoughtCards ( ).add ( getChoosenUpgradeCard ( ) );
-            clientGameModel.notBuying ( true );
+            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard());
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
-            clientGameModel.getBoughtCards ().add("Null");
-            clientGameModel.notBuying ( false );
+            clientGameModel.buyUpgradeCard("Null");
         }
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
@@ -164,12 +163,12 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         return this.choosenUpgradeCard.get ( );
     }
 
-    public IntegerProperty energyCountProperty() {
+   /* public IntegerProperty energyCountProperty() {
         this.energyCount.set ( clientGameModel.getEnergy () );
         return this.energyCount;
     }
 
     public void setEnergyCount(final int energyCount) {
         this.energyCount.set ( energyCount );
-    }
+    }*/
 }
