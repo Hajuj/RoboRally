@@ -420,13 +420,13 @@ public class MessageHandler {
     public void handleRefillShop(ClientModel clientModel, RefillShopBody refillShopBody) {
         logger.info(ANSI_CYAN + "RefillShop Message received." + ANSI_RESET);
         ArrayList<String> cards = refillShopBody.getCards();
-        clientModel.getClientGameModel ().setUpgradeCards (cards);
+
+        //clientModel.getClientGameModel ().setUpgradeCards (cards);
         //clientModel.getClientGameModel ().refillShop ( true );
 
-        /*for (String card : cards) {
-            clientModel.getClientGameModel().getRefillShopCards().add(card);
-            clientModel.getClientGameModel ().refillShop ( true );
-        }*/
+        for (String card : cards) {
+            clientModel.getClientGameModel ().getUpgradeCards ().add ( card );
+        }
     }
 
     public void handleExchangeShop(ClientModel clientModel, ExchangeShopBody exchangeShopBody) {
