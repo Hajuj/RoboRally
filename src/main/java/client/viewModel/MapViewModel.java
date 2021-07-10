@@ -834,12 +834,19 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 animateEnergySpaces ();
             });
         }
-        if (evt.getPropertyName().equals("moveCheckpoints")) {
-            clientModel.getClientGameModel().setMoveCheckpoints(false);
+        if (evt.getPropertyName().equals("oldQueueCPMove")) {
+            clientModel.getClientGameModel().setQueueCPMove ( false );
             Platform.runLater(() -> {
-                moveCheckPoints();
+                for (int i = 0; i < clientGameModel.getMoveCPQueue ().size(); i++) {
+                    ClientGameModel.MoveCPTask newMoveCPTask = clientGameModel.getMoveCPQueue().get(i);
+                    int checkpointID = newMoveCPTask.getnumCP();
+                    Point2D point2D = newMoveCPTask.getNewPosition();
+                    moveCheckPoint(checkpointID, point2D);
+                    clientGameModel.getMoveCPQueue().remove(i);
+                }
             });
         }
+
     }
 }
 

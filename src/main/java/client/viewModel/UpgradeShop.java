@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
@@ -22,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -45,6 +47,8 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ImageView card_8;
     public ImageView card_9;
     public ImageView card_10;
+    public ImageView buyButton;
+    public ImageView buyNothing;
     String cardName;
 
     ObservableList<ImageView> upgradeCards;
@@ -96,17 +100,28 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     }
 
     public void buyCard(MouseEvent mouseEvent) {
-        System.out.println ( choosenUpgradeCard.getValue () );
+        if (mouseEvent.getSource ().equals ( buyButton )){
+            clientGameModel.getBoughtCards ( ).add ( getChoosenUpgradeCard ( ) );
+            clientGameModel.notBuying ( true );
+        }else if (mouseEvent.getSource ().equals ( buyNothing )) {
+            clientGameModel.getBoughtCards ().add("Null");
+            clientGameModel.notBuying ( false );
+        }
+        Stage stage = (Stage) buyButton.getScene ().getWindow ();
+        stage.close ();
+       /* System.out.println ( choosenUpgradeCard.getValue () );
         if (getChoosenUpgradeCard().equals ( "MemonrySwap" ) ||getChoosenUpgradeCard().equals ( "SpamBlocker" ) ) {
-            model.getClientGameModel ( ).getPlayer ( ).getTemporaryUpgrades ( ).add (  ) );
+
+           // model.getClientGameModel ( ).getPlayer ( ).getTemporaryUpgrades ( ).add (  ) );
         }
         else if(){
 
-        }
+        }*/
     }
 
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
+
         refreshShadow();
         choosenCard.setEffect(new DropShadow (20.0, Color.RED));
         setChoosenUpgradeCard (choosenCard.getId ());

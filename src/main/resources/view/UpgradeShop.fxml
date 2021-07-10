@@ -58,5 +58,10 @@
             <Tooltip fx:id="toolTip1" />
          </tooltip>
       </Label>
+      <ImageView fx:id="buyNothing" fitHeight="76.0" fitWidth="161.0" layoutX="169.0" layoutY="394.0" onMouseClicked="#buyCard" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Gui/okButton.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

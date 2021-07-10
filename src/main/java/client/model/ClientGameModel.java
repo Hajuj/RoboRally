@@ -36,6 +36,7 @@ public class ClientGameModel {
 
     private ArrayList<String> refillShopCards = new ArrayList<>();
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
+    private ArrayList<String> boughtCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private ArrayList<String> upgradeCards = new ArrayList<> ();
@@ -99,6 +100,7 @@ public class ClientGameModel {
     private boolean gameFinished;
     private boolean rebooting = false;
     private boolean refillShop = false;
+    private boolean isBuying = false;
 
 
     //Singleton Zeug
@@ -474,6 +476,14 @@ public class ClientGameModel {
 
     }
 
+    public boolean isBuying() {
+        return this.isBuying;
+    }
+
+    public void notBuying(boolean b ) {
+        this.isBuying = b;
+    }
+
 
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;
@@ -652,25 +662,10 @@ public class ClientGameModel {
         return exchangeShopCards;
     }
 
-    public Map<Point2D, CheckPoint> getCheckPointMovedMap () {
-        return checkPointMovedMap;
+    public ArrayList<String> getBoughtCards() {
+        return this.boughtCards;
     }
 
-    public void setCheckPointMovedMap (Map<Point2D, CheckPoint> checkPointMovedMap) {
-        this.checkPointMovedMap = checkPointMovedMap;
-    }
-
-    public boolean isMoveCheckpoints () {
-        return moveCheckpoints;
-    }
-
-    public void setMoveCheckpoints (boolean moveCheckpoints) {
-        boolean old = this.moveCheckpoints;
-        this.moveCheckpoints = moveCheckpoints;
-        if (this.moveCheckpoints) {
-            propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
-        }
-    }
 
     public static class TurnTask {
         private int playerID;
@@ -745,5 +740,12 @@ public class ClientGameModel {
         if (this.moveCheckpoints) {
             propertyChangeSupport.firePropertyChange("moveCheckpoints", old, true);
         }
+    }
+    public ArrayList<MoveCPTask> getMoveCPQueue() {
+        return this.moveCPQueue;
+    }
+
+    public void setQueueCPMove( boolean queueCPMove) {
+        this.queueCPMove = queueCPMove;
     }
 }
