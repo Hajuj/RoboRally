@@ -805,26 +805,28 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
         if (evt.getPropertyName().equals("queueMove")) {
             clientModel.getClientGameModel().setQueueMove(false);
-            for (Map.Entry<Robot, Point2D> entry : clientGameModel.getMoveQueue().entrySet()) {
-                //nullpointer hier. warum=
-                int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                moveRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                clientModel.getClientGameModel().getRobotMap().replace(entry.getKey(), entry.getValue());
-                clientModel.getClientGameModel().getMoveQueue().remove(entry.getKey());
+            for (int i = 0; i < clientGameModel.getMoveQueue().size(); i++) {
+                ClientGameModel.MoveTask newMoveTask = clientGameModel.getMoveQueue().get(i);
+                int playerID = newMoveTask.getPlayerID();
+                Point2D point2D = newMoveTask.getNewPosition();
+                moveRobot(playerID, (int) point2D.getX(), (int) point2D.getY());
+                clientGameModel.getMoveQueue().remove(i);
             }
         }
+
         if (evt.getPropertyName().equals("queueTurning")) {
             clientModel.getClientGameModel().setQueueTurning(false);
             Platform.runLater(() -> {
-                for (Map.Entry<Robot, String> entry : clientGameModel.getTurningQueue().entrySet()) {
-                    //TODO check NullPointerException here
-                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                    turnRobot(playerID, entry.getValue());
-                    //TODO: wo muss ich die orientation ändern in ClientGameModel?
-                    clientModel.getClientGameModel().getTurningQueue().remove(entry.getKey());
+                for (int i = 0; i < clientGameModel.getTurningQueue().size(); i++) {
+                    ClientGameModel.TurnTask newTurnTask = clientGameModel.getTurningQueue().get(i);
+                    int playerID = newTurnTask.getplayerID();
+                    String rotation = newTurnTask.getRotation();
+                    turnRobot(playerID, rotation);
+                    clientGameModel.getTurningQueue().remove(i);
                 }
             });
         }
+
         if (evt.getPropertyName().equals("Gears")) {
             clientModel.getClientGameModel().setAnimateGears(false);
             Platform.runLater(() -> {
@@ -835,6 +837,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             clientModel.getClientGameModel().setAnimateEnergySpaces (false);
             Platform.runLater(() -> {
                 animateEnergySpaces ();
+            });
+        }
+        if (evt.getPropertyName().equals("moveCheckpoints")) {
+            clientModel.getClientGameModel().setMoveCheckpoints(false);
+            Platform.runLater(() -> {
+                moveCheckPoints();
             });
         }
     }

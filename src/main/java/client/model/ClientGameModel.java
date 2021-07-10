@@ -33,6 +33,7 @@ public class ClientGameModel {
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
+    private ArrayList<String> upgradeCards = new ArrayList<> ();
     private boolean handCards = false;
 
     private int energy = 0;
@@ -88,7 +89,7 @@ public class ClientGameModel {
     private boolean currentPlayer;
     private boolean gameFinished;
     private boolean rebooting = false;
-
+    private boolean refillShop = false;
 
 
     //Singleton Zeug
@@ -424,6 +425,10 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
+    public void setUpgradeCards (ArrayList<String> upgradeCards){
+        this.upgradeCards = upgradeCards;
+    }
+    public ArrayList <String> getUpgradeCards(){return upgradeCards; }
 
     public String getLateCard (){
         return this.lateCard;
@@ -451,6 +456,15 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
         }
     }
+
+    public void refillShop(boolean refill) {
+        boolean oldShop = this.refillShop;
+        this.refillShop = refill;
+
+            propertyChangeSupport.firePropertyChange ( "refillShop", oldShop, true );
+
+    }
+
 
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;

@@ -394,12 +394,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     pane.setCenter(fxmlLoader.load());
                     readyButton.setDisable(true);
                     model.setGameOn(false);
+                    Playerinfo.setText(null);
+                    Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-            Playerinfo.setText(null);
-            Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
         }
 
         if (evt.getPropertyName().equals("gameFinished")) {
@@ -535,6 +535,24 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName ().equals ( ("rebootFinished") )){
             right_Side.setCenter ( null );
+        }
+        if(evt.getPropertyName ().equals ( "refillShop" )){
+                clientGameModel.refillShop ( false );
+                Platform.runLater(() -> {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
+                    Parent root1 = null;
+                    try {
+                        showPopup("Upgrade Phase has begin");
+                        root1 = fxmlLoader.load();
+
+                    } catch (IOException | InterruptedException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    Stage newStage = new Stage();
+                    newStage.setTitle("UpgradeShop");
+                    newStage.setScene(new Scene(root1));
+                    newStage.show();
+                });
         }
     }
 

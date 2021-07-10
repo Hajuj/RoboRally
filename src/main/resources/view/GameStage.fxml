@@ -10,9 +10,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -26,26 +23,10 @@
         <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="300.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
         <Label layoutX="231.0" layoutY="475.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="480.0" style="-fx-border-color: yellow;" styleClass="bodybg" stylesheets="@../images/Gui/playerInfo.css" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
          <graphic>
-            <Text fx:id="Playerinfo" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
+            <Text fx:id="Playerinfo" fill="#d7bd19" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
                <font>
                   <Font name="Yu Gothic Bold" size="20.0" />
                </font>
-               <fill>
-                  <LinearGradient endX="1.0" endY="1.0">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="0.843137264251709" green="0.7411764860153198" blue="0.09803921729326248" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
             </Text>
          </graphic></Label>
         <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0">

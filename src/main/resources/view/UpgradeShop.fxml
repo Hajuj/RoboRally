@@ -16,56 +16,16 @@
             <Image url="@../images/Gui/285651.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="card_1" fitHeight="137.0" fitWidth="95.0" layoutX="104.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="260.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="702.0" layoutY="93.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="483.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="186.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="554.0" layoutY="93.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="338.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="623.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="400.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="137.0" fitWidth="95.0" layoutX="414.0" layoutY="330.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Gui/chat.png" />
-         </image>
-      </ImageView>
+      <ImageView fx:id="card_1" fitHeight="137.0" fitWidth="95.0" layoutX="104.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_2" fitHeight="137.0" fitWidth="95.0" layoutX="260.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_3" fitHeight="137.0" fitWidth="95.0" layoutX="400.0" layoutY="99.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_4" fitHeight="137.0" fitWidth="95.0" layoutX="554.0" layoutY="93.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_5" fitHeight="137.0" fitWidth="95.0" layoutX="702.0" layoutY="93.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_6" fitHeight="137.0" fitWidth="95.0" layoutX="186.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_7" fitHeight="137.0" fitWidth="95.0" layoutX="338.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_8" fitHeight="137.0" fitWidth="95.0" layoutX="483.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_9" fitHeight="137.0" fitWidth="95.0" layoutX="623.0" layoutY="211.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="card_10" fitHeight="137.0" fitWidth="95.0" layoutX="414.0" layoutY="330.0" onMouseClicked="#chooseUpgradeCard" onMouseMoved="#showDescription" pickOnBounds="true" preserveRatio="true" />
       <HBox layoutX="55.0" layoutY="465.0" prefHeight="108.0" prefWidth="456.0">
          <children>
             <ImageView fitHeight="108.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
