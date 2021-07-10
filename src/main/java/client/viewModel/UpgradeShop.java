@@ -36,6 +36,7 @@ import java.util.*;
 public class UpgradeShop implements Initializable, PropertyChangeListener {
     public Tooltip toolTip1;
     public Text cubesNum;
+
     @FXML
     public ImageView card_1;
     public ImageView card_2;
@@ -68,12 +69,12 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
                 card_7, card_8, card_9, card_9, card_10 );
         Platform.runLater ( () -> {
             try {
-                for (int j = 0; j < clientGameModel.getUpgradeCards ().size (); j++) {
-                    cardName = clientGameModel.getUpgradeCards ( ).get ( j );
-                    upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
-                    upgradeCards.get ( j ).setId (cardName);
+                for (int j = 0; j < clientGameModel.getUpgradeCards().size(); j++) {
+                    cardName = clientGameModel.getUpgradeCards().get(j);
+                    upgradeCards.get(j).setImage(loadImage(cardName));
+                    upgradeCards.get(j).setId(cardName);
                 }
-                for(int j =clientGameModel.getUpgradeCards ().size ();  j< upgradeCards.size (); j++){
+                for (int j = clientGameModel.getUpgradeCards().size(); j < upgradeCards.size(); j++) {
                     upgradeCards.get(j).setImage ( null );
                     upgradeCards.get ( j ).setId ( "null" );
                 }

@@ -675,15 +675,15 @@ public class ClientGameModel {
     }
 
 
-    public ArrayList<String> getRefillShopCards() {
+    public ArrayList<String> getRefillShopCards () {
         return refillShopCards;
     }
 
-    public ArrayList<String> getExchangeShopCards() {
+    public ArrayList<String> getExchangeShopCards () {
         return exchangeShopCards;
     }
 
-    public ArrayList<String> getBoughtCards() {
+    public ArrayList<String> getBoughtCards () {
         return this.boughtCards;
     }
 

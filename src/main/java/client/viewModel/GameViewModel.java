@@ -538,7 +538,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             right_Side.setCenter ( null );
         }
         if(evt.getPropertyName ().equals ( "refillShop" )){
-                clientGameModel.refillShop ( false );
+            System.out.println("jijijijijijiji");
+            clientGameModel.refillShop(false);
                 Platform.runLater(() -> {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
                     Parent root1 = null;

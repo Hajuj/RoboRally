@@ -1729,7 +1729,6 @@ public class Game {
         if (activePhase == 1 && !activePhaseOn) {
             informAboutActivePhase();
             startUpgradePhase();
-
             activePhaseOn = true;
         } else if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
