@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author Ilja Knis
+ * @author Ilja Knis, Viktoria Patapovich, Mohamad Hgog
  */
 
 //TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
