@@ -170,9 +170,13 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
-
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
+        if ( clientModel.getClientGameModel ().getActualPhase ()==1 &&  clientModel.getClientGameModel().getPlayer().getPlayerID()== playerID){
+
+            clientModel.getClientGameModel ().refillShop ( true );
+        }
+        //TODO phase 1 und Pkayer == selbst if ()
         logger.info("Current Player: " + playerID);
 
     }
@@ -323,12 +327,11 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-
-                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
-                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
+                clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "GreenConveyorBelt": {
+               // clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "PushPanel": {
@@ -348,12 +351,11 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
-                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
             case "EnergySpace": {
-                //animation für EnergySpace
+                clientModel.getClientGameModel().setAnimateEnergySpaces (true);
                 break;
             }
         }
@@ -396,6 +398,7 @@ public class MessageHandler {
         });
         clientModel.setGameFinished(true);
         clientModel.getClientGameModel().refreshModel();
+       // clientModel.getClientGameModel ().gameFinished(true);
     }
 
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
@@ -418,8 +421,11 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "RefillShop Message received." + ANSI_RESET);
         ArrayList<String> cards = refillShopBody.getCards();
 
+        //clientModel.getClientGameModel ().setUpgradeCards (cards);
+        //clientModel.getClientGameModel ().refillShop ( true );
+
         for (String card : cards) {
-            clientModel.getClientGameModel().getRefillShopCards().add(card);
+            clientModel.getClientGameModel ().getUpgradeCards ().add ( card );
         }
     }
 

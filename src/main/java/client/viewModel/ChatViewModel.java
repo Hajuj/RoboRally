@@ -50,20 +50,20 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public void initialize(URL location, ResourceBundle resources) {
         chatOutput = new SimpleStringProperty();
         model.addPropertyChangeListener(this);
+        chatField.setText(model.getChatHistory());
+
+        chatField.setEditable(false);
+        //readyDisplay.setText(model.getPlayersStatus());
+        //readyDisplay.setEditable(false);
+        //if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+        //  readyButton.setVisible(false);
+        //notReadyBtn.setVisible(false);
+        // }
+
         /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
         chatOutput.bind(model.getChatHistory());
         chatField.textProperty().bind(chatOutputProperty());
         }));*/
-        chatField.setText(model.getChatHistory());
-        model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        readyDisplay.setText(model.getPlayersStatus());
-        chatField.setEditable(false);
-        readyDisplay.setEditable(false);
-        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-            readyButton.setVisible(false);
-            notReadyBtn.setVisible(false);
-        }
-        notReadyBtn.setDisable(true);
 
     }
 
@@ -77,28 +77,12 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         messageField.clear();
     }
 
-    public void goToGameGuide(ActionEvent event) throws IOException {
-        Stage rootStage = new Stage();
-        Parent root;
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
-        rootStage.setScene(new Scene(root));
-        rootStage.setTitle("Game Guide");
-        rootStage.show();
-    }
+
 
     public void sendReadyStatus(ActionEvent event) {
         model.setNewStatus(true);
         readyButton.setDisable(true);
         notReadyBtn.setDisable(false);
-    }
-
-    public void showMaps() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
-        Parent root1 = fxmlLoader.load();
-        Stage newStage = new Stage();
-        newStage.setTitle("Available Maps");
-        newStage.setScene(new Scene(root1));
-        newStage.show();
     }
 
     public void changeStatusButton(ActionEvent event) {
@@ -109,10 +93,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void loadGameScene() throws IOException {
-       /* ClassLoader classLoader = getClass().getClassLoader();
-        InputStream is = getClass().getClassLoader().getResourceAsStream("/view/Map.fxml");*/
-
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
@@ -141,27 +121,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("playerStatus")) {
             Platform.runLater(() -> {
                 readyDisplay.setText(evt.getNewValue().toString());
-            });
-        }
-        if (evt.getPropertyName().equals("doChooseMap")) {
-            model.setDoChooseMap(false);
-            Platform.runLater(() -> {
-                try {
-                    showMaps();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            });
-        }
-        if (evt.getPropertyName().equals("gameOn")) {
-            Platform.runLater(() -> {
-                readyButton.setDisable(true);
-                notReadyBtn.setDisable(true);
-            });
-        }
-        if (evt.getPropertyName().equals("gameFinished")) {
-            Platform.runLater(() -> {
-                readyButton.setDisable(false);
             });
         }
     }

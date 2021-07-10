@@ -36,8 +36,10 @@ public class ClientGameModel {
 
     private ArrayList<String> refillShopCards = new ArrayList<>();
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
+    private ArrayList<String> boughtCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
+    private ArrayList<String> upgradeCards = new ArrayList<> ();
     private boolean handCards = false;
 
     private int energy = 0;
@@ -61,9 +63,9 @@ public class ClientGameModel {
 
     private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
-    private BooleanProperty animType = new SimpleBooleanProperty(false);
-
+    private boolean animateBelts = false;
     private boolean animateGears = false;
+    private boolean animateSpaces = false;
 
     private boolean moveCheckpoints = false;
 
@@ -95,7 +97,10 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
-
+    private boolean gameFinished;
+    private boolean rebooting = false;
+    private boolean refillShop = false;
+    private boolean isBuying = false;
 
 
     //Singleton Zeug
@@ -143,7 +148,6 @@ public class ClientGameModel {
         conveyorBeltMap = new LinkedHashMap<>();
         restartPointMap = new LinkedHashMap<>();
 
-        animType = new SimpleBooleanProperty(false);
         pushPanelProperty = new SimpleBooleanProperty(false);
         laserAnimeProperty = new SimpleBooleanProperty(false);
         blueBeltAnimeProperty= new SimpleBooleanProperty(false);
@@ -182,6 +186,7 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
+        rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
     }
 
@@ -191,28 +196,14 @@ public class ClientGameModel {
         clientModel.sendMessage(adminMessage);
     }
 
-    public void setanimationType (String animationType) {
-        switch (animationType) {
-            /*case "BlueConveyorBelt" ->{
-                extractData(conveyorBeltMap);
-                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
-                    Point2D position =entry.getKey();
-                    ConveyorBelt belt =entry.getValue();
 
-                }
-            }*/
-            case "WallShooting" -> {
-                animType.set(true);
-            }
-        }
+    public boolean getRebootSetting (){
+        return rebooting;
+    }
+    public void setRebootingSetting(boolean b){
+        this.rebooting = b;
+    }
 
-    }
-    public void extractData(LinkedHashMap elementMap){
-
-    }
-    public BooleanProperty getanimationType(){
-        return animType;
-    }
 
     public boolean isCurrentPlayer() {
         return currentPlayer;
@@ -347,18 +338,10 @@ public class ClientGameModel {
         return actualPhase;
     }
 
- /*   public void setActualPhase (int actualPhase) {
-        this.actualPhase = actualPhase;
-
-    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
-
-    /*public void setProgrammingPhase(boolean programmingPhase) {
-        this.programmingPhase = programmingPhase;
-    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -468,9 +451,11 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
-  /*  public void setLateCard(String card) {
-        this.lateCard = card;
-    }*/
+    public void setUpgradeCards (ArrayList<String> upgradeCards){
+        this.upgradeCards = upgradeCards;
+    }
+    public ArrayList <String> getUpgradeCards(){return upgradeCards; }
+
     public String getLateCard (){
         return this.lateCard;
     }
@@ -497,6 +482,23 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
         }
     }
+
+    public void refillShop(boolean refill) {
+        boolean oldShop = this.refillShop;
+        this.refillShop = refill;
+
+            propertyChangeSupport.firePropertyChange ( "refillShop", oldShop, true );
+
+    }
+
+    public boolean isBuying() {
+        return this.isBuying;
+    }
+
+    public void notBuying(boolean b ) {
+        this.isBuying = b;
+    }
+
 
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;
@@ -641,12 +643,42 @@ public class ClientGameModel {
         }
     }
 
+    public void setAnimateBelts (boolean belts) {
+        boolean oldValue = this.animateBelts;
+        this.animateBelts = belts;
+        if (this.animateBelts) {
+            propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+        }
+    }
+
+    public void setAnimateEnergySpaces (boolean spaces) {
+        boolean oldValue = this.animateSpaces;
+        this.animateSpaces = spaces;
+        if (this.animateSpaces) {
+            propertyChangeSupport.firePropertyChange("EnergySpaces", oldValue, true);
+        }
+    }
+
+
+    public void rebootSetting (boolean b) {
+        boolean oldValue = this.rebooting ;
+        this.rebooting = b;
+        if (this.rebooting) {
+            propertyChangeSupport.firePropertyChange ( "rebootFinished", oldValue, true );
+        }
+    }
+
+
     public ArrayList<String> getRefillShopCards() {
         return refillShopCards;
     }
 
     public ArrayList<String> getExchangeShopCards() {
         return exchangeShopCards;
+    }
+
+    public ArrayList<String> getBoughtCards() {
+        return this.boughtCards;
     }
 
 

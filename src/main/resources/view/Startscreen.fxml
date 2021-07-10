@@ -8,28 +8,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenViewModel">
+<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="872.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.StartScreenViewModel">
 
    <children>
-      <ImageView fitHeight="724.0" fitWidth="751.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <ImageView fitHeight="682.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-117.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../roborally_start.jpg" />
+            <Image url="@../images/Gui/startScreen.gif" />
          </image>
       </ImageView>
-      <ImageView fitHeight="122.0" fitWidth="542.0" layoutX="280.0" layoutY="572.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="45.73651123046875" AnchorPane.topAnchor="572.0">
-         <image>
-            <Image url="@../../resources/robo_rally_logo.png" />
-         </image>
-      </ImageView>
-      <VBox layoutX="260.0" layoutY="190.0" prefHeight="344.0" prefWidth="226.0">
+      <VBox layoutX="313.0" layoutY="404.0" prefHeight="189.0" prefWidth="276.0">
          <children>
-            <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="61.0"
-                    prefWidth="229.0" text="Start game" underline="true">
+            <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="63.0" prefWidth="280.0" text="Start game" underline="true">
                 <font>
-                    <Font name="Franklin Gothic Heavy" size="27.0"/>
+                    <Font name="Franklin Gothic Heavy" size="27.0" />
                 </font>
             </Button>
-            <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="234.0" text="How to play" underline="true">
+            <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="278.0" text="How to play" underline="true">
                <font>
                   <Font name="Franklin Gothic Heavy" size="27.0" />
                </font></Button>

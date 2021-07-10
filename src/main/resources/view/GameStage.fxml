@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,31 +13,27 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
+<AnchorPane fx:id="paneA" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" onDragExited="#dragExited" prefHeight="665.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
     <children>
-        <ImageView fitHeight="388.0" fitWidth="1104.0" layoutY="-1.0" pickOnBounds="true">
+        <ImageView fx:id="imageView" fitHeight="668.0" fitWidth="1223.0" layoutY="-2.0" pickOnBounds="true">
             <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png" />
+                <Image url="@../images/Gui/DfoMsE.jpg" />
             </image>
         </ImageView>
-        <ImageView fitHeight="283.0" fitWidth="1110.0" layoutX="-4.0" layoutY="384.0" pickOnBounds="true">
-            <image>
-                <Image url="@../images/mapElements/Elements/2016Board.png" />
-            </image>
-        </ImageView>
-        <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="110.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
-      <Text fx:id="Playerinfo" layoutX="234.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
-         <font>
-            <Font name="Consolas" size="20.0" />
-         </font>
-      </Text>
-        <Label layoutX="231.0" layoutY="485.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="480.0" style="-fx-border-color: grey;" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
-        </Label>
-        <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1100.0">
+        <ImageView fx:id="yourRobot" fitHeight="129.0" fitWidth="120.0" layoutX="300.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" x="800.0" y="500.0" />
+        <Label layoutX="231.0" layoutY="475.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="480.0" style="-fx-border-color: yellow;" styleClass="bodybg" stylesheets="@../images/Gui/playerInfo.css" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+         <graphic>
+            <Text fx:id="Playerinfo" fill="#d7bd19" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="471.212890625">
+               <font>
+                  <Font name="Yu Gothic Bold" size="20.0" />
+               </font>
+            </Text>
+         </graphic></Label>
+        <BorderPane fx:id="pane" layoutX="-1.0" layoutY="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0">
             <bottom>
-                <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="890.0" BorderPane.alignment="CENTER">
+                <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="890.0" style="-fx-background-color: rgba(0, 0, 0, 0.75);" BorderPane.alignment="CENTER">
                     <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: yellow;">
                             <HBox.margin>
                                 <Insets left="10.0" />
                             </HBox.margin>
@@ -44,7 +41,7 @@
                                 <ImageView fx:id="reg_0" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: yellow;">
                             <HBox.margin>
                                 <Insets left="30.0" />
                             </HBox.margin>
@@ -52,7 +49,7 @@
                                 <ImageView fx:id="reg_1" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: yellow;">
                             <HBox.margin>
                                 <Insets left="50.0" />
                             </HBox.margin>
@@ -60,7 +57,7 @@
                                 <ImageView fx:id="reg_2" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragOver="#handleTarget" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragOver="#handleTarget" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: yellow;">
                             <HBox.margin>
                                 <Insets left="40.0" />
                             </HBox.margin>
@@ -68,7 +65,7 @@
                                 <ImageView fx:id="reg_3" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragOver="#handleTarget" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragOver="#handleTarget" prefHeight="130.0" prefWidth="100.0" style="-fx-border-color: yellow;">
                             <HBox.margin>
                                 <Insets left="46.0" />
                             </HBox.margin>
@@ -76,9 +73,7 @@
                                 <ImageView fx:id="reg_4" fitHeight="130.0" fitWidth="100.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </VBox>
-                        <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                                minWidth="-Infinity" mnemonicParsing="false" onAction="#playCard"
-                                prefHeight="67.0" prefWidth="85.0">
+                        <Button fx:id="dummesButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playCard" prefHeight="67.0" prefWidth="85.0">
                             <HBox.margin>
                                 <Insets left="23.0" top="55.0" />
                             </HBox.margin>
@@ -95,9 +90,6 @@
                     </BorderPane.margin>
                 </HBox>
             </bottom>
-            <right>
-                <fx:include fx:id="chat" source="RoboChat.fxml" />
-            </right>
             <center>
                 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="525.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -106,11 +98,11 @@
                 </AnchorPane>
             </center>
             <left>
-                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="184.0">
+                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="184.0" style="-fx-background-color: rgba(0, 0, 0, 0.75);">
                     <children>
                         <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="162.0">
                             <children>
-                                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                                     <children>
                                         <ImageView fx:id="card_0" fitHeight="93.0" fitWidth="73.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                                     </children>
@@ -118,7 +110,7 @@
                                         <Insets />
                                     </HBox.margin>
                                 </VBox>
-                                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                                <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                                     <HBox.margin>
                                         <Insets left="13.0" />
                                     </HBox.margin>
@@ -134,7 +126,7 @@
                   </HBox>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="103.0" prefWidth="168.0">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_2" fitHeight="93.0" fitWidth="70.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -145,7 +137,7 @@
                               <Insets />
                            </HBox.margin>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_3" fitHeight="94.0" fitWidth="73.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -160,7 +152,7 @@
                   </HBox>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="159.0">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_4" fitHeight="93.0" fitWidth="69.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -168,7 +160,7 @@
                               <Insets />
                            </HBox.margin>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_5" fitHeight="94.0" fitWidth="65.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -183,12 +175,12 @@
                   </HBox>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="103.0" prefWidth="168.0">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_6" fitHeight="95.0" fitWidth="72.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_7" fitHeight="93.0" fitWidth="66.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -201,9 +193,9 @@
                         <Insets top="3.0" />
                      </VBox.margin>
                   </HBox>
-                  <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="97.0">
+                  <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="69.0">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: black;">
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
                            <children>
                               <ImageView fx:id="card_8" fitHeight="92.0" fitWidth="68.0" onDragDetected="#handle" onDragDropped="#handledropped" onDragOver="#handleTarget" pickOnBounds="true" preserveRatio="true" />
                            </children>
@@ -219,6 +211,65 @@
                </opaqueInsets>
             </VBox>
          </left>
+         <right>
+            <BorderPane fx:id="right_Side" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="405.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <bottom>
+                  <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="342.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="88.0">
+                           <children>
+                              <ImageView fx:id="chatON" fitHeight="78.0" fitWidth="91.0" onMouseClicked="#open_chat" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/chatON.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets left="3.0" top="-1.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="93.0">
+                           <children>
+                              <ImageView fitHeight="73.0" fitWidth="73.0" onMouseClicked="#goToGameGuide" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/Unbenannt.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets left="13.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="124.0">
+                           <children>
+                              <ImageView fx:id="readyButton" fitHeight="69.0" fitWidth="132.0" onMouseClicked="#sendReadyStatus" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Gui/steampunk-off.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets top="-10.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="21.0" top="18.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </bottom>
+               <top>
+                  <TextArea fx:id="readyDisplay" prefHeight="124.0" prefWidth="405.0" stylesheets="@../images/Gui/readyDisplay.css" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Yu Gothic Bold" size="12.0" />
+                     </font>
+                  </TextArea>
+               </top>
+            </BorderPane>
+         </right>
       </BorderPane>
    </children>
 </AnchorPane>
