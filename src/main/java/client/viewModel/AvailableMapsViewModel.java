@@ -35,7 +35,7 @@ public class AvailableMapsViewModel implements Initializable {
      * Initializes the AvaibleMaps window and shows the maps in the choicebox.
      */
     public void initialize (URL url, ResourceBundle resourceBundle) {
-        choiceBox.setStyle("-fx-font: 23px \"Serif\";");
+        //choiceBox.setStyle("-fx-font: 23px \"Serif\";");
         Platform.runLater(() -> {
             for (String m : model.getAvailableMaps()) {
                 choiceBox.getItems().add(m);

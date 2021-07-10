@@ -4,22 +4,30 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="665.0" prefWidth="1223.0" styleClass="bodybg" stylesheets="@../ServerIpStage.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ServerIpStageViewModel">
+<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="872.0" styleClass="bodybg" stylesheets="@../ServerIpStage.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ServerIpStageViewModel">
 
     <children>
-
-        <TextField fx:id="serverPortField" layoutX="575.0" layoutY="318.0" prefHeight="39.0" prefWidth="213.0" text="500">
+      <ImageView fitHeight="665.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fitHeight="665.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <image>
+                <Image url="@../images/Gui/startScreen.gif" />
+            </image>
+        </ImageView>
+        <ImageView fitHeight="251.0" fitWidth="456.0" layoutX="208.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+        <TextField fx:id="serverPortField" layoutX="330.0" layoutY="358.0" prefHeight="39.0" prefWidth="213.0" style="-fx-background-color: #907509#907509 #907509#907509 #907509#907509 #907509#907509;" text="500">
             <font>
                 <Font size="18.0" />
             </font>
         </TextField>
 
 
-        <Button fx:id="BBButton" layoutX="835.0" layoutY="191.0" mnemonicParsing="false" onAction="#BBButtonAction" prefHeight="110.0" prefWidth="113.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="BB" textAlignment="CENTER">
+        <Button fx:id="BBButton" layoutX="604.0" layoutY="239.0" mnemonicParsing="false" onAction="#BBButtonAction" prefHeight="96.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="BB" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -33,18 +41,18 @@
         </Button>
 
 
-        <Label layoutX="461.0" layoutY="315.0" text="PORT" textFill="WHITE">
+        <Label layoutX="197.0" layoutY="355.0" prefHeight="45.0" prefWidth="119.0" text="PORT" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label layoutX="528.0" layoutY="224.0" text="IP" textFill="WHITE">
+        <Label layoutX="230.0" layoutY="293.0" prefHeight="45.0" prefWidth="54.0" text="IP" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
 
-        <Button fx:id="connectButton" layoutX="547.0" layoutY="406.0" mnemonicParsing="false" onAction="#connectButtonAction" prefHeight="53.0" prefWidth="269.0" text="Connect" textAlignment="CENTER">
+        <Button fx:id="connectButton" layoutX="302.0" layoutY="433.0" mnemonicParsing="false" onAction="#connectButtonAction" prefHeight="53.0" prefWidth="269.0" style="-fx-background-color: #907509#907509 #907509#907509;" text="Connect" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -54,7 +62,7 @@
         </Button>
 
 
-        <Button fx:id="LMUButton" layoutX="847.0" layoutY="333.0" mnemonicParsing="false" onAction="#LMUButtonAction" prefHeight="110.0" prefWidth="101.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="LMU" textAlignment="CENTER">
+        <Button fx:id="LMUButton" layoutX="604.0" layoutY="346.0" mnemonicParsing="false" onAction="#LMUButtonAction" prefHeight="102.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="LMU" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -66,7 +74,7 @@
                 </InnerShadow>
             </effect>
         </Button>
-        <TextField fx:id="serverAddressField" layoutX="575.0" layoutY="227.0" prefHeight="39.0" prefWidth="213.0" text="127.0.0.1">
+        <TextField fx:id="serverAddressField" layoutX="330.0" layoutY="296.0" prefHeight="39.0" prefWidth="213.0" style="-fx-background-color: #907509#907509 #907509#907509 #907509#907509 #907509#907509;" text="127.0.0.1">
             <font>
                 <Font size="18.0" />
             </font>

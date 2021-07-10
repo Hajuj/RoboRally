@@ -51,6 +51,7 @@ public class ChooseRobotViewModel implements Initializable {
     @Override
     public void initialize (URL location, ResourceBundle resources) {
         playButton.setDisable(true);
+        refreshShadow();
 
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -143,12 +144,12 @@ public class ChooseRobotViewModel implements Initializable {
     }
 
     public void refreshShadow () {
-        robot0.setEffect(new DropShadow(0.0, Color.RED));
-        robot1.setEffect(new DropShadow(0.0, Color.RED));
-        robot2.setEffect(new DropShadow(0.0, Color.RED));
-        robot3.setEffect(new DropShadow(0.0, Color.RED));
-        robot4.setEffect(new DropShadow(0.0, Color.RED));
-        robot5.setEffect(new DropShadow(0.0, Color.RED));
+        robot0.setEffect(new DropShadow(20.0, Color.WHITE));
+        robot1.setEffect(new DropShadow(20.0, Color.WHITE));
+        robot2.setEffect(new DropShadow(20.0, Color.WHITE));
+        robot3.setEffect(new DropShadow(20.0, Color.WHITE));
+        robot4.setEffect(new DropShadow(20.0, Color.WHITE));
+        robot5.setEffect(new DropShadow(20.0, Color.WHITE));
         disableUsedRobots();
     }
 
@@ -223,6 +224,7 @@ public class ChooseRobotViewModel implements Initializable {
         if (username.contains(" ")) return false;
         return !username.contains("@");
     }
+
 
     public boolean isGameOn () {
         return (model.getPlayersFigureMap().size() >= 6);
