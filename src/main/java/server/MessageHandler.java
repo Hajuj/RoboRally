@@ -2,6 +2,10 @@ package server;
 
 import game.*;
 import game.boardelements.Antenna;
+import game.upgradecards.AdminPrivilege;
+import game.upgradecards.MemorySwap;
+import game.upgradecards.RearLaser;
+import game.upgradecards.SpamBlocker;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -182,7 +186,12 @@ public class MessageHandler {
 
     public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
-        server.getCurrentGame().selectMap(mapSelectedBody.getMap());
+        String mapName = mapSelectedBody.getMap();
+        server.getCurrentGame().selectMap(mapName);
+        //Inform all other players about the selected map
+        for (Connection connection : server.getConnections()) {
+            server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
+        }
         server.getCurrentGame().canStartTheGame();
     }
 
@@ -218,8 +227,8 @@ public class MessageHandler {
                 if (server.getCurrentGame().getCurrentPlayer() != -1) {
                     JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
                     server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
-                } else {
-                    server.getCurrentGame().setActivePhase(2);
+                } else { //All players have chose a starting point
+                    server.getCurrentGame().setActivePhase(1);
                 }
             }
 
@@ -327,17 +336,13 @@ public class MessageHandler {
                     if (canStartNewRound) {
                         //New Round
                         server.getCurrentGame().setRebootDirection();
-                        //server.getCurrentGame().getDeadRobotsIDs().add(1);
                         server.getCurrentGame().setNewRoundCounter();
                         for (Player player : server.getCurrentGame().getPlayerList()) {
                             player.discardHandCards();
                             player.discardRegisterCards();
-                            //TODO test if the cards get really discarded
                         }
                         server.getCurrentGame().setActivePhaseOn(false);
-                        server.getCurrentGame().setActivePhase(2);
-                        server.getCurrentGame().setCurrentRegister(0);
-                        //TODO when does the game stops? -> Ilja
+                        server.getCurrentGame().setActivePhase(1);
                     }
                 }
             } else {
@@ -441,5 +446,79 @@ public class MessageHandler {
             server.sendMessage(jsonMessage, server.getConnectionWithID(currentPlayer.getPlayerID()).getWriter());
         }
     }
+
+    public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
+        logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
+        String cardName = buyUpgradeBody.getCard();
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        boolean allowToBuy = true;
+        // ob der dran ist
+        if (server.getCurrentGame().getCurrentPlayer() != clientHandler.getPlayer_id()) {
+            allowToBuy = false;
+        }
+        // ob er noch nicht 3 und 3 karten hat
+        if (cardName.equals("Null")) {
+            allowToBuy = false;
+        } else {
+            if (server.getCurrentGame().isPermanent(cardName) && player.getInstalledPermanentUpgrades().size() == 3) {
+                allowToBuy = false;
+            } else if ((!server.getCurrentGame().isPermanent(cardName)) && player.getTemporaryUpgrades().size() == 3) {
+                allowToBuy = false;
+            }
+        }
+
+        int energyCost = server.getCurrentGame().getUpgradeCost(cardName);
+        if (player.getEnergy() < energyCost) {
+            allowToBuy = false;
+        }
+
+        //sage allen wo der Spieler mit playerID started
+        if (buyUpgradeBody.isBuying() && allowToBuy) {
+            player.increaseEnergy(-energyCost);
+            JSONMessage cardBoughtMessage = new JSONMessage("UpgradeBought", new UpgradeBoughtBody(clientHandler.getPlayer_id(), buyUpgradeBody.getCard()));
+            server.getCurrentGame().sendToAllPlayers(cardBoughtMessage);
+
+            if (server.getCurrentGame().isPermanent(cardName)) {
+                if (cardName.equals("AdminPrivilege")) {
+                    player.getInstalledPermanentUpgrades().add(new AdminPrivilege());
+                } else {
+                    player.getInstalledPermanentUpgrades().add(new RearLaser());
+                    server.getCurrentGame().getRearLasers().add(player);
+                }
+            } else {
+                if (cardName.equals("MemorySwap")) {
+                    player.getTemporaryUpgrades().add(new MemorySwap());
+                } else {
+                    player.getTemporaryUpgrades().add(new SpamBlocker());
+                }
+            }
+        }
+
+        server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
+        System.out.println("player id " + server.getCurrentGame().getCurrentPlayer());
+        if (server.getCurrentGame().getCurrentPlayer() != -1) {
+            JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
+            server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
+        } else { //All players have chose a starting point
+            System.out.println("new phase");
+            server.getCurrentGame().setActivePhaseOn(false);
+            server.getCurrentGame().setActivePhase(2);
+            server.getCurrentGame().setCurrentRegister(0);
+        }
+    }
+
+
+    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+        //schauen ob diser spieler echt AdminPrivilegie hat
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+        if (player.checkAdmin()) {
+            int register = chooseRegisterBody.getRegister();
+            server.getCurrentGame().getAdminPriorityMap().put(register, player);
+            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
+            server.getCurrentGame().sendToAllPlayers(adminMessage);
+        }
+
+    }
+
 
 }

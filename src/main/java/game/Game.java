@@ -7,7 +7,6 @@ import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
-import server.Connection;
 import server.Server;
 
 import java.io.File;
@@ -37,6 +36,7 @@ public class Game {
     private ArrayList<Player> playerList;
     private Server server;
     private GameTimer gameTimer;
+    private ArrayList<String> upgradeCardsShop = new ArrayList<>();
     private ArrayList<String> availableMaps = new ArrayList<>();
     private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
     private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
@@ -58,6 +58,8 @@ public class Game {
     private Map<Robot, Point2D> startingPointMap = new HashMap<>();
     private Map<Player, Integer> checkPointReached = new HashMap<>();
     private Map<Player, String> robotsRebootDirection = new HashMap<>();
+
+    private Map<Integer, Player> adminPriorityMap = new HashMap<>();
 
     private int roundCounter = 1;
     private String mapName;
@@ -90,7 +92,8 @@ public class Game {
      * Constructor for the game
      * adds available Maps to availableMaps
      * creates a game timer
-     * @param server    is the server where the game is started
+     *
+     * @param server is the server where the game is started
      */
     public Game(Server server) {
         this.server = server;
@@ -98,6 +101,7 @@ public class Game {
         availableMaps.add("DeathTrap");
         availableMaps.add("ExtraCrispy");
         availableMaps.add("LostBearings");
+        availableMaps.add("AlmostTwister");
         gameTimer = new GameTimer(server);
     }
 
@@ -106,8 +110,9 @@ public class Game {
      * initializes all global game decks (Damage cards and Upgrade cards)
      * initializes global variables to initial value
      * sends GameStartedMessage to all participating players
-     * @param players   are the players who joined the game
-     * @throws IOException  handles IO exceptions
+     *
+     * @param players are the players who joined the game
+     * @throws IOException handles IO exceptions
      */
     public void startGame(ArrayList<Player> players) throws IOException {
         this.deckSpam = new DeckSpam();
@@ -150,6 +155,7 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
+        refillUpgradeShop();
         informAboutActivePhase();
         informAboutCurrentPlayer();
     }
@@ -264,6 +270,14 @@ public class Game {
     public void sendToAllPlayers(JSONMessage jsonMessage) {
         for (int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
+        }
+    }
+
+
+    public void refreshAdminPrivilege () {
+        adminPriorityMap.clear();
+        for (Player player : playerList) {
+            player.setActiveAdminPrivilege(0);
         }
     }
 
@@ -409,21 +423,26 @@ public class Game {
      * and putting all entries of checkPointMovedMap into checkPointMap.
      */
     private void moveCheckPoints() {
-        if (getMapName().equals("Twister")) {
+        if (getMapName().equals("AlmostTwister")) {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
                 for (Point2D position : conveyorBeltMap.keySet()) {
-                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()){
+                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
+                        int numCP = checkPointMap.get(position).getCount();
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        System.out.println(conveyorBeltMap.get(position).getOrientations());
                         //second movement:
                         newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(newPosition).getOrientations().get(0));
-
+                        System.out.println(conveyorBeltMap.get(newPosition).getOrientations());
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
                         //adjust map
                         removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
                         placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+
+                        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(numCP, (int) newPosition.getX(), (int) newPosition.getY()));
+                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
@@ -692,6 +711,10 @@ public class Game {
                 }
             }
         }
+    }
+
+    public boolean isPermanent (String cardName) {
+        return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
     }
 
     /**
@@ -1118,9 +1141,21 @@ public class Game {
             //TODO: add hashMap
             //      should only be used once per round/per player (either here or in view)
             case "AdminPrivilege" -> {}
-
-            case "MemorySwap" -> {}
         }
+    }
+
+    public int getUpgradeCost (String cardName) {
+        switch (cardName) {
+            case "AdminPrivilege":
+                return 3;
+            case "RearLaser":
+                return 2;
+            case "MemorySwap":
+                return 1;
+            case "SpamBlocker":
+                return 3;
+        }
+        return 0;
     }
 
     /**
@@ -1924,7 +1959,7 @@ public class Game {
      * @param y  is the y coordinate of the inquired starting point
      * @return   if the starting point is valid
      */
-    public boolean validStartingPoint(int x, int y) {
+    public boolean valideStartingPoint(int x, int y) {
         Point2D positionID = new Point2D(x, y);
         if (startPointMap.containsKey(positionID)) {
             if (!robotMap.containsKey(positionID)) {
@@ -1971,7 +2006,11 @@ public class Game {
      */
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
-        if (activePhase == 2 && !activePhaseOn) {
+        if (activePhase == 1 && !activePhaseOn) {
+            informAboutActivePhase();
+            startUpgradePhase();
+            activePhaseOn = true;
+        } else if (activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
@@ -1993,20 +2032,51 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
+
+    public void refillUpgradeShop () {
+        //how much cards reinzutun
+        int amount = playerList.size() - upgradeCardsShop.size();
+        ArrayList<String> newCards = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+            newCards.add(deckUpgrade.getTopCard().getCardName());
+            deckUpgrade.removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(newCards));
+        sendToAllPlayers(jsonMessage);
+    }
+
+
+    public void startUpgradePhase () {
+        //After the first round and If no one bought an Upgrade Card
+        if (upgradeCardsShop.size() == playerList.size() && roundCounter != 1) {
+            upgradeCardsShop.clear();
+            for (int i = 0; i < playerList.size(); i++) {
+                upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+                deckUpgrade.removeTopCard();
+            }
+            JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
+            sendToAllPlayers(jsonMessage);
+        } else {
+            //If the Upgrade Shop not full
+            refillUpgradeShop();
+        }
+        playerList.sort(comparator);        //Sort list by distance to the Antenna
+        currentPlayer = playerList.get(0).getPlayerID();
+        informAboutCurrentPlayer();
+    }
+
     /**
      * Method to check whether the game can start.
      */
-    public void canStartTheGame() {
-        if (server.canStartTheGame()) {
+    public void canStartTheGame () {
+        if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
                     int random = (int) (Math.random() * maps.size());
                     String mapName = maps.get(random);
                     server.getCurrentGame().selectMap(mapName);
-                    for (Connection connection : server.getConnections()) {
-                        server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
-                    }
                 }
                 if (server.getCurrentGame().getMapName() != null) {
                     server.getCurrentGame().setGameOn(true);
@@ -2073,7 +2143,7 @@ public class Game {
             // Compare Player IDs
             if (game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
-            } else {
+            } else if (game.getActivePhase() == 1) {
                 // Compare distance to Antenna
                 for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
                     if (entry.getValue() != null) {
@@ -2088,6 +2158,36 @@ public class Game {
 
                         int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
                         int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        return Integer.compare(distance, oDistance);
+                    }
+                }
+                return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
+            } else {
+                Player admin = null;
+                if (game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
+                    admin = game.getAdminPriorityMap().get(game.getCurrentRegister());
+                }
+                // Compare distance to Antenna
+                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if (entry.getValue() != null) {
+                        int antennaX = (int) entry.getKey().getX();
+                        int antennaY = (int) entry.getKey().getY();
+
+                        int robotX = o1.getRobot().getxPosition();
+                        int robotY = o1.getRobot().getyPosition();
+
+                        int oRobotX = o2.getRobot().getxPosition();
+                        int oRobotY = o2.getRobot().getyPosition();
+
+                        int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
+                        int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
+                        if (admin != null) {
+                            if (o1.equals(admin)) {
+                                return 1;
+                            } else if (o2.equals((admin))) {
+                                return -1;
+                            }
+                        }
                         return Integer.compare(distance, oDistance);
                     }
                 }
@@ -2271,5 +2371,25 @@ public class Game {
 
     public Map<Player, String> getRobotsRebootDirection() {
         return robotsRebootDirection;
+    }
+
+    public DeckUpgrade getDeckUpgrade() {
+        return deckUpgrade;
+    }
+
+    public Map<Integer, Player> getAdminPriorityMap () {
+        return adminPriorityMap;
+    }
+
+    public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
+        this.adminPriorityMap = adminPriorityMap;
+    }
+
+    public ArrayList<Player> getRearLasers () {
+        return rearLasers;
+    }
+
+    public void setRearLasers (ArrayList<Player> rearLasers) {
+        this.rearLasers = rearLasers;
     }
 }

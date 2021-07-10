@@ -349,6 +349,11 @@
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "5B"
+          },
+          {
+            "count": 2,
+            "type": "CheckPoint",
+            "isOnBoard": "DizzyHighway"
           }
         ],
         [

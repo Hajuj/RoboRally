@@ -34,7 +34,12 @@ public class ClientGameModel {
     private Player player;
     private ArrayList<ArrayList<ArrayList<Element>>> map;
 
+    private ArrayList<String> refillShopCards = new ArrayList<>();
+    private ArrayList<String> exchangeShopCards = new ArrayList<>();
+    private ArrayList<String> boughtCards = new ArrayList<>();
+
     private ArrayList<String> cardsInHand = new ArrayList<>();
+    private ArrayList<String> upgradeCards = new ArrayList<> ();
     private boolean handCards = false;
 
     private int energy = 0;
@@ -52,12 +57,17 @@ public class ClientGameModel {
     private ArrayList<MoveTask> moveQueue = new ArrayList<MoveTask>();
     private boolean queueMove = false;
 
+
+    private ArrayList<MoveCPTask> moveCPQueue = new ArrayList<MoveCPTask>();
+    private boolean queueCPMove = false;
+
     private ArrayList<TurnTask> turningQueue = new ArrayList<TurnTask>();
     private boolean queueTurning = false;
-    private BooleanProperty animType = new SimpleBooleanProperty(false);
-
+    private boolean animateBelts = false;
     private boolean animateGears = false;
+    private boolean animateSpaces = false;
 
+    private boolean moveCheckpoints = false;
 
     private boolean programmingPhase = false;
 
@@ -69,6 +79,7 @@ public class ClientGameModel {
 
     private int damageCount = 0;
 
+    private Map<Point2D, CheckPoint> checkPointMovedMap = new HashMap<>();
     private LinkedHashMap<Point2D, Antenna> antennaMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, CheckPoint> checkPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, ConveyorBelt> conveyorBeltMap = new LinkedHashMap<>();
@@ -86,7 +97,10 @@ public class ClientGameModel {
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
-
+    private boolean gameFinished;
+    private boolean rebooting = false;
+    private boolean refillShop = false;
+    private boolean isBuying = false;
 
 
     //Singleton Zeug
@@ -134,7 +148,6 @@ public class ClientGameModel {
         conveyorBeltMap = new LinkedHashMap<>();
         restartPointMap = new LinkedHashMap<>();
 
-        animType = new SimpleBooleanProperty(false);
         pushPanelProperty = new SimpleBooleanProperty(false);
         laserAnimeProperty = new SimpleBooleanProperty(false);
         blueBeltAnimeProperty= new SimpleBooleanProperty(false);
@@ -173,31 +186,24 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
+        rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
     }
 
-    public void setanimationType (String animationType) {
-        switch (animationType) {
-            /*case "BlueConveyorBelt" ->{
-                extractData(conveyorBeltMap);
-                for (Map.Entry<Point2D,ConveyorBelt> entry:conveyorBeltMap.entrySet()) {
-                    Point2D position =entry.getKey();
-                    ConveyorBelt belt =entry.getValue();
 
-                }
-            }*/
-            case "WallShooting" -> {
-                animType.set(true);
-            }
-        }
+    public void activateAdminPrivilege (int register) {
+        JSONMessage adminMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody(register));
+        clientModel.sendMessage(adminMessage);
+    }
 
-    }
-    public void extractData(LinkedHashMap elementMap){
 
+    public boolean getRebootSetting (){
+        return rebooting;
     }
-    public BooleanProperty getanimationType(){
-        return animType;
+    public void setRebootingSetting(boolean b){
+        this.rebooting = b;
     }
+
 
     public boolean isCurrentPlayer() {
         return currentPlayer;
@@ -285,6 +291,19 @@ public class ClientGameModel {
         }
     }
 
+    public void removeElementFromMap (Element element, int x, int y) {
+        for (int i = 0; i < map.get(x).get(y).size(); i++) {
+            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+                map.get(x).get(y).remove(i);
+                break;
+            }
+        }
+    }
+
+    public void placeElementOnMap (Element element, int x, int y) {
+        map.get(x).get(y).add(element);
+    }
+
    /* public void setActualPlayerID (int actualPlayerID) {
         int currentPlayer = this.actualPlayerID;
         this.actualPlayerID = actualPlayerID;
@@ -292,11 +311,26 @@ public class ClientGameModel {
 
     }*/
 
-    public void setActualPlayerID (int actualPlayerID){
-        this.actualPlayerID=actualPlayerID;
+
+    public void buyUpgradeCard (String cardName) {
+        boolean isBuying = true;
+        if (cardName.equals("Null")) {
+            isBuying = false;
+        }
+        JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
+        clientModel.sendMessage(buyMessage);
     }
 
-    public int getActualPlayerID() {
+
+    public void activateSpamBlocker () {
+        sendPlayCard("SpamBlocker");
+    }
+
+    public void setActualPlayerID (int actualPlayerID) {
+        this.actualPlayerID = actualPlayerID;
+    }
+
+    public int getActualPlayerID () {
         return actualPlayerID;
     }
 
@@ -304,18 +338,10 @@ public class ClientGameModel {
         return actualPhase;
     }
 
- /*   public void setActualPhase (int actualPhase) {
-        this.actualPhase = actualPhase;
-
-    }*/
 
     public boolean isProgrammingPhase() {
         return programmingPhase;
     }
-
-    /*public void setProgrammingPhase(boolean programmingPhase) {
-        this.programmingPhase = programmingPhase;
-    }*/
 
     public LinkedHashMap<Point2D, Antenna> getAntennaMap () {
         return antennaMap;
@@ -425,9 +451,11 @@ public class ClientGameModel {
     public void setCardsInHand (ArrayList<String> cardsInHand) {
         this.cardsInHand = cardsInHand;
     }
-  /*  public void setLateCard(String card) {
-        this.lateCard = card;
-    }*/
+    public void setUpgradeCards (ArrayList<String> upgradeCards){
+        this.upgradeCards = upgradeCards;
+    }
+    public ArrayList <String> getUpgradeCards(){return upgradeCards; }
+
     public String getLateCard (){
         return this.lateCard;
     }
@@ -454,6 +482,24 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
         }
     }
+
+    public void refillShop(boolean refill) {
+        boolean oldShop = this.refillShop;
+        this.refillShop = refill;
+        if (this.refillShop) {
+            propertyChangeSupport.firePropertyChange("refillShop", oldShop, true);
+        }
+
+    }
+
+    public boolean isBuying() {
+        return this.isBuying;
+    }
+
+    public void notBuying(boolean b ) {
+        this.isBuying = b;
+    }
+
 
     public void setActualPhase(int phase){
         int currentPhase = this.actualPhase;
@@ -494,6 +540,35 @@ public class ClientGameModel {
         if (this.queueMove) {
             propertyChangeSupport.firePropertyChange("queueMove", oldQueueMove, true);
         }
+    }
+
+
+    public void setCheckpointPositionByID (int checkpointID, Point2D newPosition) {
+        Point2D oldPosition = getCheckpointPositionByID(checkpointID);
+        CheckPoint checkPoint = checkPointMap.get(oldPosition);
+        checkPointMap.remove(oldPosition);
+        checkPointMap.put(newPosition, checkPoint);
+    }
+
+
+    public Point2D getCheckpointPositionByID (int checkpointID) {
+        for (Map.Entry<Point2D, CheckPoint> entry : checkPointMap.entrySet()) {
+            if (entry.getValue().getCount() == checkpointID) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
+    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+        ArrayList<Robot> robotsOnFields = new ArrayList<>();
+        for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
+            if (entry.getValue().equals(position)) {
+                robotsOnFields.add(entry.getKey());
+            }
+        }
+        return robotsOnFields;
     }
 
 
@@ -569,6 +644,44 @@ public class ClientGameModel {
         }
     }
 
+    public void setAnimateBelts (boolean belts) {
+        boolean oldValue = this.animateBelts;
+        this.animateBelts = belts;
+        if (this.animateBelts) {
+            propertyChangeSupport.firePropertyChange("BlueConveyorBelt", oldValue, true);
+        }
+    }
+
+    public void setAnimateEnergySpaces (boolean spaces) {
+        boolean oldValue = this.animateSpaces;
+        this.animateSpaces = spaces;
+        if (this.animateSpaces) {
+            propertyChangeSupport.firePropertyChange("EnergySpaces", oldValue, true);
+        }
+    }
+
+
+    public void rebootSetting (boolean b) {
+        boolean oldValue = this.rebooting ;
+        this.rebooting = b;
+        if (this.rebooting) {
+            propertyChangeSupport.firePropertyChange ( "rebootFinished", oldValue, true );
+        }
+    }
+
+
+    public ArrayList<String> getRefillShopCards () {
+        return refillShopCards;
+    }
+
+    public ArrayList<String> getExchangeShopCards () {
+        return exchangeShopCards;
+    }
+
+    public ArrayList<String> getBoughtCards () {
+        return this.boughtCards;
+    }
+
 
     public static class TurnTask {
         private int playerID;
@@ -606,4 +719,39 @@ public class ClientGameModel {
         }
     }
 
+
+    public static class MoveCPTask {
+        private int numCP;
+        private Point2D newPosition;
+
+        public MoveCPTask (int numCP, Point2D newPosition) {
+            this.numCP = numCP;
+            this.newPosition = newPosition;
+        }
+
+        public int getnumCP () {
+            return numCP;
+        }
+
+        public Point2D getNewPosition () {
+            return newPosition;
+        }
+    }
+
+
+    public ArrayList<MoveCPTask> getMoveCPQueue () {
+        return moveCPQueue;
+    }
+
+    public boolean isQueueCPMove () {
+        return queueCPMove;
+    }
+
+    public void setQueueCPMove (boolean queueCPMove) {
+        boolean oldQueueCPMove = this.queueCPMove;
+        this.queueCPMove = queueCPMove;
+        if (this.queueCPMove) {
+            propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
+        }
+    }
 }

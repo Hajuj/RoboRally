@@ -11,7 +11,6 @@ import json.protocol.*;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 
 /**
@@ -171,14 +170,13 @@ public class MessageHandler {
     public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         logger.info(ANSI_CYAN + "CurrentPlayer Message received." + ANSI_RESET);
         int playerID = currentPlayerBody.getClientID();
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //TODO:CURRENT PLAYER
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
+        if ( clientModel.getClientGameModel ().getActualPhase ()==1 &&  clientModel.getClientGameModel().getPlayer().getPlayerID()== playerID){
+
+            clientModel.getClientGameModel ().refillShop ( true );
+        }
+        //TODO phase 1 und Pkayer == selbst if ()
         logger.info("Current Player: " + playerID);
 
     }
@@ -186,11 +184,7 @@ public class MessageHandler {
     public void handleActivePhase (ClientModel clientModel, ActivePhaseBody activePhaseBody) {
         logger.info(ANSI_CYAN + "ActivePhase Message received." + ANSI_RESET);
         int phase = activePhaseBody.getPhase();
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+
         clientModel.getClientGameModel().setActualPhase(phase);
         if (phase == 2) {
             clientModel.getClientGameModel().setActualRegister(-1);
@@ -300,8 +294,6 @@ public class MessageHandler {
 
     public void handleCardPlayed (ClientModel clientModel, CardPlayedBody cardPlayedBody) {
         logger.info(ANSI_CYAN + "CardPlayed Message received." + ANSI_RESET);
-        int clientID = cardPlayedBody.getClientID();
-        String card = cardPlayedBody.getCard();
 
     }
 
@@ -335,12 +327,11 @@ public class MessageHandler {
         String type = animationBody.getType();
         switch (type) {
             case "BlueConveyorBelt": {
-
-                /*clientModel.getClientGameModel().activateBlueBeltAnime(true);
-                clientModel.getClientGameModel().extractData("BlueConveyorBelt");*/
+                clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "GreenConveyorBelt": {
+               // clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
             }
             case "PushPanel": {
@@ -360,12 +351,11 @@ public class MessageHandler {
                 break;
             }
             case "WallShooting": {
-                clientModel.getClientGameModel().setanimationType("WallShooting");
                 //animation für WallShooting
                 break;
             }
             case "EnergySpace": {
-                //animation für EnergySpace
+                clientModel.getClientGameModel().setAnimateEnergySpaces (true);
                 break;
             }
         }
@@ -408,6 +398,7 @@ public class MessageHandler {
         });
         clientModel.setGameFinished(true);
         clientModel.getClientGameModel().refreshModel();
+       // clientModel.getClientGameModel ().gameFinished(true);
     }
 
     public void handleDrawDamage (ClientModel clientModel, DrawDamageBody drawDamageBody) {
@@ -426,5 +417,52 @@ public class MessageHandler {
         clientModel.getClientGameModel().setDamageCount(pickDamageBody.getCount());
     }
 
-}
+    public void handleRefillShop(ClientModel clientModel, RefillShopBody refillShopBody) {
+        logger.info(ANSI_CYAN + "RefillShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = refillShopBody.getCards();
 
+        //clientModel.getClientGameModel ().setUpgradeCards (cards);
+        //clientModel.getClientGameModel ().refillShop ( true );
+
+        for (String card : cards) {
+            clientModel.getClientGameModel ().getUpgradeCards ().add ( card );
+        }
+    }
+
+    public void handleExchangeShop(ClientModel clientModel, ExchangeShopBody exchangeShopBody) {
+        logger.info(ANSI_CYAN + "ExchangeShop Message received." + ANSI_RESET);
+        ArrayList<String> cards = exchangeShopBody.getCards();
+
+        for (String card : cards) {
+            clientModel.getClientGameModel().getExchangeShopCards().add(card);
+        }
+    }
+
+    public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
+        int numCP = checkpointMovedBody.getCheckpointID();
+        int x = checkpointMovedBody.getX();
+        int y = checkpointMovedBody.getY();
+
+
+        ClientGameModel.MoveCPTask moveCPTask = new ClientGameModel.MoveCPTask(numCP, new Point2D(x, y));
+        clientModel.getClientGameModel().getMoveCPQueue().add(moveCPTask);
+        clientModel.getClientGameModel().setQueueCPMove(true);
+
+    }
+
+    public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
+        int id = registerChosenBody.getClientID();
+        int register = registerChosenBody.getRegister();
+        String newAdmitMessage = "Player " + id + " is Admin in " + register + " register!";
+        clientModel.receiveMessage(newAdmitMessage);
+    }
+
+    public void handleUpgradeBought(ClientModel clientModel, UpgradeBoughtBody upgradeBoughtBody) {
+        logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
+        int clientID = upgradeBoughtBody.getClientID();
+        String card = upgradeBoughtBody.getCard();
+
+        clientModel.receiveMessage("Player " + clientID + " has bought " + card);
+    }
+
+}

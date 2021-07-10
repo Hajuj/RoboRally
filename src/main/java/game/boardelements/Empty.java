@@ -1,6 +1,5 @@
 package game.boardelements;
 
-import com.google.gson.annotations.Expose;
 import game.Element;
 
 /**
@@ -8,22 +7,7 @@ import game.Element;
  */
 public class Empty extends Element {
 
-    @Expose
-    private final String type;
-    @Expose
-    private final String isOnBoard;
-
     public Empty(String type, String isOnBoard) {
-        this.type = type;
-        this.isOnBoard = isOnBoard;
+        super(type, isOnBoard);
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getIsOnBoard() {
-        return isOnBoard;
-    }
-
 }
