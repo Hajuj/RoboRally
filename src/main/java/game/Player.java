@@ -257,4 +257,12 @@ public class Player {
     public void setAI(boolean AI) {
         isAI = AI;
     }
+
+    public ArrayList<Card> getInstalledPermanentUpgrades() {
+        return installedPermanentUpgrades;
+    }
+
+    public ArrayList<Card> getTemporaryUpgrades() {
+        return temporaryUpgrades;
+    }
 }

@@ -298,7 +298,7 @@ public class Game {
      * iterates over x, then y coordinates of the map
      * checks the type of every element on every square of the map
      * creates elements of the corresponding type and adds them to hashmaps
-     * initially elements are creates as superclass Element.class
+     * initially elements are created as superclass Element.class
      * calls method replaceElementInMap() in order to replace elements of
      * superclass Element.class with corresponding subclass
      * @param map   is the deserialized 3D ArrayList from the JSON message
@@ -393,6 +393,21 @@ public class Game {
         }
     }
 
+    /**
+     * Method to move CheckPoints on BlueConveyorBelt
+     * special map effect for map "Twister"
+     * no check for belt colour because "Twister"
+     * is the only map with this effect and every CheckPoint is
+     * standing on a BlueConveyorBelt (-> 2 Movements)
+     *
+     * After moving the CheckPoints, it is necessary to replace elements
+     * in the map ArrayList, therefore calls removeElementFromMap()
+     * and placeElementOnMap() to first remove the old position of the CheckPoints
+     * and add them to the new position within the map.
+     * Also updates the hashmap checkPointMap by first saving all new locations of CheckPoints
+     * to cache hashmap checkPointMovedMap and afterwards, clearing old checkPointMap
+     * and putting all entries of checkPointMovedMap into checkPointMap.
+     */
     private void moveCheckPoints() {
         if (getMapName().equals("Twister")) {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
@@ -419,6 +434,13 @@ public class Game {
         checkPointMovedMap.clear();
     }
 
+    /**
+     * Method to remove an element from the map.
+     * Takes an element and the corresponding position of the element.
+     * @param element   is the element that is to be removed
+     * @param x         is the x coordinate of element
+     * @param y         is the y coordinate of element
+     */
     private void removeElementFromMap(Element element, int x, int y){
         for(int i = 0; i < map.get(x).get(y).size(); i++){
             if (element.getType().equals(map.get(x).get(y).get(i).getType())){
@@ -428,10 +450,28 @@ public class Game {
         }
     }
 
+    /**
+     * Method to place an element on the map.
+     * Takes an element and the corresponding position of the element.
+     * @param element   is the element that is added to the map
+     * @param x         is the x coordinate of the element
+     * @param y         is the y coordinate of the element
+     */
     private void placeElementOnMap(Element element, int x, int y){
         map.get(x).get(y).add(element);
     }
 
+    /**
+     * Method for generic one field movements on the map.
+     * Takes a position and an orientation in which the
+     * movement is supposed to be made.
+     * Does not check for blockers or out of bounds
+     * as this method is only intended for restricted use of
+     * movements -> used for moving CheckPoints on map "Twister".
+     * @param position      is the position from where a movement is made
+     * @param orientation   is the orientation in which the movement is made
+     * @return              the new position after a one field movement was made
+     */
     private Point2D getMoveInDirection(Point2D position, String orientation){
         double x = position.getX();
         double y = position.getY();
@@ -445,6 +485,14 @@ public class Game {
         return new Point2D(x, y);
     }
 
+    /**
+     * Method to activate all BlueBelts on the map.
+     * Iterates over every player in playerList and all
+     * conveyorBeltMap entries.
+     * Checks if entries within conveyorBeltMap hashmap are of Colour "blue"
+     * and moves every robot that is located on the fields of BlueBelts.
+     * Calls moveCheckPoints() for map "Twister".
+     */
     public void activateBlueBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
@@ -491,7 +539,12 @@ public class Game {
         moveCheckPoints();
     }
 
-
+    /**
+     * Method to send a new position of a player to all players.
+     * Takes the player whose position has changed.
+     * Calls sendToAllPlayers() to inform all players about the new position.
+     * @param player    is the player whose position has changed
+     */
     public void sendNewPosition(Player player) {
         int clientID = player.getPlayerID();
         int newX = player.getRobot().getxPosition();
@@ -500,6 +553,11 @@ public class Game {
         sendToAllPlayers(jsonMessage);
     }
 
+    /**
+     * Method to activate all board elements once a register has ended.
+     * Calls every element activation method in order.
+     * Order matters!
+     */
     public void activateBoardElements() {
         activateBlueBelts();
         activateGreenBelts();
@@ -512,6 +570,13 @@ public class Game {
         activateCheckpoints();
     }
 
+    /**
+     * Method to activate GreenBelts.
+     * Iterates over every player in playerList and all
+     * conveyorBeltMap entries.
+     * Checks if entries within conveyorBeltMap hashmap are of Colour "green"
+     * and moves every robot that is located on the fields of GreenBelts.
+     */
     public void activateGreenBelts() {
         for (Player player : playerList) {
             for (Point2D position : conveyorBeltMap.keySet()) {
@@ -533,6 +598,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method to activate EnergySpaces.
+     * Increases every players' energy counter whose
+     * position is on an EnergySpace.
+     */
     public void activateEnergySpaces() {
         for (Point2D position : energySpaceMap.keySet()) {
             for (Player player : getRobotsOnFieldsOwner(position)) {
@@ -552,6 +622,15 @@ public class Game {
         }
     }
 
+    /**
+     * Method to activate PushPanels.
+     * Checks for the current register and triggers the corresponding
+     * PushPanels. Iterates over all players on the field of the
+     * PushPanels.
+     * Calls getRobotOnFieldOwner() to determine the players on the fields
+     * and moveRobot() to perform the push of the robot in the orientation
+     * of the PushPanel.
+     */
     public void activatePushPanels() {
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
             for (Point2D position : pushPanelMap.keySet()) {
@@ -575,6 +654,13 @@ public class Game {
         }
     }
 
+    /**
+     * Method to activate Gears.
+     * Iterates over all gearMap entries and iterates over
+     * all players on the field of the position of the Gears.
+     * Rotates every player that is found in the orientation
+     * of the Gear.
+     */
     public void activateGears() {
         for (Point2D position : gearMap.keySet()) {
             for (Player player : getRobotsOnFieldsOwner(position)) {
@@ -591,6 +677,13 @@ public class Game {
         }
     }
 
+    /**
+     * Method to activate WallLasers.
+     * Iterates over all entries in laserMap and determines
+     * how far the laser shoots (by calling getLaserPath()).
+     * Every player that is found in the laser path draws a card
+     * by calling drawSpam() on the corresponding players.
+     */
     public void activateWallLasers() {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
@@ -601,8 +694,16 @@ public class Game {
         }
     }
 
+    /**
+     * Method to make players draw Spam cards.
+     * Takes the player who draws the card and the amount
+     * which he draws. Checks if the Spam deck has enough cards
+     * to draw. Calls PickDamage if there are not enough cards
+     * so the player chooses a different damage card type to draw.
+     * @param player    is the player who draws Spam cards
+     * @param amount    is the amount of cards the player draws
+     */
     public void drawSpam(Player player, int amount) {
-        //TODO: Check why draw damage more than deckSpam.size() is.
         int amountLeft;
         //If there is enough spam cards
         if (deckSpam.getDeck().size() >= amount) {
