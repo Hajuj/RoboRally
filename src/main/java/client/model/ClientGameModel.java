@@ -321,6 +321,16 @@ public class ClientGameModel {
     }*/
 
 
+    public void buyUpgradeCard (String cardName) {
+        boolean isBuying = true;
+        if (cardName.equals("Null")) {
+            isBuying = false;
+        }
+        JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
+        clientModel.sendMessage(buyMessage);
+    }
+
+
     public void activateSpamBlocker () {
         sendPlayCard("SpamBlocker");
     }
