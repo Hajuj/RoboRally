@@ -48,7 +48,6 @@ public class ChooseDamageViewModel implements Initializable {
                 clientGameModel.sendSelectedDamage(choosenDamageCards);
                 Stage stage = (Stage) countDisplay.getScene().getWindow();
                 stage.setScene ( null );
-                //stage.close();
             }
         }
     }

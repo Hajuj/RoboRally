@@ -60,6 +60,8 @@ public class MessageHandlerAI extends client.model.MessageHandler {
                 simpleAIModel.setStartingPointRoutine();
             } else if (clientModel.getClientGameModel().getActualPhase() == 3) {
                 simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getValueActualRegister());
+            } else if (clientModel.getClientGameModel().getActualPhase() == 1) {
+                clientModel.getClientGameModel().buyUpgradeCard("Null");
             }
         }
     }

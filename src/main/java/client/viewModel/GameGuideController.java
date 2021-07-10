@@ -58,6 +58,7 @@ public class GameGuideController {
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
             this.rootStage.show();
+            rootStage.setResizable ( false );
         }
         if (event.getSource() == buttonRobots) {
             this.rootStage = (Stage) buttonRobots.getScene().getWindow();
@@ -65,6 +66,8 @@ public class GameGuideController {
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
             this.rootStage.show();
+            rootStage.setResizable ( false );
+
         }
         if (event.getSource() == buttonRules) {
             this.rootStage = (Stage) buttonRules.getScene().getWindow();
@@ -72,13 +75,17 @@ public class GameGuideController {
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
             this.rootStage.show();
+            rootStage.setResizable ( false );
+
         }
         if (event.getSource() == buttonCourses) {
             this.rootStage = (Stage) buttonCourses.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("/view/CoursesInfo.fxml"));
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
+            rootStage.setResizable ( false );
             this.rootStage.show();
+
         }
 
 

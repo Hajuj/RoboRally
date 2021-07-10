@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="374.0" prefWidth="592.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameViewModel">
+   <children>
+      <ImageView fitHeight="374.0" fitWidth="599.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Gui/360_F_407523301_LvNpBwN9XlbPgQtImEg1yXP77QP2X81i.jpg" />
+         </image>
+      </ImageView>
+      <CheckBox layoutX="368.0" layoutY="115.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="115.0" text="Register 1" textFill="#ffe82b">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="368.0" layoutY="151.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="115.0" text="Register 2" textFill="#ffe82b">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="368.0" layoutY="187.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="115.0" text="Register 3" textFill="#ffe82b">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="368.0" layoutY="217.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="115.0" text="Register 4" textFill="#ffe82b">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox layoutX="368.0" layoutY="251.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="115.0" text="Register 5" textFill="#ffe82b">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </CheckBox>
+      <Label layoutX="125.0" layoutY="143.0" prefHeight="109.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.3);" />
+      <Text fill="#ffe82b" layoutX="139.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You just played Admin Privilage Upgrade Card: you may give your robot priority for one register." wrappingWidth="177.99998474121094">
+         <font>
+            <Font name="Yu Gothic Regular" size="15.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

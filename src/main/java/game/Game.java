@@ -155,6 +155,7 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
+        refillUpgradeShop();
         informAboutActivePhase();
         informAboutCurrentPlayer();
     }
@@ -413,15 +414,20 @@ public class Game {
                     if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
+                        int numCP = checkPointMap.get(position).getCount();
                         Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        System.out.println(conveyorBeltMap.get(position).getOrientations());
                         //second movement:
-                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(position).getOrientations().get(0));
-
+                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(newPosition).getOrientations().get(0));
+                        System.out.println(conveyorBeltMap.get(newPosition).getOrientations());
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
                         //adjust map
                         removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
                         placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+
+                        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(numCP, (int) newPosition.getX(), (int) newPosition.getY()));
+                        sendToAllPlayers(jsonMessage);
                     }
                 }
             }
@@ -502,8 +508,6 @@ public class Game {
             }
         }
         moveCheckPoints();
-        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(0, 0, 0));
-        sendToAllPlayers(jsonMessage);
     }
 
 
@@ -606,7 +610,7 @@ public class Game {
         }
     }
 
-    public void activateWallLasers() {
+    public void activateWallLasers () {
         for (Point2D position : laserMap.keySet()) {
             for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
                 for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
@@ -616,7 +620,11 @@ public class Game {
         }
     }
 
-    public void drawSpam(Player player, int amount) {
+    public boolean isPermanent (String cardName) {
+        return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
+    }
+
+    public void drawSpam (Player player, int amount) {
         //TODO: Check why draw damage more than deckSpam.size() is.
         int amountLeft;
         //If there is enough spam cards
@@ -974,23 +982,29 @@ public class Game {
 
             case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
 
-            //Permanent UpgradeCard -> should it be covered in this case?
-            case "RearLaser" -> rearLasers.add(server.getPlayerWithID(currentPlayer));
-
-            //Permanent UpgradeCard -> should it be covered in this case?
-            //TODO: add hashMap
-            //      should only be used once per round/per player (either here or in view)
-            case "AdminPrivilege" -> {}
-
-            case "MemorySwap" -> {}
         }
     }
 
-    public void replaceSpamCardsHand(Player player){
+    public int getUpgradeCost (String cardName) {
+        switch (cardName) {
+            case "AdminPrivilege":
+                return 3;
+            case "RearLaser":
+                return 2;
+            case "MemorySwap":
+                return 1;
+            case "SpamBlocker":
+                return 3;
+        }
+        return 0;
+    }
+
+
+    public void replaceSpamCardsHand (Player player) {
         int counter = 0;
-        for(Card card : player.getDeckHand().getDeck()){
+        for (Card card : player.getDeckHand().getDeck()) {
             //throw all Spam cards from hand to DeckSpam
-            if(card.getCardName().equals("Spam")){
+            if (card.getCardName().equals("Spam")) {
                 deckSpam.getDeck().add(card);
                 player.getDeckHand().getDeck().remove(card);
                 counter++;
@@ -1728,7 +1742,7 @@ public class Game {
     }
 
     //TODO change get(0)
-    public void startActivationPhase() {
+    public void startActivationPhase () {
         playerList.sort(comparator);        //Sort list by distance to the Antenna
         currentRegister = 0;
         sendCurrentCards(currentRegister);
@@ -1736,39 +1750,41 @@ public class Game {
         informAboutCurrentPlayer();
     }
 
-    public void startUpgradePhase() {
-        //When all players chose Starting Point
-        if (roundCounter == 1) {
-            deckUpgrade.shuffleDeck();
+
+    public void refillUpgradeShop () {
+        //how much cards reinzutun
+        int amount = playerList.size() - upgradeCardsShop.size();
+        ArrayList<String> newCards = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
+            newCards.add(deckUpgrade.getTopCard().getCardName());
+            deckUpgrade.removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(newCards));
+        sendToAllPlayers(jsonMessage);
+    }
+
+
+    public void startUpgradePhase () {
+        //After the first round and If no one bought an Upgrade Card
+        if (upgradeCardsShop.size() == playerList.size() && roundCounter != 1) {
+            upgradeCardsShop.clear();
             for (int i = 0; i < playerList.size(); i++) {
                 upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
                 deckUpgrade.removeTopCard();
             }
-            JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
+            JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
             sendToAllPlayers(jsonMessage);
         } else {
-            //After the first round and If no one bought an Upgrade Card
-            if (upgradeCardsShop.size() == playerList.size()) {
-                upgradeCardsShop.clear();
-                for (int i = 0; i < playerList.size(); i++) {
-                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
-                    deckUpgrade.removeTopCard();
-                }
-                JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
-                sendToAllPlayers(jsonMessage);
-            } else {
-                //If the Upgrade Shop not full
-                while (upgradeCardsShop.size() != playerList.size()) {
-                    upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
-                    deckUpgrade.removeTopCard();
-                }
-                JSONMessage jsonMessage = new JSONMessage("RefillShop", new RefillShopBody(upgradeCardsShop));
-                sendToAllPlayers(jsonMessage);
-            }
+            //If the Upgrade Shop not full
+            refillUpgradeShop();
         }
+        playerList.sort(comparator);        //Sort list by distance to the Antenna
+        currentPlayer = playerList.get(0).getPlayerID();
+        informAboutCurrentPlayer();
     }
 
-    public void canStartTheGame() {
+    public void canStartTheGame () {
         if (server.areAllPlayersReady()) {
             try {
                 if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
@@ -2071,5 +2087,13 @@ public class Game {
 
     public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
         this.adminPriorityMap = adminPriorityMap;
+    }
+
+    public ArrayList<Player> getRearLasers () {
+        return rearLasers;
+    }
+
+    public void setRearLasers (ArrayList<Player> rearLasers) {
+        this.rearLasers = rearLasers;
     }
 }

@@ -49,6 +49,7 @@ public class AvailableMapsViewModel implements Initializable {
                     String mapName = model.getAvailableMaps().get(t1.intValue());
                     model.getClientGameModel().chooseMap(mapName);
                     Stage stage = (Stage) choiceBox.getScene().getWindow();
+                    stage.setResizable ( false );
                     stage.close();
                 });
             }

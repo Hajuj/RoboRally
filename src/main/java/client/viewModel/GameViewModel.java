@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,6 +42,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import json.JSONMessage;
 import json.protocol.PlayCardBody;
@@ -95,6 +99,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public AnchorPane paneA;
     @FXML
     public Text Playerinfo;
+    @FXML
+    public Text popUpText = null;
 
 
     public ClientModel model = ClientModel.getInstance();
@@ -104,8 +110,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public HashMap<Integer, String> regToCard = new HashMap<>();
     public BorderPane right_Side;
-    public ImageView chat_Button;
     public ImageView readyButton;
+    public ImageView chatON;
+    public TextArea readyDisplay;
+    public ImageView imageView;
 
 
     ObservableList<ImageView> cards;
@@ -121,11 +129,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        pane.setMinSize ( 0,0 );
+        imageView.fitHeightProperty ().bind ( pane.heightProperty () );
+        imageView.fitWidthProperty ().bind ( pane.widthProperty () );
         right_Side.setCenter ( null );
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
+        readyDisplay.setText(model.getPlayersStatus());
+        readyDisplay.setEditable(false);
+
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
           readyButton.setVisible(false);
@@ -133,8 +147,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
         paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
-        paneA.prefHeightProperty().bind(pane.heightProperty());
-        paneA.prefWidthProperty().bind(pane.widthProperty());
+
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
             yourRobot.setImage(yourRobot());
@@ -142,32 +155,31 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         });
     }
 
-    public void showPopup(String popupText) {
-        Text text = new Text(popupText);
-        text.setFill(Color.RED);
-        text.setStroke(Color.BLACK);
-        ScaleTransition scaleTransition = new ScaleTransition();
-        scaleTransition.setDuration(Duration.seconds(2));
-        scaleTransition.setNode(text);
-        scaleTransition.setByY(1.0);
-        scaleTransition.setByX(1.0);
-        scaleTransition.setCycleCount(-1);
-        scaleTransition.setAutoReverse(true);
-        scaleTransition.play();
-        StackPane root = new StackPane();
-        root.getChildren().addAll(text);
-        Scene scene = new Scene(root, 300, 200);
-        Stage not = new Stage();
-        scene.setFill(Color.DARKGRAY);
-        not.setTitle("Player Notification");
-        not.setScene(scene);
-        not.show();
-     /*   try {
-            not.wait(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        not.close();*/
+    public void showPopup(String popText) throws IOException, InterruptedException {
+        Text text = new Text ( popText );
+
+        StackPane root = new StackPane ( );
+        root.getChildren ( ).addAll ( text );
+        root.setStyle ( "-fx-background-image: url('/images/Gui/phase.gif');" );
+        Scene scene = new Scene ( root, 600, 350 );
+        Stage not = new Stage ( );
+        not.setTitle ( "Player Notification" );
+        not.setScene ( scene );
+        //not.show();
+        ScaleTransition scaleTransition = new ScaleTransition ( );
+        scaleTransition.setDuration ( Duration.seconds ( 2 ) );
+        scaleTransition.setNode ( text );
+        scaleTransition.setByY ( 1.0 );
+        scaleTransition.setByX ( 1.0 );
+        scaleTransition.setCycleCount ( -1 );
+        scaleTransition.setAutoReverse ( true );
+        scaleTransition.play ( );
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor ( );
+        executor.submit ( () -> Platform.runLater ( not::show ) );
+        executor.schedule (
+                () -> Platform.runLater ( () -> not.close ())
+                , 3
+                , TimeUnit.SECONDS );
 
     }
 
@@ -178,7 +190,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         Image image;
         //TODO: FIGURE -1, hat keine Figur
         try {
-            input = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("Robots/YourRobots/robot" + figure + ".png"))).getFile());
+            input = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("Robots/robot" + figure + ".png"))).getFile());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -193,7 +205,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (cardName.equals ( "ready" )){
                 path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
 
-        }else{
+        } else if (cardName.equals ( "notReady" )){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-off.png")).getFile()));
+
+        }else if (cardName.equals ( "chatON" )){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/chatON.png")).getFile()));
+
+        } else if (cardName.equals ( "chatOff" )){
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/chatOff.png")).getFile()));
+
+        }else {
                 path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
         }
         image = new Image(path);
@@ -281,11 +302,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
-      /*  }catch( Exception ine){
-            System.err.println("Robot.waitForIdle, non-fatal exception caught:");
-            ine.printStackTrace();
-        }*/
-
     public void playCard() {
         int currentRegister = clientGameModel.getValueActualRegister();
         //TODO:  java.lang.reflect.InvocationTargetException?
@@ -339,6 +355,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void setCount () {
         this.count = clientGameModel.getDamageCount();
     }
+
     public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
@@ -346,6 +363,26 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
+    }
+    public void sendReadyStatus(MouseEvent mouseEvent) throws FileNotFoundException {
+        if (readyButton.getId ().equals ( "readyButton" )) {
+            readyButton.setImage ( loadImage ( "ready" ) );
+            readyButton.setId ( "notReady" );
+            model.setNewStatus ( true );
+        }else if (readyButton.getId ().equals ( "notReady" )){
+            readyButton.setImage ( loadImage ( "notReady" ) );
+            readyButton.setId ( "readyButton" );
+            model.setNewStatus(false);
+            model.setDoChooseMap(false);
+        }
+    }
+    public void goToGameGuide(ActionEvent event) throws IOException {
+        Stage rootStage = new Stage();
+        Parent root;
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
+        rootStage.setScene(new Scene(root));
+        rootStage.setTitle("Game Guide");
+        rootStage.show();
     }
 
     @Override
@@ -357,12 +394,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     pane.setCenter(fxmlLoader.load());
                     readyButton.setDisable(true);
                     model.setGameOn(false);
+                    Playerinfo.setText(null);
+                    Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-            Playerinfo.setText(null);
-            Playerinfo.setText("Please choose your Starting Point, click on the shown Points ");
         }
 
         if (evt.getPropertyName().equals("gameFinished")) {
@@ -405,7 +442,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                /*  showPopup("Programming Phase has begin");*/
                 Playerinfo.setText("Please choose your programming cards");
             });
             disableHand(false);
@@ -431,13 +467,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             clientGameModel.setLatePlayers(false);
         }
         if (evt.getPropertyName().equals("yourTurn")) {
-
             Platform.runLater(() -> {
-                //int playerRobot =model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())
                 if (Integer.parseInt(yourRobot.getId()) == model.getPlayersFigureMap().get(clientGameModel.getActualPlayerID())) {
                     Playerinfo.setText(null);
-                    //if ()
-                    Playerinfo.setText("Its your turn :)");
+                    Playerinfo.setText("It's  your  turn :)");
                     yourRobot.setEffect(new DropShadow(10.0, Color.GREEN));
                 }
                 clientGameModel.switchPlayer(false);
@@ -449,11 +482,19 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 if (evt.getNewValue().equals(2)) {
                     disableAllRegisters(false);
-                    showPopup("Programming Phase has begin");
+                    try {
+                        showPopup("Programming Phase has begin");
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace ( );
+                    }
                 }
                 if(evt.getNewValue().equals(3)){
                     disableHand(true);
-                    showPopup("Activation Phase has begun");
+                    try {
+                        showPopup("Activation Phase has begun");
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace ( );
+                    }
                     disableAllRegisters(true);
                 }
             });
@@ -467,16 +508,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                } catch (IOException e) {
                    e.printStackTrace ( );
                }
-              /* Parent root1 = null;
-               try {
-                   root1 = fxmlLoader.load();
-               } catch (IOException ioException) {
-                   ioException.printStackTrace();
-               }
-               Stage newStage = new Stage();
-               newStage.setTitle("Damage");
-               newStage.setScene(new Scene(root1));
-               newStage.show();*/
            });
        }
         if (evt.getPropertyName().equals("doChooseMap")) {
@@ -484,6 +515,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater(() -> {
                 try {
                     showMaps();
+                    Playerinfo.setText ( "please set a Starting Point" );
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
@@ -504,52 +536,46 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName ().equals ( ("rebootFinished") )){
             right_Side.setCenter ( null );
         }
-               /* Parent root1 = null;
-                try {
-                    root1 = fxmlLoader.load();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                Stage newStage = new Stage();
-                newStage.setTitle("Choose Reboot Direction");
-                newStage.setScene(new Scene(root1));
-                newStage.show();
-            });*/
+        if(evt.getPropertyName ().equals ( "refillShop" )){
+            System.out.println("jijijijijijiji");
+            clientGameModel.refillShop(false);
+                Platform.runLater(() -> {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
+                    Parent root1 = null;
+                    try {
+                        showPopup("Upgrade Phase has begin");
+                        root1 = fxmlLoader.load();
 
-  /*      if (evt.getPropertyName ().equals ( "GameFinished" )){
-            Stage stage = (Stage) pane.getScene().getWindow();
-            Parent root = null;
-            try {
-                root = FXMLLoader.load( Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
-            } catch (IOException e) {
-                e.printStackTrace ( );
-            }
-            stage.setScene(new Scene(root, 1100, 665));
-
-        }*/
+                    } catch (IOException | InterruptedException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    Stage newStage = new Stage();
+                    newStage.setTitle("UpgradeShop");
+                    newStage.setScene(new Scene(root1));
+                    newStage.show();
+                });
+        }
     }
 
     public void open_chat(MouseEvent mouseEvent) {
         Platform.runLater ( () -> {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/newChat.fxml"));
-            if (right_Side.getClass ().getClassLoader ().equals ( fxmlLoader )){
-                right_Side.setCenter ( null );
-            }else {
+            if (chatON.getId ().equals ( "chatON" )){
+                chatON.setImage ( loadImage ( "chatOff" ) );
+                chatON.setId ( "chatOff" );
                 right_Side.setCenter ( fxmlLoader.load ( ) );
+
+            }else if (chatON.getId ().equals ( "chatOff" )) {
+                chatON.setImage ( loadImage ( "chatON") );
+                chatON.setId ( "chatON" );
+                right_Side.setCenter ( null );
             }
         } catch (IOException e) {
             e.printStackTrace ( );
-        }
-        } );
+        }});
     }
 
-    public void sendReadyStatus(MouseEvent mouseEvent) throws FileNotFoundException {
-        readyButton.setImage ( loadImage ( "ready" ) );
-        readyButton.setDisable(true);
-        model.setNewStatus(true);
-        // notReadyBtn.setDisable(false);
-        }
 
 }
 

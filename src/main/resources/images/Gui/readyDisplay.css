@@ -1,0 +1,8 @@
+.text-input {
+-fx-text-fill: yellow; -fx-font-size: 12px;
+}
+
+.text-area .content {
+-fx-background-image: url('display.png');
+ -fx-background-size: 100% 100%;
+}
