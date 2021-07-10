@@ -726,11 +726,20 @@ public class Game {
         }
     }
 
+    /**
+     * Method to send a DrawDamage JSONMessage.
+     * @param player        is the player who draws damage cards
+     * @param damageCards   is the list of damage cards the player draws
+     */
     public void sendDamage(Player player, ArrayList<String> damageCards) {
         JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
         sendToAllPlayers(damageMessage);
     }
 
+    /**
+     * Method to activate damage.
+     * Calls method sendDamage().
+     */
     public void activateDamage() {
         for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
             if (entry.getValue().size() != 0) {
@@ -740,7 +749,9 @@ public class Game {
         clearDamage();
     }
 
-
+    /**
+     * Method to clear damage.
+     */
     public void clearDamage() {
         currentDamage.clear();
         for (Player player : playerList) {
@@ -748,6 +759,15 @@ public class Game {
         }
     }
 
+    /**
+     * Method to activate RobotLasers.
+     * Determines all alive Robots first and checks their sight path
+     * by calling triggersLasersInSight(). Only when there are Robots
+     * in the sight path the RobotLasers get triggered.
+     * Normally Robots shoot in their orientation. If the players have
+     * activated RearLaser UpgradeCard, the Robots also shoot in their
+     * inverseOrientation() -> backwards.
+     */
     public void activateRobotLasers() {
         ArrayList<Player> activePlayers = new ArrayList<>();
         for (Player player : playerList) {
@@ -756,15 +776,21 @@ public class Game {
         }
         for (Player player : activePlayers) {
             triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
-            //TODO further usage with rearLasers ArrayList for consistency
             if(rearLasers.contains(player)){
                 triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
             }
         }
-
-        robotsHitByRobotLaser.clear();
     }
 
+    /**
+     * Method to check the laser path of Robots and trigger
+     * their lasers. Lasers only get triggered when another
+     * Robot is found in the sight path. Every Robot that gets hit
+     * by the RobotLaser draws a Spam card.
+     * Takes the Robot that is shooting and the orientation the Robot shoots.
+     * @param robot         is the robot that shoots the RobotLaser
+     * @param orientation   is the orientation the robot shoots in
+     */
     public void triggerLasersInSight(Robot robot, String orientation) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
@@ -906,6 +932,14 @@ public class Game {
         robotsHitByRobotLaser.clear();
     }
 
+    /**
+     * Method to get every Robot on a specific position
+     * except a specific Robot.
+     * Takes a position and a Robot that should not be included.
+     * @param position      is the position that is checked
+     * @param withoutRobot  is the Robot that is not checked
+     * @return              every Robot on the position except withoutRobot
+     */
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -920,6 +954,12 @@ public class Game {
         return robotsOnFields;
     }
 
+    /**
+     * Method to get every Robot on a specific position.
+     * Takes a position.
+     * @param position  is the position that is checked
+     * @return          every Robot on the position
+     */
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -933,6 +973,12 @@ public class Game {
         return robotsOnFields;
     }
 
+    /**
+     * Method to get every Owner of a Robot on a specific position.
+     * Takes a position.
+     * @param position  is the position that is checked
+     * @return          every Player whose Robot is on the specified position
+     */
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
 
@@ -945,8 +991,13 @@ public class Game {
         return robotsOwner;
     }
 
-
-    //TODO messageBodies verwenden
+    /**
+     * Method to activate card effects.
+     * Takes a card.
+     * Uses a switch on the card name.
+     * Activates specific card effect implementations in every case.
+     * @param card  is the card that is activated
+     */
     public void activateCardEffect(String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
@@ -1072,6 +1123,13 @@ public class Game {
         }
     }
 
+    /**
+     * Method to replace all Spam cards in the hand with new cards.
+     * Takes a player whose hand is being iterated for Spam cards.
+     * Draws new cards for every discarded Spam card.
+     * Used for SpamBlocker Upgrade card.
+     * @param player    is the player who discards Spam cards
+     */
     public void replaceSpamCardsHand(Player player){
         int counter = 0;
         for(Card card : player.getDeckHand().getDeck()){
@@ -1084,10 +1142,18 @@ public class Game {
         }
         //draw a new card from deck for each discarded Spam card
         player.drawCardsProgramming(counter);
-
+        //TODO: send YourCards message
     }
 
-
+    /**
+     * Method to reboot a Robot.
+     * Takes a player, whose Robot is rebooted.
+     * Checks for specialRebootRules() on specified maps.
+     * Places the Robot of player on the corresponding restart point
+     * of the board he is located in.
+     * Makes the player draw 2 Spam cards.
+     * @param player    is the player whose Robot gets rebooted
+     */
     public void rebootRobot(Player player) {
         deadRobotsIDs.add(player.getPlayerID());
 
@@ -1177,6 +1243,10 @@ public class Game {
         sendNewPosition(player);
     }
 
+    /**
+     * Method to check for a new free starting point.
+     * @return  the position of a free starting point
+     */
     public Point2D firstFreeStartingPoint() {
         for (Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
             if (getRobotsOnFields(entry.getKey()).size() == 0) {
@@ -1186,10 +1256,14 @@ public class Game {
         return null;
     }
 
+    /**
+     * Method to set a reboot direction for the Robot.
+     */
     public void setRebootDirection() {
         //Set players who chose a direction, players who didn't set on top by default
         for (Integer deadRobotsID : deadRobotsIDs) {
-            setRebootOrientation(server.getPlayerWithID(deadRobotsID), robotsRebootDirection.getOrDefault(server.getPlayerWithID(deadRobotsID), "top"));
+            setRebootOrientation(server.getPlayerWithID(deadRobotsID), robotsRebootDirection.getOrDefault(
+                    server.getPlayerWithID(deadRobotsID), "top"));
         }
         robotsRebootDirection.clear();
         deadRobotsIDs.clear();
