@@ -2039,7 +2039,7 @@ public class Game {
 
     /**
      * Method to send the current cards.
-     * @param register
+     * @param register  is the current register
      */
     public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
