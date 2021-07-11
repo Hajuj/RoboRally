@@ -101,6 +101,7 @@ public class ClientGameModel {
     private boolean rebooting = false;
     private boolean refillShop = false;
     private boolean isBuying = false;
+    private boolean backShooting = false;
     private String boughtCard;
     private int choosenRegister;
 
@@ -319,7 +320,7 @@ public class ClientGameModel {
         if (cardName.equals("Null")) {
             isBuying = false;
         }
-        this.boughtCard = cardName;
+        boughtCards.add (cardName);
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
     }
@@ -488,6 +489,8 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("handCards", oldHandCards, true);
         }
     }
+
+
 
     public void refillShop(boolean refill) {
         boolean oldShop = this.refillShop;
@@ -696,13 +699,23 @@ public class ClientGameModel {
     }
 
     public void setChoosenRegister(int choosenRegister) {
+        System.out.println ( "ich schicke jetzt an dem Server" );
         this.choosenRegister= choosenRegister;
-        JSONMessage buyMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
-        clientModel.sendMessage(buyMessage);
+        JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
+        clientModel.sendMessage(chooseRegisterMessage);
     }
 
     public int getChoosenRegister(){
         return this.choosenRegister;
+    }
+
+    public void canBackShooting(boolean b) {
+        this.backShooting= b;
+    }
+
+    public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
+        JSONMessage chooseRegisterMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
+        clientModel.sendMessage(returnCardsMessage);
     }
 
 
