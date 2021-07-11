@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * @author Mohamad, Viktoria
@@ -509,7 +508,8 @@ public class MessageHandler {
 
 
     public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
-        //schauen ob diser spieler echt AdminPrivilegie hat
+        logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
+        //schauen ob dieser spieler echt AdminPrivilege hat
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         if (player.checkAdmin()) {
             int register = chooseRegisterBody.getRegister();
@@ -517,8 +517,33 @@ public class MessageHandler {
             JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
             server.getCurrentGame().sendToAllPlayers(adminMessage);
         }
-
     }
 
+    public void handleReturnCards(Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
+        logger.info(ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET);
+        ArrayList<String> returnedCards = returnCardsBody.getCards();
+        ArrayList<String> newCards = new ArrayList<>();
+
+        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
+
+        //Draw three cards for the player and remove them from deck Programming
+        for (int i = 0; i < 3; i++) {
+            newCards.add(player.getDeckProgramming().getTopCard().getCardName());
+            player.getDeckProgramming().removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(newCards));
+        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+
+        //Remove the returned cards from the deck Hand of the player
+        for (String card : returnedCards) {
+            for (Card card1 : player.getDeckHand().getDeck()) {
+                if (card1.getCardName().equals(card)) {
+                    player.getDeckHand().getDeck().remove(card1);
+                    player.getDeckProgramming().getDeck().add(card1);
+                    break;
+                }
+            }
+        }
+    }
 
 }
