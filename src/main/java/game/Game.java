@@ -155,7 +155,6 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
-        refillUpgradeShop();
         informAboutActivePhase();
         informAboutCurrentPlayer();
     }

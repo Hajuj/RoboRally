@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,135 +11,137 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChooseRobotViewModel">
-  <columnConstraints>
-    <ColumnConstraints minWidth="10.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <ImageView fitHeight="584.0" fitWidth="751.0" pickOnBounds="true">
-         <image>
-            <Image url="@../images/Gui/360_F_407523301_LvNpBwN9XlbPgQtImEg1yXP77QP2X81i.jpg" />
-         </image>
-      </ImageView>
-      <TextField fx:id="nameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="274.0" promptText="Please enter your name">
-         <padding>
-            <Insets left="23.0" />
-         </padding>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <GridPane.margin>
-            <Insets left="450.0" top="-450.0" />
-         </GridPane.margin></TextField>
-      <VBox alignment="CENTER" prefHeight="593.0" prefWidth="764.0">
-         <children>
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="695.0" >
-               <children>
-                  <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="125.0">
-                     <children>
-                         <ImageView fx:id="robot0" fitHeight="193.0" fitWidth="125.0" onMouseClicked="#setRobot0" pickOnBounds="true" preserveRatio="true">
-                             <image>
-                                 <Image url="@../Robots/robot0.png" />
-                             </image>
-                             <VBox.margin>
-                                 <Insets left="100.0" top="14.0" />
-                             </VBox.margin>
-                         </ImageView>
-                         <TextFlow prefHeight="200.0" prefWidth="200.0" />
-                     </children>
-                     <HBox.margin>
-                        <Insets left="26.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="157.0">
-                      <children>
-                          <ImageView fx:id="robot1" fitHeight="188.0" fitWidth="140.0" onMouseClicked="#setRobot1" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                  <Image url="@../Robots/robot1.png" />
-                              </image>
-                              <VBox.margin>
-                                  <Insets left="128.0" />
-                              </VBox.margin>
-                          </ImageView>
-                      </children>
-                     <HBox.margin>
-                        <Insets left="165.0" />
-                     </HBox.margin>
-                     <padding>
-                        <Insets left="-136.0" />
-                     </padding>
-                  </VBox>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="174.0" prefWidth="123.0">
-                      <children>
-                          <ImageView fx:id="robot2" fitHeight="210.0" fitWidth="116.0" onMouseClicked="#setRobot2" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                  <Image url="@../Robots/robot2.png" />
-                              </image>
-                              <VBox.margin>
-                                  <Insets left="60.0" />
-                              </VBox.margin>
-                          </ImageView>
-                      </children>
-                     <HBox.margin>
-                        <Insets left="150.0" />
-                     </HBox.margin>
-                     <padding>
-                        <Insets left="-190.0" />
-                     </padding>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="177.0" prefWidth="732.0" translateY="27.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="215.0" prefWidth="212.0" translateX="-70.0">
-                      <children>
-                          <ImageView fx:id="robot3" fitHeight="188.0" fitWidth="139.0" onMouseClicked="#setRobot3" pickOnBounds="true" preserveRatio="true" translateX="2.0">
-                              <image>
-                                  <Image url="@../Robots/robot3.png" />
-                              </image>
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                          </ImageView>
-                      </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                      <children>
-                          <ImageView fx:id="robot4" fitHeight="193.0" fitWidth="131.0" onMouseClicked="#setRobot4" pickOnBounds="true" preserveRatio="true" translateX="11.0">
-                              <image>
-                                  <Image url="@../Robots/robot4.png" />
-                              </image>
-                              <VBox.margin>
-                                  <Insets />
-                              </VBox.margin>
-                          </ImageView>
-                      </children>
-                  </VBox>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="161.0" prefWidth="197.0" translateX="76.0">
-                      <children>
-                          <ImageView fx:id="robot5" fitHeight="225.0" fitWidth="132.0" onMouseClicked="#setRobot5" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                  <Image url="@../Robots/robot5.png" />
-                              </image>
-                          </ImageView>
-                      </children>
-                  </VBox>
-               </children>
-               <VBox.margin>
-                  <Insets top="18.0" />
-               </VBox.margin>
-            </HBox>
-            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="36.0" prefWidth="220.0" text="Play" translateY="50.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-   </children>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="872.0" styleClass="bodybg" stylesheets="@../images/Gui/ChooseRobot.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ChooseRobotViewModel">
+    <columnConstraints>
+        <ColumnConstraints minWidth="10.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <TextField fx:id="nameField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="274.0" promptText="Please enter your name" style="-fx-background-color: #907509#907509 #907509#907509 #907509#907509 #907509#907509 #907509#907509 #907509#907509 #907509#907509 #907509#907509;" stylesheets="@../images/Gui/ChooseRobot.css" translateX="-153.0" translateY="-20.0">
+            <padding>
+                <Insets left="23.0" />
+            </padding>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <GridPane.margin>
+                <Insets left="450.0" top="-450.0" />
+            </GridPane.margin>
+            <font>
+                <Font name="Steamwheel" size="13.0" />
+            </font></TextField>
+        <VBox alignment="CENTER" prefHeight="593.0" prefWidth="872.0">
+            <children>
+                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="695.0">
+                    <children>
+                        <VBox alignment="CENTER" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="125.0">
+                            <children>
+                                <ImageView fx:id="robot0" fitHeight="193.0" fitWidth="125.0" onMouseClicked="#setRobot0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Robots/robot0.png" />
+                                    </image>
+                                    <VBox.margin>
+                                        <Insets left="100.0" top="14.0" />
+                                    </VBox.margin>
+                                </ImageView>
+                                <TextFlow prefHeight="200.0" prefWidth="200.0" />
+                            </children>
+                            <HBox.margin>
+                                <Insets left="26.0" />
+                            </HBox.margin>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="157.0">
+                            <children>
+                                <ImageView fx:id="robot1" fitHeight="188.0" fitWidth="140.0" onMouseClicked="#setRobot1" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Robots/robot1.png" />
+                                    </image>
+                                    <VBox.margin>
+                                        <Insets left="128.0" />
+                                    </VBox.margin>
+                                </ImageView>
+                            </children>
+                            <HBox.margin>
+                                <Insets left="165.0" />
+                            </HBox.margin>
+                            <padding>
+                                <Insets left="-136.0" />
+                            </padding>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="174.0" prefWidth="123.0">
+                            <children>
+                                <ImageView fx:id="robot2" fitHeight="210.0" fitWidth="116.0" onMouseClicked="#setRobot2" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Robots/robot2.png" />
+                                    </image>
+                                    <VBox.margin>
+                                        <Insets left="60.0" />
+                                    </VBox.margin>
+                                </ImageView>
+                            </children>
+                            <HBox.margin>
+                                <Insets left="150.0" />
+                            </HBox.margin>
+                            <padding>
+                                <Insets left="-190.0" />
+                            </padding>
+                        </VBox>
+                    </children>
+                </HBox>
+                <HBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="177.0" prefWidth="732.0" translateY="27.0">
+                    <children>
+                        <VBox alignment="CENTER" prefHeight="215.0" prefWidth="212.0" translateX="-70.0">
+                            <children>
+                                <ImageView fx:id="robot3" fitHeight="188.0" fitWidth="139.0" onMouseClicked="#setRobot3" pickOnBounds="true" preserveRatio="true" translateX="2.0">
+                                    <image>
+                                        <Image url="@../Robots/robot3.png" />
+                                    </image>
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </ImageView>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <ImageView fx:id="robot4" fitHeight="193.0" fitWidth="131.0" onMouseClicked="#setRobot4" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Robots/robot4.png" />
+                                    </image>
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </ImageView>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="161.0" prefWidth="197.0" translateX="76.0">
+                            <children>
+                                <ImageView fx:id="robot5" fitHeight="225.0" fitWidth="132.0" onMouseClicked="#setRobot5" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Robots/robot5.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="18.0" />
+                    </VBox.margin>
+                </HBox>
+                <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playButtonClicked" onMouseClicked="#playButtonClicked" prefHeight="55.0" prefWidth="239.0" style="-fx-background-color: #907509#907509 #907509#907509 #907509#907509 #907509#907509;" text="Play" translateY="50.0">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <effect>
+                        <InnerShadow choke="0.15" height="63.5" radius="29.7325" width="57.43" />
+                    </effect>
+                </Button>
+            </children>
+        </VBox>
+    </children>
 </GridPane>
