@@ -33,7 +33,7 @@
             <Insets left="450.0" top="-450.0" />
          </GridPane.margin>
          <font>
-            <Font name="Steamwheel" size="13.0" />
+            <Font name="Steamwheel" size="20.0" />
          </font></TextField>
       <VBox alignment="CENTER" prefHeight="593.0" prefWidth="872.0">
          <children>

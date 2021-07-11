@@ -15,10 +15,9 @@
    <children>
       <ImageView fitHeight="682.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-117.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../images/Gui/startScreen.gif" />
+            <Image url="@../startScreenRobo.gif" />
          </image>
       </ImageView>
-      <ImageView fitHeight="251.0" fitWidth="456.0" layoutX="208.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
       <VBox layoutX="298.0" layoutY="327.0" prefHeight="221.0" prefWidth="276.0">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
