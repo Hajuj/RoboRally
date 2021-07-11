@@ -101,7 +101,7 @@ public class Game {
         availableMaps.add("DeathTrap");
         availableMaps.add("ExtraCrispy");
         availableMaps.add("LostBearings");
-        availableMaps.add("AlmostTwister");
+        availableMaps.add("Twister");
         gameTimer = new GameTimer(server);
     }
 
@@ -423,7 +423,7 @@ public class Game {
      * and putting all entries of checkPointMovedMap into checkPointMap.
      */
     private void moveCheckPoints() {
-        if (getMapName().equals("AlmostTwister")) {
+        if (getMapName().equals("Twister")) {
             for (Point2D positionCheckPoint : checkPointMap.keySet()) {
                 for (Point2D position : conveyorBeltMap.keySet()) {
                     if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
