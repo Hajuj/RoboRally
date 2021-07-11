@@ -430,18 +430,23 @@ public class Game {
                         //calculate new checkPoint position
                         //first movement:
                         int numCP = checkPointMap.get(position).getCount();
-                        Point2D newPosition = getMoveInDirection(positionCheckPoint, conveyorBeltMap.get(position).getOrientations().get(0));
+                        Point2D newPosition = getMoveInDirection(positionCheckPoint,
+                                conveyorBeltMap.get(position).getOrientations().get(0));
                         System.out.println(conveyorBeltMap.get(position).getOrientations());
                         //second movement:
-                        newPosition = getMoveInDirection(newPosition, conveyorBeltMap.get(newPosition).getOrientations().get(0));
+                        newPosition = getMoveInDirection(newPosition,
+                                conveyorBeltMap.get(newPosition).getOrientations().get(0));
                         System.out.println(conveyorBeltMap.get(newPosition).getOrientations());
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
                         //adjust map
-                        removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(), (int) positionCheckPoint.getY());
-                        placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(), (int) newPosition.getY());
+                        removeElementFromMap(checkPointMap.get(positionCheckPoint), (int) positionCheckPoint.getX(),
+                                (int) positionCheckPoint.getY());
+                        placeElementOnMap(checkPointMap.get(positionCheckPoint), (int) newPosition.getX(),
+                                (int) newPosition.getY());
 
-                        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved", new CheckpointMovedBody(numCP, (int) newPosition.getX(), (int) newPosition.getY()));
+                        JSONMessage jsonMessage = new JSONMessage("CheckpointMoved",
+                                new CheckpointMovedBody(numCP, (int) newPosition.getX(), (int) newPosition.getY()));
                         sendToAllPlayers(jsonMessage);
                     }
                 }
@@ -997,7 +1002,7 @@ public class Game {
     }
 
     /**
-     * Method to get every Owner of a Robot on a specific position.
+     * Method to get every owner of a Robot on a specific position.
      * Takes a position.
      * @param position  is the position that is checked
      * @return          every Player whose Robot is on the specified position
@@ -1177,7 +1182,8 @@ public class Game {
         }
         //draw a new card from deck for each discarded Spam card
         player.drawCardsProgramming(counter);
-        //TODO: send YourCards message
+        JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+        server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
     }
 
     /**
