@@ -2040,6 +2040,7 @@ public class Game {
         //how much cards reinzutun
         int amount = playerList.size() - upgradeCardsShop.size();
         ArrayList<String> newCards = new ArrayList<>();
+        //deckUpgrade.shuffleDeck ();
         for (int i = 0; i < amount; i++) {
             upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
             newCards.add(deckUpgrade.getTopCard().getCardName());

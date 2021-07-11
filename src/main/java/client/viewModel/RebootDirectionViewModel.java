@@ -60,7 +60,7 @@ public class RebootDirectionViewModel implements Initializable{
         Image image;
         //TODO: FIGURE -1, hat keine Figur
         try {
-            input = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("Robots/YourRobots/robot" + figure + ".png"))).getFile());
+            input = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("Robots/robot" + figure + ".png"))).getFile());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

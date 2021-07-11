@@ -173,7 +173,6 @@ public class MessageHandler {
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
         if ( clientModel.getClientGameModel ().getActualPhase ()==1 &&  clientModel.getClientGameModel().getPlayer().getPlayerID()== playerID){
-
             clientModel.getClientGameModel ().refillShop ( true );
         }
         //TODO phase 1 und Pkayer == selbst if ()
@@ -209,6 +208,7 @@ public class MessageHandler {
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHand().clear();
         clientModel.getClientGameModel().setCardsInHand(yourCardsBody.getCardsInHand());
+        System.out.println ( clientModel.getClientGameModel ().getCardsInHand () );
         clientModel.getClientGameModel().setHandCards(true);
     }
 

@@ -101,6 +101,11 @@ public class ClientGameModel {
     private boolean rebooting = false;
     private boolean refillShop = false;
     private boolean isBuying = false;
+    private boolean backShooting = false;
+    private String boughtCard;
+    private int choosenRegister;
+    private ArrayList<String> returnedCards;
+    private boolean isReturning= false;
 
 
     //Singleton Zeug
@@ -317,10 +322,14 @@ public class ClientGameModel {
         if (cardName.equals("Null")) {
             isBuying = false;
         }
+        boughtCards.add (cardName);
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
     }
 
+    public String getBoughtCard() {
+        return this.boughtCard;
+    }
 
     public void activateSpamBlocker () {
         sendPlayCard("SpamBlocker");
@@ -483,13 +492,14 @@ public class ClientGameModel {
         }
     }
 
+
+
     public void refillShop(boolean refill) {
         boolean oldShop = this.refillShop;
         this.refillShop = refill;
         if (this.refillShop) {
-            propertyChangeSupport.firePropertyChange("refillShop", oldShop, true);
+            propertyChangeSupport.firePropertyChange ( "refillShop", oldShop, true );
         }
-
     }
 
     public boolean isBuying() {
@@ -682,6 +692,45 @@ public class ClientGameModel {
         return this.boughtCards;
     }
 
+    public void finishBuyCard(boolean b) {
+        boolean oldValue = this.isBuying ;
+        this.isBuying = b;
+        if (this.isBuying) {
+            propertyChangeSupport.firePropertyChange ( "buyingCardFinished", oldValue, true );
+        }
+    }
+
+    public void setChoosenRegister(int choosenRegister) {
+        System.out.println ( "ich schicke jetzt an dem Server" );
+        this.choosenRegister= choosenRegister;
+        JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
+        clientModel.sendMessage(chooseRegisterMessage);
+    }
+
+    public int getChoosenRegister(){
+        return this.choosenRegister;
+    }
+
+    public void canBackShooting(boolean b) {
+        this.backShooting= b;
+    }
+
+    public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
+        this.returnedCards = allReturnedCardsL;
+        JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
+        clientModel.sendMessage(returnCardsMessage);
+    }
+    public void finishRetunrCard(boolean b) {
+        boolean oldValue = this.isReturning ;
+        this.isReturning = b;
+        if (this.isReturning) {
+            propertyChangeSupport.firePropertyChange ( "returningFinished", oldValue, true );
+        }
+    }
+
+    public ArrayList<String> getReturnedCards() {
+        return this.returnedCards;
+    }
 
     public static class TurnTask {
         private int playerID;
