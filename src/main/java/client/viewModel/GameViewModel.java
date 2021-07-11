@@ -436,11 +436,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             regToCard.put ( 2, null );
             regToCard.put ( 3, null );
             regToCard.put ( 4, null );
-            for (ImageView register : registers) {
-                register.setImage ( null );
+            if (clientGameModel.getActualPhase ()==2) {
+                for (ImageView register : registers) {
+                    register.setImage ( null );
+                }
             }
             cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8 );
+            for (ImageView card : cards) {
+                Image image = card.getImage ();
+                card.setImage ( null );
+            }
             Platform.runLater ( () -> {
                 try {
                     for (int j = 0; j < cards.size ( ); j++) {
@@ -571,6 +577,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName ( ).equals ( "buyingCardFinished" )) {
             clientGameModel.finishBuyCard ( false );
+            clientGameModel.setHandCards ( true );
 
             upgradeCards = FXCollections.observableArrayList ( upgradeCard_1, upgradeCard_2, upgradeCard_3, upgradeCard_4, upgradeCard_5, upgradeCard_6 );
 
@@ -593,6 +600,21 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     e.printStackTrace ( );
                 }
             } );
+        }
+        if (evt.getPropertyName ().equals ( "returningFinished" )){
+            System.out.println ( "IM RETURNING" );
+            clientGameModel.finishRetunrCard ( false );
+            Platform.runLater ( () -> {
+
+                cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
+                    card_6, card_7, card_8 );
+            for (ImageView card:cards) {
+                if (clientGameModel.getReturnedCards ().contains ( card.getId () )){
+                    card.setImage ( null );
+                }
+            }
+            } );
+
         }
 
     }
@@ -648,36 +670,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-    public void handlePermanentCard(MouseEvent mouseEvent) throws IOException {
-       System.out.println ( "ich bin drinnn" );
-       ImageView source = (ImageView) mouseEvent.getSource ();
-        if (source.getId ().equals ( "AdminPrivilege" )){
-            System.out.println ( "Die Karte ist AdminPrivelege" );
-            permenantCard.setDisable ( true );
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AdminPrivilegeEffekt.fxml"));
-            Parent root1 = fxmlLoader.load();
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root1));
-            newStage.show();
-        }else if (source.getId ().equals ( "RearLaser" )){
-            System.out.println ( "rearLaser" );
-            clientGameModel.canBackShooting(true);
-        }
-    }
-
-    public void handleTemporaryCard(MouseEvent mouseEvent) {
-        ImageView source = (ImageView) mouseEvent.getSource ();
-        if (source.getId ().equals ( "MemorySwap" )){
-            System.out.println ( "memorySwap" );
-        }else if (source.getId ().equals ( "SpamBlocker" )){
-            for (ImageView card:cards) {
-                card.setImage ( null );
-            }
-
-            System.out.println ( "SpamBlocker" );
-        }
-    }
-
     public void handleUpgradeCard(MouseEvent mouseEvent) throws IOException {
         ImageView source = (ImageView) mouseEvent.getSource ();
         if (source.getId ().equals ( "AdminPrivilege" )){
@@ -709,7 +701,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         else if (source.getId ().equals ( "SpamBlocker" )){
             if (clientGameModel.getActualPhase ()== 2) {
-                clientGameModel.setHandCards ( true );
                 regToCard.put ( 0, null );
                 regToCard.put ( 1, null );
                 regToCard.put ( 2, null );
@@ -721,6 +712,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 for (ImageView card : cards) {
                     card.setImage ( null );
                 }
+                clientGameModel.setHandCards ( true );
+
             }else {
                 Alert a = new Alert ( Alert.AlertType.ERROR );
                 a.setContentText ( "you cant play this CArd in Activation Phase" );

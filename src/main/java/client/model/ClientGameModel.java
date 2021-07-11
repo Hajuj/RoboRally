@@ -104,6 +104,8 @@ public class ClientGameModel {
     private boolean backShooting = false;
     private String boughtCard;
     private int choosenRegister;
+    private ArrayList<String> returnedCards;
+    private boolean isReturning= false;
 
 
     //Singleton Zeug
@@ -714,10 +716,21 @@ public class ClientGameModel {
     }
 
     public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
-        JSONMessage chooseRegisterMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
+        this.returnedCards = allReturnedCardsL;
+        JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
         clientModel.sendMessage(returnCardsMessage);
     }
+    public void finishRetunrCard(boolean b) {
+        boolean oldValue = this.isReturning ;
+        this.isReturning = b;
+        if (this.isReturning) {
+            propertyChangeSupport.firePropertyChange ( "returningFinished", oldValue, true );
+        }
+    }
 
+    public ArrayList<String> getReturnedCards() {
+        return this.returnedCards;
+    }
 
     public static class TurnTask {
         private int playerID;

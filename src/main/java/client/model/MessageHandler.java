@@ -208,6 +208,7 @@ public class MessageHandler {
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHand().clear();
         clientModel.getClientGameModel().setCardsInHand(yourCardsBody.getCardsInHand());
+        System.out.println ( clientModel.getClientGameModel ().getCardsInHand () );
         clientModel.getClientGameModel().setHandCards(true);
     }
 
