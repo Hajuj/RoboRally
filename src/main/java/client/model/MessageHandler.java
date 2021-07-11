@@ -204,6 +204,7 @@ public class MessageHandler {
 
     public void handleYourCards (ClientModel clientModel, YourCardsBody yourCardsBody) {
         logger.info(ANSI_CYAN + "YourCards Message received." + ANSI_RESET);
+        //TODO: add the YourCards from ReturnCards method to the hand
         //speichere die Cards und refresh the View
         clientModel.getClientGameModel().getCardsInHand().clear();
         clientModel.getClientGameModel().setCardsInHand(yourCardsBody.getCardsInHand());
@@ -438,6 +439,7 @@ public class MessageHandler {
     }
 
     public void handleCheckpointMovedBody (ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
+        logger.info(ANSI_CYAN + "CheckPointMoved Message received." + ANSI_RESET);
         int numCP = checkpointMovedBody.getCheckpointID();
         int x = checkpointMovedBody.getX();
         int y = checkpointMovedBody.getY();
@@ -450,6 +452,7 @@ public class MessageHandler {
     }
 
     public void handleRegisterChosen (ClientModel clientModel, RegisterChosenBody registerChosenBody) {
+        logger.info(ANSI_CYAN + "RegisterChosen Message received." + ANSI_RESET);
         int id = registerChosenBody.getClientID();
         int register = registerChosenBody.getRegister();
         String newAdmitMessage = "Player " + id + " is Admin in " + register + " register!";

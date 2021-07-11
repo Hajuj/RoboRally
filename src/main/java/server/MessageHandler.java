@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * @author Mohamad, Viktoria
@@ -497,7 +496,6 @@ public class MessageHandler {
         server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
         System.out.println("player id " + server.getCurrentGame().getCurrentPlayer());
         if (server.getCurrentGame().getCurrentPlayer() != -1) {
-            System.out.println ( "hier sollte programming Phase" );
             JSONMessage currentPlayerMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(server.getCurrentGame().getCurrentPlayer()));
             server.getCurrentGame().sendToAllPlayers(currentPlayerMessage);
         } else { //All players have chose a starting point
@@ -510,7 +508,8 @@ public class MessageHandler {
 
 
     public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
-        //schauen ob diser spieler echt AdminPrivilegie hat
+        logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
+        //schauen ob dieser spieler echt AdminPrivilege hat
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
        // if (player.checkAdmin()) {
             int register = chooseRegisterBody.getRegister();
@@ -527,7 +526,6 @@ public class MessageHandler {
         ArrayList<String> newCards = new ArrayList<>();
 
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-
         //Draw three cards for the player and remove them from deck Programming
         for (int i = 0; i < 3; i++) {
             newCards.add(player.getDeckProgramming().getTopCard().getCardName());

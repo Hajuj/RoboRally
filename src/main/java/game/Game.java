@@ -986,19 +986,13 @@ public class Game {
     }
 
     public int getUpgradeCost (String cardName) {
-        switch (cardName) {
-            case "AdminPrivilege":
-                return 3;
-            case "RearLaser":
-                return 2;
-            case "MemorySwap":
-                return 1;
-            case "SpamBlocker":
-                return 3;
-        }
-        return 0;
+        return switch (cardName) {
+            case "AdminPrivilege", "SpamBlocker" -> 3;
+            case "RearLaser" -> 2;
+            case "MemorySwap" -> 1;
+            default -> 0;
+        };
     }
-
 
     public void replaceSpamCardsHand (Player player) {
         int counter = 0;
@@ -1775,7 +1769,7 @@ public class Game {
             }
             JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
             sendToAllPlayers(jsonMessage);
-        } else {
+        } else if (roundCounter != 1) {
             //If the Upgrade Shop not full
             refillUpgradeShop();
         }

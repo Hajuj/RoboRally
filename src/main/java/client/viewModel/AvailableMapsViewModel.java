@@ -20,7 +20,7 @@ public class AvailableMapsViewModel implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
-        choiceBox.setStyle("-fx-font: 23px \"Serif\";");
+//        choiceBox.setStyle("-fx-font: 23px \"Serif\";");
         Platform.runLater(() -> {
             for (String m : model.getAvailableMaps()) {
                 choiceBox.getItems().add(m);

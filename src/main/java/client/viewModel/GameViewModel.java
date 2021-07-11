@@ -152,8 +152,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-          readyButton.setVisible(false);
-         }
+            readyButton.setVisible(false);
+        }
 
     /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
         paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
@@ -213,7 +213,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         FileInputStream path = null;
         Image image;
         if (cardName.equals ( "ready" )){
-                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
 
         } else if (cardName.equals ( "notReady" )){
             path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-off.png")).getFile()));
@@ -224,7 +224,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         } else if (cardName.equals ( "chatOff" )){
             path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/chatOff.png")).getFile()));
         }else {
-                path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
+            path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
         }
         image = new Image(path);
         return image;
@@ -540,7 +540,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater ( () -> {
                 setCount ( );
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/RebootDirection.fxml" ) );
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource ( "/view/RebootDirection.fxml" ) );
                     right_Side.setCenter ( fxmlLoader.load ( ) );
                 } catch (IOException e) {
                     e.printStackTrace ( );

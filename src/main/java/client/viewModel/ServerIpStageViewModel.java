@@ -69,23 +69,23 @@ public class ServerIpStageViewModel implements Initializable {
             //Numberformatexception, wenn nicht checken, ob valide ist
             serverPort = Integer.parseInt(serverPortField.getText());
 //            if (validateIpAdress(serverIP, serverPort)) {
-                if (model.connectClient(serverIP, serverPort)) {
-                    Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                    stage.close();
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
-                    Parent root1 = fxmlLoader.load();
-                    Stage newStage = new Stage();
-                    newStage.setTitle("RoboRally");
-                    newStage.setScene(new Scene(root1));
-                    newStage.show();
-                } else {
-                    Alert a = new Alert(Alert.AlertType.NONE);
-                    a.setAlertType(Alert.AlertType.ERROR);
-                    a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
-                    a.show();
-                    serverAddressField.clear();
-                    serverPortField.clear();
-                }
+            if (model.connectClient(serverIP, serverPort)) {
+                Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                stage.close();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
+                Parent root1 = fxmlLoader.load();
+                Stage newStage = new Stage();
+                newStage.setTitle("RoboRally");
+                newStage.setScene(new Scene(root1));
+                newStage.show();
+            } else {
+                Alert a = new Alert(Alert.AlertType.NONE);
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
+                a.show();
+                serverAddressField.clear();
+                serverPortField.clear();
+            }
         } catch (IOException e) {
             e.printStackTrace();
 
