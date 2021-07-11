@@ -385,105 +385,105 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             }
         }
     }
-  /*  public void handleAnimation() {
+    /*  public void handleAnimation() {
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        clientModel.getClientGameModel().setStartingPoint(false);
-        if (evt.getPropertyName().equals("gameFinished")) {
-            fieldMap.clear();
-        }
-        if (evt.getPropertyName().equals("startingPoint")) {
-            Platform.runLater(() -> {
-                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                    setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                    clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                    //handleAnimation("BlueConveyorBelt");
-                    // handleLaserAnime();
-                }
-            });
-        }
+      @Override
+      public void propertyChange(PropertyChangeEvent evt) {
+          clientModel.getClientGameModel().setStartingPoint(false);
+          if (evt.getPropertyName().equals("gameFinished")) {
+              fieldMap.clear();
+          }
+          if (evt.getPropertyName().equals("startingPoint")) {
+              Platform.runLater(() -> {
+                  for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                      int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                      setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                      clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                      clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                      //handleAnimation("BlueConveyorBelt");
+                      // handleLaserAnime();
+                  }
+              });
+          }
 
-        if (evt.getPropertyName().equals("queueMove")) {
-            clientModel.getClientGameModel().setQueueMove(false);
-            for (int i = 0; i < clientGameModel.getMoveQueue().size(); i++) {
-                ClientGameModel.MoveTask newMoveTask = clientGameModel.getMoveQueue().get(i);
-                int playerID = newMoveTask.getPlayerID();
-                Point2D point2D = newMoveTask.getNewPosition();
-                moveRobot(playerID, (int) point2D.getX(), (int) point2D.getY());
-                clientGameModel.getMoveQueue().remove(i);
-            }
-        }
+          if (evt.getPropertyName().equals("queueMove")) {
+              clientModel.getClientGameModel().setQueueMove(false);
+              for (int i = 0; i < clientGameModel.getMoveQueue().size(); i++) {
+                  ClientGameModel.MoveTask newMoveTask = clientGameModel.getMoveQueue().get(i);
+                  int playerID = newMoveTask.getPlayerID();
+                  Point2D point2D = newMoveTask.getNewPosition();
+                  moveRobot(playerID, (int) point2D.getX(), (int) point2D.getY());
+                  clientGameModel.getMoveQueue().remove(i);
+              }
+          }
 
-        if (evt.getPropertyName().equals("queueTurning")) {
-            clientModel.getClientGameModel().setQueueTurning(false);
-            Platform.runLater(() -> {
-                for (int i = 0; i < clientGameModel.getTurningQueue().size(); i++) {
-                    ClientGameModel.TurnTask newTurnTask = clientGameModel.getTurningQueue().get(i);
-                    int playerID = newTurnTask.getplayerID();
-                    String rotation = newTurnTask.getRotation();
-                    turnRobot(playerID, rotation);
-                    clientGameModel.getTurningQueue().remove(i);
-                }
-            });
-        }
+          if (evt.getPropertyName().equals("queueTurning")) {
+              clientModel.getClientGameModel().setQueueTurning(false);
+              Platform.runLater(() -> {
+                  for (int i = 0; i < clientGameModel.getTurningQueue().size(); i++) {
+                      ClientGameModel.TurnTask newTurnTask = clientGameModel.getTurningQueue().get(i);
+                      int playerID = newTurnTask.getplayerID();
+                      String rotation = newTurnTask.getRotation();
+                      turnRobot(playerID, rotation);
+                      clientGameModel.getTurningQueue().remove(i);
+                  }
+              });
+          }
 
-        if (evt.getPropertyName().equals("Gears")) {
-            clientModel.getClientGameModel().setAnimateGears(false);
-            Platform.runLater(() -> {
-                animateGears();
-            });
-        }
-        if (evt.getPropertyName().equals("oldQueueCPMove")) {
-            clientModel.getClientGameModel().setQueueCPMove(false);
-            Platform.runLater(() -> {
-                for (int i = 0; i < clientGameModel.getMoveCPQueue().size(); i++) {
-                    ClientGameModel.MoveCPTask newMoveCPTask = clientGameModel.getMoveCPQueue().get(i);
-                    int checkpointID = newMoveCPTask.getnumCP();
-                    Point2D point2D = newMoveCPTask.getNewPosition();
-                    moveCheckPoint(checkpointID, point2D);
-                    clientGameModel.getMoveCPQueue().remove(i);
-                }
-            });
-        }
+          if (evt.getPropertyName().equals("Gears")) {
+              clientModel.getClientGameModel().setAnimateGears(false);
+              Platform.runLater(() -> {
+                  animateGears();
+              });
+          }
+          if (evt.getPropertyName().equals("oldQueueCPMove")) {
+              clientModel.getClientGameModel().setQueueCPMove(false);
+              Platform.runLater(() -> {
+                  for (int i = 0; i < clientGameModel.getMoveCPQueue().size(); i++) {
+                      ClientGameModel.MoveCPTask newMoveCPTask = clientGameModel.getMoveCPQueue().get(i);
+                      int checkpointID = newMoveCPTask.getnumCP();
+                      Point2D point2D = newMoveCPTask.getNewPosition();
+                      moveCheckPoint(checkpointID, point2D);
+                      clientGameModel.getMoveCPQueue().remove(i);
+                  }
+              });
+          }
 
-    }
+      }
 
-    public void handleAnimation(String type) {
-        double ToX = 0;
-        double ToY = 0;
-        for (Map.Entry<Point2D, ConveyorBelt> entry : clientGameModel.getConveyorBeltMap ( ).entrySet ( )) {
-            ConveyorBelt belt = entry.getValue ( );
-            if (belt.getOrientations ( ).equals ( "left" ) || belt.getOrientations ( ).get ( 0 ).equals ( "left" )) {
-                ToX = -2;
-                ToY = 0;
-            }else if (belt.getOrientations ( ).equals ( "right" ) || belt.getOrientations ( ).get ( 0 ).equals ( "right" )) {
-                ToX = 2;
-                ToY = 0;
-            }else if (belt.getOrientations ( ).equals ( "top" ) || belt.getOrientations ( ).get ( 0 ).equals ( "top" )) {
-                ToY = -2;
-                ToX = -2;
-            }else if ( belt.getOrientations ( ).get ( 0 ).equals ( "bottom" )||belt.getOrientations ( ).equals ( "bottom" ) ) {
-                ToY = 2;
-                ToX = 2;
-            }else { ToX=2;
-                ToY=0;
-           }
-            TranslateTransition transition = new TranslateTransition ( );
-            ImageView belts = (ImageView) fieldMap.get ( entry.getKey ( ) ).getChildren ( ).get ( fieldMap.get ( entry.getKey ( ) ).getChildren ( ).size ( ) - 1 );
-            belts.setScaleY ( 0.95 );
-            belts.setScaleX ( 0.95 );
-            transition.setNode ( belts );
-            transition.setToX ( ToX );
-            transition.setToY ( ToY );
-            transition.setCycleCount ( Animation.INDEFINITE );
-            transition.setDuration ( Duration.INDEFINITE );
-            transition.setAutoReverse ( true );
-            transition.play ();
-        }
-    }*/
+      public void handleAnimation(String type) {
+          double ToX = 0;
+          double ToY = 0;
+          for (Map.Entry<Point2D, ConveyorBelt> entry : clientGameModel.getConveyorBeltMap ( ).entrySet ( )) {
+              ConveyorBelt belt = entry.getValue ( );
+              if (belt.getOrientations ( ).equals ( "left" ) || belt.getOrientations ( ).get ( 0 ).equals ( "left" )) {
+                  ToX = -2;
+                  ToY = 0;
+              }else if (belt.getOrientations ( ).equals ( "right" ) || belt.getOrientations ( ).get ( 0 ).equals ( "right" )) {
+                  ToX = 2;
+                  ToY = 0;
+              }else if (belt.getOrientations ( ).equals ( "top" ) || belt.getOrientations ( ).get ( 0 ).equals ( "top" )) {
+                  ToY = -2;
+                  ToX = -2;
+              }else if ( belt.getOrientations ( ).get ( 0 ).equals ( "bottom" )||belt.getOrientations ( ).equals ( "bottom" ) ) {
+                  ToY = 2;
+                  ToX = 2;
+              }else { ToX=2;
+                  ToY=0;
+             }
+              TranslateTransition transition = new TranslateTransition ( );
+              ImageView belts = (ImageView) fieldMap.get ( entry.getKey ( ) ).getChildren ( ).get ( fieldMap.get ( entry.getKey ( ) ).getChildren ( ).size ( ) - 1 );
+              belts.setScaleY ( 0.95 );
+              belts.setScaleX ( 0.95 );
+              transition.setNode ( belts );
+              transition.setToX ( ToX );
+              transition.setToY ( ToY );
+              transition.setCycleCount ( Animation.INDEFINITE );
+              transition.setDuration ( Duration.INDEFINITE );
+              transition.setAutoReverse ( true );
+              transition.play ();
+          }
+      }*/
     private void animateGears () {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
             int layer = 1;

@@ -56,7 +56,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-  //  private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+    //  private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
 
 
     @Override
@@ -96,7 +96,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
 
 
     public void showDescription(MouseEvent mouseEvent) {
-      toolTip1.setText ( "card effekt " );
+        toolTip1.setText ( "card effekt " );
 
     }
 
@@ -124,7 +124,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         refreshShadow();
         choosenCard.setEffect(new DropShadow (20.0, Color.RED));
         setChoosenUpgradeCard (choosenCard.getId ());
-        
+
     }
     public void refreshShadow () {
         for (ImageView upgradeCard:upgradeCards) {

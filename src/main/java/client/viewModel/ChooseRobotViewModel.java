@@ -217,7 +217,7 @@ public class ChooseRobotViewModel implements Initializable {
 
             //window.setResizable(false);
             //window.maxHeightProperty().bind(window.getScene().heightProperty());
-           // window.sizeToScene();
+            // window.sizeToScene();
             /*window.minHeightProperty().bind(window.widthProperty());
             window.maxHeightProperty().bind(window.getScene().widthProperty());*/
         } catch (

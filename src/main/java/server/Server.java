@@ -21,7 +21,7 @@ import java.util.Date;
  */
 public class Server {
     private static Server instance;
-    private final int SERVER_PORT = 500;
+    private static int serverPort = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
@@ -52,6 +52,34 @@ public class Server {
 
 
     public static void main (String[] args) {
+        if (args.length == 0)
+            throw new IllegalArgumentException("No arguments provided. Flags: -p Port.");
+        if (args.length == 1) {
+            if (args[0].charAt(0) == '-') {
+                throw new IllegalArgumentException("Expected argument after: " + args[0]);
+            } else {
+                throw new IllegalArgumentException("Illegal Argument: " + args[0]);
+            }
+        }
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            String nextArg;
+            if (i + 1 == args.length || args[i + 1].charAt(0) == '-') {
+                throw new IllegalArgumentException("Expected argument after: " + arg);
+            } else {
+                nextArg = args[i + 1];
+            }
+            if ("-p".equals(arg)) {
+                int port = Integer.parseInt(nextArg);
+                if (port < 500 || port > 65555)
+                    throw new IllegalArgumentException("Port number: " + port + " is invalid");
+                serverPort = port;
+                i++;
+            } else {
+                throw new IllegalArgumentException("Illegal Argument: " + arg);
+            }
+        }
         Server server = Server.getInstance();
         server.messageHandler = new MessageHandler();
         server.start();
@@ -63,13 +91,13 @@ public class Server {
         // Open socket for incoming connections, if socket already exists start aborts
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(SERVER_PORT);
+            serverSocket = new ServerSocket(serverPort);
         } catch (IOException ioException) {
             logger.warn("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
             System.exit(0);
         }
 
-        logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
+        logger.info("The server has a port number " + serverPort + ", and runs on localhost.");
 
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");

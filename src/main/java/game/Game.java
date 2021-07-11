@@ -155,6 +155,7 @@ public class Game {
         JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
         sendToAllPlayers(jsonMessage);
 
+        refillUpgradeShop();
         informAboutActivePhase();
         informAboutCurrentPlayer();
     }
@@ -1768,7 +1769,7 @@ public class Game {
             }
             JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
             sendToAllPlayers(jsonMessage);
-        } else {
+        } else if (roundCounter != 1) {
             //If the Upgrade Shop not full
             refillUpgradeShop();
         }

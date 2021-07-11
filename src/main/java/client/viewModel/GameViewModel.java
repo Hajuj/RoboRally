@@ -142,8 +142,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-          readyButton.setVisible(false);
-         }
+            readyButton.setVisible(false);
+        }
 
     /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
         paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
@@ -203,7 +203,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         FileInputStream path = null;
         Image image;
         if (cardName.equals ( "ready" )){
-                path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
+            path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-on.png")).getFile()));
 
         } else if (cardName.equals ( "notReady" )){
             path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/steampunk-off.png")).getFile()));
@@ -215,7 +215,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/Gui/chatOff.png")).getFile()));
 
         }else {
-                path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
+            path = new FileInputStream ( ( Objects.requireNonNull ( getClass ( ).getClassLoader ( ).getResource ( "images/ProgrammingCards/" + cardName + ".png" ) ).getFile ( ) ) );
         }
         image = new Image(path);
         return image;
@@ -499,17 +499,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             });
         }
-       if (evt.getPropertyName().equals("PickDamage")) {
-           Platform.runLater(() -> {
-               setCount();
-               try {
-                   FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
-                   right_Side.setCenter ( fxmlLoader.load () );
-               } catch (IOException e) {
-                   e.printStackTrace ( );
-               }
-           });
-       }
+        if (evt.getPropertyName().equals("PickDamage")) {
+            Platform.runLater(() -> {
+                setCount();
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+                    right_Side.setCenter ( fxmlLoader.load () );
+                } catch (IOException e) {
+                    e.printStackTrace ( );
+                }
+            });
+        }
         if (evt.getPropertyName().equals("doChooseMap")) {
             model.setDoChooseMap(false);
             Platform.runLater(() -> {
@@ -526,7 +526,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater ( () -> {
                 setCount ( );
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/RebootDirection.fxml" ) );
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource ( "/view/RebootDirection.fxml" ) );
                     right_Side.setCenter ( fxmlLoader.load ( ) );
                 } catch (IOException e) {
                     e.printStackTrace ( );
@@ -537,42 +537,43 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             right_Side.setCenter ( null );
         }
         if(evt.getPropertyName ().equals ( "refillShop" )){
+            System.out.println("jijijijijijiji");
             clientGameModel.refillShop(false);
-                Platform.runLater(() -> {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
-                    Parent root1 = null;
-                    try {
-                        showPopup("Upgrade Phase has begin");
-                        root1 = fxmlLoader.load();
+            Platform.runLater(() -> {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
+                Parent root1 = null;
+                try {
+                    showPopup("Upgrade Phase has begin");
+                    root1 = fxmlLoader.load();
 
-                    } catch (IOException | InterruptedException ioException) {
-                        ioException.printStackTrace();
-                    }
-                    Stage newStage = new Stage();
-                    newStage.setTitle("UpgradeShop");
-                    newStage.setScene(new Scene(root1));
-                    newStage.show();
-                });
+                } catch (IOException | InterruptedException ioException) {
+                    ioException.printStackTrace();
+                }
+                Stage newStage = new Stage();
+                newStage.setTitle("UpgradeShop");
+                newStage.setScene(new Scene(root1));
+                newStage.show();
+            });
         }
     }
 
     public void open_chat(MouseEvent mouseEvent) {
         Platform.runLater ( () -> {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/newChat.fxml"));
-            if (chatON.getId ().equals ( "chatON" )){
-                chatON.setImage ( loadImage ( "chatOff" ) );
-                chatON.setId ( "chatOff" );
-                right_Side.setCenter ( fxmlLoader.load ( ) );
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/newChat.fxml"));
+                if (chatON.getId ().equals ( "chatON" )){
+                    chatON.setImage ( loadImage ( "chatOff" ) );
+                    chatON.setId ( "chatOff" );
+                    right_Side.setCenter ( fxmlLoader.load ( ) );
 
-            }else if (chatON.getId ().equals ( "chatOff" )) {
-                chatON.setImage ( loadImage ( "chatON") );
-                chatON.setId ( "chatON" );
-                right_Side.setCenter ( null );
-            }
-        } catch (IOException e) {
-            e.printStackTrace ( );
-        }});
+                }else if (chatON.getId ().equals ( "chatOff" )) {
+                    chatON.setImage ( loadImage ( "chatON") );
+                    chatON.setId ( "chatON" );
+                    right_Side.setCenter ( null );
+                }
+            } catch (IOException e) {
+                e.printStackTrace ( );
+            }});
     }
 
 
