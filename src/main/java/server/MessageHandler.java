@@ -526,14 +526,6 @@ public class MessageHandler {
 
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
 
-        //Draw three cards for the player and remove them from deck Programming
-        for (int i = 0; i < 3; i++) {
-            newCards.add(player.getDeckProgramming().getTopCard().getCardName());
-            player.getDeckProgramming().removeTopCard();
-        }
-        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(newCards));
-        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
-
         //Remove the returned cards from the deck Hand of the player
         for (String card : returnedCards) {
             for (Card card1 : player.getDeckHand().getDeck()) {
@@ -544,6 +536,20 @@ public class MessageHandler {
                 }
             }
         }
+
+        //Add all the hand cards to the new Array list
+        for (Card card : player.getDeckHand().getDeck()) {
+            newCards.add(card.getCardName());
+        }
+
+        //Draw three cards for the player and remove them from deck Programming
+        for (int i = 0; i < 3; i++) {
+            player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
+            newCards.add(player.getDeckProgramming().getTopCard().getCardName());
+            player.getDeckProgramming().removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(newCards));
+        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
     }
 
 }
