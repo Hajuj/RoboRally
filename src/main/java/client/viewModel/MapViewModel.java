@@ -4,7 +4,6 @@ import client.model.ClientGameModel;
 import client.model.ClientModel;
 import game.Element;
 import game.Game;
-import game.Player;
 import game.Robot;
 import game.boardelements.*;
 import javafx.animation.*;
@@ -20,11 +19,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -53,61 +50,15 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        PushPanelsAnimation();
+        activateLasers();
 
-        // clientGameModel.blueBeltAnimePropertyProperty().bind(startAnimation("BlueBelt"));
-  /*      clientGameModel.getanimationType().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                handleLaserAnime();
-            }
-        });*/
-//        clientGameModel.canSetStartingPointProperty().addListener(new ChangeListener<Boolean>() {
-//            @Override
-//            public void changed (ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-//                if (clientGameModel.canSetStartingPointProperty().getValue() == true) {
-//                    Platform.runLater(() -> {
-//                                setRobot(clientGameModel.getActualPlayerID(), clientGameModel.getX(), clientGameModel.getY());
-//                            }
-//                    );
-//                    clientGameModel.canSetStartingPointProperty().setValue(false);
-//                }
-//            }
-//        });
     }
 
-//    private void startAnimation(String type) {
-//        Double toX = null;
-//        Double toY = null;
-//        switch (type) {
-//            case "BlueBelt" -> {
-//
-//            }
-//
-//        }
-//
-//        ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
-//        TranslateTransition transition = new TranslateTransition();
-//        transition.setDuration(Duration.seconds(3));
-//        transition.setToX(laserPath.indexOf(0));
-//        transition.setToY(laserPath.size());
-//        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-//        transition.setNode(imageGroup);
-//        transition.play();
-//
-//    }
 
-
-    //startings points
-    public void setRobot (int playerID, int x, int y) {
+    public void setRobot(int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("Robots/robot" + figure + ".png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Robots/robot" + figure + ".png")));
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitWidth(46);
@@ -115,20 +66,14 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
 
-        try {
-            input = new FileInputStream(findPath("images/TransparentElements/RobotDirectionArrowHUGE.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Image image2 = new Image(input);
+        Image image1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RobotDirectionArrowHUGE.png")));
         imageView = new ImageView();
-        imageView.setImage(image2);
+        imageView.setImage(image1);
         imageView.setFitWidth(46);
         imageView.setFitHeight(46);
         imageView.setRotate(clientGameModel.getAntennaOrientation());
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
-
 
     public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -137,10 +82,19 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
-        FileInputStream path = null;
         Image image;
-        path = new FileInputStream((Objects.requireNonNull(getClass().getClassLoader().getResource("images/mapElements/Elements/" + element + ".png")).getFile()));
-        image = new Image(path);
+
+        if (element.equals("BlueBelt")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/BlueBelt_transparent_animated.gif")));
+        } else if (element.equals("OneLaserBeam")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/OneLaserBeamAnimated.gif")));
+        } else if (element.equals("DoppleLaserBeam")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/TwoLaserBeam_transparent_animated.gif")));
+        } else if (element.equals("TribleLaserBeam")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/ThreeLaserBeam_transparent_animated.gif")));
+        } else {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/" + element + ".png")));
+        }
 
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -251,7 +205,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 Group imageGroup = new Group();
                 ImageView imageView = loadImage("normal1", "null");
                 imageGroup.getChildren().add(imageView);
-                // ImageView imageView2 = new ImageView();
                 for (int i = 0; i < map.get(x).get(y).size(); i++) {
                     switch (map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
@@ -308,13 +261,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                         }
                                         imageGroup.getChildren().add(imageView2);
                                     }
-
                                 }
-
                             }
-
                         }
-
                         case "EnergySpace" -> {
                             //TODO gibt es einen Unterschied wenn die ES richtung links oder recht; Anpassung für isOnBoard 1A/5B
                             Element element = map.get(x).get(y).get(i);
@@ -407,191 +356,14 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                     }
                 }
-
                 fieldMap.put(new Point2D(x, y), imageGroup);
                 mapGrid.setConstraints(imageGroup, x, y);
-                // mapGrid.setAlignment(Pos.CENTER);
                 mapGrid.getChildren().add(imageGroup);
-                /*GridPane.setHalignment(imageGroup, HPos.CENTER);
-                GridPane.setValignment(imageGroup, VPos.CENTER);*/
             }
         }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        clientModel.getClientGameModel().setStartingPoint(false);
-        if (evt.getPropertyName().equals("gameFinished")) {
-            fieldMap.clear();
-        }
-        if (evt.getPropertyName().equals("startingPoint")) {
-            Platform.runLater(() -> {
-                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
-                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
-                    setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-                    clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
-                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
-                    //handleAnimation("BlueConveyorBelt");
-                    // handleLaserAnime();
-                }
-            });
-        }
-
-        if (evt.getPropertyName().equals("queueMove")) {
-            clientModel.getClientGameModel().setQueueMove(false);
-            for (int i = 0; i < clientGameModel.getMoveQueue().size(); i++) {
-                ClientGameModel.MoveTask newMoveTask = clientGameModel.getMoveQueue().get(i);
-                int playerID = newMoveTask.getPlayerID();
-                Point2D point2D = newMoveTask.getNewPosition();
-                moveRobot(playerID, (int) point2D.getX(), (int) point2D.getY());
-                clientGameModel.getMoveQueue().remove(i);
-            }
-        }
-
-        if (evt.getPropertyName().equals("queueTurning")) {
-            clientModel.getClientGameModel().setQueueTurning(false);
-            Platform.runLater(() -> {
-                for (int i = 0; i < clientGameModel.getTurningQueue().size(); i++) {
-                    ClientGameModel.TurnTask newTurnTask = clientGameModel.getTurningQueue().get(i);
-                    int playerID = newTurnTask.getplayerID();
-                    String rotation = newTurnTask.getRotation();
-                    turnRobot(playerID, rotation);
-                    clientGameModel.getTurningQueue().remove(i);
-                }
-            });
-        }
-
-        if (evt.getPropertyName().equals("Gears")) {
-            clientModel.getClientGameModel().setAnimateGears(false);
-            Platform.runLater(() -> {
-                animateGears();
-            });
-        }
-
-    }
-
-    public void handleAnimation(String type) {
-        double ToX = 0;
-        double ToY = 0;
-        double move;
-        switch (type) {
-            case "BlueConveyorBelt" -> move = 2;
-            case "GreenConveyorBelt" -> move = 1;
-            default -> throw new IllegalStateException("Unexpected value: " + type);
-        }
-        for (Map.Entry<Point2D, ConveyorBelt> entry : clientGameModel.getConveyorBeltMap().entrySet()) {
-            ConveyorBelt belt = entry.getValue();
-            if (belt.getOrientations().equals("left") || belt.getOrientations().get(0).equals("left")) {
-                ToX = entry.getKey().getX() - move;
-                ToY = 0.0;
-            }
-            if (belt.getOrientations().equals("right") || belt.getOrientations().get(0).equals("right")) {
-                ToX = entry.getKey().getX() + move;
-                ToY = 0.0;
-            }
-            if (belt.getOrientations().equals("top") || belt.getOrientations().get(0).equals("top")) {
-                ToY = entry.getKey().getY() - move;
-                ToX = 0.0;
-            }
-            if (belt.getOrientations().equals("bottom") || belt.getOrientations().get(0).equals("bottom")) {
-                ToY = entry.getKey().getY() + move;
-                ToX = 0.0;
-            }
-            // System.out.println("Bis HERE IST ALLES GUT GELAUFEN");
-            TranslateTransition transition = new TranslateTransition();
-            transition.setDuration(Duration.INDEFINITE);
-            transition.setToX(ToX);
-            transition.setToY(ToY);
-            Group imageGroup = fieldMap.get(entry.getKey());
-            // moveRobot(clientGameModel.getActualPlayerID(), (int)ToX, (int)ToY );
-            ImageView robotOrientation = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-            ImageView robotV = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 2);
-            transition.setNode(robotV);
-            //transition.setNode(robotOrientation);
-            //System.out.println("ANIMATION BIS HERE IST GUT");
-            transition.play();
-
-        }
-    }
-
-   /* public void handleLaserAnime() {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-
-        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
-            Laser laser = entry.getValue();
-            ArrayList<Point2D> laserPath = clientGameModel.getLaserPath(entry.getKey(), laser);
-
-            TranslateTransition transition = new TranslateTransition();
-            transition.setDuration(Duration.INDEFINITE);
-            transition.setToX(laserPath.indexOf(0));
-            transition.setToY(laserPath.size());
-            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
-
-            //Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-            //ImageView laserBeam = (ImageView) imageGroup.getChildren().get(imageGroup.getChildren().size() - 1);
-
-            laserBeam.setImage(image);
-            transition.setNode(laserBeam);
-            transition.play();
-        }
-
-
-    }*/
-
-    public void handleLaserAnime() {
-        FileInputStream input = null;
-        Image image;
-        try {
-            input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image = new Image(input);
-
-        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
-            Laser laser = entry.getValue();
-
-
-            ImageView laserBeam = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size()-1);
-            laserBeam.setImage(image);
-            FadeTransition ft = new FadeTransition(Duration.millis(3000), laserBeam);
-            ft.setNode(laserBeam);
-            ft.setFromValue(1.0);
-            ft.setToValue(0.1);
-            ft.setCycleCount(Timeline.INDEFINITE);
-            ft.setAutoReverse(true);
-            ft.play();
-        }
-
-    }
-    //(Point2D laserPosition, Laser laser);
-    // Point2D laserPosition = null;
-
-    //hier Kriege ich den Laser Position x,y
-       /* for (Point2D pos: clientGameModel.getLaserMap().keySet()  ) {
-         laserPosition.add(pos);
-
-        }*/
-
-
-       /* ArrayList<Point2D> laserPath = clientGameModel.getLaserPath((Point2D) clientGameModel.getLaserMap().keySet(), (Laser) clientGameModel.getLaserMap().values());
-        TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(3));
-        transition.setToX(laserPath.indexOf(0));
-        transition.setToY(laserPath.size());
-        Group imageGroup = fieldMap.get((Point2D) clientGameModel.getLaserMap().keySet());
-        transition.setNode(imageGroup);
-        transition.play();*/
-
-
-    private void animateGears () {
+    private void animateGears() {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
             int layer = 1;
             if (clientGameModel.isRobotOnField(entry.getKey())) {
@@ -609,13 +381,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             rotateTransition.setInterpolator(Interpolator.LINEAR);
             rotateTransition.setDuration(Duration.seconds(2));
             rotateTransition.play();
-
-
         }
     }
 
-
-    public ArrayList<Robot> getRobotsOnFields (Point2D position) {
+    public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
         for (Map.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
@@ -627,8 +396,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         return robotsOnFields;
     }
 
-
-    public ArrayList<Point2D> getLaserPath (Laser laser, Point2D laserPosition) {
+    public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
@@ -643,7 +411,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                         //Is a robot in the line of the laser?
                         if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
-                            //Robot robotShot = getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).get(0);
                             break;
                         }
                         if (clientGameModel.getMap().get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
@@ -720,62 +487,234 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                 //Place for exception handling
             }
         }
-
         return laserPath;
     }
 
+    private Point2D getMoveInDirection(Point2D position, String orientation) {
+        double x = position.getX();
+        double y = position.getY();
+        switch (orientation) {
+            case "left" -> x -= 1;
+            case "right" -> x += 1;
+            case "top" -> y -= 1;
+            case "bottom" -> y += 1;
+        }
 
-    public void activateLasers () {
-        for (Point2D position : clientGameModel.getLaserMap().keySet()) {
-            for (Point2D beamPosition : getLaserPath(clientGameModel.getLaserMap().get(position), position)) {
+        return new Point2D(x, y);
+    }
+
+
+    public void moveCheckPoint(int checkpointID, Point2D newPosition) {
+        Point2D oldPosition = clientGameModel.getCheckpointPositionByID(checkpointID);
+        int layer;
+        if (clientGameModel.getRobotsOnFields(oldPosition).size() == 0) {
+            layer = 1;
+        } else {
+            layer = 3;
+        }
+
+        ImageView checkPoint = (ImageView) fieldMap.get(oldPosition).getChildren().get(fieldMap.get(oldPosition).getChildren().size() - layer);
+        fieldMap.get(oldPosition).getChildren().remove(fieldMap.get(oldPosition).getChildren().size() - layer);
+
+        boolean isRobotHere = false;
+        if (clientGameModel.getRobotsOnFields(newPosition).size() != 0) {
+            isRobotHere = true;
+        }
+
+        if (!isRobotHere) {
+            fieldMap.get(newPosition).getChildren().add(checkPoint);
+        } else {
+            ImageView orientation = (ImageView) fieldMap.get(newPosition).getChildren().get(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().remove(fieldMap.get(newPosition).getChildren().size() - 1);
+            ImageView robot = (ImageView) fieldMap.get(newPosition).getChildren().get(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().remove(fieldMap.get(newPosition).getChildren().size() - 1);
+            fieldMap.get(newPosition).getChildren().add(checkPoint);
+            fieldMap.get(newPosition).getChildren().add(robot);
+            fieldMap.get(newPosition).getChildren().add(orientation);
+        }
+        clientGameModel.setCheckpointPositionByID(checkpointID, newPosition);
+
+    }
+
+
+    public void activateLasers() {
+//        ImageView laserBeam = new ImageView();
+        for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
+            for (Point2D beamPosition : getLaserPath(clientGameModel.getLaserMap().get(entry.getKey()), entry.getKey())) {
                 int x = (int) beamPosition.getX();
                 int y = (int) beamPosition.getY();
-                FileInputStream input = null;
-                Image image;
-                try {
-                    input = new FileInputStream(findPath("Robots/Elements/OneLaserBeam.png"));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                //TODO: dopple tripple laser implementierne
+                //if (entry.getValue ().getType ().equals ( "" ))
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/OneLaserBeamAnimated.gif")));
+//                    laserBeam = loadImage("OneLaserBeam", String.valueOf(entry.getValue().getOrientations()));
+                ImageView laserBeam1 = new ImageView();
+                laserBeam1.setImage(image);
+                laserBeam1.setFitWidth(50);
+                laserBeam1.setFitHeight(50);
+                if (entry.getValue().getOrientations().get(0).equals("bottom")) {
+                    laserBeam1.setRotate(90);
+
+                } else if (entry.getValue().getOrientations().get(0).equals("top")) {
+                    laserBeam1.setRotate(-90);
+                } else {
+                    laserBeam1.setRotate(0);
                 }
-                image = new Image(input);
-                ImageView imageView = new ImageView();
-                imageView.setImage(image);
-                imageView.setFitWidth(46);
-                imageView.setFitHeight(46);
+
                 Point2D newPosition = new Point2D(x, y);
+
                 Platform.runLater(() -> {
-                    fieldMap.get(newPosition).getChildren().add(imageView);
+                    fieldMap.get(newPosition).getChildren().add(laserBeam1);
                 });
 
+               /* FadeTransition fT = new FadeTransition (  );
+                fT.setCycleCount ( Animation.INDEFINITE );
+                fT.setNode ( laserBeam1 );
+                fT.setDuration ( Duration.INDEFINITE );
+                fT.setFromValue ( 0.0);
+                fT.setToValue ( 1.0 );
+                fT.setAutoReverse (true);
+                fT.play ();*/
 
             }
         }
     }
+
+    public void animateEnergySpaces() {
+        for (Map.Entry<Point2D, EnergySpace> entry : clientGameModel.getEnergySpaceMap().entrySet()) {
+            int x = (int) entry.getKey().getX();
+            int y = (int) entry.getKey().getY();
+
+            if (!getRobotsOnFields(new Point2D(x, y)).isEmpty()) {
+                ImageView energySpace = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 2);
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/GreenEnergySpace.png")));
+                try {
+                    energySpace = loadImage("GreenEnergySpace", String.valueOf(entry.getValue().getOrientations()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                energySpace.setImage(image);
+                energySpace.setFitWidth(50);
+                energySpace.setFitHeight(50);
+                Point2D energySpacePos = new Point2D(entry.getKey().getX(), entry.getKey().getY());
+                fieldMap.get(energySpacePos).getChildren().add(energySpace);
+                FadeTransition fT = new FadeTransition();
+                fT.setCycleCount(Animation.INDEFINITE);
+                fT.setNode(energySpace);
+                fT.setDuration(Duration.INDEFINITE);
+                fT.setFromValue(0.0);
+                fT.setToValue(1.0);
+                fT.setAutoReverse(true);
+                fT.play();
+                break;
+            }
+        }
+
+    }
+
+    public void PushPanelsAnimation() {
+        double ToX = 0;
+        double ToY = 0;
+        for (Map.Entry<Point2D, PushPanel> entry : clientGameModel.getPushPanelMap().entrySet()) {
+            ImageView pushPanel = (ImageView) fieldMap.get(entry.getKey()).getChildren().get(fieldMap.get(entry.getKey()).getChildren().size() - 2);
+            PushPanel panel = entry.getValue();
+            if (panel.getOrientations().equals("left") || panel.getOrientations().get(0).equals("left")) {
+                ToX = -1;
+                ToY = 0;
+            } else if (panel.getOrientations().equals("right") || panel.getOrientations().get(0).equals("right")) {
+                ToX = 1;
+                ToY = 0;
+            } else if (panel.getOrientations().equals("top") || panel.getOrientations().get(0).equals("top")) {
+                ToY = -1;
+                ToX = 0;
+            } else if (panel.getOrientations().get(0).equals("bottom") || panel.getOrientations().equals("bottom")) {
+
+                ToY = 1;
+                ToX = 0;
+            } else {
+                ToX = 1;
+                ToY = 0;
+            }
+            TranslateTransition tt = new TranslateTransition();
+            tt.setNode(pushPanel);
+            pushPanel.setScaleX(0.90);
+            pushPanel.setScaleY(0.90);
+            tt.setAutoReverse(true);
+            tt.setCycleCount(Animation.INDEFINITE);
+            tt.setDuration(Duration.INDEFINITE);
+            tt.setToX(ToX);
+            tt.setToY(ToY);
+            tt.play();
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        clientModel.getClientGameModel().setStartingPoint(false);
+        if (evt.getPropertyName().equals("gameFinished")) {
+            fieldMap.clear();
+        }
+        if (evt.getPropertyName().equals("startingPoint")) {
+            Platform.runLater(() -> {
+                for (Map.Entry<Robot, Point2D> entry : clientGameModel.getStartingPointQueue().entrySet()) {
+                    int playerID = clientModel.getIDfromRobotName(entry.getKey().getName());
+                    setRobot(playerID, (int) entry.getValue().getX(), (int) entry.getValue().getY());
+                    clientModel.getClientGameModel().getRobotMap().put(entry.getKey(), entry.getValue());
+                    clientModel.getClientGameModel().getStartingPointQueue().remove(entry.getKey());
+                }
+            });
+        }
+
+        if (evt.getPropertyName().equals("queueMove")) {
+            clientModel.getClientGameModel().setQueueMove(false);
+            for (int i = 0; i < clientGameModel.getMoveQueue().size(); i++) {
+                ClientGameModel.MoveTask newMoveTask = clientGameModel.getMoveQueue().get(i);
+                int playerID = newMoveTask.getPlayerID();
+                Point2D point2D = newMoveTask.getNewPosition();
+                moveRobot(playerID, (int) point2D.getX(), (int) point2D.getY());
+                clientGameModel.getMoveQueue().remove(i);
+            }
+        }
+
+        if (evt.getPropertyName().equals("queueTurning")) {
+            clientModel.getClientGameModel().setQueueTurning(false);
+            Platform.runLater(() -> {
+                for (int i = 0; i < clientGameModel.getTurningQueue().size(); i++) {
+                    ClientGameModel.TurnTask newTurnTask = clientGameModel.getTurningQueue().get(i);
+                    int playerID = newTurnTask.getplayerID();
+                    String rotation = newTurnTask.getRotation();
+                    turnRobot(playerID, rotation);
+                    clientGameModel.getTurningQueue().remove(i);
+                }
+            });
+        }
+
+        if (evt.getPropertyName().equals("Gears")) {
+            clientModel.getClientGameModel().setAnimateGears(false);
+            Platform.runLater(() -> {
+                animateGears();
+            });
+        }
+        if (evt.getPropertyName().equals("EnergySpaces")) {
+            clientModel.getClientGameModel().setAnimateEnergySpaces(false);
+            Platform.runLater(() -> {
+                animateEnergySpaces();
+            });
+        }
+        if (evt.getPropertyName().equals("oldQueueCPMove")) {
+            clientModel.getClientGameModel().setQueueCPMove(false);
+            Platform.runLater(() -> {
+                for (int i = 0; i < clientGameModel.getMoveCPQueue().size(); i++) {
+                    ClientGameModel.MoveCPTask newMoveCPTask = clientGameModel.getMoveCPQueue().get(i);
+                    int checkpointID = newMoveCPTask.getnumCP();
+                    Point2D point2D = newMoveCPTask.getNewPosition();
+                    moveCheckPoint(checkpointID, point2D);
+                    clientGameModel.getMoveCPQueue().remove(i);
+                }
+            });
+        }
+
+    }
 }
-   /* public void start(Stage primaryStage)
-    {
-        ImageView iv = new ImageView();
-        Image image = new Image("file:res/flowers.jpg");
-        iv.setImage(image);
-
-        FadeTransition ft = new FadeTransition();
-        ft.setNode(iv);
-        ft.setDuration(new Duration(2000));
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
-        ft.setCycleCount(6);
-        ft.setAutoReverse(true);
-
-        iv.setOnMouseClicked(me -> ft.play());
-
-        Group root = new Group();
-        root.getChildren().add(iv);
-        Scene scene = new Scene(root, image.getWidth(), image.getHeight());
-
-        primaryStage.setTitle("FadeTransition Demo");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }*/
 
 
 

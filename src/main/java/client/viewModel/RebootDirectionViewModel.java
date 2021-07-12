@@ -1,18 +1,26 @@
 package client.viewModel;
 
 import client.model.ClientModel;
+import client.model.ClientGameModel;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
-import java.awt.*;
+import java.net.URL;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
-public class RebootDirectionViewModel {
+public class RebootDirectionViewModel implements Initializable {
+    public ImageView robotAvatar;
+    public ImageView robotOrientation;
     ClientModel clientModel = ClientModel.getInstance();
+    ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
     @FXML
     public Button top;
-
     @FXML
     public Button bottom;
     @FXML
@@ -20,31 +28,57 @@ public class RebootDirectionViewModel {
     @FXML
     public Button left;
 
+
     @FXML
-    public void chooseTop () {
+    public void chooseTop() {
         clientModel.getClientGameModel().sendRebootDirection("top");
-        Stage stage = (Stage) top.getScene().getWindow();
-        stage.close();
     }
 
     @FXML
-    public void chooseBottom () {
+    public void chooseBottom() {
         clientModel.getClientGameModel().sendRebootDirection("bottom");
-        Stage stage = (Stage) bottom.getScene().getWindow();
-        stage.close();
     }
 
     @FXML
-    public void chooseLeft () {
+    public void chooseLeft() {
         clientModel.getClientGameModel().sendRebootDirection("left");
-        Stage stage = (Stage) left.getScene().getWindow();
-        stage.close();
     }
 
     @FXML
-    public void chooseRight () {
+    public void chooseRight() {
         clientModel.getClientGameModel().sendRebootDirection("right");
-        Stage stage = (Stage) right.getScene().getWindow();
-        stage.close();
+    }
+
+    public Image yourRobot() {
+
+        int figure = clientGameModel.getPlayer().getFigure();
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Robots/robot" + figure + ".png")));
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        robotAvatar.setImage(yourRobot());
+    }
+
+
+    public void showOrientation(MouseEvent mouseEvent) {
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RobotDirectionArrowHUGE.png")));
+        if (mouseEvent.getSource().equals(top)) {
+            robotOrientation.setRotate(180);
+            robotOrientation.setImage(image);
+        }
+        if (mouseEvent.getSource().equals(bottom)) {
+            robotOrientation.setRotate(0);
+            robotOrientation.setImage(image);
+        }
+        if (mouseEvent.getSource().equals(left)) {
+            robotOrientation.setRotate(90);
+            robotOrientation.setImage(image);
+        }
+        if (mouseEvent.getSource().equals(right)) {
+            robotOrientation.setRotate(-90);
+            robotOrientation.setImage(image);
+        }
     }
 }

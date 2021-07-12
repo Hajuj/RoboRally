@@ -11,10 +11,6 @@ public class TurnLeft extends Card {
         cardName = "TurnLeft";
     }
 
-    public void activateCard() {
-        //TODO implement card effect
-    }
-
     public boolean isDamageCard() {
         return false;
     }

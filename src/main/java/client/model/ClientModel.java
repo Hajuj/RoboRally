@@ -2,8 +2,6 @@ package client.model;
 
 import game.Game;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import json.JSONMessage;
 import json.protocol.HelloServerBody;
 import json.protocol.PlayerValuesBody;
@@ -22,7 +20,6 @@ import java.util.Map;
 
 /**
  * @author Mohamad, Viktoria
- *
  */
 
 public class ClientModel {
@@ -61,7 +58,7 @@ public class ClientModel {
     private boolean gameFinished = false;
 
 
-    private ClientModel () {
+    private ClientModel() {
         propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
@@ -72,7 +69,7 @@ public class ClientModel {
      *
      * @return instace of ClientModel Klasse
      */
-    public static ClientModel getInstance () {
+    public static ClientModel getInstance() {
         if (instance == null) {
             instance = new ClientModel();
         }
@@ -87,7 +84,7 @@ public class ClientModel {
      * @param server_port
      * @return true if connection could be established.
      */
-    public boolean connectClient (String server_ip, int server_port) {
+    public boolean connectClient(String server_ip, int server_port) {
         try {
             //Create socket to connect to server at serverIP:serverPort
             logger.info("Trying to connect to the server on the port " + server_ip + " : " + server_port);
@@ -134,7 +131,7 @@ public class ClientModel {
      * @param name     - Name des neuen PLayers
      * @param figure   - Robot, den der neue Player ausgewählt hat.
      */
-    public void addPlayer (int clientID, String name, int figure) {
+    public void addPlayer(int clientID, String name, int figure) {
         getPlayersNamesMap().put(clientID, name);
         getPlayersFigureMap().put(clientID, figure);
         getPlayersStatusMap().put(clientID, false);
@@ -145,7 +142,7 @@ public class ClientModel {
      *
      * @param message
      */
-    public void sendMessage (JSONMessage message) {
+    public void sendMessage(JSONMessage message) {
         this.clientModelWriterThread.sendMessage(message);
     }
 
@@ -156,7 +153,7 @@ public class ClientModel {
      * @param username
      * @param figure
      */
-    public void sendUsernameAndRobot (String username, int figure) {
+    public void sendUsernameAndRobot(String username, int figure) {
         JSONMessage jsonMessage = new JSONMessage("PlayerValues", new PlayerValuesBody(username, figure));
         sendMessage(jsonMessage);
     }
@@ -169,7 +166,7 @@ public class ClientModel {
      * @param username
      * @return ID der Spielers, falls er in dem HashMap gefunden wurde, oder 0 falls nicht.
      */
-    public int getIDbyUsername (String username) {
+    public int getIDbyUsername(String username) {
         for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
             if (entry.getValue().equals(username)) {
                 return entry.getKey();
@@ -184,7 +181,7 @@ public class ClientModel {
      *
      * @param message - Nachricht zu schicken
      */
-    public void sendMsg (String message) {
+    public void sendMsg(String message) {
         if (!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
             if (message.charAt(0) == '@') {
@@ -218,7 +215,7 @@ public class ClientModel {
      *
      * @param message - Neue Nachricht in Chat
      */
-    public void receiveMessage (String message) {
+    public void receiveMessage(String message) {
         setChatHistory(chatHistory + message + "\n");
     }
 
@@ -229,7 +226,7 @@ public class ClientModel {
      * @param playerID
      * @param newPlayerStatus
      */
-    public void refreshPlayerStatus (int playerID, boolean newPlayerStatus) {
+    public void refreshPlayerStatus(int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
         setPlayersStatus("");
         for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
@@ -249,7 +246,7 @@ public class ClientModel {
      * @param name
      * @return ID des Spielers, falls er gefunden wurde und -1, falls nicht.
      */
-    public int getIDfromRobotName (String name) {
+    public int getIDfromRobotName(String name) {
         for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
             if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
                 return entry.getKey();
@@ -264,7 +261,7 @@ public class ClientModel {
      *
      * @param playerID
      */
-    public void removePlayer (int playerID) {
+    public void removePlayer(int playerID) {
         playersStatusMap.remove(playerID);
         playersFigureMap.remove(playerID);
         refreshPlayerStatus(playerID, false);
@@ -277,15 +274,15 @@ public class ClientModel {
      *
      * @param listener
      */
-    public void addPropertyChangeListener (PropertyChangeListener listener) {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return gameOn;
     }
 
-    public void setGameOn (boolean gameOn) {
+    public void setGameOn(boolean gameOn) {
         boolean oldGameOn = this.gameOn;
         this.gameOn = gameOn;
         if (this.gameOn) {
@@ -308,16 +305,16 @@ public class ClientModel {
 
     }*/
 
-   /* public StringProperty getChatHistory() {
-        return chatHistory;
-    }*/
-     public void setChatHistory(String chatHistory) {
+    /* public StringProperty getChatHistory() {
+         return chatHistory;
+     }*/
+    public void setChatHistory(String chatHistory) {
         String oldChatHistory = this.chatHistory;
         this.chatHistory = chatHistory;
         propertyChangeSupport.firePropertyChange("chatHistory", oldChatHistory, chatHistory);
     }
 
-    public String getChatHistory () {
+    public String getChatHistory() {
         return chatHistory;
     }
 
@@ -327,35 +324,35 @@ public class ClientModel {
         propertyChangeSupport.firePropertyChange("playerStatus", oldPlayerStatus, playersStatus);
     }
 
-    public String getPlayersStatus () {
+    public String getPlayersStatus() {
         return playersStatus;
     }
 
-    public boolean isCanPlay () {
+    public boolean isCanPlay() {
         return canPlay;
     }
 
-    public void setCanPlay (boolean canPlay) {
+    public void setCanPlay(boolean canPlay) {
         this.canPlay = canPlay;
     }
 
-    public MessageHandler getMessageHandler () {
+    public MessageHandler getMessageHandler() {
         return messageHandler;
     }
 
-    public void setWaitingForServer (boolean waitingForServer) {
+    public void setWaitingForServer(boolean waitingForServer) {
         this.waitingForServer = waitingForServer;
     }
 
-    public HashMap<Integer, String> getPlayersNamesMap () {
+    public HashMap<Integer, String> getPlayersNamesMap() {
         return playersNamesMap;
     }
 
-    public HashMap<Integer, Integer> getPlayersFigureMap () {
+    public HashMap<Integer, Integer> getPlayersFigureMap() {
         return playersFigureMap;
     }
 
-    public HashMap<Integer, Boolean> getPlayersStatusMap () {
+    public HashMap<Integer, Boolean> getPlayersStatusMap() {
         return playersStatusMap;
     }
 
@@ -363,19 +360,19 @@ public class ClientModel {
         this.playersStatusMap = playersStatusMap;
     }
 
-    public String getSelectedMap () {
+    public String getSelectedMap() {
         return selectedMap;
     }
 
-    public void setSelectedMap (String selectedMap) {
+    public void setSelectedMap(String selectedMap) {
         this.selectedMap = selectedMap;
     }
 
-    public ArrayList<String> getAvailableMaps () {
+    public ArrayList<String> getAvailableMaps() {
         return availableMaps;
     }
 
-    public boolean doChooseMap () {
+    public boolean doChooseMap() {
         return doChooseMap;
     }
 
@@ -387,30 +384,31 @@ public class ClientModel {
         }
     }
 
-    public void setAvailableMaps (ArrayList<String> availableMaps) {
+    public void setAvailableMaps(ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;
     }
 
-    public ClientGameModel getClientGameModel () {
+    public ClientGameModel getClientGameModel() {
         return clientGameModel;
     }
 
-    public void setMessageHandler (MessageHandler messageHandler) {
+    public void setMessageHandler(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }
 
-    public boolean isAI () {
+    public boolean isAI() {
         return isAI;
     }
 
-    public void setAI (boolean AI) {
+    public void setAI(boolean AI) {
         isAI = AI;
     }
 
-    public void setNewStatus (boolean newStatus) {
+    public void setNewStatus(boolean newStatus) {
         clientGameModel.getPlayer().setReady(newStatus);
         JSONMessage statusMessage = new JSONMessage("SetStatus", new SetStatusBody(newStatus));
         sendMessage(statusMessage);
     }
+
 
 }

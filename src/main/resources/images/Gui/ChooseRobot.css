@@ -1,0 +1,14 @@
+.bodybg{
+ -fx-background-image: url('backgroundforall.jpg');
+ -fx-background-size: 100% 100%;
+}
+
+@font-face {
+    font-family: 'Steamwheel';
+    src: url('Steamwheel-jE7gM.ttf');
+}
+
+.text {
+    -fx-font-family: "Steamwheel";
+    -fx-font-size: 36px;
+}

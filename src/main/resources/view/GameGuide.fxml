@@ -7,9 +7,15 @@
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
+
 <GridPane fx:id="wiki" alignment="CENTER" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameGuideController">
 
     <columnConstraints>
@@ -22,7 +28,7 @@
 
     <ImageView fitHeight="615.0" fitWidth="815.0">
         <image>
-            <Image url="@../game-menu.png" />
+            <Image url="@../images/Gui/background2.jpg" />
         </image>
         <viewport>
             <Rectangle2D minX="800.0" minY="600.0" />

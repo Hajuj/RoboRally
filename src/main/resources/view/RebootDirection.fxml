@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="359.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.RebootDirectionViewModel">
-    <children>
-        <Button fx:id="top" layoutX="62.0" layoutY="85.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
-                text="TOP" onAction="#chooseTop"/>
-        <Button fx:id="bottom" layoutX="62.0" layoutY="151.0" mnemonicParsing="false" prefHeight="37.0"
-                prefWidth="177.0" text="BOTTOM" onAction="#chooseBottom"/>
-        <Button fx:id="left" layoutX="62.0" layoutY="216.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
-                text="LEFT" onAction="#chooseLeft"/>
-        <Button fx:id="right" layoutX="62.0" layoutY="279.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="177.0"
-                text="RIGHT" onAction="#chooseRight"/>
-    </children>
-</AnchorPane>
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.RebootDirectionViewModel">
+   <bottom>
+      <AnchorPane prefHeight="298.0" prefWidth="288.0" style="-fx-background-image: url('/images/Gui/background2.jpg');" BorderPane.alignment="CENTER">
+          <children>
+              <Button fx:id="top" layoutX="27.0" layoutY="83.0" mnemonicParsing="false" onAction="#chooseTop" onMouseMoved="#showOrientation" prefHeight="37.0" prefWidth="177.0" text="TOP" />
+              <Button fx:id="bottom" layoutX="27.0" layoutY="137.0" mnemonicParsing="false" onAction="#chooseBottom" onMouseMoved="#showOrientation" prefHeight="37.0" prefWidth="177.0" text="BOTTOM" />
+              <Button fx:id="left" layoutX="27.0" layoutY="189.0" mnemonicParsing="false" onAction="#chooseLeft" onMouseMoved="#showOrientation" prefHeight="37.0" prefWidth="177.0" text="LEFT" />
+              <Button fx:id="right" layoutX="27.0" layoutY="237.0" mnemonicParsing="false" onAction="#chooseRight" onMouseMoved="#showOrientation" prefHeight="37.0" prefWidth="177.0" text="RIGHT" />
+            <Label layoutX="27.0" layoutY="6.0" prefHeight="54.0" prefWidth="340.0" style="-fx-background-color: url('/images/Gui/lable.png');" />
+            <Text fill="#e2c60e" layoutX="27.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="choose your Robot orientation" textAlignment="CENTER" wrappingWidth="284.0000203450521">
+               <font>
+                  <Font name="Yu Gothic Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fx:id="robotAvatar" fitHeight="173.0" fitWidth="166.0" layoutX="243.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="robotOrientation" fitHeight="189.0" fitWidth="166.0" layoutX="228.0" layoutY="86.0" pickOnBounds="true" preserveRatio="true" />
+          </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>

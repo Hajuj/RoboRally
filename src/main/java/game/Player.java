@@ -5,7 +5,6 @@ import json.JSONMessage;
 import json.protocol.*;
 import server.Server;
 
-//import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -19,13 +18,18 @@ public class Player {
     private Robot robot;
     private int figure;
     private boolean isReady;
-    private int energy = 0;
+    private int energy = 5;
     private boolean isAI = false;
 
     private DeckDiscard deckDiscard;
     private DeckProgramming deckProgramming;
     private DeckHand deckHand;
     private DeckRegister deckRegister;
+    private ArrayList<Card> installedPermanentUpgrades;
+    private ArrayList<Card> temporaryUpgrades;
+
+    private int numberOfAdminPrivilege = 0;
+    private int activeAdminPrivilege = 0;
 
     public Player(int playerID) {
         this.playerID = playerID;
@@ -45,6 +49,9 @@ public class Player {
         this.deckRegister = new DeckRegister();
         deckRegister.initializeDeck();
         deckRegister.shuffleDeck();
+
+        this.installedPermanentUpgrades = new ArrayList<>();
+        this.temporaryUpgrades = new ArrayList<>();
     }
 
     public void refreshPlayer() {
@@ -63,6 +70,9 @@ public class Player {
         this.deckRegister = new DeckRegister();
         deckRegister.initializeDeck();
         deckRegister.shuffleDeck();
+
+        this.installedPermanentUpgrades = new ArrayList<>();
+        this.temporaryUpgrades = new ArrayList<>();
     }
 
     //TODO shuffle cards
@@ -84,7 +94,7 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                if (card.cardName.equals("Again") && i == 0){
+                if (card.cardName.equals("Again") && i == 0) {
                     this.getDeckDiscard().getDeck().add(card);
                     i--;
                 } else {
@@ -143,7 +153,7 @@ public class Player {
         }
 
         //ShuffleCodingBody
-        //If there is no enough cards in deckProgramming
+        //If there is not enough cards in deckProgramming
         else if (amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
 
@@ -180,6 +190,15 @@ public class Player {
     public void pickRobot(int figure, String name) {
         this.figure = figure;
         this.name = name;
+    }
+
+    public boolean checkAdmin() {
+        if (numberOfAdminPrivilege >= activeAdminPrivilege + 1) {
+            activeAdminPrivilege++;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int getPlayerID() {
@@ -248,5 +267,38 @@ public class Player {
 
     public void setAI(boolean AI) {
         isAI = AI;
+    }
+
+
+    public ArrayList<Card> getInstalledPermanentUpgrades() {
+        return installedPermanentUpgrades;
+    }
+
+    public void setInstalledPermanentUpgrades(ArrayList<Card> installedPermanentUpgrades) {
+        this.installedPermanentUpgrades = installedPermanentUpgrades;
+    }
+
+    public ArrayList<Card> getTemporaryUpgrades() {
+        return temporaryUpgrades;
+    }
+
+    public void setTemporaryUpgrades(ArrayList<Card> temporaryUpgrades) {
+        this.temporaryUpgrades = temporaryUpgrades;
+    }
+
+    public int getNumberOfAdminPrivilege() {
+        return numberOfAdminPrivilege;
+    }
+
+    public void setNumberOfAdminPrivilege(int numberOfAdminPrivilege) {
+        this.numberOfAdminPrivilege = numberOfAdminPrivilege;
+    }
+
+    public int getActiveAdminPrivilege() {
+        return activeAdminPrivilege;
+    }
+
+    public void setActiveAdminPrivilege(int activeAdminPrivilege) {
+        this.activeAdminPrivilege = activeAdminPrivilege;
     }
 }

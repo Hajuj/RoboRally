@@ -12,7 +12,6 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- *
  * @author Mohamad, Viktoria
  */
 public class GameTimer {
