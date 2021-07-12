@@ -39,7 +39,7 @@ public class ClientGameModel {
     private ArrayList<String> upgradeCards = new ArrayList<>();
     private boolean handCards = false;
 
-    private int energy = 0;
+    private int energy = 5;
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 

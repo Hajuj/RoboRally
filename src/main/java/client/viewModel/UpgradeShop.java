@@ -61,7 +61,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        cubesNum.setText ( String.valueOf ( clientGameModel.getEnergy () ) );
         //energyCount.bind ( energyCountProperty() );
         //cubesNum.setText ( energyCount.toString () );
         upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6);
