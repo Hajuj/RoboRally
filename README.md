@@ -1,4 +1,4 @@
-[](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/master/src/main/resources/images/Gui/startScreen.gif)
+![](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/master/src/main/resources/images/Gui/startScreen.gif)
 
 # Welcome!
 This is our university project for the board game RoboRally.
