@@ -33,7 +33,7 @@
             <center>
                 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="525.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
-                        <Insets bottom="52.0" top="16.0" />
+                        <Insets bottom="52.0" top="-10.0" />
                     </BorderPane.margin>
                 </AnchorPane>
             </center>
