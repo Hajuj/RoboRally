@@ -356,7 +356,6 @@ public class MessageHandler {
                 server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
             }
         }
-
     }
 
     public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
@@ -456,26 +455,35 @@ public class MessageHandler {
         String cardName = buyUpgradeBody.getCard();
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean allowToBuy = true;
+        String errorMessage = "";
         // ob der dran ist
         if (server.getCurrentGame().getCurrentPlayer() != clientHandler.getPlayer_id()) {
             allowToBuy = false;
+            errorMessage = "Its not your turn!";
         }
         // ob er noch nicht 3 und 3 karten hat
         if (cardName.equals("Null")) {
             allowToBuy = false;
+            errorMessage = "Du hast nichts gekauft, okay!";
         } else {
             if (server.getCurrentGame().isPermanent(cardName) && player.getInstalledPermanentUpgrades().size() == 3) {
                 allowToBuy = false;
+                errorMessage = "Du hast schon 3 permanenten Karten!";
             } else if ((!server.getCurrentGame().isPermanent(cardName)) && player.getTemporaryUpgrades().size() == 3) {
                 allowToBuy = false;
+                errorMessage = "Du hast schon 3 temporären Karten!";
             }
         }
 
         int energyCost = server.getCurrentGame().getUpgradeCost(cardName);
         if (player.getEnergy() < energyCost) {
             allowToBuy = false;
+            errorMessage = "Du hast nicht genug Energy Cubes!";
         }
-
+        if (!allowToBuy) {
+            JSONMessage errormessage = new JSONMessage("Error", new ErrorBody(errorMessage));
+            server.sendMessage(errormessage, server.getConnectionWithID(clientHandler.getPlayer_id()).getWriter());
+        }
         //sage allen wo der Spieler mit playerID started
         if (buyUpgradeBody.isBuying() && allowToBuy) {
             player.increaseEnergy(-energyCost);
