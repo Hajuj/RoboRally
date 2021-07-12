@@ -1,16 +1,13 @@
 package client.model;
 
+import client.viewModel.GameViewModel;
 import game.Element;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -611,6 +608,7 @@ public class ClientGameModel {
     public int getEnergy () {
         return energy;
     }
+
 
     public void setEnergy (int energy) {
         this.energy = energy;

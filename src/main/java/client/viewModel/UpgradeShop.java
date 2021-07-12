@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
@@ -25,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import javax.script.Bindings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
@@ -56,15 +58,19 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-  //  private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+    private SimpleIntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
         model.addPropertyChangeListener(this);
         clientGameModel.addPropertyChangeListener(this);
-        //       energyCount.bind ( energyCountProperty() );
-        //       cubesNum.setText ( energyCount.toString () );
+        energyCountProperty().addListener(changeListener);
+        cubesNum.textProperty().bind(energyCountProperty().asString());
+        //energyCount.bind ( energyCountProperty() );
+        //cubesNum.setValue( energyCount );
         upgradeCards = FXCollections.observableArrayList(card_1, card_2, card_3, card_4, card_5, card_6,
                 card_7, card_8, card_9, card_9, card_10);
         Platform.runLater(() -> {
@@ -162,13 +168,29 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public String getChoosenUpgradeCard() {
         return this.choosenUpgradeCard.get ( );
     }
+    
+      /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
+        chatOutput.bind(model.getChatHistory());
+        chatField.textProperty().bind(chatOutputProperty());
+        }));*/
 
-   /* public IntegerProperty energyCountProperty() {
+   public IntegerProperty energyCountProperty() {
+        //energyCount.addListener(clientGameModel.getEnergy());
+        //cubesNum.textProperty().bind(energyCount.asString());
         this.energyCount.set ( clientGameModel.getEnergy () );
         return this.energyCount;
     }
 
     public void setEnergyCount(final int energyCount) {
         this.energyCount.set ( energyCount );
-    }*/
+    }
+
+    final ChangeListener changeListener = new ChangeListener(){
+        @Override
+        public void changed(ObservableValue observableValue, Object oldValue,
+                            Object newValue) {
+            System.out.println("oldValue:"+ oldValue + ", newValue = " + newValue);
+        }
+    };
+
 }
