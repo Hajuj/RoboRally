@@ -34,7 +34,7 @@
       </Text>
       <ImageView fx:id="buyButton" fitHeight="76.0" fitWidth="161.0" layoutX="710.0" layoutY="503.0" onMouseClicked="#buyCard" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/Gui/okButton.png" />
+            <Image url="@../images/Gui/buyButton.png" />
          </image>
       </ImageView>
       <Label layoutX="114.0" layoutY="137.0" prefHeight="24.0" prefWidth="75.0" textFill="#f0ff25">
@@ -50,7 +50,7 @@
       </Label>
       <ImageView fx:id="buyNothing" fitHeight="76.0" fitWidth="161.0" layoutX="106.0" layoutY="503.0" onMouseClicked="#buyCard" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/Gui/okButton.png" />
+            <Image url="@../images/Gui/buyNthnButton.png" />
          </image>
       </ImageView>
    </children>

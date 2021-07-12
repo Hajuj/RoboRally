@@ -83,9 +83,6 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         } );
 
     }
-
-
-
     public void showDescription(MouseEvent mouseEvent) {
         ImageView source  = (ImageView) mouseEvent.getSource ();
         switch (source.getId ()){
@@ -107,11 +104,12 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
             clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
-
+            clientGameModel.finishBuyCard(true);
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );
+            Stage stage =(Stage) buyNothing.getScene ().getWindow ();
+            stage.close ();
         }
-        clientGameModel.finishBuyCard(true);
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
     }

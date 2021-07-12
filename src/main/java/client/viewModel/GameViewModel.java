@@ -443,10 +443,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8 );
-            for (ImageView card : cards) {
+            /*for (ImageView card : cards) {
                 Image image = card.getImage ();
                 card.setImage ( null );
-            }
+            }*/
             Platform.runLater ( () -> {
                 try {
                     for (int j = 0; j < cards.size ( ); j++) {
@@ -603,9 +603,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName ().equals ( "returningFinished" )){
             System.out.println ( "IM RETURNING" );
-            clientGameModel.finishRetunrCard ( false );
+           // clientGameModel.finishRetunrCard ( false );
             Platform.runLater ( () -> {
-
                 cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8 );
             for (ImageView card:cards) {
@@ -672,6 +671,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public void handleUpgradeCard(MouseEvent mouseEvent) throws IOException {
         ImageView source = (ImageView) mouseEvent.getSource ();
+
         if (source.getId ().equals ( "AdminPrivilege" )){
             System.out.println ( "Die Karte ist AdminPrivelege" );
             source.setDisable ( true );
@@ -689,6 +689,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
                 System.out.println ( "memorySwap" );
+                source.setImage ( null );
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
                 Stage newStage = new Stage ( );
@@ -701,18 +702,19 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         else if (source.getId ().equals ( "SpamBlocker" )){
             if (clientGameModel.getActualPhase ()== 2) {
-                regToCard.put ( 0, null );
+                source.setImage ( null );
+               /* regToCard.put ( 0, null );
                 regToCard.put ( 1, null );
                 regToCard.put ( 2, null );
                 regToCard.put ( 3, null );
-                regToCard.put ( 4, null );
+                regToCard.put ( 4, null );*/
                 System.out.println ( "SpamBlocker" );
-                cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
+             /*   cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                         card_6, card_7, card_8 );
                 for (ImageView card : cards) {
                     card.setImage ( null );
-                }
-                clientGameModel.setHandCards ( true );
+                }*/
+               // clientGameModel.setHandCards ( true );
 
             }else {
                 Alert a = new Alert ( Alert.AlertType.ERROR );

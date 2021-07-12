@@ -1006,6 +1006,8 @@ public class Game {
         }
         //draw a new card from deck for each discarded Spam card
         player.drawCardsProgramming(counter);
+        JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+        server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
     }
 
