@@ -1029,6 +1029,7 @@ public class Game {
      * @param card  is the card that is activated
      */
     public void activateCardEffect(String card) {
+
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -1139,7 +1140,6 @@ public class Game {
             }
             case "Worm" -> rebootRobot(server.getPlayerWithID(getCurrentPlayer()));
 
-            case "SpamBlocker" -> replaceSpamCardsHand(server.getPlayerWithID(getCurrentPlayer()));
 
             //Permanent UpgradeCard -> should it be covered in this case?
             case "RearLaser" -> rearLasers.add(server.getPlayerWithID(currentPlayer));
@@ -1150,7 +1150,10 @@ public class Game {
             case "AdminPrivilege" -> {}
         }
     }
+    public void activatSpamCard(Player player){
+        replaceSpamCardsHand(player);
 
+    }
     public int getUpgradeCost (String cardName) {
         return switch (cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;
@@ -1169,7 +1172,8 @@ public class Game {
      */
     public void replaceSpamCardsHand(Player player){
         int counter = 0;
-        for (Card card : player.getDeckHand().getDeck()) {
+        for (int i = 0; i < player.getDeckHand ().getDeck ().size () ; i++) {
+            Card card = player.getDeckHand ().getDeck ().get ( i );
             //throw all Spam cards from hand to DeckSpam
             if (card.getCardName().equals("Spam")) {
                 deckSpam.getDeck().add(card);

@@ -456,10 +456,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                         cards.get(j).setImage(loadImage(cardName));
                         cards.get(j).setId(Integer.toString(j));
                     }
-                    for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
+                   /* for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
                         cards.get(j).setImage(null);
                         cards.get(j).setId("Null");
-                    }
+                    }*/
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -560,11 +560,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("refillShop")) {
             clientGameModel.refillShop(false);
             //permenantCard.setDisable ( false );
+            System.out.println ( clientGameModel.getEnergy () );
             Platform.runLater(() -> {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
                 Parent root1 = null;
                 try {
                     showPopup("Upgrade Phase has begun");
+                    enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
                     newStage.setTitle("UpgradeShop");
@@ -617,37 +619,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
 
     }
-             /*   if(!upgradeCards.get ( i ).getImage ().){
-                    upgradeCards.get ( i+1).setImage ( image );
-                    upgradeCards.get ( i+1).setId ( upgradeCardName );
-                }else{
-                    upgradeCards.get ( i ).setImage ( image );
-                    upgradeCards.get ( i).setId ( upgradeCardName );
-                }
-                break;
-            }
-*/
-           /* if (upgradeCardName.equals ( "AdminPrivilege" )||upgradeCardName.equals ( "RearLaser" )){
-                try {
-                    path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + upgradeCardName + ".png" )).getFile()));
-                    image = new Image ( path );
-                    permenantCard.setImage ( image );
-                    permenantCard.setId ( upgradeCardName );
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace ( );
-                }
-            } if (upgradeCardName.equals ( "MemorySwap") || upgradeCardName.equals ( "SpamBlocker" ) ){
-                try {
-                    path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + upgradeCardName + ".png" )).getFile()));
-                    image = new Image ( path );
-                    temporaryCard.setImage ( image );
-                    temporaryCard.setId ( upgradeCardName );
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace ( );
-                }
-            }
-*/
 
+    private void enableUpgradeCards() {
+        upgradeCards = FXCollections.observableArrayList(upgradeCard_1, upgradeCard_2, upgradeCard_3, upgradeCard_4, upgradeCard_5, upgradeCard_6);
+
+        for (ImageView card:upgradeCards) {
+            card.setDisable ( false );
+        }
+    }
 
     public void open_chat (MouseEvent mouseEvent) {
         Platform.runLater(() -> {
@@ -687,6 +666,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
                 System.out.println ( "memorySwap" );
+                source.setDisable ( true );
                 source.setImage ( null );
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
@@ -707,11 +687,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 regToCard.put ( 3, null );
                 regToCard.put ( 4, null );*/
                 System.out.println ( "SpamBlocker" );
-              /*cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
+              cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                         card_6, card_7, card_8 );
                 for (ImageView card : cards) {
                     card.setImage ( null );
-                }*/
+                }
                 clientGameModel.activateSpamBlocker();
 
             }else {

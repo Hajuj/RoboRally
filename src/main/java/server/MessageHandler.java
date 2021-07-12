@@ -292,7 +292,7 @@ public class MessageHandler {
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
         if (card.equals("SpamBlocker")) {
-            server.getCurrentGame().activateCardEffect(card);
+            server.getCurrentGame().activatSpamCard ( server.getPlayerWithID ( clientHandler.getPlayer_id () ) );
         } else {
             //When it's the turn of the player himself
             if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {

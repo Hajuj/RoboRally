@@ -348,17 +348,21 @@ public class ClientGameModel {
             System.out.println(4);
         }
         if (allowToBuy) {
-            this.energy = -energyCost;
+            this.energy = this.energy -energyCost;
         }
+        System.out.println ( this.energy );
+        System.out.println ( energyCost );
         return allowToBuy;
     }
 
     public int getUpgradeCost (String cardName) {
         return switch (cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;
+
             case "RearLaser" -> 2;
             case "MemorySwap" -> 1;
             default -> 0;
+
         };
     }
 
