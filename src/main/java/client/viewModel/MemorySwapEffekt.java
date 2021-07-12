@@ -8,15 +8,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ public class MemorySwapEffekt implements Initializable {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     public String cardName;
-    ArrayList<String> allReturnedCardsL = new ArrayList<> (  );
+    ArrayList<String> allReturnedCardsL = new ArrayList<>();
 
     @FXML
     public ImageView card_0;
@@ -58,52 +55,49 @@ public class MemorySwapEffekt implements Initializable {
     @FXML
     public ImageView card_8;
     int j = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
-                card_6, card_7, card_8 );
-        Platform.runLater ( () -> {
-                    try {
-                        for (int j = 0; j < cards.size ( ); j++) {
-                            cardName = clientGameModel.getCardsInHand ( ).get ( j );
-                            cards.get ( j ).setImage ( loadImage ( cardName ) );
-                            cards.get ( j ).setId ( cardName );
-                        }
-                        for (int j = clientGameModel.getCardsInHand ( ).size ( ); j < cards.size ( ); j++) {
-                            cards.get ( j ).setImage ( null );
-                            cards.get ( j ).setId ( "Null" );
-                        }
-                    } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                        e.printStackTrace ( );
-                    }
+        cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
+                card_6, card_7, card_8);
+        Platform.runLater(() -> {
+            try {
+                for (int j = 0; j < cards.size(); j++) {
+                    cardName = clientGameModel.getCardsInHand().get(j);
+                    cards.get(j).setImage(loadImage(cardName));
+                    cards.get(j).setId(cardName);
+                }
+                for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
+                    cards.get(j).setImage(null);
+                    cards.get(j).setId("Null");
+                }
+            } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+                e.printStackTrace();
+            }
         });
     }
 
 
-
     private Image loadImage(String cardName) throws FileNotFoundException {
-        Image image;
-        FileInputStream path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/ProgrammingCards/" + cardName + ".png" )).getFile()));
-        image = new Image(path);
-        return image;
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/ProgrammingCards/" + cardName + ".png")));
     }
 
     public void chooseReturnCard(MouseEvent mouseEvent) {
-        ImageView returnCard = (ImageView) mouseEvent.getSource ();
-        String cardName = returnCard.getId ();
-        allReturnedCardsL.add ( cardName );
-        allReturnedCards = FXCollections.observableArrayList (returnCard1,returnCard2,returnCard3);
+        ImageView returnCard = (ImageView) mouseEvent.getSource();
+        String cardName = returnCard.getId();
+        allReturnedCardsL.add(cardName);
+        allReturnedCards = FXCollections.observableArrayList(returnCard1, returnCard2, returnCard3);
         try {
-            for (int i = 0; i < allReturnedCards.size ( ); i++) {
-                allReturnedCards.get ( j ).setImage ( returnCard.getImage ( ) );
+            for (int i = 0; i < allReturnedCards.size(); i++) {
+                allReturnedCards.get(j).setImage(returnCard.getImage());
                 j++;
                 break;
             }
-            returnCard.setImage ( null );
-        }catch (ArrayIndexOutOfBoundsException e){
-            e.printStackTrace ( );
-            Alert a = new Alert ( Alert.AlertType.ERROR );
-            a.setContentText ( "you may choose only 3 Cards" );
+            returnCard.setImage(null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("you may choose only 3 Cards");
         }
     }
 
@@ -114,9 +108,9 @@ public class MemorySwapEffekt implements Initializable {
             }
         }*/
         clientGameModel.sendRetrunCards(allReturnedCardsL);
-       // clientGameModel.finishRetunrCard ( true );
-        Stage stage = (Stage)OkButton.getScene ().getWindow ();
-        stage.close ();
+        // clientGameModel.finishRetunrCard ( true );
+        Stage stage = (Stage) OkButton.getScene().getWindow();
+        stage.close();
     }
 }
 

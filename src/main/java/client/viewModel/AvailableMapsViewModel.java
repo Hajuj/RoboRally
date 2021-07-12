@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 public class AvailableMapsViewModel implements Initializable {
 
     ClientModel model = ClientModel.getInstance();
@@ -19,7 +20,7 @@ public class AvailableMapsViewModel implements Initializable {
     public ChoiceBox choiceBox;
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 //        choiceBox.setStyle("-fx-font: 23px \"Serif\";");
         Platform.runLater(() -> {
             for (String m : model.getAvailableMaps()) {
@@ -29,12 +30,12 @@ public class AvailableMapsViewModel implements Initializable {
 
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 Platform.runLater(() -> {
                     String mapName = model.getAvailableMaps().get(t1.intValue());
                     model.getClientGameModel().chooseMap(mapName);
                     Stage stage = (Stage) choiceBox.getScene().getWindow();
-                    stage.setResizable ( false );
+                    stage.setResizable(false);
                     stage.close();
                 });
             }

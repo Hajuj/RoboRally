@@ -49,13 +49,13 @@ public class ChooseRobotViewModel implements Initializable {
     public ImageView robot5;
 
     @Override
-    public void initialize (URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         playButton.setDisable(true);
         refreshShadow();
 
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed (ObservableValue<? extends String> observableValue, String s, String t1) {
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 if (!isValideUsername(t1)) {
                     playButton.setDisable(true);
                 } else if (figureProperty.getValue() != -1) {
@@ -68,7 +68,7 @@ public class ChooseRobotViewModel implements Initializable {
 
         figureProperty.addListener(new ChangeListener<Number>() {
             @Override
-            public void changed (ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 if (figureProperty.getValue() == -1) {
                     playButton.setDisable(true);
                 } else if (isValideUsername(nameField.getText())) {
@@ -88,7 +88,7 @@ public class ChooseRobotViewModel implements Initializable {
 
     }
 
-    public void disableUsedRobots () {
+    public void disableUsedRobots() {
         GaussianBlur blur = new GaussianBlur(10);
         for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
             switch (entry.getValue()) {
@@ -120,7 +120,7 @@ public class ChooseRobotViewModel implements Initializable {
         }
     }
 
-    public void disableAllRobots () {
+    public void disableAllRobots() {
         GaussianBlur blur = new GaussianBlur(10);
 
         robot0.setDisable(true);
@@ -143,7 +143,7 @@ public class ChooseRobotViewModel implements Initializable {
 
     }
 
-    public void refreshShadow () {
+    public void refreshShadow() {
         robot0.setEffect(new DropShadow(0.0, Color.RED));
         robot1.setEffect(new DropShadow(0.0, Color.RED));
         robot2.setEffect(new DropShadow(0.0, Color.RED));
@@ -162,49 +162,49 @@ public class ChooseRobotViewModel implements Initializable {
     }
 
 
-    public void setRobot0 () {
+    public void setRobot0() {
         refreshShadow();
         robot0.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(0);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void setRobot1 () {
+    public void setRobot1() {
         refreshShadow();
         robot1.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(1);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void setRobot2 () {
+    public void setRobot2() {
         refreshShadow();
         robot2.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(2);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void setRobot3 () {
+    public void setRobot3() {
         refreshShadow();
         robot3.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(3);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void setRobot4 () {
+    public void setRobot4() {
         refreshShadow();
         robot4.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(4);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void setRobot5 () {
+    public void setRobot5() {
         refreshShadow();
         robot5.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(5);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 
-    public void playButtonClicked () {
+    public void playButtonClicked() {
         try {
             username = nameField.getText();
             model.getClientGameModel().getPlayer().setName(username);
@@ -227,25 +227,25 @@ public class ChooseRobotViewModel implements Initializable {
 
     }
 
-    public boolean isValideUsername (String username) {
+    public boolean isValideUsername(String username) {
         if (username.isBlank()) return false;
         if (username.contains(" ")) return false;
         return !username.contains("@");
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return (model.getPlayersFigureMap().size() >= 6);
     }
 
-    public int getFigureProperty () {
+    public int getFigureProperty() {
         return figureProperty.get();
     }
 
-    public IntegerProperty figurePropertyProperty () {
+    public IntegerProperty figurePropertyProperty() {
         return figureProperty;
     }
 
-    public void setFigureProperty (int figureProperty) {
+    public void setFigureProperty(int figureProperty) {
         this.figureProperty.set(figureProperty);
     }
 }
