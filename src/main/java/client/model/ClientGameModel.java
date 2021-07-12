@@ -17,10 +17,7 @@ import json.protocol.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientGameModel {
@@ -39,7 +36,7 @@ public class ClientGameModel {
     private ArrayList<String> boughtCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
-    private ArrayList<String> upgradeCards = new ArrayList<> ();
+    private ArrayList<String> upgradeCards = new ArrayList<>();
     private boolean handCards = false;
 
     private int energy = 0;
@@ -93,7 +90,7 @@ public class ClientGameModel {
     private LinkedHashMap<Point2D, StartPoint> startPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, Wall> wallMap = new LinkedHashMap<>();
 
-    private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty blueBeltAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
@@ -105,7 +102,7 @@ public class ClientGameModel {
     private String boughtCard;
     private int choosenRegister;
     private ArrayList<String> returnedCards;
-    private boolean isReturning= false;
+    private boolean isReturning = false;
 
 
     //Singleton Zeug
@@ -120,7 +117,7 @@ public class ClientGameModel {
         return instance;
     }
 
-    public void refreshModel() {
+    public void refreshModel () {
         queueMove = false;
         handCards = false;
         latePlayer = false;
@@ -129,7 +126,7 @@ public class ClientGameModel {
         startingPoint = false;
         programmingPhase = false;
         chooseRebootDirection = false;
-        energy = 0;
+        energy = 5;
         damageCount = 0;
         lateCard = "";
 
@@ -155,13 +152,13 @@ public class ClientGameModel {
 
         pushPanelProperty = new SimpleBooleanProperty(false);
         laserAnimeProperty = new SimpleBooleanProperty(false);
-        blueBeltAnimeProperty= new SimpleBooleanProperty(false);
+        blueBeltAnimeProperty = new SimpleBooleanProperty(false);
         actualRegister = new AtomicInteger(-1);
 
         clientModel.setAvailableMaps(new ArrayList<String>());
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener (PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -191,7 +188,7 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
-        rebootSetting ( true );
+        rebootSetting(true);
         clientModel.sendMessage(rebootDirection);
     }
 
@@ -202,15 +199,16 @@ public class ClientGameModel {
     }
 
 
-    public boolean getRebootSetting (){
+    public boolean getRebootSetting () {
         return rebooting;
     }
-    public void setRebootingSetting(boolean b){
+
+    public void setRebootingSetting (boolean b) {
         this.rebooting = b;
     }
 
 
-    public boolean isCurrentPlayer() {
+    public boolean isCurrentPlayer () {
         return currentPlayer;
     }
 
@@ -319,15 +317,57 @@ public class ClientGameModel {
 
     public void buyUpgradeCard (String cardName) {
         boolean isBuying = true;
-        if (cardName.equals("Null")) {
-            isBuying = false;
+        if (checkAllowToBuy(cardName)) {
+            boughtCards.add(cardName);
         }
-        boughtCards.add (cardName);
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
     }
 
-    public String getBoughtCard() {
+    public boolean checkAllowToBuy (String cardName) {
+        boolean allowToBuy = true;
+        int numOfPermanent = Collections.frequency(boughtCards, "AdminPrivilege") + Collections.frequency(boughtCards, "RearLaser");
+        int numOfTemporary = Collections.frequency(boughtCards, "MemorySwap") + Collections.frequency(boughtCards, "SpamBlocker");
+        System.out.println(cardName);
+        // ob er noch nicht 3 und 3 karten hat
+        if (cardName.equals("Null")) {
+            allowToBuy = false;
+            System.out.println(1);
+        } else {
+            if (isPermanent(cardName) && numOfPermanent == 3) {
+                allowToBuy = false;
+                System.out.println(2);
+            } else if ((!isPermanent(cardName)) && numOfTemporary == 3) {
+                allowToBuy = false;
+                System.out.println(3);
+            }
+        }
+        int energyCost = getUpgradeCost(cardName);
+        if (this.energy < energyCost) {
+            allowToBuy = false;
+            System.out.println(4);
+        }
+        if (allowToBuy) {
+            this.energy = -energyCost;
+        }
+        return allowToBuy;
+    }
+
+    public int getUpgradeCost (String cardName) {
+        return switch (cardName) {
+            case "AdminPrivilege", "SpamBlocker" -> 3;
+            case "RearLaser" -> 2;
+            case "MemorySwap" -> 1;
+            default -> 0;
+        };
+    }
+
+    public boolean isPermanent (String cardName) {
+        return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
+    }
+
+
+    public String getBoughtCard () {
         return this.boughtCard;
     }
 
@@ -476,6 +516,7 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
         }
     }
+
 
     public void setLateCard(String card){
         String newCard = this.lateCard;

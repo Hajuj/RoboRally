@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Mohamad, Viktoria
@@ -22,7 +23,7 @@ import java.util.Map;
 public class MessageHandler {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
-    private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());
+    private static final Logger logger = Logger.getLogger ( MessageHandler.class.getName ( ) );
 
     /**
      * Wenn der Server ein Message HelloServer bekommt, schickt er ein Welcome-Message zu dem ClientModel mit dem ID
@@ -290,68 +291,72 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
-
-        //When it's the turn of the player himself
-        if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
-            if (card.equals(server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().get(server.getCurrentGame().getCurrentRegister()).getCardName())) {
-                for (Player player : server.getCurrentGame().getPlayerList()) {
-                    if (player.getPlayerID() != clientHandler.getPlayer_id()) {
-                        JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
-                        server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
-                        //TODO send also all Movement and Animations
+        if (card.equals("SpamBlocker")) {
+            server.getCurrentGame().activateCardEffect(card);
+        } else {
+            //When it's the turn of the player himself
+            if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
+                if (card.equals(server.getPlayerWithID(clientHandler.getPlayer_id()).getDeckRegister().getDeck().get(server.getCurrentGame().getCurrentRegister()).getCardName())) {
+                    for (Player player : server.getCurrentGame().getPlayerList()) {
+                        if (player.getPlayerID() != clientHandler.getPlayer_id()) {
+                            JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
+                            server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
+                            //TODO send also all Movement and Animations
+                        }
                     }
-                }
-                server.getCurrentGame().activateCardEffect(card);
+                    server.getCurrentGame().activateCardEffect(card);
 
-                //inform everyone about next player
-                int nextPlayer = server.getCurrentGame().nextPlayerID();
-                if (nextPlayer != -1) {
-                    server.getCurrentGame().setCurrentPlayer(nextPlayer);
-                    JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
-                    server.getCurrentGame().sendToAllPlayers(jsonMessage);
-                } else {
-                    //Get new register
-                    server.getCurrentGame().activateBoardElements();
-                    int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
-                    server.getCurrentGame().setCurrentRegister(newRegister);
-
-                    if (server.getCurrentGame().getCurrentRegister() != 5) {
-                        canStartNewRound = false;
-                        server.getCurrentGame().getPlayerList().sort(server.getCurrentGame().getComparator());
-                        int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
+                    //inform everyone about next player
+                    int nextPlayer = server.getCurrentGame().nextPlayerID();
+                    if (nextPlayer != -1) {
                         server.getCurrentGame().setCurrentPlayer(nextPlayer);
-                        if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {
-                            nextPlayer1 = server.getCurrentGame().nextPlayerID();
-                            if (nextPlayer1 == -1) {
-                                canStartNewRound = true;
+                        JSONMessage jsonMessage = new JSONMessage("CurrentPlayer", new CurrentPlayerBody(nextPlayer));
+                        server.getCurrentGame().sendToAllPlayers(jsonMessage);
+                    } else {
+                        //Get new register
+                        server.getCurrentGame().activateBoardElements();
+                        int newRegister = server.getCurrentGame().getCurrentRegister() + 1;
+                        server.getCurrentGame().setCurrentRegister(newRegister);
+
+                        if (server.getCurrentGame().getCurrentRegister() != 5) {
+                            canStartNewRound = false;
+                            server.getCurrentGame().getPlayerList().sort(server.getCurrentGame().getComparator());
+                            int nextPlayer1 = server.getCurrentGame().getPlayerList().get(0).getPlayerID();
+                            server.getCurrentGame().setCurrentPlayer(nextPlayer);
+                            if (server.getCurrentGame().getDeadRobotsIDs().contains(nextPlayer1)) {
+                                nextPlayer1 = server.getCurrentGame().nextPlayerID();
+                                if (nextPlayer1 == -1) {
+                                    canStartNewRound = true;
+                                }
+                            }
+                            server.getCurrentGame().setCurrentPlayer(nextPlayer1);
+                            if (!canStartNewRound) {
+                                server.getCurrentGame().sendCurrentCards(server.getCurrentGame().getCurrentRegister());
+                                server.getCurrentGame().informAboutCurrentPlayer();
                             }
                         }
-                        server.getCurrentGame().setCurrentPlayer(nextPlayer1);
-                        if (!canStartNewRound) {
-                            server.getCurrentGame().sendCurrentCards(server.getCurrentGame().getCurrentRegister());
-                            server.getCurrentGame().informAboutCurrentPlayer();
+                        if (canStartNewRound) {
+                            //New Round
+                            server.getCurrentGame().setRebootDirection();
+                            server.getCurrentGame().setNewRoundCounter();
+                            for (Player player : server.getCurrentGame().getPlayerList()) {
+                                player.discardHandCards();
+                                player.discardRegisterCards();
+                            }
+                            server.getCurrentGame().setActivePhaseOn(false);
+                            server.getCurrentGame().setActivePhase(1);
                         }
                     }
-                    if (canStartNewRound) {
-                        //New Round
-                        server.getCurrentGame().setRebootDirection();
-                        server.getCurrentGame().setNewRoundCounter();
-                        for (Player player : server.getCurrentGame().getPlayerList()) {
-                            player.discardHandCards();
-                            player.discardRegisterCards();
-                        }
-                        server.getCurrentGame().setActivePhaseOn(false);
-                        server.getCurrentGame().setActivePhase(1);
-                    }
+                } else {
+                    JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
+                    server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
                 }
             } else {
-                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("Card " + card + " is not in your " + (server.getCurrentGame().getCurrentRegister() + 1) + " register!"));
+                JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
                 server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
             }
-        } else {
-            JSONMessage errorNotYourTurn = new JSONMessage("Error", new ErrorBody("It is not your turn!"));
-            server.sendMessage(errorNotYourTurn, clientHandler.getWriter());
         }
+
     }
 
     public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
@@ -480,6 +485,7 @@ public class MessageHandler {
             if (server.getCurrentGame().isPermanent(cardName)) {
                 if (cardName.equals("AdminPrivilege")) {
                     player.getInstalledPermanentUpgrades().add(new AdminPrivilege());
+                    player.setNumberOfAdminPrivilege(player.getNumberOfAdminPrivilege() + 1);
                 } else {
                     player.getInstalledPermanentUpgrades().add(new RearLaser());
                     server.getCurrentGame().getRearLasers().add(player);
@@ -507,49 +513,51 @@ public class MessageHandler {
     }
 
 
-    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
-        logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
+    public void handleChooseRegister(Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+        logger.info ( ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET );
         //schauen ob dieser spieler echt AdminPrivilege hat
-        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-        if (player.checkAdmin()) {
-            int register = chooseRegisterBody.getRegister();
-            server.getCurrentGame().getAdminPriorityMap().put(register, player);
-            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
-            server.getCurrentGame().sendToAllPlayers(adminMessage);
-        }
+        Player player = server.getPlayerWithID ( clientHandler.getPlayer_id ( ) );
+        // if (player.checkAdmin()) {
+        int register = chooseRegisterBody.getRegister ( );
+        server.getCurrentGame ( ).getAdminPriorityMap ( ).put ( register, player );
+        JSONMessage adminMessage = new JSONMessage ( "RegisterChosen", new RegisterChosenBody ( player.getPlayerID ( ), chooseRegisterBody.getRegister ( ) ) );
+        server.getCurrentGame ( ).sendToAllPlayers ( adminMessage );
+        //  }
+
+
     }
 
     public void handleReturnCards(Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
-        logger.info(ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET);
-        ArrayList<String> returnedCards = returnCardsBody.getCards();
-        ArrayList<String> newCards = new ArrayList<>();
+        logger.info ( ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET );
+        ArrayList<String> returnedCards = returnCardsBody.getCards ( );
+        ArrayList<String> newCards = new ArrayList<> ( );
 
-        Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-
+        Player player = server.getPlayerWithID ( clientHandler.getPlayer_id ( ) );
         //Remove the returned cards from the deck Hand of the player
         for (String card : returnedCards) {
-            for (Card card1 : player.getDeckHand().getDeck()) {
-                if (card1.getCardName().equals(card)) {
-                    player.getDeckHand().getDeck().remove(card1);
-                    player.getDeckProgramming().getDeck().add(card1);
+            for (Card card1 : player.getDeckHand ( ).getDeck ( )) {
+                if (card1.getCardName ( ).equals ( card )) {
+                    player.getDeckHand ( ).getDeck ( ).remove ( card1 );
+                    player.getDeckProgramming ( ).getDeck ( ).add ( card1 );
                     break;
                 }
             }
         }
 
         //Add all the hand cards to the new Array list
-        for (Card card : player.getDeckHand().getDeck()) {
-            newCards.add(card.getCardName());
+        for (Card card : player.getDeckHand ( ).getDeck ( )) {
+            newCards.add ( card.getCardName ( ) );
+
         }
 
         //Draw three cards for the player and remove them from deck Programming
         for (int i = 0; i < 3; i++) {
             player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
-            newCards.add(player.getDeckProgramming().getTopCard().getCardName());
-            player.getDeckProgramming().removeTopCard();
+            newCards.add ( player.getDeckProgramming ( ).getTopCard ( ).getCardName ( ) );
+            player.getDeckProgramming ( ).removeTopCard ( );
         }
-        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(newCards));
-        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
-    }
+        JSONMessage jsonMessage = new JSONMessage ( "YourCards", new YourCardsBody ( newCards ) );
+        server.sendMessage ( jsonMessage, server.getConnectionWithID ( player.getPlayerID ( ) ).getWriter ( ) );
 
+    }
 }
