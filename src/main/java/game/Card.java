@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 /**
  * @author Ilja Knis
  */
-public abstract class Card{
+public abstract class Card {
 
     @Expose
     public String cardName;
@@ -16,7 +16,7 @@ public abstract class Card{
 
     public abstract boolean isDamageCard();
 
-    public String getCardName(){
+    public String getCardName() {
         return this.cardName;
     }
 }

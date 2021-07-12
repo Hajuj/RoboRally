@@ -21,7 +21,7 @@ import java.util.Date;
  */
 public class Server {
     private static Server instance;
-    private final int SERVER_PORT = 507;
+    private static int serverPort = 500;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
@@ -35,15 +35,14 @@ public class Server {
     private ArrayList<Connection> connections = new ArrayList<>();
 
 
-    private Server () {
+    private Server() {
         Date date = new Date();
         String workIt = date.toString().replaceAll("\\s+", "_");
         workIt = workIt.replace(":", "-");
         loggerStamp += workIt;
-        System.out.println(loggerStamp);
     }
 
-    public static Server getInstance () {
+    public static Server getInstance() {
         if (instance == null) {
             instance = new Server();
         }
@@ -51,25 +50,53 @@ public class Server {
     }
 
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
+        if (args.length == 0)
+            throw new IllegalArgumentException("No arguments provided. Flags: -p Port.");
+        if (args.length == 1) {
+            if (args[0].charAt(0) == '-') {
+                throw new IllegalArgumentException("Expected argument after: " + args[0]);
+            } else {
+                throw new IllegalArgumentException("Illegal Argument: " + args[0]);
+            }
+        }
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            String nextArg;
+            if (i + 1 == args.length || args[i + 1].charAt(0) == '-') {
+                throw new IllegalArgumentException("Expected argument after: " + arg);
+            } else {
+                nextArg = args[i + 1];
+            }
+            if ("-p".equals(arg)) {
+                int port = Integer.parseInt(nextArg);
+                if (port < 500 || port > 65555)
+                    throw new IllegalArgumentException("Port number: " + port + " is invalid");
+                serverPort = port;
+                i++;
+            } else {
+                throw new IllegalArgumentException("Illegal Argument: " + arg);
+            }
+        }
         Server server = Server.getInstance();
         server.messageHandler = new MessageHandler();
         server.start();
     }
 
-    public void start () {
+    public void start() {
         logger.info("Starting server...");
 
         // Open socket for incoming connections, if socket already exists start aborts
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(SERVER_PORT);
+            serverSocket = new ServerSocket(serverPort);
         } catch (IOException ioException) {
             logger.warn("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
             System.exit(0);
         }
 
-        logger.info("The server has a port number " + SERVER_PORT + ", and runs on localhost.");
+        logger.info("The server has a port number " + serverPort + ", and runs on localhost.");
 
         while (checkMaxClient()) {
             logger.info("Waiting for new client...");
@@ -101,7 +128,7 @@ public class Server {
     }
 
 
-    public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
+    public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
@@ -112,7 +139,7 @@ public class Server {
         return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
-    public Player getPlayerWithID (int ID) {
+    public Player getPlayerWithID(int ID) {
         for (Player player : waitingPlayer) {
             if (player.getPlayerID() == ID) {
                 return player;
@@ -121,7 +148,7 @@ public class Server {
         return null;
     }
 
-    public Connection getConnectionWithID (int ID) {
+    public Connection getConnectionWithID(int ID) {
         for (Connection connection : connections) {
             if (connection.getPlayerID() == ID) {
                 return connection;
@@ -149,15 +176,15 @@ public class Server {
         return true;
     }
 
-    public Game getCurrentGame () {
+    public Game getCurrentGame() {
         return currentGame;
     }
 
-    public void setCurrentGame (Game currentGame) {
+    public void setCurrentGame(Game currentGame) {
         this.currentGame = currentGame;
     }
 
-    public ArrayList<Player> getReadyPlayer () {
+    public ArrayList<Player> getReadyPlayer() {
         return readyPlayer;
     }
 
@@ -165,27 +192,27 @@ public class Server {
         this.readyPlayer = readyPlayer;
     }
 
-    public ArrayList<Player> getWaitingPlayer () {
+    public ArrayList<Player> getWaitingPlayer() {
         return waitingPlayer;
     }
 
-    public boolean checkMaxClient () {
+    public boolean checkMaxClient() {
         return connections.size() < MAX_CLIENT;
     }
 
-    public int getClientsCounter () {
+    public int getClientsCounter() {
         return clientsCounter;
     }
 
-    public void setClientsCounter (int clientsCounter) {
+    public void setClientsCounter(int clientsCounter) {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections () {
+    public ArrayList<Connection> getConnections() {
         return connections;
     }
 
-    public String getProtocolVersion () {
+    public String getProtocolVersion() {
         return protocolVersion;
     }
 

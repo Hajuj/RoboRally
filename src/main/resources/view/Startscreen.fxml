@@ -15,17 +15,18 @@
    <children>
       <ImageView fitHeight="682.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-117.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../startScreenRobo.gif" />
+            <Image url="@../images/Gui/startScreen.gif" />
          </image>
       </ImageView>
+      <ImageView fitHeight="251.0" fitWidth="456.0" layoutX="208.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
       <VBox layoutX="298.0" layoutY="327.0" prefHeight="221.0" prefWidth="276.0">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../Startscreen.css" text="Start game">
-                      <font>
-                          <Font name="Franklin Gothic Heavy" size="27.0" />
-                      </font>
+                  <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Start game">
+                     <font>
+                        <Font name="Franklin Gothic Heavy" size="27.0" />
+                     </font>
                      <effect>
                         <InnerShadow choke="0.15" height="51.36" radius="24.42" width="48.32" />
                      </effect>
@@ -34,7 +35,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="278.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../Startscreen.css" text="How to play">
+                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="278.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
@@ -46,7 +47,7 @@
             </HBox>
             <HBox prefHeight="104.0" prefWidth="276.0">
                <children>
-                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="64.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../Startscreen.css" text="Exit">
+                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="64.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Exit">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>

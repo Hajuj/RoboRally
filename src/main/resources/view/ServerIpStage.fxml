@@ -10,14 +10,16 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="872.0" styleClass="bodybg" stylesheets="@../ServerIpStage.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ServerIpStageViewModel">
+<AnchorPane fx:id="StartscreenPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="872.0" styleClass="bodybg" stylesheets="@../images/Gui/ServerIpStage.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.ServerIpStageViewModel">
 
     <children>
+        <ImageView fitHeight="665.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fitHeight="665.0" fitWidth="872.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <image>
-                <Image url="@../startScreenRobo.gif" />
+                <Image url="@../images/Gui/startScreen.gif" />
             </image>
         </ImageView>
+        <ImageView fitHeight="251.0" fitWidth="456.0" layoutX="208.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
         <TextField fx:id="serverPortField" layoutX="330.0" layoutY="358.0" prefHeight="39.0" prefWidth="213.0" style="-fx-background-color: #907509#907509 #907509#907509 #907509#907509 #907509#907509;" text="500">
             <font>
                 <Font size="18.0" />
@@ -39,7 +41,7 @@
         </Button>
 
 
-        <Label layoutX="197.0" layoutY="355.0" prefHeight="45.0" prefWidth="119.0" text="PORT" textFill="#fffefe">
+        <Label layoutX="197.0" layoutY="355.0" prefHeight="45.0" prefWidth="119.0" text="PORT" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>

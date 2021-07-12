@@ -20,7 +20,7 @@ public class ClientModelWriterThread extends Thread {
     private MessageHandler messageHandler;
     private PrintWriter writer;
 
-    public ClientModelWriterThread (ClientModel client, Socket clientSocket) {
+    public ClientModelWriterThread(ClientModel client, Socket clientSocket) {
         this.client = client;
         this.clientSocket = clientSocket;
         this.messageHandler = client.getMessageHandler();

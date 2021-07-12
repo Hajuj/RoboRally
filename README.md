@@ -1,16 +1,25 @@
-![alt text](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/Mohamad/src/main/resources/images/RoboRallyLogo.jpg "RoboRally")
+![](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/master/src/main/resources/images/Gui/startScreen.gif)
 
 # Welcome!
 This is our university project for the board game RoboRally.
 
 Here you will find everything needed for you to downaload and run the game on your local machine.
 
-## Download
-Please download the project as a zip file on your local machine or clone it using git.
-
-## Run
-1. Connect to the server by running server.Server class.
-2. Start a client by running client.ClientApplication class.
+## Run Using JAR
+1. Download the JAR files from [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/tree/master/target)
+2. To run the server, write:
+~~~
+java -jar Server-jar-with-dependencies.jar -p PORTNUMBER
+~~~
+3. To run a client, write:
+~~~
+java -jar --module-path "PATH-TO-JAVAFX" --add-modules javafx.controls,javafx.graphics,javafx.fxml,javafx.media,javafx.base ClientApplication-jar-with-dependencies.jar
+~~~
+4. To run AI, write:
+~~~
+java -jar SimpleAIModel-jar-with-dependencies.jar
+~~~
+* **Repeat 3 until you get the desired number of players.**
 
 ## Game
 
@@ -18,9 +27,9 @@ Please download the project as a zip file on your local machine or clone it usin
 
 ### Game Rules
 
-
 ## Project Requirements
-*maybe add here the JAR files?*
 - Java 16
 - JavaFX 16
 - Gson 2.8.6
+- Maven
+- Log4j 1.2.17

@@ -2,20 +2,13 @@ package client.viewModel;
 
 import client.model.ClientGameModel;
 import client.model.ClientModel;
-import game.upgradecards.SpamBlocker;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
@@ -26,10 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import javax.script.Bindings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
@@ -58,79 +49,76 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-    private SimpleIntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+    //private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
-        model.addPropertyChangeListener(this);
-        clientGameModel.addPropertyChangeListener(this);
-        energyCountProperty().addListener(changeListener);
-        cubesNum.textProperty().bind(energyCountProperty().asString());
+        cubesNum.setText ( String.valueOf ( clientGameModel.getEnergy () ) );
         //energyCount.bind ( energyCountProperty() );
-        //cubesNum.setValue( energyCount );
-        upgradeCards = FXCollections.observableArrayList(card_1, card_2, card_3, card_4, card_5, card_6,
-                card_7, card_8, card_9, card_9, card_10);
-        Platform.runLater(() -> {
+        //cubesNum.setText ( energyCount.toString () );
+        upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6);
+        Platform.runLater ( () -> {
             try {
-                for (int j = 0; j < clientGameModel.getUpgradeCards().size(); j++) {
-                    cardName = clientGameModel.getUpgradeCards().get(j);
-                    upgradeCards.get(j).setImage(loadImage(cardName));
-                    upgradeCards.get(j).setId(cardName);
+                for (int j = 0; j < clientGameModel.getUpgradeCards ( ).size ( ); j++) {
+                    cardName = clientGameModel.getUpgradeCards ( ).get ( j );
+                    upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
+
+                    upgradeCards.get ( j ).setId ( cardName );
                 }
-                for (int j = clientGameModel.getUpgradeCards().size(); j < upgradeCards.size(); j++) {
-                    upgradeCards.get(j).setImage ( null );
-                    upgradeCards.get ( j ).setId ( "null" );
+                for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
+                        upgradeCards.get ( j ).setImage ( null );
+                        upgradeCards.get ( j ).setId ( "Null" );
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 e.printStackTrace ( );
             }
         } );
 
-        choosenUpgradeCard.addListener ( new ChangeListener<String> ( ) {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-            }
-        } );
-
-        //disableUsedRobots();
     }
 
 
 
     public void showDescription(MouseEvent mouseEvent) {
-      toolTip1.setText ( "card effekt " );
-
+        ImageView source  = (ImageView) mouseEvent.getSource ();
+        switch (source.getId ()){
+            case "AdminPrivilege"-> {
+                toolTip1.setText ( "give your robot priority for one register." );
+            }
+            case "MemorySwap"-> {
+                toolTip1.setText ( "Draw three cards. Then choose three from your hand to put on top of your deck." );
+            }
+            case "SpamBlocker"-> {
+                toolTip1.setText ( "Replace each SPAM damage card in your hand with a card from the top of your deck." );
+            }
+            case "RearLaser"-> {
+                toolTip1.setText ( "shoot backward as well as forward." );
+            }
+        }
     }
 
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
-            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard());
+            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
+            clientGameModel.finishBuyCard(true);
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
-            clientGameModel.buyUpgradeCard("Null");
+            clientGameModel.buyUpgradeCard ( "Null" );
+            Stage stage =(Stage) buyNothing.getScene ().getWindow ();
+            stage.close ();
         }
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
-       /* System.out.println ( choosenUpgradeCard.getValue () );
-        if (getChoosenUpgradeCard().equals ( "MemonrySwap" ) ||getChoosenUpgradeCard().equals ( "SpamBlocker" ) ) {
-
-           // model.getClientGameModel ( ).getPlayer ( ).getTemporaryUpgrades ( ).add (  ) );
-        }
-        else if(){
-
-        }*/
     }
 
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
-
-        refreshShadow();
-        choosenCard.setEffect(new DropShadow (20.0, Color.RED));
-        setChoosenUpgradeCard (choosenCard.getId ());
-        
+        if (choosenCard.equals ( null )){
+            buyButton.setDisable ( true );
+        }else {
+            refreshShadow ( );
+            choosenCard.setEffect ( new DropShadow ( 20.0, Color.RED ) );
+            setChoosenUpgradeCard ( choosenCard.getId ( ) );
+        }
     }
     public void refreshShadow () {
         for (ImageView upgradeCard:upgradeCards) {
@@ -155,10 +143,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     }
 
     private Image loadImage(String cardName) throws FileNotFoundException {
-        Image image;
-        FileInputStream path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + cardName + ".png" )).getFile()));
-        image = new Image(path);
-        return image;
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));
     }
 
     public void setChoosenUpgradeCard (String cardName) {
@@ -168,29 +153,13 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public String getChoosenUpgradeCard() {
         return this.choosenUpgradeCard.get ( );
     }
-    
-      /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
-        chatOutput.bind(model.getChatHistory());
-        chatField.textProperty().bind(chatOutputProperty());
-        }));*/
 
-   public IntegerProperty energyCountProperty() {
-        //energyCount.addListener(clientGameModel.getEnergy());
-        //cubesNum.textProperty().bind(energyCount.asString());
+  /*  public IntegerProperty energyCountProperty() {
         this.energyCount.set ( clientGameModel.getEnergy () );
         return this.energyCount;
-    }
-
+    }*/
+/*
     public void setEnergyCount(final int energyCount) {
         this.energyCount.set ( energyCount );
-    }
-
-    final ChangeListener changeListener = new ChangeListener(){
-        @Override
-        public void changed(ObservableValue observableValue, Object oldValue,
-                            Object newValue) {
-            System.out.println("oldValue:"+ oldValue + ", newValue = " + newValue);
-        }
-    };
-
+    }*/
 }

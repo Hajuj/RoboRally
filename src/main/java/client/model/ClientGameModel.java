@@ -1,23 +1,17 @@
 package client.model;
 
-import client.viewModel.GameViewModel;
 import game.Element;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientGameModel {
@@ -36,10 +30,10 @@ public class ClientGameModel {
     private ArrayList<String> boughtCards = new ArrayList<>();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
-    private ArrayList<String> upgradeCards = new ArrayList<> ();
+    private ArrayList<String> upgradeCards = new ArrayList<>();
     private boolean handCards = false;
 
-    private int energy = 0;
+    private int energy = 5;
 
     private HashMap<Robot, Point2D> robotMap = new HashMap<>();
 
@@ -98,6 +92,11 @@ public class ClientGameModel {
     private boolean rebooting = false;
     private boolean refillShop = false;
     private boolean isBuying = false;
+    private boolean backShooting = false;
+    private String boughtCard;
+    private int choosenRegister;
+    private ArrayList<String> returnedCards;
+    private boolean isReturning= false;
 
 
     //Singleton Zeug
@@ -311,13 +310,63 @@ public class ClientGameModel {
 
     public void buyUpgradeCard (String cardName) {
         boolean isBuying = true;
-        if (cardName.equals("Null")) {
-            isBuying = false;
+        if (checkAllowToBuy(cardName)) {
+            boughtCards.add(cardName);
         }
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
     }
 
+    public boolean checkAllowToBuy (String cardName) {
+        boolean allowToBuy = true;
+        int numOfPermanent = Collections.frequency(boughtCards, "AdminPrivilege") + Collections.frequency(boughtCards, "RearLaser");
+        int numOfTemporary = Collections.frequency(boughtCards, "MemorySwap") + Collections.frequency(boughtCards, "SpamBlocker");
+        System.out.println(cardName);
+        // ob er noch nicht 3 und 3 karten hat
+        if (cardName.equals("Null")) {
+            allowToBuy = false;
+            System.out.println(1);
+        } else {
+            if (isPermanent(cardName) && numOfPermanent == 3) {
+                allowToBuy = false;
+                System.out.println(2);
+            } else if ((!isPermanent(cardName)) && numOfTemporary == 3) {
+                allowToBuy = false;
+                System.out.println(3);
+            }
+        }
+        int energyCost = getUpgradeCost(cardName);
+        if (this.energy < energyCost) {
+            allowToBuy = false;
+            System.out.println(4);
+        }
+        if (allowToBuy) {
+            this.energy = this.energy -energyCost;
+        }
+        System.out.println ( this.energy );
+        System.out.println ( energyCost );
+        return allowToBuy;
+    }
+
+    public int getUpgradeCost (String cardName) {
+        return switch (cardName) {
+            case "AdminPrivilege", "SpamBlocker" -> 3;
+
+            case "RearLaser" -> 2;
+            case "MemorySwap" -> 1;
+            default -> 0;
+
+        };
+    }
+
+    public boolean isPermanent (String cardName) {
+        return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
+    }
+
+
+    public String getBoughtCard () {
+        return this.boughtCard;
+    }
 
     public void activateSpamBlocker () {
         sendPlayCard("SpamBlocker");
@@ -480,13 +529,14 @@ public class ClientGameModel {
         }
     }
 
+
+
     public void refillShop(boolean refill) {
         boolean oldShop = this.refillShop;
         this.refillShop = refill;
         if (this.refillShop) {
-            propertyChangeSupport.firePropertyChange("refillShop", oldShop, true);
+            propertyChangeSupport.firePropertyChange ( "refillShop", oldShop, true );
         }
-
     }
 
     public boolean isBuying() {
@@ -609,7 +659,6 @@ public class ClientGameModel {
         return energy;
     }
 
-
     public void setEnergy (int energy) {
         this.energy = energy;
     }
@@ -680,6 +729,45 @@ public class ClientGameModel {
         return this.boughtCards;
     }
 
+    public void finishBuyCard(boolean b) {
+        boolean oldValue = this.isBuying ;
+        this.isBuying = b;
+        if (this.isBuying) {
+            propertyChangeSupport.firePropertyChange ( "buyingCardFinished", oldValue, true );
+        }
+    }
+
+    public void setChoosenRegister(int choosenRegister) {
+        System.out.println ( "ich schicke jetzt an dem Server" );
+        this.choosenRegister= choosenRegister;
+        JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
+        clientModel.sendMessage(chooseRegisterMessage);
+    }
+
+    public int getChoosenRegister(){
+        return this.choosenRegister;
+    }
+
+    public void canBackShooting(boolean b) {
+        this.backShooting= b;
+    }
+
+    public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
+        this.returnedCards = allReturnedCardsL;
+        JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
+        clientModel.sendMessage(returnCardsMessage);
+    }
+    public void finishRetunrCard(boolean b) {
+        boolean oldValue = this.isReturning ;
+        this.isReturning = b;
+        if (this.isReturning) {
+            propertyChangeSupport.firePropertyChange ( "returningFinished", oldValue, true );
+        }
+    }
+
+    public ArrayList<String> getReturnedCards() {
+        return this.returnedCards;
+    }
 
     public static class TurnTask {
         private int playerID;
