@@ -709,12 +709,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 regToCard.put ( 3, null );
                 regToCard.put ( 4, null );*/
                 System.out.println ( "SpamBlocker" );
-             /*   cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
+              /*cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                         card_6, card_7, card_8 );
                 for (ImageView card : cards) {
                     card.setImage ( null );
                 }*/
-               // clientGameModel.setHandCards ( true );
+                clientGameModel.activateSpamBlocker();
 
             }else {
                 Alert a = new Alert ( Alert.AlertType.ERROR );
