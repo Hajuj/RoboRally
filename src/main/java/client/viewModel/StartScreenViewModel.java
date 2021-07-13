@@ -12,6 +12,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.media.AudioClip;
@@ -63,6 +64,7 @@ public class StartScreenViewModel implements Initializable {
         //sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
         //sound.setCycleCount(AudioClip.INDEFINITE);
         //sound.play();
+        StartGameButton.requestFocus();
 
     }
 

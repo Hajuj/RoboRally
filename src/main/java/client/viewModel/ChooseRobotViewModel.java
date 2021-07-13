@@ -61,6 +61,7 @@ public class ChooseRobotViewModel implements Initializable {
                 } else if (figureProperty.getValue() != -1) {
                     playButton.setDisable(false);
                 } else if (isGameOn()) {
+                    playButton.requestFocus();
                     playButton.setDisable(false);
                 }
             }
