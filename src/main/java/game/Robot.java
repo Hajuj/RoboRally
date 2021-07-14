@@ -10,8 +10,12 @@ public class Robot {
     private String name;
     private String orientation;
 
-
-    //TODO: Orientation immer nach rechts am Anfang? Oder da, wo die Antenne schaut? keine Ahnung
+    /**
+     * Constructor to create a new Robot.
+     * @param name      is the name of the robot
+     * @param xPosition is the x position of the robot on the map
+     * @param yPosition is the y position of the robot on the map
+     */
     public Robot(String name, int xPosition, int yPosition) {
         this.name = name;
         this.xPosition = xPosition;

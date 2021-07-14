@@ -21,11 +21,22 @@ public class Element {
     @Expose
     private ArrayList<Integer> registers;
 
+    /**
+     * Constructor for elements: Empty, StartPoint, Pit
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     */
     public Element(String type, String isOnBoard) {
         this.type = type;
         this.isOnBoard = isOnBoard;
     }
 
+    /**
+     * Constructor for elements: Antenna, Gear, RestartPoint, Wall
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     * @param orientations  are the orientations of the element
+     */
     public Element(String type, String isOnBoard, ArrayList<String> orientations) {
         this.type = type;
         this.isOnBoard = isOnBoard;
@@ -33,12 +44,25 @@ public class Element {
         this.orientations.addAll(orientations);
     }
 
+    /**
+     * Constructor for elements: CheckPoint, EnergySpace
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     * @param count         is the amount that specific element
+     */
     public Element(String type, String isOnBoard, int count) {
         this.type = type;
         this.isOnBoard = isOnBoard;
         this.count = count;
     }
 
+    /**
+     * Constructor for element: ConveyorBelt
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     * @param speed         is the speed of the element
+     * @param orientations  are the orientations of the element
+     */
     public Element(String type, String isOnBoard, int speed, ArrayList<String> orientations) {
         this.type = type;
         this.isOnBoard = isOnBoard;
@@ -47,6 +71,13 @@ public class Element {
         this.orientations.addAll(orientations);
     }
 
+    /**
+     * Constructor for element: Laser
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     * @param orientations  are the orientations of the element
+     * @param count         is the amount that specific element
+     */
     public Element(String type, String isOnBoard, ArrayList<String> orientations, int count) {
         this.type = type;
         this.isOnBoard = isOnBoard;
@@ -55,6 +86,13 @@ public class Element {
         this.orientations.addAll(orientations);
     }
 
+    /**
+     * Constructor for element: PushPanel
+     * @param type          is the name of the element
+     * @param isOnBoard     is the board the element is on
+     * @param orientations  are the orientations of the element
+     * @param registers     are the registers assigned to that element
+     */
     public Element(String type, String isOnBoard, ArrayList<String> orientations, ArrayList<Integer> registers) {
         this.type = type;
         this.isOnBoard = isOnBoard;
@@ -62,7 +100,6 @@ public class Element {
         this.orientations = new ArrayList<>();
         this.orientations.addAll(orientations);
     }
-
 
     public String getType() {
         return this.type;
