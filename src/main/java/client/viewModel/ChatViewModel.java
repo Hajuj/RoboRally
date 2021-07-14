@@ -51,7 +51,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         model.addPropertyChangeListener(this);
         chatField.setText(model.getChatHistory());
         messageField.requestFocus();
-        sendButton.setDefaultButton(true);
+        sendButton.defaultButtonProperty();
 
         chatField.setEditable(false);
         //readyDisplay.setText(model.getPlayersStatus());

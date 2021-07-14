@@ -64,7 +64,7 @@ public class StartScreenViewModel implements Initializable {
         //sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
         //sound.setCycleCount(AudioClip.INDEFINITE);
         //sound.play();
-        StartGameButton.requestFocus();
+        StartGameButton.setDefaultButton(true);
 
     }
 
