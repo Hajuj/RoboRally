@@ -119,7 +119,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public ImageView upgradeCard_6;
     public HBox Timer;
     public Label timerLable;
-    Integer seconds = 30;
+    private final Integer startTime=30;
+    private Integer seconds = startTime;
 
 
     ObservableList<ImageView> cards;
@@ -525,6 +526,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     disableAllRegisters ( false );
                     try {
                         showPopup ( "Programming Phase has begun" );
+                        //Timer.setVisible ( true );
 
 
 
@@ -587,6 +589,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 Parent root1 = null;
                 try {
                     showPopup("Upgrade Phase has begun");
+                   // seconds = 30;
                     //clientGameModel.getUpgradBoughtCards ().clear ();
                     clientGameModel.getBoughtCards ().clear ();
                     enableUpgradeCards();
@@ -637,6 +640,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
         }
         if (evt.getPropertyName ().equals ( "TimerStarted" )){
+            clientGameModel.setTimer ( false );
+            seconds = 30;
             Timer.setVisible ( true );
             doTimer();
         }
@@ -662,7 +667,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         } );
         time.getKeyFrames ().add ( frame );
         time.playFromStart ();
-        seconds = 30;
+
 
     }
 
