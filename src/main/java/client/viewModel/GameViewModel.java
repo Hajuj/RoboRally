@@ -634,12 +634,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             newStage.setScene(new Scene(root1));
             newStage.show();
         } else if (source.getId().equals("RearLaser")) {
+            source.setDisable ( true );
             clientGameModel.canBackShooting(true);
         }
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
-                source.setDisable ( true );
                 source.setImage ( null );
+                clientGameModel.playMemorySwap(true);
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
                 Stage newStage = new Stage ( );

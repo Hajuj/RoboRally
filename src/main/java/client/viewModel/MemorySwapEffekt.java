@@ -28,6 +28,7 @@ public class MemorySwapEffekt implements Initializable {
     public ImageView returnCard2;
     public ImageView returnCard3;
     public ImageView OkButton;
+
     ObservableList<ImageView> cards;
     ObservableList<ImageView> allReturnedCards;
 
@@ -54,12 +55,20 @@ public class MemorySwapEffekt implements Initializable {
     public ImageView card_7;
     @FXML
     public ImageView card_8;
+    @FXML
+    public ImageView card_9;
+    @FXML
+    public ImageView card_10;
+    @FXML
+    public ImageView card_11;
+
+
     int j = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
-                card_6, card_7, card_8);
+                card_6, card_7, card_8, card_9,card_10,card_11);
         Platform.runLater(() -> {
             try {
                 for (int j = 0; j < cards.size(); j++) {

@@ -433,9 +433,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "ExchangeShop Message received." + ANSI_RESET);
         ArrayList<String> cards = exchangeShopBody.getCards();
 
-        for (String card : cards) {
-            clientModel.getClientGameModel().getExchangeShopCards().add(card);
-        }
+      clientModel.getClientGameModel ().setUpgradeCards ( exchangeShopBody.getCards () );
     }
 
     public void handleCheckpointMovedBody(ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
