@@ -4,7 +4,7 @@
 
 @font-face {
     font-family: 'Steamwheel';
-    src: url('Steamwheel-jE7gM.ttf');
+    src: url('\steamwheel-font\SteamwheelItalic-GOXdD.ttf');
 }
 
 .text {
@@ -12,3 +12,7 @@
     -fx-font-size: 36px;
 }
 
+.StartGameButton{
+	-fx-font-family: "Steamwheel";
+    -fx-font-size: 36px;
+}
