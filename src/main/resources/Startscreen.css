@@ -1,0 +1,18 @@
+.bodybg{
+
+}
+
+@font-face {
+    font-family: 'Steamwheel';
+    src: url('\steamwheel-font\SteamwheelItalic-GOXdD.ttf');
+}
+
+.text {
+    -fx-font-family: "Steamwheel";
+    -fx-font-size: 36px;
+}
+
+.StartGameButton{
+	-fx-font-family: "Steamwheel";
+    -fx-font-size: 36px;
+}

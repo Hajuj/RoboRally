@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.InnerShadow?>
@@ -23,37 +25,48 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Start game">
+                  <Button fx:id="StartGameButton" mnemonicParsing="false" onAction="#startGame" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="StartGameButton" stylesheets="@../Startscreen.css" text="Start game">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
                      <effect>
                         <InnerShadow choke="0.15" height="51.36" radius="24.42" width="48.32" />
                      </effect>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
                   </Button>
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="278.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
+                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
                      <effect>
                         <InnerShadow choke="0.13" height="27.07" radius="17.59" width="45.29" />
                      </effect>
+                     <styleClass>
+                        <String fx:value="bodybg" />
+                        <String fx:value="text" />
+                     </styleClass>
                   </Button>
                </children>
             </HBox>
             <HBox prefHeight="104.0" prefWidth="276.0">
                <children>
-                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="64.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Exit">
+                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="66.0" prefWidth="277.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Exit">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
                      <effect>
                         <InnerShadow height="48.32" radius="25.9375" width="57.43" />
                      </effect>
+                     <styleClass>
+                        <String fx:value="bodybg" />
+                        <String fx:value="text" />
+                     </styleClass>
                   </Button>
                </children>
             </HBox>

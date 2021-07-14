@@ -31,7 +31,7 @@ public class MessageHandler {
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the message which is of type  HelloServerBody
      */
-    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
         logger.info(ANSI_CYAN + "HalloServer Message received." + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
@@ -87,7 +87,7 @@ public class MessageHandler {
     }
 
 
-    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         logger.info(ANSI_CYAN + "PlayerValues Message received." + ANSI_RESET);
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
@@ -119,7 +119,7 @@ public class MessageHandler {
     }
 
 
-    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
 
         int playerID = clientHandler.getPlayer_id();
@@ -143,7 +143,7 @@ public class MessageHandler {
     }
 
     //Server receive this message
-    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -154,7 +154,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         logger.info(ANSI_CYAN + "SetStatus Message received." + ANSI_RESET);
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
@@ -183,7 +183,7 @@ public class MessageHandler {
         logger.info("Player " + player.getName() + " is " + isReady);
     }
 
-    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         String mapName = mapSelectedBody.getMap();
         server.getCurrentGame().selectMap(mapName);
@@ -194,7 +194,7 @@ public class MessageHandler {
         server.getCurrentGame().canStartTheGame();
     }
 
-    public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
         logger.info(ANSI_CYAN + "SetStartingPoint Message received." + ANSI_RESET);
         //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
@@ -237,7 +237,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+    public void handleSelectedCard (Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
@@ -286,12 +286,14 @@ public class MessageHandler {
         }
     }
 
-    public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
+    public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
         if (card.equals("SpamBlocker")) {
             server.getCurrentGame().activatSpamCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
+        } else if (card.equals("MemorySwap")) {
+            server.getCurrentGame().activatMemorySwapCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
         } else {
             //When it's the turn of the player himself
             if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {
@@ -357,7 +359,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+    public void handleRebootDirection (Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
         String direction = rebootDirectionBody.getDirection();
 
@@ -367,7 +369,7 @@ public class MessageHandler {
         server.getCurrentGame().getRobotsRebootDirection().put(player, direction);
     }
 
-    public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
+    public void handleSelectedDamage (Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
         logger.info(ANSI_CYAN + "SelectedDamage Message received." + ANSI_RESET);
         ArrayList<String> cards = selectedDamageBody.getCards();
 
@@ -449,7 +451,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
+    public void handleBuyUpgrade (Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
         logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
         String cardName = buyUpgradeBody.getCard();
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
@@ -517,24 +519,23 @@ public class MessageHandler {
     }
 
 
-    public void handleChooseRegister(Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
         logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
         //schauen ob dieser spieler echt AdminPrivilege hat
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
-        // if (player.checkAdmin()) {
-        int register = chooseRegisterBody.getRegister();
-        server.getCurrentGame().getAdminPriorityMap().put(register, player);
-        JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
-        server.getCurrentGame().sendToAllPlayers(adminMessage);
-        //  }
+        if (player.checkAdmin()) {
+            int register = chooseRegisterBody.getRegister();
+            server.getCurrentGame().getAdminPriorityMap().put(register, player);
+            JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
+            server.getCurrentGame().sendToAllPlayers(adminMessage);
+        }
 
 
     }
 
-    public void handleReturnCards(Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
+    public void handleReturnCards (Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
         logger.info(ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET);
         ArrayList<String> returnedCards = returnCardsBody.getCards();
-        ArrayList<String> newCards = new ArrayList<>();
 
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
 
@@ -548,19 +549,7 @@ public class MessageHandler {
                 }
             }
         }
-
-        //Add all the hand cards to the new Array list
-        for (Card card : player.getDeckHand().getDeck()) {
-            newCards.add(card.getCardName());
-        }
-
-        //Draw three cards for the player and remove them from deck Programming
-        for (int i = 0; i < 3; i++) {
-            player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
-            newCards.add(player.getDeckProgramming().getTopCard().getCardName());
-            player.getDeckProgramming().removeTopCard();
-        }
-        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(newCards));
+        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
         server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
     }
 

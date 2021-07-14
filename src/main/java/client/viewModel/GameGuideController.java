@@ -11,19 +11,44 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * The type Game guide controller.
+ */
 public class GameGuideController {
+    /**
+     * The Root stage.
+     */
     public Stage rootStage;
 
+    /**
+     * The Button cards.
+     */
     @FXML
     public Button buttonCards;
+    /**
+     * The Button robots.
+     */
     @FXML
     public Button buttonRobots;
+    /**
+     * The Button rules.
+     */
     @FXML
     public Button buttonRules;
+    /**
+     * The Button courses.
+     */
     @FXML
     public Button buttonCourses;
 
 
+    /**
+     * Button clicked.
+     * If the related button is clicked ,this method opens the page of that button.
+     *
+     * @param event the event
+     * @throws IOException the io exception
+     */
     @FXML
     public void buttonClicked(ActionEvent event) throws IOException {
         Parent root;

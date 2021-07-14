@@ -1,6 +1,7 @@
 package client.KI_Zeug;
 
 import client.model.ClientModel;
+import game.Game;
 import game.boardelements.StartPoint;
 import javafx.geometry.Point2D;
 
@@ -13,6 +14,8 @@ public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
     private final boolean IS_LAZY = true;
+
+    private static Game game;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -46,7 +49,7 @@ public class SimpleAIModel {
             cardsInRegister.put(i, null);
         }
         clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52020);
+        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52021);
     }
 
     public void chooseRobotRoutine() {
@@ -220,5 +223,13 @@ public class SimpleAIModel {
 
     public static void setClientModel(ClientModel clientModel) {
         SimpleAIModel.clientModel = clientModel;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

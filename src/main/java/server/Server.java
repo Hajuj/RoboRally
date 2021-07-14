@@ -25,7 +25,7 @@ public class Server {
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
-    private final String protocolVersion = "Version 1.0";
+    private final String protocolVersion = "Version 2.1";
     private ArrayList<Player> waitingPlayer = new ArrayList<>();
     private ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);
@@ -71,7 +71,7 @@ public class Server {
             }
             if ("-p".equals(arg)) {
                 int port = Integer.parseInt(nextArg);
-                if (port < 500 || port > 65555)
+                if (port < 500 || port > 65535)
                     throw new IllegalArgumentException("Port number: " + port + " is invalid");
                 serverPort = port;
                 i++;

@@ -61,6 +61,7 @@ public class ChooseRobotViewModel implements Initializable {
                 } else if (figureProperty.getValue() != -1) {
                     playButton.setDisable(false);
                 } else if (isGameOn()) {
+                    playButton.setDefaultButton(true);
                     playButton.setDisable(false);
                 }
             }
@@ -200,6 +201,7 @@ public class ChooseRobotViewModel implements Initializable {
     public void setRobot5() {
         refreshShadow();
         robot5.setEffect(new DropShadow(20.0, Color.RED));
+        setFigureProperty(5);
         setFigureProperty(5);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }

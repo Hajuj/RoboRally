@@ -28,6 +28,7 @@ public class ClientGameModel {
     private ArrayList<String> refillShopCards = new ArrayList<>();
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
     private ArrayList<String> boughtCards = new ArrayList<>();
+    private ArrayList<String> upgradeBoughtCards = new ArrayList<> ();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private ArrayList<String> upgradeCards = new ArrayList<>();
@@ -97,6 +98,8 @@ public class ClientGameModel {
     private int choosenRegister;
     private ArrayList<String> returnedCards;
     private boolean isReturning= false;
+    private boolean MemorySwapOnPlay= false;
+    private boolean timer= false;
 
 
     //Singleton Zeug
@@ -312,6 +315,7 @@ public class ClientGameModel {
         boolean isBuying = true;
         if (checkAllowToBuy(cardName)) {
             boughtCards.add(cardName);
+            this.boughtCard= cardName;
         }
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
@@ -501,6 +505,8 @@ public class ClientGameModel {
         this.upgradeCards = upgradeCards;
     }
     public ArrayList <String> getUpgradeCards(){return upgradeCards; }
+
+
 
     public String getLateCard (){
         return this.lateCard;
@@ -717,14 +723,6 @@ public class ClientGameModel {
     }
 
 
-    public ArrayList<String> getRefillShopCards () {
-        return refillShopCards;
-    }
-
-    public ArrayList<String> getExchangeShopCards () {
-        return exchangeShopCards;
-    }
-
     public ArrayList<String> getBoughtCards () {
         return this.boughtCards;
     }
@@ -736,9 +734,16 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange ( "buyingCardFinished", oldValue, true );
         }
     }
+    public void setTimer(boolean b) {
+        boolean oldValue = this.timer ;
+        this.timer = b;
+        if (this.timer) {
+            propertyChangeSupport.firePropertyChange ( "TimerStarted", oldValue, true );
+        }
+    }
 
     public void setChoosenRegister(int choosenRegister) {
-        System.out.println ( "ich schicke jetzt an dem Server" );
+
         this.choosenRegister= choosenRegister;
         JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
         clientModel.sendMessage(chooseRegisterMessage);
@@ -757,6 +762,12 @@ public class ClientGameModel {
         JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
         clientModel.sendMessage(returnCardsMessage);
     }
+    public void playMemorySwap(boolean b) {
+        this.MemorySwapOnPlay = b;
+        JSONMessage memorySwapMessage = new JSONMessage("PlayCard", new PlayCardBody ("MemorySwap"));
+        clientModel.sendMessage(memorySwapMessage);
+    }
+
     public void finishRetunrCard(boolean b) {
         boolean oldValue = this.isReturning ;
         this.isReturning = b;
@@ -768,6 +779,17 @@ public class ClientGameModel {
     public ArrayList<String> getReturnedCards() {
         return this.returnedCards;
     }
+
+    public ArrayList<String> getUpgradBoughtCards() {
+        return upgradeBoughtCards;
+    }
+
+    public void setUpgradeBoughtCards( ArrayList<String> upgradeBoughtCards) {
+        this.upgradeBoughtCards = upgradeBoughtCards;
+    }
+
+
+
 
     public static class TurnTask {
         private int playerID;
