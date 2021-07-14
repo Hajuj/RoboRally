@@ -62,9 +62,8 @@ public class UpgradeShop implements Initializable {
                 }
                 for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
                         upgradeCards.get ( j ).setImage ( null );
-                       // upgradeCards.get ( j ).setId ( "Null" );
+
                 }
-                disableChoosenCards();
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 e.printStackTrace ( );
             }
@@ -97,6 +96,7 @@ public class UpgradeShop implements Initializable {
         if (mouseEvent.getSource ().equals ( buyButton )){
             clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
             clientGameModel.finishBuyCard(true);
+            //clientGameModel.getUpgradBoughtCards ().remove ( getChoosenUpgradeCard () );
 
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );
@@ -124,18 +124,7 @@ public class UpgradeShop implements Initializable {
         for (ImageView upgradeCard:upgradeCards) {
             upgradeCard.setEffect ( new DropShadow ( 0.0,Color.RED ) );
         }
-        //disableChoosenCards ();
     }
-    public void disableChoosenCards () {
-        GaussianBlur blur = new GaussianBlur(10);
-        for (ImageView boughtCard : upgradeCards) {
-            if (clientGameModel.getUpgradBoughtCards ().contains ( boughtCard.getId () )){
-                boughtCard.setDisable ( true );
-                boughtCard.setEffect ( blur );
-            }
-        }
-    }
-
 
     private Image loadImage(String cardName) throws FileNotFoundException {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));

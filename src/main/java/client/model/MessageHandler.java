@@ -242,9 +242,10 @@ public class MessageHandler {
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
         Platform.runLater(() -> {
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            clientModel.getClientGameModel ().setTimer(true);
+          /*  Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
-            a.show();
+            a.show();*/
         });
     }
 
@@ -461,7 +462,14 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();
         String card = upgradeBoughtBody.getCard();
-        clientModel.getClientGameModel ().getUpgradBoughtCards().add(card);
+        clientModel.getClientGameModel ().getUpgradBoughtCards ().add(card);
+        for (String upgradeCard:clientModel.getClientGameModel ().getUpgradeCards ()) {
+            if (upgradeCard.equals ( card )){
+                clientModel.getClientGameModel ().getUpgradeCards ().remove (upgradeCard );
+            break;
+            }
+
+        }
         clientModel.receiveMessage("Player " + clientID + " has bought " + card);
     }
 
