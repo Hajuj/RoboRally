@@ -301,18 +301,19 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void collectingCards() {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
-            regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
-            clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
-        }
-        if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" )&& registerNum == 0){
-            System.out.println ( clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )) );
-            System.out.println ( "bin drinnen" );
-            registers.get ( 0 ).setImage ( null );
-            try {
-                returnSource.setImage ( loadImage ( "Again" ) );
-            } catch (FileNotFoundException e) {
-                e.printStackTrace ( );
-            }
+            if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" ) && registerNum==0) {
+                System.out.println ( clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
+                System.out.println ( "bin drinnen" );
+                registers.get ( 0 ).setImage ( null );
+                try {
+                    returnSource.setImage ( loadImage ( "Again" ) );
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace ( );
+                }
+            }else{
+                    regToCard.replace ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
+                    clientGameModel.sendSelectedCards ( registerNum, clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
+                }
         }else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
@@ -655,12 +656,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 timerLable.setText ( "CountDown: " +seconds.toString () );
                 if (seconds <= 0 ){
                     time.stop ();
-                    clientGameModel.setTimer ( false );
+
                 }
             }
         } );
         time.getKeyFrames ().add ( frame );
         time.playFromStart ();
+        seconds = 30;
 
     }
 

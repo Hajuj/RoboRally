@@ -17,11 +17,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -65,6 +69,7 @@ public class StartScreenViewModel implements Initializable {
         //sound.setCycleCount(AudioClip.INDEFINITE);
         //sound.play();
         StartGameButton.requestFocus();
+
 
     }
 
