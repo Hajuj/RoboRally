@@ -99,6 +99,7 @@ public class ClientGameModel {
     private ArrayList<String> returnedCards;
     private boolean isReturning= false;
     private boolean MemorySwapOnPlay= false;
+    private boolean timer= false;
 
 
     //Singleton Zeug
@@ -722,14 +723,6 @@ public class ClientGameModel {
     }
 
 
-    public ArrayList<String> getRefillShopCards () {
-        return refillShopCards;
-    }
-
-    public ArrayList<String> getExchangeShopCards () {
-        return exchangeShopCards;
-    }
-
     public ArrayList<String> getBoughtCards () {
         return this.boughtCards;
     }
@@ -741,9 +734,16 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange ( "buyingCardFinished", oldValue, true );
         }
     }
+    public void setTimer(boolean b) {
+        boolean oldValue = this.timer ;
+        this.timer = b;
+        if (this.timer) {
+            propertyChangeSupport.firePropertyChange ( "TimerStarted", oldValue, true );
+        }
+    }
 
     public void setChoosenRegister(int choosenRegister) {
-        System.out.println ( "ich schicke jetzt an dem Server" );
+
         this.choosenRegister= choosenRegister;
         JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
         clientModel.sendMessage(chooseRegisterMessage);
@@ -787,6 +787,9 @@ public class ClientGameModel {
     public void setUpgradeBoughtCards( ArrayList<String> upgradeBoughtCards) {
         this.upgradeBoughtCards = upgradeBoughtCards;
     }
+
+
+
 
     public static class TurnTask {
         private int playerID;

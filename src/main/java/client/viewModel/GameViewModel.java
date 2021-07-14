@@ -4,13 +4,16 @@ import client.model.ClientGameModel;
 import client.model.ClientModel;
 
 import game.programmingcards.Again;
+import javafx.animation.KeyFrame;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -25,6 +29,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -111,6 +117,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public ImageView upgradeCard_4;
     public ImageView upgradeCard_5;
     public ImageView upgradeCard_6;
+    public HBox Timer;
+    public Label timerLable;
+    Integer seconds = 30;
 
 
     ObservableList<ImageView> cards;
@@ -127,6 +136,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Timer.setVisible ( false );
         pane.setMinSize(0, 0);
         imageView.fitHeightProperty().bind(pane.heightProperty());
         imageView.fitWidthProperty().bind(pane.widthProperty());
@@ -382,13 +392,21 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             model.setDoChooseMap(false);
         }
     }
-    public void goToGameGuide(ActionEvent event) throws IOException {
-        Stage rootStage = new Stage();
-        Parent root;
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
-        rootStage.setScene(new Scene(root));
-        rootStage.setTitle("Game Guide");
-        rootStage.show();
+    public void goToGameGuide(MouseEvent event) throws IOException {
+        Platform.runLater ( () -> {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/GameGuide.fxml"));
+        Parent root1 = null;
+
+            try {
+                root1 = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace ( );
+            }
+            Stage newStage = new Stage();
+            newStage.setTitle("Game Guide");
+            newStage.setScene(new Scene(root1));
+            newStage.show();
+        } );
     }
 
     @Override
@@ -399,14 +417,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/Map.fxml" ) );
                     pane.setCenter ( fxmlLoader.load ( ) );
                     readyButton.setDisable ( true );
-                    model.setGameOn ( false );
                     Playerinfo.setText ( null );
-                    Playerinfo.setText ( "Please choose your Starting Point, click on the shown Points " );
+                    model.setGameOn ( false );
                 } catch (IOException e) {
                     e.printStackTrace ( );
                 }
             } );
         }
+
 
         if (evt.getPropertyName ( ).equals ( "gameFinished" )) {
             if (cards != null) {
@@ -487,8 +505,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater ( () -> {
                 if (Integer.parseInt ( yourRobot.getId ( ) ) == model.getPlayersFigureMap ( ).get ( clientGameModel.getActualPlayerID ( ) )) {
                     Playerinfo.setText ( null );
-                    Playerinfo.setText ( "It's  your  turn :)" );
-                    yourRobot.setEffect ( new DropShadow ( 10.0, Color.GREEN ) );
+                    if(clientGameModel.getActualPhase ()==0){
+                        Playerinfo.setFont ( Font.font ( "Yu Gothic", FontWeight.BOLD,16 ) );
+                        Playerinfo.setText ( "Please choose your Starting Point" );
+                    }else {
+                        Playerinfo.setText ( "It's  your  turn :)" );
+                        yourRobot.setEffect ( new DropShadow ( 10.0, Color.GREEN ) );
+                    }
                 }
                 clientGameModel.switchPlayer ( false );
             } );
@@ -501,8 +524,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     disableAllRegisters ( false );
                     try {
                         showPopup ( "Programming Phase has begun" );
-                        clientGameModel.getUpgradBoughtCards ().clear ();
-                        clientGameModel.getBoughtCards ().clear ();
+
+
 
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace ( );
@@ -512,6 +535,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     disableHand ( true );
                     try {
                         showPopup ( "Activation Phase has begun" );
+                        Timer.setVisible ( false );
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace ( );
                     }
@@ -535,7 +559,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             Platform.runLater ( () -> {
                 try {
                     showMaps ( );
-                    Playerinfo.setText ( "please set a Starting Point" );
                 } catch (IOException ioException) {
                     ioException.printStackTrace ( );
                 }
@@ -563,6 +586,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 Parent root1 = null;
                 try {
                     showPopup("Upgrade Phase has begun");
+                    //clientGameModel.getUpgradBoughtCards ().clear ();
+                    clientGameModel.getBoughtCards ().clear ();
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
@@ -610,6 +635,32 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             });
 
         }
+        if (evt.getPropertyName ().equals ( "TimerStarted" )){
+            Timer.setVisible ( true );
+            doTimer();
+        }
+
+    }
+
+    private void doTimer() {
+        Timeline time = new Timeline (  );
+        time.setCycleCount ( Timeline.INDEFINITE );
+        if (time!=null){
+            time.stop ();
+        }
+        KeyFrame frame = new KeyFrame ( Duration.seconds ( 1 ), new EventHandler<ActionEvent> ( ) {
+            @Override
+            public void handle(ActionEvent event) {
+                seconds --;
+                timerLable.setText ( "CountDown: " +seconds.toString () );
+                if (seconds <= 0 ){
+                    time.stop ();
+                    clientGameModel.setTimer ( false );
+                }
+            }
+        } );
+        time.getKeyFrames ().add ( frame );
+        time.playFromStart ();
 
     }
 
