@@ -3,6 +3,7 @@ package client.viewModel;
 import client.model.ClientGameModel;
 import client.model.ClientModel;
 
+import game.programmingcards.Again;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -256,30 +257,35 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
     public void handledropped(DragEvent dragEvent) {
-        Image image = dragEvent.getDragboard().getImage();
-        ImageView target = (ImageView) dragEvent.getTarget();
+        Image image = dragEvent.getDragboard ( ).getImage ( );
+        ImageView target = (ImageView) dragEvent.getTarget ( );
         //TODO 2 Karten auf einem Register
         //TODO TargetId nehemn und überprüfen
-        this.register = target.getId();
-        if (target.getImage() != null) {
-            returnSource.setImage(target.getImage());
-            target.setImage(dbImage.getImage());
+        this.register = target.getId ( );
+        if (target.getImage ( ) != null ) {
 
+            returnSource.setImage ( target.getImage ( ) );
+            target.setImage ( dbImage.getImage ( ) );
+
+        }else {
+
+            handlewithdraw ( target, image );
+            collectingCards ( );
         }
+    }
          /*else if(dragEvent.getGestureTarget ().equals ( card_0 )||dragEvent.getGestureTarget ().equals ( card_1 )||
                 dragEvent.getGestureTarget ().equals ( card_2 )||dragEvent.getGestureTarget ().equals ( card_3 )||dragEvent.getGestureTarget ().equals ( card_4 )||
                 dragEvent.getGestureTarget ().equals ( card_5 )||dragEvent.getGestureTarget ().equals ( card_6 )||dragEvent.getGestureTarget ().equals ( card_7 )||
                 dragEvent.getGestureTarget ().equals ( card_8 )){
             handlewithdraw ( target, image );
-        }*/
-        else{
-            handlewithdraw ( target, image );
-            collectingCards ( );
-        }
-    }
+            */
+
+
+
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
+
     }
 
     public void collectingCards() {
@@ -287,7 +293,17 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         if (!cardName.equals("Null")) {
             regToCard.replace(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
             clientGameModel.sendSelectedCards(registerNum, clientGameModel.getCardsInHand().get(Integer.parseInt(cardName)));
-        } else {
+        }
+        if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" )&& registerNum == 0){
+            System.out.println ( clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )) );
+            System.out.println ( "bin drinnen" );
+            registers.get ( 0 ).setImage ( null );
+            try {
+                returnSource.setImage ( loadImage ( "Again" ) );
+            } catch (FileNotFoundException e) {
+                e.printStackTrace ( );
+            }
+        }else {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
     }
@@ -434,6 +450,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                         cardName = clientGameModel.getCardsInHand ( ).get ( j );
                         cards.get ( j ).setImage ( loadImage ( cardName ) );
                         cards.get ( j ).setId ( Integer.toString ( j ) );
+
                     }
                  /*  for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
                         cards.get(j).setImage(null);
@@ -539,7 +556,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName ( ).equals ( "refillShop" )) {
             clientGameModel.refillShop ( false );
-            //permenantCard.setDisable ( false );
             Platform.runLater(() -> {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UpgradeShop.fxml"));
                 Parent root1 = null;
@@ -559,7 +575,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         if (evt.getPropertyName ( ).equals ( "buyingCardFinished" )) {
             clientGameModel.finishBuyCard ( false );
-            clientGameModel.setHandCards ( true );
 
             upgradeCards = FXCollections.observableArrayList ( upgradeCard_1, upgradeCard_2, upgradeCard_3, upgradeCard_4, upgradeCard_5, upgradeCard_6 );
 
@@ -567,7 +582,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 try {
                     for (int j = 0; j < clientGameModel.getBoughtCards().size(); j++) {
                         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + clientGameModel.getBoughtCards().get(j) + ".png")));
-                        cardName = clientGameModel.getBoughtCards().get(j);
+                        String cardName = clientGameModel.getBoughtCards().get(j);
                         upgradeCards.get(j).setImage(image);
                         upgradeCards.get(j).setId(cardName);
                     }
