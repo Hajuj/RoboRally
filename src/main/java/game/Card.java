@@ -10,6 +10,10 @@ public abstract class Card {
     @Expose
     public String cardName;
 
+    /**
+     * Constructor that initializes the specific
+     * Card with this card name.
+     */
     public Card() {
         this.cardName = "Card";
     }

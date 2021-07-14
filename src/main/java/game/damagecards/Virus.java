@@ -5,6 +5,9 @@ package game.damagecards;
  */
 public class Virus extends game.Card {
 
+    /**
+     * Instantiates a new Virus.
+     */
     public Virus(){
         cardName = "Virus";
     }

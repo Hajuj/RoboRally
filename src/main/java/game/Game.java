@@ -75,6 +75,11 @@ public class Game {
 
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
@@ -268,6 +273,9 @@ public class Game {
     }
 
 
+    /**
+     * Refresh admin privilege.
+     */
     public void refreshAdminPrivilege () {
         adminPriorityMap.clear();
         for (Player player : playerList) {
@@ -711,6 +719,12 @@ public class Game {
         }
     }
 
+    /**
+     * Is permanent boolean.
+     *
+     * @param cardName the card name
+     * @return the boolean
+     */
     public boolean isPermanent (String cardName) {
         return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
     }
@@ -1144,7 +1158,12 @@ public class Game {
         }
     }
 
-    public void activatSpamCard (Player player) {
+    /**
+     * Activat spam card.
+     *
+     * @param player the player
+     */
+    public void activatSpamCard(Player player){
         replaceSpamCardsHand(player);
 
     }
@@ -1160,6 +1179,13 @@ public class Game {
     }
 
 
+
+    /**
+     * Gets upgrade cost.
+     *
+     * @param cardName the card name
+     * @return the upgrade cost
+     */
     public int getUpgradeCost (String cardName) {
         return switch (cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;
@@ -2043,6 +2069,9 @@ public class Game {
     }
 
 
+    /**
+     * Refill upgrade shop.
+     */
     public void refillUpgradeShop () {
         //how much cards reinzutun
         int amount = playerList.size() - upgradeCardsShop.size();
@@ -2058,6 +2087,9 @@ public class Game {
     }
 
 
+    /**
+     * Start upgrade phase.
+     */
     public void startUpgradePhase () {
         //After the first round and If no one bought an Upgrade Card
         if (upgradeCardsShop.size() == playerList.size() && roundCounter != 1) {
@@ -2138,10 +2170,18 @@ public class Game {
         //informAboutCurrentPlayer();
     }
 
+    /**
+     * Gets active phase.
+     *
+     * @return the active phase
+     */
     public int getActivePhase() {
         return activePhase;
     }
 
+    /**
+     * The type Helper.
+     */
     public static class Helper implements java.util.Comparator<Player> {
         private Game game;
 
@@ -2207,38 +2247,81 @@ public class Game {
         }
     }
 
+    /**
+     * Gets current register.
+     *
+     * @return the current register
+     */
     public Integer getCurrentRegister() {
         return currentRegister;
     }
 
+    /**
+     * Sets current register.
+     *
+     * @param currentRegister the current register
+     */
     public void setCurrentRegister(int currentRegister) {
         this.currentRegister = currentRegister;
     }
 
+    /**
+     * Gets game timer.
+     *
+     * @return the game timer
+     */
     public GameTimer getGameTimer() {
         return gameTimer;
     }
 
+    /**
+     * Gets timer on.
+     *
+     * @return the timer on
+     */
     public boolean getTimerOn() {
         return timerOn.get();
     }
 
+    /**
+     * Sets timer on.
+     *
+     * @param timerOn the timer on
+     */
     public synchronized void setTimerOn(AtomicBoolean timerOn) {
         this.timerOn = timerOn;
     }
 
+    /**
+     * Gets current round.
+     *
+     * @return the current round
+     */
     public int getCurrentRound() {
         return currentRound;
     }
 
+    /**
+     * Sets current round.
+     *
+     * @param currentRound the current round
+     */
     public void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
     }
 
+    /**
+     * Is active phase on boolean.
+     *
+     * @return the boolean
+     */
     public boolean isActivePhaseOn() {
         return activePhaseOn;
     }
 
+    /**
+     * Sets new round counter.
+     */
     public void setNewRoundCounter() {
         this.roundCounter++;
         System.out.println("************************************************************************");
@@ -2247,159 +2330,354 @@ public class Game {
 
     }
 
+    /**
+     * Sets active phase on.
+     *
+     * @param activePhaseOn the active phase on
+     */
     public void setActivePhaseOn(boolean activePhaseOn) {
         this.activePhaseOn = activePhaseOn;
     }
 
+    /**
+     * Gets current player.
+     *
+     * @return the current player
+     */
     public int getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * Sets current player.
+     *
+     * @param currentPlayer the current player
+     */
     public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
+    /**
+     * Gets map name.
+     *
+     * @return the map name
+     */
     public String getMapName() {
         return mapName;
     }
 
+    /**
+     * Sets map name.
+     *
+     * @param mapName the map name
+     */
     public void setMapName(String mapName) {
         this.mapName = mapName;
     }
 
 
+    /**
+     * Gets check point reached.
+     *
+     * @return the check point reached
+     */
     public Map<Player, Integer> getCheckPointReached() {
         return checkPointReached;
     }
 
+    /**
+     * Sets check point reached.
+     *
+     * @param checkPointReached the check point reached
+     */
     public void setCheckPointReached(Map<Player, Integer> checkPointReached) {
         this.checkPointReached = checkPointReached;
     }
 
+    /**
+     * Is game on boolean.
+     *
+     * @return the boolean
+     */
     public boolean isGameOn() {
         return gameOn;
     }
 
+    /**
+     * Sets game on.
+     *
+     * @param gameOn the game on
+     */
     public void setGameOn(boolean gameOn) {
         this.gameOn = gameOn;
     }
 
+    /**
+     * Gets available maps.
+     *
+     * @return the available maps
+     */
     public ArrayList<String> getAvailableMaps() {
         return availableMaps;
     }
 
+    /**
+     * Gets robot names.
+     *
+     * @return the robot names
+     */
     public static ArrayList<String> getRobotNames() {
         return robotNames;
     }
 
+    /**
+     * Gets player list.
+     *
+     * @return the player list
+     */
     public ArrayList<Player> getPlayerList() {
         return playerList;
     }
 
+    /**
+     * Gets map.
+     *
+     * @return the map
+     */
     public ArrayList<ArrayList<ArrayList<Element>>> getMap() {
         return map;
     }
 
+    /**
+     * Gets laser map.
+     *
+     * @return the laser map
+     */
     public Map<Point2D, Laser> getLaserMap() {
         return laserMap;
     }
 
+    /**
+     * Gets antenna map.
+     *
+     * @return the antenna map
+     */
     public Map<Point2D, Antenna> getAntennaMap() {
         return antennaMap;
     }
 
+    /**
+     * Gets deck worm.
+     *
+     * @return the deck worm
+     */
     public DeckWorm getDeckWorm() {
         return deckWorm;
     }
 
+    /**
+     * Gets deck virus.
+     *
+     * @return the deck virus
+     */
     public DeckVirus getDeckVirus() {
         return deckVirus;
     }
 
+    /**
+     * Gets deck trojan.
+     *
+     * @return the deck trojan
+     */
     public DeckTrojan getDeckTrojan() {
         return deckTrojan;
     }
 
+    /**
+     * Gets deck spam.
+     *
+     * @return the deck spam
+     */
     public DeckSpam getDeckSpam() {
         return deckSpam;
     }
 
+    /**
+     * Gets check point map.
+     *
+     * @return the check point map
+     */
     public Map<Point2D, CheckPoint> getCheckPointMap() {
         return checkPointMap;
     }
 
+    /**
+     * Gets conveyor belt map.
+     *
+     * @return the conveyor belt map
+     */
     public Map<Point2D, ConveyorBelt> getConveyorBeltMap() {
         return conveyorBeltMap;
     }
 
+    /**
+     * Gets empty map.
+     *
+     * @return the empty map
+     */
     public Map<Point2D, Empty> getEmptyMap() {
         return emptyMap;
     }
 
+    /**
+     * Gets energy space map.
+     *
+     * @return the energy space map
+     */
     public Map<Point2D, EnergySpace> getEnergySpaceMap() {
         return energySpaceMap;
     }
 
+    /**
+     * Gets gear map.
+     *
+     * @return the gear map
+     */
     public Map<Point2D, Gear> getGearMap() {
         return gearMap;
     }
 
+    /**
+     * Gets pit map.
+     *
+     * @return the pit map
+     */
     public Map<Point2D, Pit> getPitMap() {
         return pitMap;
     }
 
+    /**
+     * Gets push panel map.
+     *
+     * @return the push panel map
+     */
     public Map<Point2D, PushPanel> getPushPanelMap() {
         return pushPanelMap;
     }
 
+    /**
+     * Gets restart point map.
+     *
+     * @return the restart point map
+     */
     public Map<Point2D, RestartPoint> getRestartPointMap() {
         return restartPointMap;
     }
 
+    /**
+     * Gets start point map.
+     *
+     * @return the start point map
+     */
     public Map<Point2D, StartPoint> getStartPointMap() {
         return startPointMap;
     }
 
+    /**
+     * Gets wall map.
+     *
+     * @return the wall map
+     */
     public Map<Point2D, Wall> getWallMap() {
         return wallMap;
     }
 
+    /**
+     * Gets server.
+     *
+     * @return the server
+     */
     public Server getServer() {
         return server;
     }
 
+    /**
+     * Gets dead robots IDs.
+     *
+     * @return the dead robots IDs
+     */
     public ArrayList<Integer> getDeadRobotsIDs() {
         return deadRobotsIDs;
     }
 
+    /**
+     * Gets starting point map.
+     *
+     * @return the starting point map
+     */
     public Map<Robot, Point2D> getStartingPointMap() {
         return startingPointMap;
     }
 
+    /**
+     * Gets comparator.
+     *
+     * @return the comparator
+     */
     public Comparator<Player> getComparator() {
         return comparator;
     }
 
+    /**
+     * Gets robots reboot direction.
+     *
+     * @return the robots reboot direction
+     */
     public Map<Player, String> getRobotsRebootDirection() {
         return robotsRebootDirection;
     }
 
+    /**
+     * Gets deck upgrade.
+     *
+     * @return the deck upgrade
+     */
     public DeckUpgrade getDeckUpgrade() {
         return deckUpgrade;
     }
 
+    /**
+     * Gets admin priority map.
+     *
+     * @return the admin priority map
+     */
     public Map<Integer, Player> getAdminPriorityMap () {
         return adminPriorityMap;
     }
 
+    /**
+     * Sets admin priority map.
+     *
+     * @param adminPriorityMap the admin priority map
+     */
     public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
         this.adminPriorityMap = adminPriorityMap;
     }
 
+    /**
+     * Gets rear lasers.
+     *
+     * @return the rear lasers
+     */
     public ArrayList<Player> getRearLasers () {
         return rearLasers;
     }
 
+    /**
+     * Sets rear lasers.
+     *
+     * @param rearLasers the rear lasers
+     */
     public void setRearLasers (ArrayList<Player> rearLasers) {
         this.rearLasers = rearLasers;
     }
