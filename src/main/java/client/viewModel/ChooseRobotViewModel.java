@@ -202,6 +202,7 @@ public class ChooseRobotViewModel implements Initializable {
         refreshShadow();
         robot5.setEffect(new DropShadow(20.0, Color.RED));
         setFigureProperty(5);
+        setFigureProperty(5);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
 

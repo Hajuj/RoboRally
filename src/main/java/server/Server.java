@@ -25,7 +25,7 @@ public class Server {
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
-    private final String protocolVersion = "Version 1.0";
+    private final String protocolVersion = "Version 2.1";
     private ArrayList<Player> waitingPlayer = new ArrayList<>();
     private ArrayList<Player> readyPlayer = new ArrayList<>();
     private Game currentGame = new Game(this);

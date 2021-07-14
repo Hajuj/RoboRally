@@ -1139,13 +1139,27 @@ public class Game {
             //Permanent UpgradeCard -> should it be covered in this case?
             //TODO: add hashMap
             //      should only be used once per round/per player (either here or in view)
-            case "AdminPrivilege" -> {}
+            case "AdminPrivilege" -> {
+            }
         }
     }
-    public void activatSpamCard(Player player){
+
+    public void activatSpamCard (Player player) {
         replaceSpamCardsHand(player);
 
     }
+
+    public void activatMemorySwapCard (Player player) {
+        //Draw three cards for the player and remove them from deck Programming
+        for (int i = 0; i < 3; i++) {
+            player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
+            player.getDeckProgramming().removeTopCard();
+        }
+        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
+    }
+
+
     public int getUpgradeCost (String cardName) {
         return switch (cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;

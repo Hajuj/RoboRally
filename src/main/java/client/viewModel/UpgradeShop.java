@@ -18,15 +18,13 @@ import javafx.scene.text.Text;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
 
 
-public class UpgradeShop implements Initializable, PropertyChangeListener {
+public class UpgradeShop implements Initializable {
     public Tooltip toolTip1;
     public Text cubesNum;
 
@@ -37,10 +35,7 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ImageView card_4;
     public ImageView card_5;
     public ImageView card_6;
-    public ImageView card_7;
-    public ImageView card_8;
-    public ImageView card_9;
-    public ImageView card_10;
+
     public ImageView buyButton;
     public ImageView buyNothing;
     String cardName;
@@ -49,14 +44,12 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
-    //private IntegerProperty energyCount = new SimpleIntegerProperty ( 0 );
+
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cubesNum.setText ( String.valueOf ( clientGameModel.getEnergy () ) );
-        //energyCount.bind ( energyCountProperty() );
-        //cubesNum.setText ( energyCount.toString () );
         upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6);
         Platform.runLater ( () -> {
             try {
@@ -65,14 +58,16 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
                     upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
 
                     upgradeCards.get ( j ).setId ( cardName );
+
                 }
                 for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
                         upgradeCards.get ( j ).setImage ( null );
-                        upgradeCards.get ( j ).setId ( "Null" );
+
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 e.printStackTrace ( );
             }
+
         } );
 
     }
@@ -101,11 +96,14 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         if (mouseEvent.getSource ().equals ( buyButton )){
             clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
             clientGameModel.finishBuyCard(true);
+            //clientGameModel.getUpgradBoughtCards ().remove ( getChoosenUpgradeCard () );
+
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );
             Stage stage =(Stage) buyNothing.getScene ().getWindow ();
             stage.close ();
         }
+
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
     }
@@ -114,9 +112,11 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
         if (choosenCard.equals ( null )){
             buyButton.setDisable ( true );
+            buyButton.setVisible ( false );
         }else {
             refreshShadow ( );
             choosenCard.setEffect ( new DropShadow ( 20.0, Color.RED ) );
+
             setChoosenUpgradeCard ( choosenCard.getId ( ) );
         }
     }
@@ -124,22 +124,6 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         for (ImageView upgradeCard:upgradeCards) {
             upgradeCard.setEffect ( new DropShadow ( 0.0,Color.RED ) );
         }
-        disableChoosenCards();
-    }
-    public void disableChoosenCards () {
-        GaussianBlur blur = new GaussianBlur(10);
-
-    }
-
-    public void refillUpgradeShop(){}
-
-    @Override
-    public void propertyChange (PropertyChangeEvent evt) {
-/*
-        if (evt.getPropertyName ().equals ( "refillShop" )) {
-            System.out.println ( "muss shop füllen " );
-            clientGameModel.refillShop ( false );
-        }*/
     }
 
     private Image loadImage(String cardName) throws FileNotFoundException {
@@ -154,12 +138,4 @@ public class UpgradeShop implements Initializable, PropertyChangeListener {
         return this.choosenUpgradeCard.get ( );
     }
 
-  /*  public IntegerProperty energyCountProperty() {
-        this.energyCount.set ( clientGameModel.getEnergy () );
-        return this.energyCount;
-    }*/
-/*
-    public void setEnergyCount(final int energyCount) {
-        this.energyCount.set ( energyCount );
-    }*/
 }

@@ -92,21 +92,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         model.setDoChooseMap(false);
     }
 
-    public void loadGameScene() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Map.fxml"));
-        Parent root1 = fxmlLoader.load();
-        Stage newStage = new Stage();
-        newStage.setTitle("GAME");
-        newStage.setScene(new Scene(root1));
-        newStage.show();
-
-        FXMLLoader fxmlLoader2 = new FXMLLoader(getClass().getResource("/view/YourCards.fxml"));
-        Parent root2 = fxmlLoader2.load();
-        Stage newStage2 = new Stage();
-        newStage2.setTitle("CARDS");
-        newStage2.setScene(new Scene(root2));
-        newStage2.show();
-    }
 
 
     @Override

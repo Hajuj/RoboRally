@@ -18,7 +18,7 @@ public class SimpleAIModel {
     private static Game game;
 
     private final String SERVER_IP = "127.0.0.1";
-    private final int SERVER_PORT = 507;
+    private final int SERVER_PORT = 500;
 
     private boolean hasPlayerValues = false;
     private int figureCounter = 0;
@@ -49,7 +49,7 @@ public class SimpleAIModel {
             cardsInRegister.put(i, null);
         }
         clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
-        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52020);
+        //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52021);
     }
 
     public void chooseRobotRoutine() {
