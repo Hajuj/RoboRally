@@ -127,11 +127,8 @@ public class UpgradeShop implements Initializable {
         //disableChoosenCards ();
     }
     public void disableChoosenCards () {
-        System.out.println ( clientGameModel.getUpgradBoughtCards () );
-
         GaussianBlur blur = new GaussianBlur(10);
         for (ImageView boughtCard : upgradeCards) {
-            System.out.println ( boughtCard.getId () );
             if (clientGameModel.getUpgradBoughtCards ().contains ( boughtCard.getId () )){
                 boughtCard.setDisable ( true );
                 boughtCard.setEffect ( blur );

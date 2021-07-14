@@ -501,6 +501,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     disableAllRegisters ( false );
                     try {
                         showPopup ( "Programming Phase has begun" );
+                        clientGameModel.getUpgradBoughtCards ().clear ();
+                        clientGameModel.getBoughtCards ().clear ();
 
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace ( );
