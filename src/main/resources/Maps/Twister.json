@@ -316,8 +316,7 @@
         {
           "speed": 2,
           "orientations": [
-            "top",
-            "bottom"
+            "top"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -361,8 +360,7 @@
         {
           "speed": 2,
           "orientations": [
-            "top",
-            "bottom"
+            "top"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -397,8 +395,7 @@
         {
           "speed": 2,
           "orientations": [
-            "right",
-            "left"
+            "right"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -415,8 +412,7 @@
         {
           "speed": 2,
           "orientations": [
-            "left",
-            "right"
+            "left"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -443,8 +439,7 @@
         {
           "speed": 2,
           "orientations": [
-            "right",
-            "left"
+            "right"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -461,8 +456,7 @@
         {
           "speed": 2,
           "orientations": [
-            "left",
-            "right"
+            "left"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -497,8 +491,7 @@
         {
           "speed": 2,
           "orientations": [
-            "bottom",
-            "top"
+            "bottom"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -542,8 +535,7 @@
         {
           "speed": 2,
           "orientations": [
-            "bottom",
-            "top"
+            "bottom"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -750,8 +742,7 @@
         {
           "speed": 2,
           "orientations": [
-            "top",
-            "bottom"
+            "top"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -795,8 +786,7 @@
         {
           "speed": 2,
           "orientations": [
-            "top",
-            "bottom"
+            "top"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -836,8 +826,7 @@
         {
           "speed": 2,
           "orientations": [
-            "right",
-            "left"
+            "right"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -859,8 +848,7 @@
         {
           "speed": 2,
           "orientations": [
-            "left",
-            "right"
+            "left"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -882,8 +870,7 @@
         {
           "speed": 2,
           "orientations": [
-            "right",
-            "left"
+            "right"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -900,8 +887,7 @@
         {
           "speed": 2,
           "orientations": [
-            "left",
-            "right"
+            "left"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -936,8 +922,7 @@
         {
           "speed": 2,
           "orientations": [
-            "bottom",
-            "top"
+            "bottom"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
@@ -981,8 +966,7 @@
         {
           "speed": 2,
           "orientations": [
-            "bottom",
-            "top"
+            "bottom"
           ],
           "type": "ConveyorBelt",
           "isOnBoard": "6B"
