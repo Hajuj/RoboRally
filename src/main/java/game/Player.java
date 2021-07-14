@@ -11,6 +11,9 @@ import java.util.ArrayList;
  * @author Ilja Knis
  */
 public class Player {
+    /**
+     * The Server.
+     */
     Server server = Server.getInstance();
 
     private int playerID;
@@ -233,6 +236,11 @@ public class Player {
         this.name = name;
     }
 
+    /**
+     * Check admin boolean.
+     *
+     * @return the boolean
+     */
     public boolean checkAdmin() {
         if (numberOfAdminPrivilege >= activeAdminPrivilege + 1) {
             activeAdminPrivilege++;
@@ -243,103 +251,228 @@ public class Player {
     }
 
 
+    /**
+     * Gets player id.
+     *
+     * @return the player id
+     */
     public int getPlayerID() {
         return playerID;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets deck discard.
+     *
+     * @return the deck discard
+     */
     public DeckDiscard getDeckDiscard() {
         return deckDiscard;
     }
 
+    /**
+     * Gets deck hand.
+     *
+     * @return the deck hand
+     */
     public DeckHand getDeckHand() {
         return deckHand;
     }
 
+    /**
+     * Gets deck programming.
+     *
+     * @return the deck programming
+     */
     public DeckProgramming getDeckProgramming() {
         return deckProgramming;
     }
 
+    /**
+     * Gets deck register.
+     *
+     * @return the deck register
+     */
     public DeckRegister getDeckRegister() {
         return deckRegister;
     }
 
+    /**
+     * Gets figure.
+     *
+     * @return the figure
+     */
     public int getFigure() {
         return figure;
     }
 
+    /**
+     * Sets figure.
+     *
+     * @param figure the figure
+     */
     public void setFigure(int figure) {
         this.figure = figure;
     }
 
+    /**
+     * Gets robot.
+     *
+     * @return the robot
+     */
     public Robot getRobot() {
         return robot;
     }
 
+    /**
+     * Sets robot.
+     *
+     * @param robot the robot
+     */
     public void setRobot(Robot robot) {
         this.robot = robot;
     }
 
+    /**
+     * Is ready boolean.
+     *
+     * @return the boolean
+     */
     public boolean isReady() {
         return isReady;
     }
 
+    /**
+     * Sets ready.
+     *
+     * @param ready the ready
+     */
     public void setReady(boolean ready) {
         isReady = ready;
     }
 
+    /**
+     * Gets energy.
+     *
+     * @return the energy
+     */
     public int getEnergy() {
         return energy;
     }
 
+    /**
+     * Increase energy.
+     *
+     * @param amount the amount
+     */
     public void increaseEnergy(int amount) {
         this.energy += amount;
     }
 
+    /**
+     * Is ai boolean.
+     *
+     * @return the boolean
+     */
     public boolean isAI() {
         return isAI;
     }
 
+    /**
+     * Sets ai.
+     *
+     * @param AI the ai
+     */
     public void setAI(boolean AI) {
         isAI = AI;
     }
 
 
+    /**
+     * Gets installed permanent upgrades.
+     *
+     * @return the installed permanent upgrades
+     */
     public ArrayList<Card> getInstalledPermanentUpgrades() {
         return installedPermanentUpgrades;
     }
 
+    /**
+     * Sets installed permanent upgrades.
+     *
+     * @param installedPermanentUpgrades the installed permanent upgrades
+     */
     public void setInstalledPermanentUpgrades(ArrayList<Card> installedPermanentUpgrades) {
         this.installedPermanentUpgrades = installedPermanentUpgrades;
     }
 
+    /**
+     * Gets temporary upgrades.
+     *
+     * @return the temporary upgrades
+     */
     public ArrayList<Card> getTemporaryUpgrades() {
         return temporaryUpgrades;
     }
 
+    /**
+     * Sets temporary upgrades.
+     *
+     * @param temporaryUpgrades the temporary upgrades
+     */
     public void setTemporaryUpgrades(ArrayList<Card> temporaryUpgrades) {
         this.temporaryUpgrades = temporaryUpgrades;
     }
 
+    /**
+     * Gets number of admin privilege.
+     *
+     * @return the number of admin privilege
+     */
     public int getNumberOfAdminPrivilege() {
         return numberOfAdminPrivilege;
     }
 
+    /**
+     * Sets number of admin privilege.
+     *
+     * @param numberOfAdminPrivilege the number of admin privilege
+     */
     public void setNumberOfAdminPrivilege(int numberOfAdminPrivilege) {
         this.numberOfAdminPrivilege = numberOfAdminPrivilege;
     }
 
+    /**
+     * Gets active admin privilege.
+     *
+     * @return the active admin privilege
+     */
     public int getActiveAdminPrivilege() {
         return activeAdminPrivilege;
     }
 
+    /**
+     * Sets active admin privilege.
+     *
+     * @param activeAdminPrivilege the active admin privilege
+     */
     public void setActiveAdminPrivilege(int activeAdminPrivilege) {
         this.activeAdminPrivilege = activeAdminPrivilege;
     }

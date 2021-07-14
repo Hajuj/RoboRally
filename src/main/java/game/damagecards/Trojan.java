@@ -5,6 +5,9 @@ package game.damagecards;
  */
 public class Trojan extends game.Card {
 
+    /**
+     * Instantiates a new Trojan.
+     */
     public Trojan(){
         cardName = "Trojan";
     }
