@@ -19,7 +19,7 @@ public class Player {
     private int playerID;
     private String name;
     private Robot robot;
-    private int figure;
+    private int figure = -1;
     private boolean isReady;
     private int energy = 5;
     private boolean isAI = false;

@@ -399,7 +399,7 @@ public class MessageHandler {
         });
         clientModel.setGameFinished(true);
         clientModel.getClientGameModel().refreshModel();
-        // clientModel.getClientGameModel ().gameFinished(true);
+         clientModel.getClientGameModel ().setGameFinished(true);
     }
 
     public void handleDrawDamage(ClientModel clientModel, DrawDamageBody drawDamageBody) {

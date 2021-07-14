@@ -443,6 +443,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 pane.setCenter ( null );
                 readyButton.setDisable ( false );
                 model.setGameFinished ( false );
+                try {
+                    readyButton.setImage ( loadImage ( "notReady" ) );
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                readyButton.setId ( "readyButton" );
+                model.setNewStatus(false);
+                model.setDoChooseMap(false);
             } );
         }
 
