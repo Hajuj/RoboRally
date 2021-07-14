@@ -35,15 +35,14 @@ public class Server {
     private ArrayList<Connection> connections = new ArrayList<>();
 
 
-    private Server () {
+    private Server() {
         Date date = new Date();
         String workIt = date.toString().replaceAll("\\s+", "_");
         workIt = workIt.replace(":", "-");
         loggerStamp += workIt;
-        System.out.println(loggerStamp);
     }
 
-    public static Server getInstance () {
+    public static Server getInstance() {
         if (instance == null) {
             instance = new Server();
         }
@@ -51,7 +50,7 @@ public class Server {
     }
 
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         if (args.length == 0)
             throw new IllegalArgumentException("No arguments provided. Flags: -p Port.");
         if (args.length == 1) {
@@ -85,7 +84,7 @@ public class Server {
         server.start();
     }
 
-    public void start () {
+    public void start() {
         logger.info("Starting server...");
 
         // Open socket for incoming connections, if socket already exists start aborts
@@ -129,7 +128,7 @@ public class Server {
     }
 
 
-    public void sendMessage (JSONMessage jsonMessage, PrintWriter writer) {
+    public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
@@ -140,7 +139,7 @@ public class Server {
         return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
-    public Player getPlayerWithID (int ID) {
+    public Player getPlayerWithID(int ID) {
         for (Player player : waitingPlayer) {
             if (player.getPlayerID() == ID) {
                 return player;
@@ -149,7 +148,7 @@ public class Server {
         return null;
     }
 
-    public Connection getConnectionWithID (int ID) {
+    public Connection getConnectionWithID(int ID) {
         for (Connection connection : connections) {
             if (connection.getPlayerID() == ID) {
                 return connection;
@@ -177,15 +176,15 @@ public class Server {
         return true;
     }
 
-    public Game getCurrentGame () {
+    public Game getCurrentGame() {
         return currentGame;
     }
 
-    public void setCurrentGame (Game currentGame) {
+    public void setCurrentGame(Game currentGame) {
         this.currentGame = currentGame;
     }
 
-    public ArrayList<Player> getReadyPlayer () {
+    public ArrayList<Player> getReadyPlayer() {
         return readyPlayer;
     }
 
@@ -193,27 +192,27 @@ public class Server {
         this.readyPlayer = readyPlayer;
     }
 
-    public ArrayList<Player> getWaitingPlayer () {
+    public ArrayList<Player> getWaitingPlayer() {
         return waitingPlayer;
     }
 
-    public boolean checkMaxClient () {
+    public boolean checkMaxClient() {
         return connections.size() < MAX_CLIENT;
     }
 
-    public int getClientsCounter () {
+    public int getClientsCounter() {
         return clientsCounter;
     }
 
-    public void setClientsCounter (int clientsCounter) {
+    public void setClientsCounter(int clientsCounter) {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections () {
+    public ArrayList<Connection> getConnections() {
         return connections;
     }
 
-    public String getProtocolVersion () {
+    public String getProtocolVersion() {
         return protocolVersion;
     }
 

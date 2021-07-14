@@ -19,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatViewModel implements Initializable, PropertyChangeListener {
@@ -76,7 +75,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         model.sendMsg(message);
         messageField.clear();
     }
-
 
 
     public void sendReadyStatus(ActionEvent event) {

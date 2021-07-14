@@ -4,13 +4,7 @@ import game.Element;
 import game.Player;
 import game.Robot;
 import game.boardelements.*;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import json.JSONMessage;
 import json.protocol.*;
@@ -90,7 +84,7 @@ public class ClientGameModel {
     private LinkedHashMap<Point2D, StartPoint> startPointMap = new LinkedHashMap<>();
     private LinkedHashMap<Point2D, Wall> wallMap = new LinkedHashMap<>();
 
-    private SimpleBooleanProperty blueBeltAnimeProperty = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty blueBeltAnimeProperty= new SimpleBooleanProperty(false);
     private SimpleBooleanProperty laserAnimeProperty = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty pushPanelProperty = new SimpleBooleanProperty(false);
     private boolean currentPlayer;
@@ -102,7 +96,7 @@ public class ClientGameModel {
     private String boughtCard;
     private int choosenRegister;
     private ArrayList<String> returnedCards;
-    private boolean isReturning = false;
+    private boolean isReturning= false;
 
 
     //Singleton Zeug
@@ -117,7 +111,7 @@ public class ClientGameModel {
         return instance;
     }
 
-    public void refreshModel () {
+    public void refreshModel() {
         queueMove = false;
         handCards = false;
         latePlayer = false;
@@ -126,7 +120,7 @@ public class ClientGameModel {
         startingPoint = false;
         programmingPhase = false;
         chooseRebootDirection = false;
-        energy = 5;
+        energy = 0;
         damageCount = 0;
         lateCard = "";
 
@@ -152,13 +146,13 @@ public class ClientGameModel {
 
         pushPanelProperty = new SimpleBooleanProperty(false);
         laserAnimeProperty = new SimpleBooleanProperty(false);
-        blueBeltAnimeProperty = new SimpleBooleanProperty(false);
+        blueBeltAnimeProperty= new SimpleBooleanProperty(false);
         actualRegister = new AtomicInteger(-1);
 
         clientModel.setAvailableMaps(new ArrayList<String>());
     }
 
-    public void addPropertyChangeListener (PropertyChangeListener listener) {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -188,7 +182,7 @@ public class ClientGameModel {
 
     public void sendRebootDirection (String direction) {
         JSONMessage rebootDirection = new JSONMessage("RebootDirection", new RebootDirectionBody(direction));
-        rebootSetting(true);
+        rebootSetting ( true );
         clientModel.sendMessage(rebootDirection);
     }
 
@@ -199,16 +193,15 @@ public class ClientGameModel {
     }
 
 
-    public boolean getRebootSetting () {
+    public boolean getRebootSetting (){
         return rebooting;
     }
-
-    public void setRebootingSetting (boolean b) {
+    public void setRebootingSetting(boolean b){
         this.rebooting = b;
     }
 
 
-    public boolean isCurrentPlayer () {
+    public boolean isCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -521,7 +514,6 @@ public class ClientGameModel {
             propertyChangeSupport.firePropertyChange("Losers", latePlayers, true);
         }
     }
-
 
     public void setLateCard(String card){
         String newCard = this.lateCard;

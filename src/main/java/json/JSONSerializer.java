@@ -11,7 +11,7 @@ import com.google.gson.GsonBuilder;
  */
 public class JSONSerializer {
 
-    public static String serializeJSON (JSONMessage messageObj) {
+    public static String serializeJSON(JSONMessage messageObj) {
         // GsonBuilder allows to set settings before parsing stuff
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();

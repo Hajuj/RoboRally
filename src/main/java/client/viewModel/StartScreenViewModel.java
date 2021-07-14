@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -32,14 +33,14 @@ public class StartScreenViewModel implements Initializable {
 
 
     @Override
-    public void initialize (URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         //sound = new AudioClip(this.getClass().getResource("/sounds/walking-dead.mp3").toExternalForm());
         //sound.setCycleCount(AudioClip.INDEFINITE);
         //sound.play();
     }
 
     @FXML
-    public void startGame (ActionEvent event) throws IOException {
+    public void startGame(ActionEvent event) throws IOException {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ServerIpStage.fxml"));
@@ -51,11 +52,11 @@ public class StartScreenViewModel implements Initializable {
     }
 
     @FXML
-    public void openGameGuid (ActionEvent event) throws IOException {
+    public void openGameGuid(ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
         Parent root2;
         if (event.getSource() == GameGuidButton) {
-            root2 = FXMLLoader.load(getClass().getResource("/view/GameGuide.fxml"));
+            root2 = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
             rootStage.setScene(new Scene(root2));
             rootStage.setTitle("Game Guide");
             rootStage.show();
@@ -63,7 +64,7 @@ public class StartScreenViewModel implements Initializable {
     }
 
     @FXML
-    public void setExitButton (ActionEvent event) {
+    public void setExitButton(ActionEvent event) {
         ExitButton.setCancelButton(true);
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();

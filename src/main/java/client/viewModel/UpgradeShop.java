@@ -19,7 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.beans.PropertyChangeListener;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
@@ -70,6 +69,9 @@ public class UpgradeShop implements Initializable {
         } );
 
     }
+
+
+
     public void showDescription(MouseEvent mouseEvent) {
         ImageView source  = (ImageView) mouseEvent.getSource ();
         switch (source.getId ()){
@@ -133,10 +135,7 @@ public class UpgradeShop implements Initializable {
 
 
     private Image loadImage(String cardName) throws FileNotFoundException {
-        Image image;
-        FileInputStream path = new FileInputStream(( Objects.requireNonNull(getClass().getClassLoader().getResource( "images/UpgradeCards/" + cardName + ".png" )).getFile()));
-        image = new Image(path);
-        return image;
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));
     }
 
     public void setChoosenUpgradeCard (String cardName) {

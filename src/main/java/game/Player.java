@@ -5,7 +5,6 @@ import json.JSONMessage;
 import json.protocol.*;
 import server.Server;
 
-//import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +31,7 @@ public class Player {
     private int numberOfAdminPrivilege = 0;
     private int activeAdminPrivilege = 0;
 
-    public Player (int playerID) {
+    public Player(int playerID) {
         this.playerID = playerID;
         this.isReady = false;
         this.deckDiscard = new DeckDiscard();
@@ -95,7 +94,7 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             if (this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                if (card.cardName.equals("Again") && i == 0){
+                if (card.cardName.equals("Again") && i == 0) {
                     this.getDeckDiscard().getDeck().add(card);
                     i--;
                 } else {
@@ -188,12 +187,12 @@ public class Player {
         return null;
     }
 
-    public void pickRobot (int figure, String name) {
+    public void pickRobot(int figure, String name) {
         this.figure = figure;
         this.name = name;
     }
 
-    public boolean checkAdmin () {
+    public boolean checkAdmin() {
         if (numberOfAdminPrivilege >= activeAdminPrivilege + 1) {
             activeAdminPrivilege++;
             return true;
@@ -202,16 +201,15 @@ public class Player {
         }
     }
 
-
-    public int getPlayerID () {
+    public int getPlayerID() {
         return playerID;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 
@@ -263,44 +261,44 @@ public class Player {
         this.energy += amount;
     }
 
-    public boolean isAI () {
+    public boolean isAI() {
         return isAI;
     }
 
-    public void setAI (boolean AI) {
+    public void setAI(boolean AI) {
         isAI = AI;
     }
 
 
-    public ArrayList<Card> getInstalledPermanentUpgrades () {
+    public ArrayList<Card> getInstalledPermanentUpgrades() {
         return installedPermanentUpgrades;
     }
 
-    public void setInstalledPermanentUpgrades (ArrayList<Card> installedPermanentUpgrades) {
+    public void setInstalledPermanentUpgrades(ArrayList<Card> installedPermanentUpgrades) {
         this.installedPermanentUpgrades = installedPermanentUpgrades;
     }
 
-    public ArrayList<Card> getTemporaryUpgrades () {
+    public ArrayList<Card> getTemporaryUpgrades() {
         return temporaryUpgrades;
     }
 
-    public void setTemporaryUpgrades (ArrayList<Card> temporaryUpgrades) {
+    public void setTemporaryUpgrades(ArrayList<Card> temporaryUpgrades) {
         this.temporaryUpgrades = temporaryUpgrades;
     }
 
-    public int getNumberOfAdminPrivilege () {
+    public int getNumberOfAdminPrivilege() {
         return numberOfAdminPrivilege;
     }
 
-    public void setNumberOfAdminPrivilege (int numberOfAdminPrivilege) {
+    public void setNumberOfAdminPrivilege(int numberOfAdminPrivilege) {
         this.numberOfAdminPrivilege = numberOfAdminPrivilege;
     }
 
-    public int getActiveAdminPrivilege () {
+    public int getActiveAdminPrivilege() {
         return activeAdminPrivilege;
     }
 
-    public void setActiveAdminPrivilege (int activeAdminPrivilege) {
+    public void setActiveAdminPrivilege(int activeAdminPrivilege) {
         this.activeAdminPrivilege = activeAdminPrivilege;
     }
 }

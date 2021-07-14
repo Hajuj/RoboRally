@@ -23,7 +23,7 @@ public class JSONDeserializer {
      * @param jsonString The JSON String that needs to be deserialized.
      * @return The {@link JSONMessage} created by deserializing the JSON String.
      */
-    public static JSONMessage deserializeJSON (String jsonString) {
+    public static JSONMessage deserializeJSON(String jsonString) {
         // GsonBuilder allows to set settings before parsing stuff
         GsonBuilder gsonBuilder = new GsonBuilder();
         // Register TypeAdapter so Gson knows how to parse the messageBody (java.lang.Object)
@@ -37,7 +37,7 @@ public class JSONDeserializer {
 
     public static JsonDeserializer<JSONMessage> customDeserializer = new JsonDeserializer<JSONMessage>() {
         @Override
-        public JSONMessage deserialize (JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public JSONMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             // Get the overall JSON String with type and body
             JsonObject jsonMessage = jsonElement.getAsJsonObject();
             // Get the messageType as String

@@ -9,20 +9,14 @@ import json.protocol.*;
 import json.protocol.CurrentPlayerBody;
 import server.Server;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * @author Ilja Knis, Viktoria Patapovich, Mohamad Hgog
  */
-
-//TODO @FXML ATTRIBUTES GOT CHANGED TO PUBLIC TO CHECK THE EXCEPTION -> Cannot read the array length because "this.lines" is null
-//     IT DIDN'T WORK LOOOOOOL
-//     https://stackoverflow.com/questions/25171039/what-is-the-best-way-to-manage-multithreading-in-javafx-8
-//     search in the link for -> PauseTransition
 
 public class Game {
     private static Game instance;
@@ -148,11 +142,11 @@ public class Game {
 
         //send an alle GameStartedMessage
         mapName = mapName.replaceAll("\\s+", "");
-        String fileName = "Maps/" + mapName + ".json";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
-        String content = new String(Files.readAllBytes(file.toPath()));
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+        String fileName = "/Maps/" + mapName + ".json";
+        InputStream file = Objects.requireNonNull(getClass().getResourceAsStream(fileName));
+        BufferedReader content = new BufferedReader(new InputStreamReader(file));
+        String content1 = content.lines().collect(Collectors.joining());
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content1);
         sendToAllPlayers(jsonMessage);
 
         refillUpgradeShop();
@@ -290,14 +284,13 @@ public class Game {
      * @throws IOException  handles IO exceptions
      */
     public void selectMap(String mapName) throws IOException {
-        //TODO maybe try block instead of throws IOException
         this.mapName = mapName;
         mapName = mapName.replaceAll("\\s+", "");
-        String fileName = "Maps/" + mapName + ".json";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
-        String content = new String(Files.readAllBytes(file.toPath()));
-        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content);
+        String fileName = "/Maps/" + mapName + ".json";
+        InputStream file = Objects.requireNonNull(getClass().getResourceAsStream(fileName));
+        BufferedReader content = new BufferedReader(new InputStreamReader(file));
+        String content1 = content.lines().collect(Collectors.joining());
+        JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(content1);
         GameStartedBody gameStartedBody = (GameStartedBody) jsonMessage.getMessageBody();
         this.map = gameStartedBody.getGameMap();
         int mapX = map.size();
@@ -1029,7 +1022,6 @@ public class Game {
      * @param card  is the card that is activated
      */
     public void activateCardEffect(String card) {
-
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
@@ -1207,7 +1199,6 @@ public class Game {
         if (!specialRebootRules()) {
             //If a robot dies on the starting map
             if (boardName.equals("Start A") || boardName.equals("Start B")) {
-                System.out.println(1);
                 int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
                 int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
                 for (Player player1 : playerList) {
@@ -1259,7 +1250,6 @@ public class Game {
                                 //If the robot can move up
                                 String rebootPointOrientation = entry.getValue().getOrientations().get(0);
 
-                                System.out.println("OMG I CRY ALL THE TIME");
                                 moveRobot(player1.getRobot(), rebootPointOrientation, 1);
 
                                 player.getRobot().setxPosition(restartPointX);
@@ -1268,7 +1258,6 @@ public class Game {
                         }
                     }
                     if (isFree) {
-                        System.out.println("IM LOST WTF");
                         //If the restart point is free
                         player.getRobot().setxPosition(restartPointX);
                         player.getRobot().setyPosition(restartPointY);
@@ -2044,6 +2033,7 @@ public class Game {
         //how much cards reinzutun
         int amount = playerList.size() - upgradeCardsShop.size();
         ArrayList<String> newCards = new ArrayList<>();
+        //deckUpgrade.shuffleDeck ();
         for (int i = 0; i < amount; i++) {
             upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
             newCards.add(deckUpgrade.getTopCard().getCardName());

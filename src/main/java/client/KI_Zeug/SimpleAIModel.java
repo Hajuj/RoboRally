@@ -12,7 +12,7 @@ import java.util.Random;
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
-    private final boolean IS_LAZY = false;
+    private final boolean IS_LAZY = true;
 
     private final String SERVER_IP = "127.0.0.1";
     private final int SERVER_PORT = 500;
@@ -28,10 +28,10 @@ public class SimpleAIModel {
 
     private String name;
 
-    private SimpleAIModel () {
+    private SimpleAIModel() {
     }
 
-    public static SimpleAIModel getInstance () {
+    public static SimpleAIModel getInstance() {
         if (instance == null) {
             instance = new SimpleAIModel();
         }
@@ -39,7 +39,7 @@ public class SimpleAIModel {
     }
 
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         clientModel.setMessageHandler(new MessageHandlerAI());
         clientModel.setAI(true);
         for (int i = 0; i < 5; i++) {
@@ -49,7 +49,7 @@ public class SimpleAIModel {
         //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52020);
     }
 
-    public void chooseRobotRoutine () {
+    public void chooseRobotRoutine() {
         if (figureCounter != 5) {
             figureCounter++;
             clientModel.sendUsernameAndRobot("SimpleAIModel", figureCounter);
@@ -58,7 +58,7 @@ public class SimpleAIModel {
         }
     }
 
-    public void setStartingPointRoutine () {
+    public void setStartingPointRoutine() {
         int i = 0;
         if (startingPointCounter != clientModel.getClientGameModel().getStartPointMap().size() - 1) {
             for (Map.Entry<Point2D, StartPoint> entry : clientModel.getClientGameModel().getStartPointMap().entrySet()) {
@@ -76,7 +76,7 @@ public class SimpleAIModel {
         }
     }
 
-    public static boolean checkDoublAndZeros (int reg0, int reg1, int reg2, int reg3, int reg4) {
+    public static boolean checkDoublAndZeros(int reg0, int reg1, int reg2, int reg3, int reg4) {
         if (reg0 == 0 || reg1 == 0 || reg2 == 0 || reg3 == 0 || reg4 == 0) return true;
         if ((reg0 == reg1) || reg0 == reg2 || reg0 == reg3 || reg0 == reg4) return true;
         if (reg1 == reg2 || reg1 == reg3 || reg1 == reg4) return true;
@@ -85,7 +85,7 @@ public class SimpleAIModel {
         return false;
     }
 
-    public static ArrayList<Integer> generateArrays () {
+    public static ArrayList<Integer> generateArrays() {
         ArrayList<Integer> nubArr = new ArrayList<>();
         for (int i = 11111; i < 100000; i++) {
             int reg0 = i / 10000;
@@ -100,7 +100,7 @@ public class SimpleAIModel {
         return nubArr;
     }
 
-    public void createThreads () {
+    public void createThreads() {
         ArrayList<Integer> numArr = generateArrays();
         for (int i = 0; i < numArr.size(); i++) {
             int cards = numArr.get(i);
@@ -111,12 +111,12 @@ public class SimpleAIModel {
     }
 
 
-    public void choodeCardsWithThreadsRoutine () {
+    public void choodeCardsWithThreadsRoutine() {
         createThreads();
     }
 
 
-    public void chooseCardsRoutine () {
+    public void chooseCardsRoutine() {
 
         for (int j = 5; j < 9; j++) {
             if (!clientModel.getClientGameModel().getCardsInHand().get(j).equals("Again")) {
@@ -135,15 +135,15 @@ public class SimpleAIModel {
     }
 
 
-    public ArrayList<String> getMyHandCards () {
+    public ArrayList<String> getMyHandCards() {
         return myHandCards;
     }
 
-    public void setMyHandCards (ArrayList<String> myHandCards) {
+    public void setMyHandCards(ArrayList<String> myHandCards) {
         this.myHandCards = myHandCards;
     }
 
-    public void playCardRoutine (int currentRegiser) {
+    public void playCardRoutine(int currentRegiser) {
         if (IS_LAZY) {
             try {
                 Thread.sleep(1000);
@@ -155,7 +155,7 @@ public class SimpleAIModel {
     }
 
 
-    public void pickDamageRoutine () {
+    public void pickDamageRoutine() {
         Random random = new Random();
         ArrayList<String> pickedDamage = new ArrayList();
         ArrayList<String> availableDamage = new ArrayList<>();
@@ -169,56 +169,56 @@ public class SimpleAIModel {
         clientModel.getClientGameModel().sendSelectedDamage(pickedDamage);
     }
 
-    public static HashMap<Integer, String> getCardsInRegister () {
+    public static HashMap<Integer, String> getCardsInRegister() {
         return cardsInRegister;
     }
 
-    public void setStartingPointCounter (int startingPointCounter) {
+    public void setStartingPointCounter(int startingPointCounter) {
         this.startingPointCounter = startingPointCounter;
     }
 
-    public int getStartingPointCounter () {
+    public int getStartingPointCounter() {
         return startingPointCounter;
     }
 
-    public boolean isHasPlayerValues () {
+    public boolean isHasPlayerValues() {
         return hasPlayerValues;
     }
 
-    public void setHasPlayerValues (boolean hasPlayerValues) {
+    public void setHasPlayerValues(boolean hasPlayerValues) {
         this.hasPlayerValues = hasPlayerValues;
     }
 
 
-    public int getFigureCounter () {
+    public int getFigureCounter() {
         return figureCounter;
     }
 
-    public ArrayList<CardsThread> getMyBabyList () {
+    public ArrayList<CardsThread> getMyBabyList() {
         return myBabyList;
     }
 
-    public void setMyBabyList (ArrayList<CardsThread> myBabyList) {
+    public void setMyBabyList(ArrayList<CardsThread> myBabyList) {
         this.myBabyList = myBabyList;
     }
 
-    public void setFigureCounter (int figureCounter) {
+    public void setFigureCounter(int figureCounter) {
         this.figureCounter = figureCounter;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public static ClientModel getClientModel () {
+    public static ClientModel getClientModel() {
         return clientModel;
     }
 
-    public static void setClientModel (ClientModel clientModel) {
+    public static void setClientModel(ClientModel clientModel) {
         SimpleAIModel.clientModel = clientModel;
     }
 }

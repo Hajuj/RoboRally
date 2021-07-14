@@ -24,19 +24,23 @@ public class AdminPrivilegeEffekt implements Initializable {
 
     public void handleRegister(MouseEvent mouseEvent) {
         //int choosenRegister;
-        if (reg_0.isSelected ()==true){
-            clientGameModel.activateAdminPrivilege ( 0 );
-        }if (reg_1.isSelected ()==true){
-            clientGameModel.activateAdminPrivilege (1);
-        }if (reg_2.isSelected ()==true){
-            clientGameModel.activateAdminPrivilege (2);
-        }if (reg_3.isSelected ()==true){
-            clientGameModel.activateAdminPrivilege (3);
-        }if (reg_4.isSelected ()==true){
-            clientGameModel.activateAdminPrivilege (4);
+        if (reg_0.isSelected() == true) {
+            clientGameModel.activateAdminPrivilege(0);
         }
-        Stage stage =(Stage) reg_4.getScene ().getWindow ();
-        stage.close ();
+        if (reg_1.isSelected() == true) {
+            clientGameModel.activateAdminPrivilege(1);
+        }
+        if (reg_2.isSelected() == true) {
+            clientGameModel.activateAdminPrivilege(2);
+        }
+        if (reg_3.isSelected() == true) {
+            clientGameModel.activateAdminPrivilege(3);
+        }
+        if (reg_4.isSelected() == true) {
+            clientGameModel.activateAdminPrivilege(4);
+        }
+        Stage stage = (Stage) reg_4.getScene().getWindow();
+        stage.close();
         /*System.out.println ( mouseEvent.getSource () );
         System.out.println ( mouseEvent.getSource ().toString () );
         //String register = (String) mouseEvent.getSource ();
@@ -47,30 +51,30 @@ public class AdminPrivilegeEffekt implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (clientGameModel.getActualPhase ()== 3){
-            int actualRegister = clientGameModel.getValueActualRegister ();
-            if(actualRegister ==0){
-                reg_0.setVisible ( false );
+        if (clientGameModel.getActualPhase() == 3) {
+            int actualRegister = clientGameModel.getValueActualRegister();
+            if (actualRegister == 0) {
+                reg_0.setVisible(false);
             }
-            if(actualRegister ==1){
-                reg_0.setVisible ( false );
-                reg_1.setVisible ( false );
+            if (actualRegister == 1) {
+                reg_0.setVisible(false);
+                reg_1.setVisible(false);
             }
-            if(actualRegister ==2){
-                reg_0.setVisible ( false );
-                reg_1.setVisible ( false );
-                reg_2.setVisible ( false );
+            if (actualRegister == 2) {
+                reg_0.setVisible(false);
+                reg_1.setVisible(false);
+                reg_2.setVisible(false);
 
             }
-            if(actualRegister ==3){
-                reg_0.setVisible ( false );
-                reg_1.setVisible ( false );
-                reg_2.setVisible ( false );
-                reg_3.setVisible ( false );
+            if (actualRegister == 3) {
+                reg_0.setVisible(false);
+                reg_1.setVisible(false);
+                reg_2.setVisible(false);
+                reg_3.setVisible(false);
             }
-            if(actualRegister ==4){
-                Alert a = new Alert ( Alert.AlertType.ERROR );
-                a.setContentText ( "you cant choose any Register because they are already played.Next time :/ " );
+            if (actualRegister == 4) {
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setContentText("you cant choose any Register because they are already played.Next time :/ ");
             }
         }
     }
