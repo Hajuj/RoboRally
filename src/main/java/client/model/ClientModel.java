@@ -35,7 +35,7 @@ public class ClientModel {
     private boolean waitingForServer = true;
 
 
-    private String protocolVersion = "Version 1.0";
+    private String protocolVersion = "Version 2.1";
     private String group = "BlindeBonbons";
     private boolean isAI = false;
 
