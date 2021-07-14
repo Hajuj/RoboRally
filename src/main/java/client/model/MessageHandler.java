@@ -461,7 +461,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();
         String card = upgradeBoughtBody.getCard();
-
+        clientModel.getClientGameModel ().getUpgradBoughtCards().add(card);
         clientModel.receiveMessage("Player " + clientID + " has bought " + card);
     }
 

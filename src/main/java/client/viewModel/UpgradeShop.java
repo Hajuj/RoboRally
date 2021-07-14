@@ -58,14 +58,17 @@ public class UpgradeShop implements Initializable {
                     upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
 
                     upgradeCards.get ( j ).setId ( cardName );
+
                 }
                 for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
                         upgradeCards.get ( j ).setImage ( null );
-                        upgradeCards.get ( j ).setId ( "Null" );
+                       // upgradeCards.get ( j ).setId ( "Null" );
                 }
+                disableChoosenCards();
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 e.printStackTrace ( );
             }
+
         } );
 
     }
@@ -100,7 +103,7 @@ public class UpgradeShop implements Initializable {
             Stage stage =(Stage) buyNothing.getScene ().getWindow ();
             stage.close ();
         }
-        disableChoosenCards();
+
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
     }
@@ -124,9 +127,12 @@ public class UpgradeShop implements Initializable {
         //disableChoosenCards ();
     }
     public void disableChoosenCards () {
+        System.out.println ( clientGameModel.getUpgradBoughtCards () );
+
         GaussianBlur blur = new GaussianBlur(10);
         for (ImageView boughtCard : upgradeCards) {
-            if (boughtCard.getId ().equals ( clientGameModel.getBoughtCard ())){
+            System.out.println ( boughtCard.getId () );
+            if (clientGameModel.getUpgradBoughtCards ().contains ( boughtCard.getId () )){
                 boughtCard.setDisable ( true );
                 boughtCard.setEffect ( blur );
             }

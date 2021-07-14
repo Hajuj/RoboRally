@@ -28,6 +28,7 @@ public class ClientGameModel {
     private ArrayList<String> refillShopCards = new ArrayList<>();
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
     private ArrayList<String> boughtCards = new ArrayList<>();
+    private ArrayList<String> upgradeBoughtCards = new ArrayList<> ();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private ArrayList<String> upgradeCards = new ArrayList<>();
@@ -504,6 +505,8 @@ public class ClientGameModel {
     }
     public ArrayList <String> getUpgradeCards(){return upgradeCards; }
 
+
+
     public String getLateCard (){
         return this.lateCard;
     }
@@ -777,6 +780,13 @@ public class ClientGameModel {
         return this.returnedCards;
     }
 
+    public ArrayList<String> getUpgradBoughtCards() {
+        return upgradeBoughtCards;
+    }
+
+    public void setUpgradeBoughtCards( ArrayList<String> upgradeBoughtCards) {
+        this.upgradeBoughtCards = upgradeBoughtCards;
+    }
 
     public static class TurnTask {
         private int playerID;
