@@ -71,7 +71,7 @@ public class Server {
             }
             if ("-p".equals(arg)) {
                 int port = Integer.parseInt(nextArg);
-                if (port < 500 || port > 65555)
+                if (port < 500 || port > 65535)
                     throw new IllegalArgumentException("Port number: " + port + " is invalid");
                 serverPort = port;
                 i++;
