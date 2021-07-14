@@ -292,7 +292,7 @@ public class MessageHandler {
         boolean canStartNewRound = true;
         if (card.equals("SpamBlocker")) {
             server.getCurrentGame().activatSpamCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
-        } else if (card.equals("SpamBlocker")) {
+        } else if (card.equals("MemorySwap")) {
             server.getCurrentGame().activatMemorySwapCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
         } else {
             //When it's the turn of the player himself
@@ -549,6 +549,8 @@ public class MessageHandler {
                 }
             }
         }
+        JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
+        server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
     }
 
 }
