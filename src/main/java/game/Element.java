@@ -63,6 +63,11 @@ public class Element {
         this.orientations.addAll(orientations);
     }
 
+    //public String applyOrientation(){
+
+
+    //}
+
 
     public String getType() {
         return this.type;

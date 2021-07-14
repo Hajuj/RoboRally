@@ -48,6 +48,7 @@ public class ServerIpStageViewModel implements Initializable {
         serverAddress = new SimpleStringProperty();
         LMUButton = new Button();
         BButton = new Button();
+        connectButton.requestFocus();
     }
 
     public File findPath(String fileName) {
