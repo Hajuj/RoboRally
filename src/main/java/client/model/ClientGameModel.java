@@ -97,6 +97,7 @@ public class ClientGameModel {
     private int choosenRegister;
     private ArrayList<String> returnedCards;
     private boolean isReturning= false;
+    private boolean MemorySwapOnPlay= false;
 
 
     //Singleton Zeug
@@ -312,6 +313,7 @@ public class ClientGameModel {
         boolean isBuying = true;
         if (checkAllowToBuy(cardName)) {
             boughtCards.add(cardName);
+            this.boughtCard= cardName;
         }
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);
@@ -757,6 +759,12 @@ public class ClientGameModel {
         JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
         clientModel.sendMessage(returnCardsMessage);
     }
+    public void playMemorySwap(boolean b) {
+        this.MemorySwapOnPlay = b;
+        JSONMessage memorySwapMessage = new JSONMessage("PlayCard", new PlayCardBody ("MemorySwap"));
+        clientModel.sendMessage(memorySwapMessage);
+    }
+
     public void finishRetunrCard(boolean b) {
         boolean oldValue = this.isReturning ;
         this.isReturning = b;
@@ -768,6 +776,7 @@ public class ClientGameModel {
     public ArrayList<String> getReturnedCards() {
         return this.returnedCards;
     }
+
 
     public static class TurnTask {
         private int playerID;
