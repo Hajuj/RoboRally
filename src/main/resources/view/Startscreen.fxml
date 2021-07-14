@@ -35,7 +35,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="62.0" prefWidth="278.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
+                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
@@ -47,7 +47,7 @@
             </HBox>
             <HBox prefHeight="104.0" prefWidth="276.0">
                <children>
-                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="64.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Exit">
+                  <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#setExitButton" prefHeight="66.0" prefWidth="277.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="Exit">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>
