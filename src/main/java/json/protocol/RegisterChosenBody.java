@@ -4,6 +4,9 @@ import client.model.ClientModel;
 import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
+/**
+ * @author Viktoria
+ */
 public class RegisterChosenBody implements ServerMessageAction<RegisterChosenBody> {
     @Expose
     private int clientID;

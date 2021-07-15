@@ -75,11 +75,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
 
-    public File findPath(String fileName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
-    }
-
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         Image image;

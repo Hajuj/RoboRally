@@ -1,11 +1,13 @@
 package json.protocol;
 
-import client.model.ClientModel;
 import com.google.gson.annotations.Expose;
 import server.ClientHandler;
 import server.MessageHandler;
 import server.Server;
 
+/**
+ * @author Viktoria
+ */
 public class ChooseRegisterBody implements ClientMessageAction<ChooseRegisterBody> {
 
     @Expose

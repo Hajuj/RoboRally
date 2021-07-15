@@ -169,4 +169,40 @@ public class ClientHandler extends Thread {
     public PrintWriter getWriter() {
         return writer;
     }
+
+    /**
+     * Inner class to establish a connection for the client.
+     *
+     */
+    public static class Connection {
+        private PrintWriter writer;
+        private Socket socket;
+        private int playerID;
+        private boolean isConnected;
+
+        public Connection(Socket clientSocket) throws IOException {
+            this.socket = clientSocket;
+            this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+        }
+
+        public void setConnected(boolean connected) {
+            isConnected = connected;
+        }
+
+        public boolean isConnected() {
+            return isConnected;
+        }
+
+        public void setPlayerID(int playerID) {
+            this.playerID = playerID;
+        }
+
+        public int getPlayerID() {
+            return playerID;
+        }
+
+        public PrintWriter getWriter() {
+            return writer;
+        }
+    }
 }

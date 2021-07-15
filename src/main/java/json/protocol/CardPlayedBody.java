@@ -5,7 +5,7 @@ import client.model.MessageHandler;
 import com.google.gson.annotations.Expose;
 
 /**
- * @author altug
+ * @author Altug
  */
 public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
 

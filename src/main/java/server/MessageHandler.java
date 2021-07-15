@@ -26,15 +26,15 @@ public class MessageHandler {
 
     /**
      * When the server receives HelloServer from the client, it replies with HelloClient.
-     * Gives a player an ID, and sends a Welcome message.
-     * It replies with Alive message to the player.
+     * Gives a client an ID, and sends a Welcome message.
+     * It replies with Alive message to the client.
      * Inform the player itself about all other players that have been added, and send their status.
      *
      * @param server          The Server
      * @param clientHandler   The ClientHandler of the Server
      * @param helloServerBody The message body of the JSON message
      */
-    public void handleHelloServer (Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
+    public void handleHelloServer(Server server, ClientHandler clientHandler, HelloServerBody helloServerBody) {
         logger.info(ANSI_CYAN + "HalloServer Message received." + ANSI_RESET);
         try {
             if (helloServerBody.getProtocol().equals(server.getProtocolVersion())) {
@@ -49,7 +49,7 @@ public class MessageHandler {
                 server.sendMessage(welcomeMessage, clientHandler.getWriter());
 
                 // Create a Connection to this clientSocket
-                Connection connection = new Connection(clientHandler.getClientSocket());
+                ClientHandler.Connection connection = new ClientHandler.Connection(clientHandler.getClientSocket());
                 server.getConnections().add(connection);
                 connection.setPlayerID(actual_id);
 
@@ -95,11 +95,11 @@ public class MessageHandler {
      * It send the username and figure of the player.
      * Send an error message to the player if the figure is taken.
      *
-     * @param server          The Server
-     * @param clientHandler   The ClientHandler of the Server
+     * @param server           The Server
+     * @param clientHandler    The ClientHandler of the Server
      * @param playerValuesBody The message body of the JSON message
      */
-    public void handlePlayerValues (Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
+    public void handlePlayerValues(Server server, ClientHandler clientHandler, PlayerValuesBody playerValuesBody) {
         logger.info(ANSI_CYAN + "PlayerValues Message received." + ANSI_RESET);
         String username = playerValuesBody.getName();
         int figure = playerValuesBody.getFigure();
@@ -134,11 +134,11 @@ public class MessageHandler {
     /**
      * Send a private chat or public chat depends on what the player sends to the server.
      *
-     * @param server          The Server
-     * @param clientHandler   The ClientHandler of the Server
-     * @param sendChatBody The message body of the JSON message
+     * @param server        The Server
+     * @param clientHandler The ClientHandler of the Server
+     * @param sendChatBody  The message body of the JSON message
      */
-    public void handleSendChat (Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
+    public void handleSendChat(Server server, ClientHandler clientHandler, SendChatBody sendChatBody) {
         logger.info(ANSI_CYAN + "SendChat Message received." + ANSI_RESET);
         String message = sendChatBody.getMessage();
         int to = sendChatBody.getTo();
@@ -146,13 +146,13 @@ public class MessageHandler {
 
         //Send Private message
         if (to != -1) {
-            for (Connection connection : server.getConnections()) {
+            for (ClientHandler.Connection connection : server.getConnections()) {
                 if (connection.getPlayerID() == to) {
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, true)), connection.getWriter());
                 }
             }
         } else { //Send public message
-            for (Connection connection : server.getConnections()) {
+            for (ClientHandler.Connection connection : server.getConnections()) {
                 if (connection.getPlayerID() != playerID) {
                     server.sendMessage(new JSONMessage("ReceivedChat", new ReceivedChatBody(message, playerID, false)), connection.getWriter());
                 }
@@ -163,11 +163,11 @@ public class MessageHandler {
     /**
      * Send Alive-Message to the client after the server receives Alive-Message.
      *
-     * @param server          The Server
-     * @param clientHandler   The ClientHandler of the Server
-     * @param aliveBody The message body of the JSON message
+     * @param server        The Server
+     * @param clientHandler The ClientHandler of the Server
+     * @param aliveBody     The message body of the JSON message
      */
-    public void handleAlive (Server server, ClientHandler clientHandler, AliveBody aliveBody) {
+    public void handleAlive(Server server, ClientHandler clientHandler, AliveBody aliveBody) {
         try {
             //warten 5 sek
             Thread.sleep(5000);
@@ -182,17 +182,17 @@ public class MessageHandler {
      * Inform all other players when a player changes his status to ready or not ready.
      * Then it sends SelectMap message to the first ready player
      *
-     * @param server          The Server
-     * @param clientHandler   The ClientHandler of the Server
+     * @param server        The Server
+     * @param clientHandler The ClientHandler of the Server
      * @param setStatusBody The message body of the JSON message
      */
-    public void handleSetStatus (Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
+    public void handleSetStatus(Server server, ClientHandler clientHandler, SetStatusBody setStatusBody) {
         logger.info(ANSI_CYAN + "SetStatus Message received." + ANSI_RESET);
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
         boolean ready = setStatusBody.isReady();
         player.setReady(ready);
 
-        for (Connection connection : server.getConnections()) {
+        for (ClientHandler.Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), player.isReady())), connection.getWriter());
         }
 
@@ -222,29 +222,38 @@ public class MessageHandler {
 
     /**
      * When a client chooses a map, the server informs all other players about it.
-     * Then it checks
+     * Then the server checks if it can start the game.
      *
      * @param server          The Server
      * @param clientHandler   The ClientHandler of the Server
      * @param mapSelectedBody The message body of the JSON message
      */
-    public void handleMapSelected (Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
+    public void handleMapSelected(Server server, ClientHandler clientHandler, MapSelectedBody mapSelectedBody) throws IOException {
         logger.info(ANSI_CYAN + "MapSelected Message received." + ANSI_RESET);
         String mapName = mapSelectedBody.getMap();
         server.getCurrentGame().selectMap(mapName);
         //Inform all other players about the selected map
-        for (Connection connection : server.getConnections()) {
+        for (ClientHandler.Connection connection : server.getConnections()) {
             server.sendMessage(new JSONMessage("MapSelected", new MapSelectedBody(mapName)), connection.getWriter());
         }
         server.getCurrentGame().canStartTheGame();
     }
 
-    public void handleSetStartingPoint (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject) {
+    /**
+     * The player sends his coordinates for the starting point, and the server sends a JSON message
+     * to all the players and inform them about the starting point.
+     * The server sends the current player to choose a starting point to all the players.
+     * If a player chooses a taken point, the server throws an error.
+     *
+     * @param server               The Server
+     * @param clientHandler        The ClientHandler of the Server
+     * @param setStartingPointBody The message body of the JSON message
+     */
+    public void handleSetStartingPoint(Server server, ClientHandler clientHandler, SetStartingPointBody setStartingPointBody) {
         logger.info(ANSI_CYAN + "SetStartingPoint Message received." + ANSI_RESET);
-        //TODO: hier etwas wie "Server speichert die Position von dem Player with ID playerID in der position x,y
         int playerID = clientHandler.getPlayer_id();
-        int x = bodyObject.getX();
-        int y = bodyObject.getY();
+        int x = setStartingPointBody.getX();
+        int y = setStartingPointBody.getY();
 
         if (playerID == server.getCurrentGame().getCurrentPlayer()) {
             if (server.getCurrentGame().valideStartingPoint(x, y)) {
@@ -282,7 +291,18 @@ public class MessageHandler {
         }
     }
 
-    public void handleSelectedCard (Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+    /**
+     * When the player puts a card in the register.
+     * The server checks if the register is empty, if not it throws an error.
+     * It checks if the selected card is an Again card, if its in the first register,
+     * the server send an error to the player.
+     * If the selected card is approved the server informs all the players about it.
+     *
+     * @param server           The Server
+     * @param clientHandler    The ClientHandler of the Server
+     * @param selectedCardBody The message body of the JSON message
+     */
+    public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
@@ -331,7 +351,7 @@ public class MessageHandler {
         }
     }
 
-    public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
+    public void handlePlayCard(Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
@@ -404,7 +424,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleRebootDirection (Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
+    public void handleRebootDirection(Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
         String direction = rebootDirectionBody.getDirection();
 
@@ -414,7 +434,7 @@ public class MessageHandler {
         server.getCurrentGame().getRobotsRebootDirection().put(player, direction);
     }
 
-    public void handleSelectedDamage (Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
+    public void handleSelectedDamage(Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
         logger.info(ANSI_CYAN + "SelectedDamage Message received." + ANSI_RESET);
         ArrayList<String> cards = selectedDamageBody.getCards();
 
@@ -496,7 +516,7 @@ public class MessageHandler {
         }
     }
 
-    public void handleBuyUpgrade (Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
+    public void handleBuyUpgrade(Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
         logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
         String cardName = buyUpgradeBody.getCard();
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
@@ -564,7 +584,7 @@ public class MessageHandler {
     }
 
 
-    public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
+    public void handleChooseRegister(Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
         logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
         //schauen ob dieser spieler echt AdminPrivilege hat
         Player player = server.getPlayerWithID(clientHandler.getPlayer_id());
@@ -578,7 +598,7 @@ public class MessageHandler {
 
     }
 
-    public void handleReturnCards (Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
+    public void handleReturnCards(Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
         logger.info(ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET);
         ArrayList<String> returnedCards = returnCardsBody.getCards();
 
