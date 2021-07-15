@@ -14,7 +14,7 @@ public class DeckUpgrade extends Deck {
     ArrayList<Card> deckUpgrade = new ArrayList<>();
 
     public void initializeDeck() {
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 10; i++) {
             this.deckUpgrade.add(new AdminPrivilege());
             this.deckUpgrade.add(new MemorySwap());
             this.deckUpgrade.add(new RearLaser());

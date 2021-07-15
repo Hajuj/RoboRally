@@ -4,7 +4,7 @@ import game.Card;
 
 public class MemorySwap extends Card {
 
-    public MemorySwap(){
+    public MemorySwap() {
         cardName = "MemorySwap";
     }
 
@@ -12,7 +12,7 @@ public class MemorySwap extends Card {
         return false;
     }
 
-    public boolean isPermanent(){
+    public boolean isPermanent() {
         return false;
     }
 }

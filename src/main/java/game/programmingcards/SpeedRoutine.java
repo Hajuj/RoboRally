@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class SpeedRoutine extends Card {
-    public SpeedRoutine(){
+    public SpeedRoutine() {
         cardName = "SpeedRoutine";
     }
 

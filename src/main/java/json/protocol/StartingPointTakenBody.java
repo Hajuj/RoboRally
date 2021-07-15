@@ -16,26 +16,26 @@ public class StartingPointTakenBody implements ServerMessageAction<StartingPoint
     @Expose
     private final int clientID;
 
-    public StartingPointTakenBody (int x, int y, int clientID) {
+    public StartingPointTakenBody(int x, int y, int clientID) {
         this.x = x;
         this.y = y;
         this.clientID = clientID;
     }
 
-    public int getX () {
+    public int getX() {
         return x;
     }
 
-    public int getY () {
+    public int getY() {
         return y;
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
     @Override
-    public void triggerAction (ClientModel client, StartingPointTakenBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, StartingPointTakenBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleStartingPointTaken(client, bodyObject);
     }
 }

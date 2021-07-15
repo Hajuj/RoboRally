@@ -2,6 +2,7 @@ package game.decks;
 
 import game.Card;
 import game.Deck;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,17 +17,17 @@ public class DeckHand extends Deck {
         this.deckHand = new ArrayList<Card>();
     }
 
-    public void shuffleDeck () {
+    public void shuffleDeck() {
         Collections.shuffle(this.getDeck());
     }
 
-    public ArrayList<Card> getDeck () {
+    public ArrayList<Card> getDeck() {
         return deckHand;
     }
 
-    public ArrayList<String> toArrayList () {
+    public ArrayList<String> toArrayList() {
         ArrayList<String> nameList = new ArrayList<>();
-        for (int i = 0; i < deckHand.size(); i++) {
+        for(int i = 0; i < deckHand.size(); i++) {
             nameList.add(deckHand.get(i).getCardName());
         }
         return nameList;

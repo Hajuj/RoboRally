@@ -102,7 +102,7 @@ public class StartScreenViewModel implements Initializable {
     public void openGameGuid(ActionEvent event) throws IOException {
         Stage rootStage = new Stage();
         Parent root2;
-        if (event.getSource() == GameGuidButton) {
+        if(event.getSource() == GameGuidButton) {
             root2 = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
             rootStage.setScene(new Scene(root2));
             rootStage.setTitle("Game Guide");
@@ -113,6 +113,7 @@ public class StartScreenViewModel implements Initializable {
     /**
      * Sets exit button.
      * Handles the event of clicking on the exit button
+     *
      * @param event the event
      */
     @FXML

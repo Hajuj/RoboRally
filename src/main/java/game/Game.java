@@ -81,7 +81,7 @@ public class Game {
      * @return the instance
      */
     public static Game getInstance() {
-        if (instance == null) {
+        if(instance == null) {
             instance = new Game();
         }
         return instance;
@@ -134,7 +134,7 @@ public class Game {
 
         clearDamage();
 
-        for (Player player : players) {
+        for(Player player : players) {
             checkPointReached.put(player, 0);
         }
 
@@ -190,10 +190,10 @@ public class Game {
 
         server.setReadyPlayer(new ArrayList<>());
 
-        for (Player player : playerList) {
+        for(Player player : playerList) {
             player.setReady(false);
             player.refreshPlayer();
-            for (Player player1 : server.getWaitingPlayer()) {
+            for(Player player1 : server.getWaitingPlayer()) {
                 JSONMessage jsonMessage = new JSONMessage("PlayerStatus", new PlayerStatusBody(player.getPlayerID(), false));
                 server.sendMessage(jsonMessage, server.getConnectionWithID(player1.getPlayerID()).getWriter());
             }
@@ -203,12 +203,13 @@ public class Game {
     /**
      * Method to add clients who are too late for the game
      * into an ArrayList
-     * @return  an ArrayList of PlayerIDs
+     *
+     * @return an ArrayList of PlayerIDs
      */
     public ArrayList<Integer> tooLateClients() {
         ArrayList<Integer> tooLateClients = new ArrayList<>();
-        for (Player player : this.playerList) {
-            if (!player.isRegisterFull()) {
+        for(Player player : this.playerList) {
+            if(!player.isRegisterFull()) {
                 tooLateClients.add(player.getPlayerID());
             }
         }
@@ -219,23 +220,25 @@ public class Game {
      * Method to check if special reboot rules are needed
      * for the current game
      * depends on the chosen map
-     * @return  true if special reboot rules are needed
+     *
+     * @return true if special reboot rules are needed
      */
     public boolean specialRebootRules() {
-        if (mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
+        if(mapName.equals("ExtraCrispy") || mapName.equals("DeathTrap")) {
             return true;
         } else return false;
     }
 
     /**
      * Method to iterate over the active players
-     * @return  the next active player ID
+     *
+     * @return the next active player ID
      */
     public int nextPlayerID() {
         int currentIndex = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         //Get the next alive player
-        for (int i = currentIndex + 1; i < playerList.size(); i++) {
-            if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
+        for(int i = currentIndex + 1; i < playerList.size(); i++) {
+            if(!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
                 return playerList.get(i).getPlayerID();
             }
             System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
@@ -264,10 +267,11 @@ public class Game {
 
     /**
      * Method to send a JSONMessage to all players
-     * @param jsonMessage   is the message that is sent to all players
+     *
+     * @param jsonMessage is the message that is sent to all players
      */
     public void sendToAllPlayers(JSONMessage jsonMessage) {
-        for (int i = 0; i < playerList.size(); i++) {
+        for(int i = 0; i < playerList.size(); i++) {
             server.sendMessage(jsonMessage, server.getConnectionWithID(playerList.get(i).getPlayerID()).getWriter());
         }
     }
@@ -276,9 +280,9 @@ public class Game {
     /**
      * Refresh admin privilege.
      */
-    public void refreshAdminPrivilege () {
+    public void refreshAdminPrivilege() {
         adminPriorityMap.clear();
-        for (Player player : playerList) {
+        for(Player player : playerList) {
             player.setActiveAdminPrivilege(0);
         }
     }
@@ -288,8 +292,9 @@ public class Game {
      * loads the dimensions of the map
      * uses a deserializer to load the map from a JSON
      * calls method createMapObjects() to build map
-     * @param mapName   is the chosen map
-     * @throws IOException  handles IO exceptions
+     *
+     * @param mapName is the chosen map
+     * @throws IOException handles IO exceptions
      */
     public void selectMap(String mapName) throws IOException {
         this.mapName = mapName;
@@ -316,15 +321,16 @@ public class Game {
      * initially elements are created as superclass Element.class
      * calls method replaceElementInMap() in order to replace elements of
      * superclass Element.class with corresponding subclass
-     * @param map   is the deserialized 3D ArrayList from the JSON message
-     * @param mapX  is the x dimension of the map
-     * @param mapY  is the y dimension of the map
+     *
+     * @param map  is the deserialized 3D ArrayList from the JSON message
+     * @param mapX is the x dimension of the map
+     * @param mapY is the y dimension of the map
      */
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
-        for (int x = 0; x < mapX; x++) {
-            for (int y = 0; y < mapY; y++) {
-                for (int i = 0; i < map.get(x).get(y).size(); i++) {
-                    switch (map.get(x).get(y).get(i).getType()) {
+        for(int x = 0; x < mapX; x++) {
+            for(int y = 0; y < mapY; y++) {
+                for(int i = 0; i < map.get(x).get(y).size(); i++) {
+                    switch(map.get(x).get(y).get(i).getType()) {
                         case "Antenna" -> {
                             Element element = map.get(x).get(y).get(i);
                             Antenna antenna = new Antenna(element.getType(), element.getIsOnBoard(), element.getOrientations());
@@ -414,7 +420,7 @@ public class Game {
      * no check for belt colour because "Twister"
      * is the only map with this effect and every CheckPoint is
      * standing on a BlueConveyorBelt (-> 2 Movements)
-     *
+     * <p>
      * After moving the CheckPoints, it is necessary to replace elements
      * in the map ArrayList, therefore calls removeElementFromMap()
      * and placeElementOnMap() to first remove the old position of the CheckPoints
@@ -424,10 +430,10 @@ public class Game {
      * and putting all entries of checkPointMovedMap into checkPointMap.
      */
     private void moveCheckPoints() {
-        if (getMapName().equals("Twister")) {
-            for (Point2D positionCheckPoint : checkPointMap.keySet()) {
-                for (Point2D position : conveyorBeltMap.keySet()) {
-                    if (positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
+        if(getMapName().equals("Twister")) {
+            for(Point2D positionCheckPoint : checkPointMap.keySet()) {
+                for(Point2D position : conveyorBeltMap.keySet()) {
+                    if(positionCheckPoint.getX() == position.getX() && positionCheckPoint.getY() == position.getY()) {
                         //calculate new checkPoint position
                         //first movement:
                         int numCP = checkPointMap.get(position).getCount();
@@ -462,13 +468,14 @@ public class Game {
     /**
      * Method to remove an element from the map.
      * Takes an element and the corresponding position of the element.
-     * @param element   is the element that is to be removed
-     * @param x         is the x coordinate of element
-     * @param y         is the y coordinate of element
+     *
+     * @param element is the element that is to be removed
+     * @param x       is the x coordinate of element
+     * @param y       is the y coordinate of element
      */
-    private void removeElementFromMap(Element element, int x, int y){
-        for(int i = 0; i < map.get(x).get(y).size(); i++){
-            if (element.getType().equals(map.get(x).get(y).get(i).getType())){
+    private void removeElementFromMap(Element element, int x, int y) {
+        for(int i = 0; i < map.get(x).get(y).size(); i++) {
+            if(element.getType().equals(map.get(x).get(y).get(i).getType())) {
                 map.get(x).get(y).remove(i);
                 break;
             }
@@ -478,11 +485,12 @@ public class Game {
     /**
      * Method to place an element on the map.
      * Takes an element and the corresponding position of the element.
-     * @param element   is the element that is added to the map
-     * @param x         is the x coordinate of the element
-     * @param y         is the y coordinate of the element
+     *
+     * @param element is the element that is added to the map
+     * @param x       is the x coordinate of the element
+     * @param y       is the y coordinate of the element
      */
-    private void placeElementOnMap(Element element, int x, int y){
+    private void placeElementOnMap(Element element, int x, int y) {
         map.get(x).get(y).add(element);
     }
 
@@ -493,14 +501,15 @@ public class Game {
      * Does not check for blockers or out of bounds
      * as this method is only intended for restricted use of
      * movements -> used for moving CheckPoints on map "Twister".
-     * @param position      is the position from where a movement is made
-     * @param orientation   is the orientation in which the movement is made
-     * @return              the new position after a one field movement was made
+     *
+     * @param position    is the position from where a movement is made
+     * @param orientation is the orientation in which the movement is made
+     * @return the new position after a one field movement was made
      */
-    private Point2D getMoveInDirection(Point2D position, String orientation){
+    private Point2D getMoveInDirection(Point2D position, String orientation) {
         double x = position.getX();
         double y = position.getY();
-        switch (orientation){
+        switch(orientation) {
             case "left" -> x -= 1;
             case "right" -> x += 1;
             case "top" -> y -= 1;
@@ -519,39 +528,39 @@ public class Game {
      * Calls moveCheckPoints() for map "Twister".
      */
     public void activateBlueBelts() {
-        for (Player player : playerList) {
-            for (Point2D position : conveyorBeltMap.keySet()) {
-                if (conveyorBeltMap.get(position).getColour().equals("blue")) {
-                    if (player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
+        for(Player player : playerList) {
+            for(Point2D position : conveyorBeltMap.keySet()) {
+                if(conveyorBeltMap.get(position).getColour().equals("blue")) {
+                    if(player.getRobot().getxPosition() == (int) position.getX() && player.getRobot().getyPosition() == (int) position.getY()) {
                         boolean movedOnBelt = false;
                         //first move on the belt
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
-                        if (IS_LAZY) {
+                        if(IS_LAZY) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-                        if (!deadRobotsIDs.contains(player.getPlayerID())) {
+                        if(!deadRobotsIDs.contains(player.getPlayerID())) {
                             //second move: need to find new position and new orientation first
                             double xRobotPos = player.getRobot().getxPosition();
                             double yRobotPos = player.getRobot().getyPosition();
-                            for (int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
-                                if (map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
+                            for(int i = 0; i < map.get((int) xRobotPos).get((int) yRobotPos).size(); i++) {
+                                if(map.get((int) xRobotPos).get((int) yRobotPos).get(i).getType().equals("ConveyorBelt")) {
                                     movedOnBelt = true;
                                     Point2D newPos = new Point2D(xRobotPos, yRobotPos);
                                     String newOrientation = conveyorBeltMap.get(newPos).getOrientations().get(0);
                                     moveRobot(player.getRobot(), newOrientation, 1);
                                 }
                             }
-                            if (!movedOnBelt) {
+                            if(!movedOnBelt) {
                                 moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                             }
-                            if (IS_LAZY) {
+                            if(IS_LAZY) {
                                 try {
                                     Thread.sleep(80);
-                                } catch (InterruptedException e) {
+                                } catch(InterruptedException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -568,7 +577,8 @@ public class Game {
      * Method to send a new position of a player to all players.
      * Takes the player whose position has changed.
      * Calls sendToAllPlayers() to inform all players about the new position.
-     * @param player    is the player whose position has changed
+     *
+     * @param player is the player whose position has changed
      */
     public void sendNewPosition(Player player) {
         int clientID = player.getPlayerID();
@@ -603,17 +613,17 @@ public class Game {
      * and moves every robot that is located on the fields of GreenBelts.
      */
     public void activateGreenBelts() {
-        for (Player player : playerList) {
-            for (Point2D position : conveyorBeltMap.keySet()) {
-                if (conveyorBeltMap.get(position).getColour().equals("green")) {
-                    if (player.getRobot().getxPosition() == (int) position.getX() &&
+        for(Player player : playerList) {
+            for(Point2D position : conveyorBeltMap.keySet()) {
+                if(conveyorBeltMap.get(position).getColour().equals("green")) {
+                    if(player.getRobot().getxPosition() == (int) position.getX() &&
                             player.getRobot().getyPosition() == (int) position.getY()) {
                         moveRobot(player.getRobot(), conveyorBeltMap.get(position).getOrientations().get(0), 1);
                         try {
-                            if (IS_LAZY) {
+                            if(IS_LAZY) {
                                 Thread.sleep(80);
                             }
-                        } catch (InterruptedException e) {
+                        } catch(InterruptedException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -629,11 +639,11 @@ public class Game {
      * position is on an EnergySpace.
      */
     public void activateEnergySpaces() {
-        for (Point2D position : energySpaceMap.keySet()) {
-            for (Player player : getRobotsOnFieldsOwner(position)) {
-                if (currentRegister != 4) {
+        for(Point2D position : energySpaceMap.keySet()) {
+            for(Player player : getRobotsOnFieldsOwner(position)) {
+                if(currentRegister != 4) {
                     int energyCount = energySpaceMap.get(position).getCount();
-                    if (energyCount > 0) {
+                    if(energyCount > 0) {
                         energySpaceMap.get(position).setCount(energyCount - 1);
                         player.increaseEnergy(1);
                         sendToAllPlayers(new JSONMessage("Energy", new EnergyBody(player.getPlayerID(), player.getEnergy(), "EnergySpace")));
@@ -657,21 +667,21 @@ public class Game {
      * of the PushPanel.
      */
     public void activatePushPanels() {
-        if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
-            for (Point2D position : pushPanelMap.keySet()) {
-                if (pushPanelMap.get(position).getRegisters().contains(1) ||
+        if(currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
+            for(Point2D position : pushPanelMap.keySet()) {
+                if(pushPanelMap.get(position).getRegisters().contains(1) ||
                         pushPanelMap.get(position).getRegisters().contains(3) ||
                         pushPanelMap.get(position).getRegisters().contains(5)) {
-                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                    for(Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
             }
-        } else if (currentRegister == 2 || currentRegister == 4) {
-            for (Point2D position : pushPanelMap.keySet()) {
-                if (pushPanelMap.get(position).getRegisters().contains(2) ||
+        } else if(currentRegister == 2 || currentRegister == 4) {
+            for(Point2D position : pushPanelMap.keySet()) {
+                if(pushPanelMap.get(position).getRegisters().contains(2) ||
                         pushPanelMap.get(position).getRegisters().contains(4)) {
-                    for (Player player : getRobotsOnFieldsOwner(position)) {
+                    for(Player player : getRobotsOnFieldsOwner(position)) {
                         moveRobot(player.getRobot(), pushPanelMap.get(position).getOrientations().get(0), 1);
                     }
                 }
@@ -687,13 +697,13 @@ public class Game {
      * of the Gear.
      */
     public void activateGears() {
-        for (Point2D position : gearMap.keySet()) {
-            for (Player player : getRobotsOnFieldsOwner(position)) {
-                if (gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
+        for(Point2D position : gearMap.keySet()) {
+            for(Player player : getRobotsOnFieldsOwner(position)) {
+                if(gearMap.get(position).getOrientations().get(0).equals("counterclockwise")) {
                     changeOrientation(player.getRobot(), "left");
                     JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(player.getPlayerID(), "counterclockwise"));
                     sendToAllPlayers(jsonMessage);
-                } else if (gearMap.get(position).getOrientations().get(0).equals("clockwise")) {
+                } else if(gearMap.get(position).getOrientations().get(0).equals("clockwise")) {
                     changeOrientation(player.getRobot(), "right");
                     JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(player.getPlayerID(), "clockwise"));
                     sendToAllPlayers(jsonMessage);
@@ -710,9 +720,9 @@ public class Game {
      * by calling drawSpam() on the corresponding players.
      */
     public void activateWallLasers() {
-        for (Point2D position : laserMap.keySet()) {
-            for (Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
-                for (Player player : getRobotsOnFieldsOwner(beamPosition)) {
+        for(Point2D position : laserMap.keySet()) {
+            for(Point2D beamPosition : getLaserPath(laserMap.get(position), position)) {
+                for(Player player : getRobotsOnFieldsOwner(beamPosition)) {
                     drawSpam(player, laserMap.get(position).getCount());
                 }
             }
@@ -725,7 +735,7 @@ public class Game {
      * @param cardName the card name
      * @return the boolean
      */
-    public boolean isPermanent (String cardName) {
+    public boolean isPermanent(String cardName) {
         return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
     }
 
@@ -735,14 +745,15 @@ public class Game {
      * which he draws. Checks if the Spam deck has enough cards
      * to draw. Calls PickDamage if there are not enough cards
      * so the player chooses a different damage card type to draw.
-     * @param player    is the player who draws Spam cards
-     * @param amount    is the amount of cards the player draws
+     *
+     * @param player is the player who draws Spam cards
+     * @param amount is the amount of cards the player draws
      */
     public void drawSpam(Player player, int amount) {
         int amountLeft;
         //If there is enough spam cards
-        if (deckSpam.getDeck().size() >= amount) {
-            for (int i = 0; i < amount; i++) {
+        if(deckSpam.getDeck().size() >= amount) {
+            for(int i = 0; i < amount; i++) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getTopCard());
                 deckSpam.removeTopCard();
                 currentDamage.get(player).add("Spam");
@@ -750,7 +761,7 @@ public class Game {
         } else {
             //If there is not enough spam cards
             amountLeft = amount - deckSpam.getDeck().size();
-            for (int i = 0; i < deckSpam.getDeck().size(); i++) {
+            for(int i = 0; i < deckSpam.getDeck().size(); i++) {
                 player.getDeckDiscard().getDeck().add(deckSpam.getDeck().get(i));
                 currentDamage.get(player).add("Spam");
             }
@@ -763,8 +774,9 @@ public class Game {
 
     /**
      * Method to send a DrawDamage JSONMessage.
-     * @param player        is the player who draws damage cards
-     * @param damageCards   is the list of damage cards the player draws
+     *
+     * @param player      is the player who draws damage cards
+     * @param damageCards is the list of damage cards the player draws
      */
     public void sendDamage(Player player, ArrayList<String> damageCards) {
         JSONMessage damageMessage = new JSONMessage("DrawDamage", new DrawDamageBody(player.getPlayerID(), damageCards));
@@ -776,8 +788,8 @@ public class Game {
      * Calls method sendDamage().
      */
     public void activateDamage() {
-        for (Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
-            if (entry.getValue().size() != 0) {
+        for(Map.Entry<Player, ArrayList<String>> entry : currentDamage.entrySet()) {
+            if(entry.getValue().size() != 0) {
                 sendDamage(entry.getKey(), entry.getValue());
             }
         }
@@ -789,7 +801,7 @@ public class Game {
      */
     public void clearDamage() {
         currentDamage.clear();
-        for (Player player : playerList) {
+        for(Player player : playerList) {
             currentDamage.put(player, new ArrayList<String>());
         }
     }
@@ -805,13 +817,13 @@ public class Game {
      */
     public void activateRobotLasers() {
         ArrayList<Player> activePlayers = new ArrayList<>();
-        for (Player player : playerList) {
-            if (!deadRobotsIDs.contains(player.getPlayerID()))
+        for(Player player : playerList) {
+            if(!deadRobotsIDs.contains(player.getPlayerID()))
                 activePlayers.add(player);
         }
-        for (Player player : activePlayers) {
+        for(Player player : activePlayers) {
             triggerLasersInSight(player.getRobot(), player.getRobot().getOrientation());
-            if(rearLasers.contains(player)){
+            if(rearLasers.contains(player)) {
                 triggerLasersInSight(player.getRobot(), getInverseOrientation(player.getRobot().getOrientation()));
             }
         }
@@ -825,32 +837,33 @@ public class Game {
      * Robot is found in the sight path. Every Robot that gets hit
      * by the RobotLaser draws a Spam card.
      * Takes the Robot that is shooting and the orientation the Robot shoots.
-     * @param robot         is the robot that shoots the RobotLaser
-     * @param orientation   is the orientation the robot shoots in
+     *
+     * @param robot       is the robot that shoots the RobotLaser
+     * @param orientation is the orientation the robot shoots in
      */
     public void triggerLasersInSight(Robot robot, String orientation) {
         boolean foundBlocker = false;
         boolean reachedEndOfMap = false;
         double tempPosition;
-        switch (orientation) {
+        switch(orientation) {
             case "top" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == 0) {
+                if(tempPosition == 0) {
                     reachedEndOfMap = true;
                 }
 
-                while (!foundBlocker && !reachedEndOfMap) {
+                while(!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
-                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
-                        if (!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                    for(int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if(!getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
-                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
-                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                        if(map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if(map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("top") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                                 .get(j).equals("bottom")) {
@@ -859,7 +872,7 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == 0) {
+                        if(tempPosition == 0) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -868,21 +881,21 @@ public class Game {
             case "bottom" -> {
                 tempPosition = robot.getyPosition();
 
-                if (tempPosition == (map.get(0).size() - 1)) {
+                if(tempPosition == (map.get(0).size() - 1)) {
                     reachedEndOfMap = true;
                 }
 
-                while (!foundBlocker && !reachedEndOfMap) {
+                while(!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
-                    for (int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
+                    for(int i = 0; i < map.get(robot.getxPosition()).get((int) tempPosition).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(robot.getxPosition(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(robot.getxPosition(), tempPosition)).get(0));
                             break;
                         }
-                        if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
-                            for (int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
-                                if (map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
+                        if(map.get(robot.getxPosition()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations().size(); j++) {
+                                if(map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                         .get(j).equals("bottom") ||
                                         map.get(robot.getxPosition()).get((int) tempPosition).get(i).getOrientations()
                                                 .get(j).equals("top")) {
@@ -891,7 +904,7 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == (map.get(0).size() - 1)) {
+                        if(tempPosition == (map.get(0).size() - 1)) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -900,21 +913,21 @@ public class Game {
             case "right" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == (map.size() - 1)) {
+                if(tempPosition == (map.size() - 1)) {
                     reachedEndOfMap = true;
                 }
 
-                while (!foundBlocker && !reachedEndOfMap) {
+                while(!foundBlocker && !reachedEndOfMap) {
                     tempPosition++;
-                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                    for(int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
-                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
-                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                        if(map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if(map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("right") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                                 .get(j).equals("left")) {
@@ -923,7 +936,7 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == (map.size() - 1)) {
+                        if(tempPosition == (map.size() - 1)) {
                             reachedEndOfMap = true;
                         }
                     }
@@ -932,21 +945,21 @@ public class Game {
             case "left" -> {
                 tempPosition = robot.getxPosition();
 
-                if (tempPosition == 0) {
+                if(tempPosition == 0) {
                     reachedEndOfMap = true;
                 }
 
-                while (!foundBlocker && !reachedEndOfMap) {
+                while(!foundBlocker && !reachedEndOfMap) {
                     tempPosition--;
-                    for (int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
+                    for(int i = 0; i < map.get((int) tempPosition).get(robot.getyPosition()).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(tempPosition, robot.getyPosition())).isEmpty()) {
                             foundBlocker = true;
                             robotsHitByRobotLaser.add(getRobotsOnFieldsOwner(new Point2D(tempPosition, robot.getyPosition())).get(0));
                             break;
                         }
-                        if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
-                            for (int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
-                                if (map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
+                        if(map.get((int) tempPosition).get(robot.getyPosition()).get(i).getType().equals("Wall")) {
+                            for(int j = 0; j < map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations().size(); j++) {
+                                if(map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                         .get(j).equals("left") ||
                                         map.get((int) tempPosition).get(robot.getyPosition()).get(i).getOrientations()
                                                 .get(j).equals("right")) {
@@ -955,14 +968,14 @@ public class Game {
                                 }
                             }
                         }
-                        if (tempPosition == 0) {
+                        if(tempPosition == 0) {
                             reachedEndOfMap = true;
                         }
                     }
                 }
             }
         }
-        for(Player player : robotsHitByRobotLaser){
+        for(Player player : robotsHitByRobotLaser) {
             drawSpam(player, 1);
         }
 
@@ -973,15 +986,16 @@ public class Game {
      * Method to get every Robot on a specific position
      * except a specific Robot.
      * Takes a position and a Robot that should not be included.
-     * @param position      is the position that is checked
-     * @param withoutRobot  is the Robot that is not checked
-     * @return              every Robot on the position except withoutRobot
+     *
+     * @param position     is the position that is checked
+     * @param withoutRobot is the Robot that is not checked
+     * @return every Robot on the position except withoutRobot
      */
     public ArrayList<Robot> getRobotsOnFieldsWithout(Point2D position, Robot withoutRobot) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
-        for (Player player : playerList) {
-            if (player.getRobot().getxPosition() == (int) position.getX() &&
+        for(Player player : playerList) {
+            if(player.getRobot().getxPosition() == (int) position.getX() &&
                     player.getRobot().getyPosition() == (int) position.getY()) {
                 robotsOnFields.add(player.getRobot());
             }
@@ -994,14 +1008,15 @@ public class Game {
     /**
      * Method to get every Robot on a specific position.
      * Takes a position.
-     * @param position  is the position that is checked
-     * @return          every Robot on the position
+     *
+     * @param position is the position that is checked
+     * @return every Robot on the position
      */
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
-        for (Player player : playerList) {
-            if (player.getRobot().getxPosition() == (int) position.getX() &&
+        for(Player player : playerList) {
+            if(player.getRobot().getxPosition() == (int) position.getX() &&
                     player.getRobot().getyPosition() == (int) position.getY()) {
                 robotsOnFields.add(player.getRobot());
             }
@@ -1013,14 +1028,15 @@ public class Game {
     /**
      * Method to get every owner of a Robot on a specific position.
      * Takes a position.
-     * @param position  is the position that is checked
-     * @return          every Player whose Robot is on the specified position
+     *
+     * @param position is the position that is checked
+     * @return every Player whose Robot is on the specified position
      */
     public ArrayList<Player> getRobotsOnFieldsOwner(Point2D position) {
         ArrayList<Player> robotsOwner = new ArrayList<>();
 
-        for (Player player : playerList) {
-            if (player.getRobot().getxPosition() == (int) position.getX() &&
+        for(Player player : playerList) {
+            if(player.getRobot().getxPosition() == (int) position.getX() &&
                     player.getRobot().getyPosition() == (int) position.getY()) {
                 robotsOwner.add(player);
             }
@@ -1033,16 +1049,17 @@ public class Game {
      * Takes a card.
      * Uses a switch on the card name.
      * Activates specific card effect implementations in every case.
-     * @param card  is the card that is activated
+     *
+     * @param card is the card that is activated
      */
     public void activateCardEffect(String card) {
         int indexCurrentPlayer = playerList.indexOf(server.getPlayerWithID(currentPlayer));
         String robotOrientation = playerList.get(indexCurrentPlayer).getRobot().getOrientation();
 
-        switch (card) {
+        switch(card) {
             case "Again" -> {
                 Card lastCard = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get((currentRegister - 1));
-                if (lastCard.cardName.equals("Again")) {
+                if(lastCard.cardName.equals("Again")) {
                     Card veryLastCard = playerList.get(indexCurrentPlayer).getDeckRegister().getDeck().get((currentRegister - 2));
                     activateCardEffect(veryLastCard.cardName);
                 } else {
@@ -1052,7 +1069,7 @@ public class Game {
                 sendToAllPlayers(jsonMessage1);
             }
             case "BackUp" -> {
-                switch (robotOrientation) {
+                switch(robotOrientation) {
                     case "top" -> {
                         moveRobot(playerList.get(indexCurrentPlayer).getRobot(), "bottom", 1);
                     }
@@ -1095,10 +1112,10 @@ public class Game {
                 JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(currentPlayer, "clockwise"));
                 sendToAllPlayers(jsonMessage);
                 //TODO: Repair Move and Turning Queues.
-                if (IS_LAZY) {
+                if(IS_LAZY) {
                     try {
                         Thread.sleep(80);
-                    } catch (InterruptedException e) {
+                    } catch(InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -1111,11 +1128,11 @@ public class Game {
                 //TODO implement a method and call by the other cards (similar to drawBlind in Player -> return Card instead of ArrayList)
 
                 //TODO test if-statement for consistency when deck is empty
-                if (!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)) {
+                if(!(playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().size() > 0)) {
                     playerList.get(indexCurrentPlayer).shuffleDiscardIntoProgramming();
                 }
                 Card top = playerList.get(indexCurrentPlayer).getDeckProgramming().getTopCard();
-                if (currentRegister == 0 && top.cardName.equals("Again")) {
+                if(currentRegister == 0 && top.cardName.equals("Again")) {
                     playerList.get(indexCurrentPlayer).getDeckDiscard().getDeck().add(top);
                     playerList.get(indexCurrentPlayer).getDeckProgramming().getDeck().remove(top);
                     activateCardEffect("Spam");
@@ -1138,7 +1155,7 @@ public class Game {
             }
             case "Virus" -> {
                 ArrayList<Player> playersWithinRadius = getPlayersInRadius(playerList.get(indexCurrentPlayer), 6);
-                for (Player player : playersWithinRadius) {
+                for(Player player : playersWithinRadius) {
                     drawSpam(player, 1);
                 }
                 //TODO access current register and play top card from deckProgramming
@@ -1163,14 +1180,14 @@ public class Game {
      *
      * @param player the player
      */
-    public void activatSpamCard(Player player){
+    public void activatSpamCard(Player player) {
         replaceSpamCardsHand(player);
 
     }
 
-    public void activatMemorySwapCard (Player player) {
+    public void activatMemorySwapCard(Player player) {
         //Draw three cards for the player and remove them from deck Programming
-        for (int i = 0; i < 3; i++) {
+        for(int i = 0; i < 3; i++) {
             player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
             player.getDeckProgramming().removeTopCard();
         }
@@ -1179,15 +1196,14 @@ public class Game {
     }
 
 
-
     /**
      * Gets upgrade cost.
      *
      * @param cardName the card name
      * @return the upgrade cost
      */
-    public int getUpgradeCost (String cardName) {
-        return switch (cardName) {
+    public int getUpgradeCost(String cardName) {
+        return switch(cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;
             case "RearLaser" -> 2;
             case "MemorySwap" -> 1;
@@ -1200,14 +1216,15 @@ public class Game {
      * Takes a player whose hand is being iterated for Spam cards.
      * Draws new cards for every discarded Spam card.
      * Used for SpamBlocker Upgrade card.
-     * @param player    is the player who discards Spam cards
+     *
+     * @param player is the player who discards Spam cards
      */
-    public void replaceSpamCardsHand(Player player){
+    public void replaceSpamCardsHand(Player player) {
         int counter = 0;
-        for (int i = 0; i < player.getDeckHand ().getDeck ().size () ; i++) {
-            Card card = player.getDeckHand ().getDeck ().get ( i );
+        for(int i = 0; i < player.getDeckHand().getDeck().size(); i++) {
+            Card card = player.getDeckHand().getDeck().get(i);
             //throw all Spam cards from hand to DeckSpam
-            if (card.getCardName().equals("Spam")) {
+            if(card.getCardName().equals("Spam")) {
                 deckSpam.getDeck().add(card);
                 player.getDeckHand().getDeck().remove(card);
                 counter++;
@@ -1226,7 +1243,8 @@ public class Game {
      * Places the Robot of player on the corresponding restart point
      * of the board he is located in.
      * Makes the player draw 2 Spam cards.
-     * @param player    is the player whose Robot gets rebooted
+     *
+     * @param player is the player whose Robot gets rebooted
      */
     public void rebootRobot(Player player) {
         deadRobotsIDs.add(player.getPlayerID());
@@ -1236,20 +1254,20 @@ public class Game {
         String boardName = map.get(robotPlacementX).get(robotPlacementY).get(0).getIsOnBoard();
         boolean rebooted = false;
         boolean fieldIsTaken = false;
-        if (!specialRebootRules()) {
+        if(!specialRebootRules()) {
             //If a robot dies on the starting map
-            if (boardName.equals("Start A") || boardName.equals("Start B")) {
+            if(boardName.equals("Start A") || boardName.equals("Start B")) {
                 int startingPointX = (int) startingPointMap.get(player.getRobot()).getX();
                 int startingPointY = (int) startingPointMap.get(player.getRobot()).getY();
-                for (Player player1 : playerList) {
-                    if (player1.getPlayerID() != player.getPlayerID()) {
+                for(Player player1 : playerList) {
+                    if(player1.getPlayerID() != player.getPlayerID()) {
                         int robotHereX = player1.getRobot().getxPosition();
                         int robotHereY = player1.getRobot().getyPosition();
                         //If another robot is already on the start point
-                        if (robotHereX == startingPointX && robotHereY == startingPointY) {
+                        if(robotHereX == startingPointX && robotHereY == startingPointY) {
                             fieldIsTaken = true;
                             //If the robot can move up
-                            if (canRobotMove(robotHereX, robotHereY, "top")) {
+                            if(canRobotMove(robotHereX, robotHereY, "top")) {
                                 player1.getRobot().setyPosition(robotHereY - 1);
                                 sendNewPosition(player1);
 
@@ -1266,7 +1284,7 @@ public class Game {
                     }
                 }
                 //No another robot on the starting point
-                if (!fieldIsTaken) {
+                if(!fieldIsTaken) {
                     player.getRobot().setxPosition(startingPointX);
                     player.getRobot().setyPosition(startingPointY);
                 }
@@ -1274,18 +1292,18 @@ public class Game {
             }
         }
         boolean isFree = true;
-        if (specialRebootRules() || !rebooted) {
+        if(specialRebootRules() || !rebooted) {
             //If robot dies on the game map
-            for (HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
-                if (entry.getValue() != null) {
+            for(HashMap.Entry<Point2D, RestartPoint> entry : restartPointMap.entrySet()) {
+                if(entry.getValue() != null) {
                     int restartPointX = (int) entry.getKey().getX();
                     int restartPointY = (int) entry.getKey().getY();
-                    for (Player player1 : playerList) {
-                        if (player1.getPlayerID() != player.getPlayerID()) {
+                    for(Player player1 : playerList) {
+                        if(player1.getPlayerID() != player.getPlayerID()) {
                             int robotX = player1.getRobot().getxPosition();
                             int robotY = player1.getRobot().getyPosition();
                             //If another robot already on the restart point
-                            if (restartPointX == robotX && restartPointY == robotY) {
+                            if(restartPointX == robotX && restartPointY == robotY) {
                                 isFree = false;
                                 //If the robot can move up
                                 String rebootPointOrientation = entry.getValue().getOrientations().get(0);
@@ -1297,7 +1315,7 @@ public class Game {
                             }
                         }
                     }
-                    if (isFree) {
+                    if(isFree) {
                         //If the restart point is free
                         player.getRobot().setxPosition(restartPointX);
                         player.getRobot().setyPosition(restartPointY);
@@ -1316,11 +1334,12 @@ public class Game {
 
     /**
      * Method to check for a new free starting point.
-     * @return  the position of a free starting point
+     *
+     * @return the position of a free starting point
      */
     public Point2D firstFreeStartingPoint() {
-        for (Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
-            if (getRobotsOnFields(entry.getKey()).size() == 0) {
+        for(Map.Entry<Point2D, StartPoint> entry : startPointMap.entrySet()) {
+            if(getRobotsOnFields(entry.getKey()).size() == 0) {
                 return entry.getKey();
             }
         }
@@ -1332,7 +1351,7 @@ public class Game {
      */
     public void setRebootDirection() {
         //Set players who chose a direction, players who didn't set on top by default
-        for (Integer deadRobotsID : deadRobotsIDs) {
+        for(Integer deadRobotsID : deadRobotsIDs) {
             setRebootOrientation(server.getPlayerWithID(deadRobotsID), robotsRebootDirection.getOrDefault(
                     server.getPlayerWithID(deadRobotsID), "top"));
         }
@@ -1344,13 +1363,14 @@ public class Game {
      * Method to set a specified reboot direction for the Robot.
      * Takes the player whose Robot gets rebooted and the orientation
      * which he is set to.
-     * @param player        is the player whose Robot gets rebooted
-     * @param orientation   is the orientation the Robot gets rebooted to
+     *
+     * @param player      is the player whose Robot gets rebooted
+     * @param orientation is the orientation the Robot gets rebooted to
      */
     public void setRebootOrientation(Player player, String orientation) {
-        switch (player.getRobot().getOrientation()) {
+        switch(player.getRobot().getOrientation()) {
             case "top" -> {
-                switch (orientation) {
+                switch(orientation) {
                     case "left" -> {
                         player.getRobot().setOrientation("left");
                         sendRotation(player.getPlayerID(), "counterclockwise");
@@ -1365,10 +1385,10 @@ public class Game {
                     case "bottom" -> {
                         player.getRobot().setOrientation("bottom");
                         sendRotation(player.getPlayerID(), "clockwise");
-                        if (IS_LAZY) {
+                        if(IS_LAZY) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1377,7 +1397,7 @@ public class Game {
                 }
             }
             case "bottom" -> {
-                switch (orientation) {
+                switch(orientation) {
                     case "left" -> {
                         player.getRobot().setOrientation("left");
                         sendRotation(player.getPlayerID(), "clockwise");
@@ -1389,10 +1409,10 @@ public class Game {
                     case "top" -> {
                         player.getRobot().setOrientation("top");
                         sendRotation(player.getPlayerID(), "clockwise");
-                        if (IS_LAZY) {
+                        if(IS_LAZY) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1404,17 +1424,17 @@ public class Game {
                 }
             }
             case "left" -> {
-                switch (orientation) {
+                switch(orientation) {
                     case "left" -> {
                         player.getRobot().setOrientation("left");
                     }
                     case "right" -> {
                         player.getRobot().setOrientation("right");
                         sendRotation(player.getPlayerID(), "counterclockwise");
-                        if (IS_LAZY) {
+                        if(IS_LAZY) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1431,14 +1451,14 @@ public class Game {
                 }
             }
             case "right" -> {
-                switch (orientation) {
+                switch(orientation) {
                     case "left" -> {
                         player.getRobot().setOrientation("left");
                         sendRotation(player.getPlayerID(), "clockwise");
-                        if (IS_LAZY) {
+                        if(IS_LAZY) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1462,8 +1482,9 @@ public class Game {
 
     /**
      * Method to send a JSONMessage of rotations of a player.
-     * @param playerID  is the ID of the player
-     * @param rotation  is the rotation the players Robot takes
+     *
+     * @param playerID is the ID of the player
+     * @param rotation is the rotation the players Robot takes
      */
     public void sendRotation(int playerID, String rotation) {
         JSONMessage jsonMessage = new JSONMessage("PlayerTurning", new PlayerTurningBody(playerID, rotation));
@@ -1473,9 +1494,10 @@ public class Game {
     /**
      * Method to calculate all players within the radius of a player.
      * Primarily used for Virus card effect.
+     *
      * @param currentPlayer is the player in the center
      * @param radius        is the radius around the currentPlayer
-     * @return              a list of all players within the radius of currentPlayer
+     * @return a list of all players within the radius of currentPlayer
      */
     public ArrayList<Player> getPlayersInRadius(Player currentPlayer, int radius) {
         ArrayList<Player> playersInRadius = new ArrayList<>();
@@ -1484,31 +1506,31 @@ public class Game {
         int lowerXCap, upperXCap, lowerYCap, upperYCap;
 
         //Calculate boundaries within radius span
-        if (robotXPosition - radius < 0) {
+        if(robotXPosition - radius < 0) {
             lowerXCap = 0;
         } else {
             lowerXCap = robotXPosition - radius;
         }
-        if (robotYPosition - radius < 0) {
+        if(robotYPosition - radius < 0) {
             lowerYCap = 0;
         } else {
             lowerYCap = robotYPosition - radius;
         }
-        if (robotXPosition + radius >= map.size()) {
+        if(robotXPosition + radius >= map.size()) {
             upperXCap = map.size();
         } else {
             upperXCap = robotXPosition + radius;
         }
-        if (robotYPosition + radius >= map.get(0).size()) {
+        if(robotYPosition + radius >= map.get(0).size()) {
             upperYCap = map.get(0).size();
         } else {
             upperYCap = robotYPosition + radius;
         }
 
-        for (Player player : playerList) {
+        for(Player player : playerList) {
             int robotX = player.getRobot().getxPosition();
             int robotY = player.getRobot().getyPosition();
-            if (robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap) {
+            if(robotX >= lowerXCap && robotX <= upperXCap && robotY >= lowerYCap && robotY <= upperYCap) {
                 playersInRadius.add(player);
             }
         }
@@ -1522,30 +1544,31 @@ public class Game {
      * Checks the specified field for the following Elements:
      * Pit, Wall, Antenna
      * Primarily used for moveRobot() method.
-     * @param robot             is the Robot that currently moves - relevant for reboot routine on Pit
-     * @param x                 is the x coordinate of the specified field
-     * @param y                 is the y coordinate of the specified field
-     * @param blockOrientation  is the blocked orientation - relevant for Walls
-     * @return                  true if the field is not blocked
+     *
+     * @param robot            is the Robot that currently moves - relevant for reboot routine on Pit
+     * @param x                is the x coordinate of the specified field
+     * @param y                is the y coordinate of the specified field
+     * @param blockOrientation is the blocked orientation - relevant for Walls
+     * @return true if the field is not blocked
      */
     public boolean isFieldNotBlocked(Robot robot, int x, int y, String blockOrientation) {
         boolean foundBlocker = false;
 
-        for (Element element : map.get(x).get(y)) {
-            if (element.getType().equals("Pit")) {
+        for(Element element : map.get(x).get(y)) {
+            if(element.getType().equals("Pit")) {
                 foundBlocker = true;
                 rebootRobot(getRobotOwner(robot));
                 break;
             }
-            if (element.getType().equals("Wall")) {
-                for (String orientation : element.getOrientations()) {
-                    if (orientation.equals(blockOrientation)) {
+            if(element.getType().equals("Wall")) {
+                for(String orientation : element.getOrientations()) {
+                    if(orientation.equals(blockOrientation)) {
                         foundBlocker = true;
                         break;
                     }
                 }
             }
-            if (element.getType().equals("Antenna")) {
+            if(element.getType().equals("Antenna")) {
                 foundBlocker = true;
             }
         }
@@ -1559,13 +1582,13 @@ public class Game {
      * and JSONMessages are sent to the server.
      */
     public void activateCheckpoints() {
-        for (Player player : playerList) {
-            for (Point2D position : checkPointMap.keySet()) {
-                if (player.getRobot().getxPosition() == position.getX() && player.getRobot().getyPosition() == position.getY()) {
+        for(Player player : playerList) {
+            for(Point2D position : checkPointMap.keySet()) {
+                if(player.getRobot().getxPosition() == position.getX() && player.getRobot().getyPosition() == position.getY()) {
                     int lastCheckpoint = checkPointReached.get(player);
-                    if (checkPointMap.get(position).getCount() == lastCheckpoint + 1) {
+                    if(checkPointMap.get(position).getCount() == lastCheckpoint + 1) {
                         checkPointReached.replace(player, lastCheckpoint + 1);
-                        if (lastCheckpoint + 1 == checkPointMap.size()) {
+                        if(lastCheckpoint + 1 == checkPointMap.size()) {
                             JSONMessage checkpointReached = new JSONMessage("CheckPointReached", new CheckPointReachedBody(player.getPlayerID(), lastCheckpoint + 1));
                             sendToAllPlayers(checkpointReached);
                             JSONMessage finishedGame = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
@@ -1588,38 +1611,39 @@ public class Game {
      * Calls isFieldNotBlocked() to check if the movement is valid.
      * Iterates over the amount of movements to check for blockers
      * after every movement.
-     * @param robot         is the Robot that makes the movement
-     * @param orientation   is the orientation in which the Robot should move
-     * @param movement      is the amount of movements the Robot should take
+     *
+     * @param robot       is the Robot that makes the movement
+     * @param orientation is the orientation in which the Robot should move
+     * @param movement    is the amount of movements the Robot should take
      */
     public void moveRobot(Robot robot, String orientation, int movement) {
         int robotXPosition = robot.getxPosition();
         int robotYPosition = robot.getyPosition();
         boolean canMove;
-        switch (orientation) {
+        switch(orientation) {
             case "top" -> {
-                for (int i = 0; i < movement; i++) {
-                    if (robotYPosition - 1 < 0) {
+                for(int i = 0; i < movement; i++) {
+                    if(robotYPosition - 1 < 0) {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition - 1),
                                 getInverseOrientation("top"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
                             sendNewPosition(getRobotOwner(robot));
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if(!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
                         }
                     }
-                    if (IS_LAZY) {
-                        if (movement > 1) {
+                    if(IS_LAZY) {
+                        if(movement > 1) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1627,28 +1651,28 @@ public class Game {
                 }
             }
             case "bottom" -> {
-                for (int i = 0; i < movement; i++) {
-                    if (robotYPosition + 1 >= map.get(0).size()) {
+                for(int i = 0; i < movement; i++) {
+                    if(robotYPosition + 1 >= map.get(0).size()) {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
                         canMove = isFieldNotBlocked(robot, robotXPosition, (robotYPosition + 1),
                                 getInverseOrientation("bottom"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
                             sendNewPosition(getRobotOwner(robot));
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if(!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
                         }
                     }
-                    if (IS_LAZY) {
-                        if (movement > 1) {
+                    if(IS_LAZY) {
+                        if(movement > 1) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1656,28 +1680,28 @@ public class Game {
                 }
             }
             case "left" -> {
-                for (int i = 0; i < movement; i++) {
-                    if (robotXPosition - 1 < 0) {
+                for(int i = 0; i < movement; i++) {
+                    if(robotXPosition - 1 < 0) {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
                         canMove = isFieldNotBlocked(robot, (robotXPosition - 1), robotYPosition,
                                 getInverseOrientation("left"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
                             sendNewPosition(getRobotOwner(robot));
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if(!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
                         }
                     }
-                    if (IS_LAZY) {
-                        if (movement > 1) {
+                    if(IS_LAZY) {
+                        if(movement > 1) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1685,28 +1709,28 @@ public class Game {
                 }
             }
             case "right" -> {
-                for (int i = 0; i < movement; i++) {
-                    if (robotXPosition + 1 >= map.size()) {
+                for(int i = 0; i < movement; i++) {
+                    if(robotXPosition + 1 >= map.size()) {
                         rebootRobot(server.getPlayerWithID(currentPlayer));
                         break;
                     } else {
                         canMove = isFieldNotBlocked(robot, (robotXPosition + 1), robotYPosition,
                                 getInverseOrientation("right"));
-                        if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
+                        if(canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
                             sendNewPosition(getRobotOwner(robot));
-                            if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
+                            if(!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
                         }
                     }
-                    if (IS_LAZY) {
-                        if (movement > 1) {
+                    if(IS_LAZY) {
+                        if(movement > 1) {
                             try {
                                 Thread.sleep(80);
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1718,12 +1742,13 @@ public class Game {
 
     /**
      * Method to find the owner (player) of a Robot.
-     * @param robot     is the Robot we check
-     * @return          the player who owns robot
+     *
+     * @param robot is the Robot we check
+     * @return the player who owns robot
      */
     public Player getRobotOwner(Robot robot) {
-        for (Player player : playerList) {
-            if (player.getRobot().equals(robot)) {
+        for(Player player : playerList) {
+            if(player.getRobot().equals(robot)) {
                 return player;
             }
         }
@@ -1736,29 +1761,30 @@ public class Game {
      * Takes a Robot who pushes (pusher), a Robot that gets pushed
      * (robotGettingPushed) and an iteration (from 1 to 4) which helps
      * to specify the direction in which the push is being made.
-     * @param pusher                is the Robot that pushes the other Robot
-     * @param robotGettingPushed    is the Robot being pushed by pusher
-     * @param iteration             is the intrinsic iteration (always initially call with iteration: 1)
+     *
+     * @param pusher             is the Robot that pushes the other Robot
+     * @param robotGettingPushed is the Robot being pushed by pusher
+     * @param iteration          is the intrinsic iteration (always initially call with iteration: 1)
      */
     public void pushRobot(Robot pusher, Robot robotGettingPushed, int iteration) {
         int initX = robotGettingPushed.getxPosition();
         int initY = robotGettingPushed.getyPosition();
 
-        if (iteration == 1) {
+        if(iteration == 1) {
             moveRobot(robotGettingPushed, pusher.getOrientation(), 1);
         }
-        if (iteration == 2) {
+        if(iteration == 2) {
             moveRobot(robotGettingPushed, rotateClockwise(pusher.getOrientation()), 1);
         }
-        if (iteration == 3) {
+        if(iteration == 3) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(pusher.getOrientation())), 1);
         }
-        if (iteration == 4) {
+        if(iteration == 4) {
             moveRobot(robotGettingPushed, rotateClockwise(rotateClockwise(rotateClockwise(pusher.getOrientation()))), 1);
         }
 
-        if (initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
-            switch (iteration) {
+        if(initX == robotGettingPushed.getxPosition() && initY == robotGettingPushed.getyPosition()) {
+            switch(iteration) {
                 case 1 -> pushRobot(pusher, robotGettingPushed, 2);
                 case 2 -> pushRobot(pusher, robotGettingPushed, 3);
                 case 3 -> pushRobot(pusher, robotGettingPushed, 4);
@@ -1769,13 +1795,14 @@ public class Game {
     /**
      * Method to map orientation Strings on a clockwise rotation.
      * Used for pushRobot()-
-     * @param orientation   is the current orientation
-     * @return              the clockwise rotated orientation
+     *
+     * @param orientation is the current orientation
+     * @return the clockwise rotated orientation
      */
     public String rotateClockwise(String orientation) {
         String rotatedOrientation;
 
-        switch (orientation) {
+        switch(orientation) {
             case "top" -> rotatedOrientation = "right";
             case "right" -> rotatedOrientation = "bottom";
             case "bottom" -> rotatedOrientation = "left";
@@ -1791,17 +1818,18 @@ public class Game {
      * Additional checker for the current field of the robot.
      * Every other blocked is checked by isFieldNotBlocked().
      * Only used within moveRobot().
-     * @param robotXPosition    is the x position of the Robot
-     * @param robotYPosition    is the y position of the Robot
-     * @param orientation       is the orientation in which the Robot should move
-     * @return                  if the Robot can move past its current field
+     *
+     * @param robotXPosition is the x position of the Robot
+     * @param robotYPosition is the y position of the Robot
+     * @param orientation    is the orientation in which the Robot should move
+     * @return if the Robot can move past its current field
      */
     private boolean canRobotMove(int robotXPosition, int robotYPosition, String orientation) {
         boolean canPass = true;
-        for (Element element : map.get(robotXPosition).get(robotYPosition)) {
-            if ("Wall".equals(element.getType())) {
-                for (String orient : element.getOrientations()) {
-                    if (orientation.equals(orient)) {
+        for(Element element : map.get(robotXPosition).get(robotYPosition)) {
+            if("Wall".equals(element.getType())) {
+                for(String orient : element.getOrientations()) {
+                    if(orientation.equals(orient)) {
                         canPass = false;
                         break;
                     }
@@ -1816,13 +1844,14 @@ public class Game {
      * Used to adjust orientation on movements.
      * Uses logic on switch direction to determine
      * the new orientation of the Robot.
+     *
      * @param robot     is the Robot that changes its orientation
      * @param direction is the direction in which the Robot changes its orientation
      */
     public void changeOrientation(Robot robot, String direction) {
-        switch (robot.getOrientation()) {
+        switch(robot.getOrientation()) {
             case "top" -> {
-                switch (direction) {
+                switch(direction) {
                     case "left" -> robot.setOrientation("left");
 
                     case "right" -> robot.setOrientation("right");
@@ -1832,7 +1861,7 @@ public class Game {
                 }
             }
             case "bottom" -> {
-                switch (direction) {
+                switch(direction) {
                     case "left" -> robot.setOrientation("right");
 
                     case "right" -> robot.setOrientation("left");
@@ -1842,7 +1871,7 @@ public class Game {
                 }
             }
             case "left" -> {
-                switch (direction) {
+                switch(direction) {
                     case "left" -> robot.setOrientation("bottom");
 
                     case "right" -> robot.setOrientation("top");
@@ -1852,7 +1881,7 @@ public class Game {
                 }
             }
             case "right" -> {
-                switch (direction) {
+                switch(direction) {
                     case "left" -> robot.setOrientation("top");
 
                     case "right" -> robot.setOrientation("bottom");
@@ -1869,31 +1898,32 @@ public class Game {
      * Checks for blockers (Wall, CheckPoint, Robot).
      * Ends the LaserPath on first blocker found.
      * Laser should not shoot past Blockers.
-     * @param laser          is the current laser which path is checked
-     * @param laserPosition  is the position of  the laser
-     * @return               the LaserPath in a list of fields
+     *
+     * @param laser         is the current laser which path is checked
+     * @param laserPosition is the position of  the laser
+     * @return the LaserPath in a list of fields
      */
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
         boolean foundBlocker = false;
         double tempPosition;
-        switch (laser.getOrientations().get(0)) {
+        switch(laser.getOrientations().get(0)) {
             case "top" -> {
                 tempPosition = laserPosition.getY();
-                while (!foundBlocker) {
+                while(!foundBlocker) {
                     tempPosition--;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
-                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
+                    for(int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                        if(map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if(map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1901,19 +1931,19 @@ public class Game {
             }
             case "bottom" -> {
                 tempPosition = laserPosition.getY();
-                while (!foundBlocker) {
+                while(!foundBlocker) {
                     tempPosition++;
                     laserPath.add(new Point2D(laserPosition.getX(), tempPosition));
-                    for (int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
+                    for(int i = 0; i < map.get((int) laserPosition.getX()).get((int) tempPosition).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(laserPosition.getX(), tempPosition)).isEmpty()) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
+                        if(map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
+                        if(map.get((int) laserPosition.getX()).get((int) tempPosition).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1921,19 +1951,19 @@ public class Game {
             }
             case "left" -> {
                 tempPosition = laserPosition.getX();
-                while (!foundBlocker) {
+                while(!foundBlocker) {
                     tempPosition--;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                        if(map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if(map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1941,19 +1971,19 @@ public class Game {
             }
             case "right" -> {
                 tempPosition = laserPosition.getX();
-                while (!foundBlocker) {
+                while(!foundBlocker) {
                     tempPosition++;
                     laserPath.add(new Point2D(tempPosition, laserPosition.getY()));
-                    for (int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
-                        if (!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
+                    for(int i = 0; i < map.get((int) tempPosition).get((int) laserPosition.getY()).size(); i++) {
+                        if(!getRobotsOnFields(new Point2D(tempPosition, laserPosition.getY())).isEmpty()) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
+                        if(map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("Wall")) {
                             foundBlocker = true;
                             break;
                         }
-                        if (map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
+                        if(map.get((int) tempPosition).get((int) laserPosition.getY()).get(i).getType().equals("CheckPoint")) {
                             foundBlocker = true;
                         }
                     }
@@ -1974,13 +2004,13 @@ public class Game {
      */
     public void startProgrammingPhase() {
         //TODO check .NullPointerException: Cannot invoke "game.Robot.getSchadenPunkte()" because the return value of "game.Player.getRobot()" is null
-        for (Player player : playerList) {
+        for(Player player : playerList) {
             player.drawCardsProgramming(9);
             JSONMessage yourCardsMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
             server.sendMessage(yourCardsMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
 
-            for (Player otherPlayer : playerList) {
-                if (otherPlayer.getPlayerID() != player.getPlayerID()) {
+            for(Player otherPlayer : playerList) {
+                if(otherPlayer.getPlayerID() != player.getPlayerID()) {
                     JSONMessage notYourCardsMessage = new JSONMessage("NotYourCards", new NotYourCardsBody(player.getPlayerID(), player.getDeckHand().getDeck().size()));
                     server.sendMessage(notYourCardsMessage, server.getConnectionWithID(otherPlayer.getPlayerID()).getWriter());
                 }
@@ -1991,14 +2021,15 @@ public class Game {
     /**
      * Method to check if a starting point is valid.
      * Sends JSONMessages to server communication.
-     * @param x  is the x coordinate of the inquired starting point
-     * @param y  is the y coordinate of the inquired starting point
-     * @return   if the starting point is valid
+     *
+     * @param x is the x coordinate of the inquired starting point
+     * @param y is the y coordinate of the inquired starting point
+     * @return if the starting point is valid
      */
     public boolean valideStartingPoint(int x, int y) {
         Point2D positionID = new Point2D(x, y);
-        if (startPointMap.containsKey(positionID)) {
-            if (!robotMap.containsKey(positionID)) {
+        if(startPointMap.containsKey(positionID)) {
+            if(!robotMap.containsKey(positionID)) {
                 robotMap.put(positionID, server.getPlayerWithID(currentPlayer).getRobot());
                 return true;
             } else {
@@ -2019,14 +2050,15 @@ public class Game {
      * and change it from the superclass to the subclass.
      * Key to build the map with the correct types.
      * Do not use outside of building the map in its initial state!
-     * @param map       is the map that is being built
-     * @param x         is the x coordinate of the element
-     * @param y         is the y coordinate of the element
-     * @param element   is the element in its superclass state
-     * @param object    is the element in its subclass state
+     *
+     * @param map     is the map that is being built
+     * @param x       is the x coordinate of the element
+     * @param y       is the y coordinate of the element
+     * @param element is the element in its superclass state
+     * @param object  is the element in its subclass state
      */
     public void replaceElementInMap(ArrayList<ArrayList<ArrayList<Element>>> map, int x, int y, Element element, Object object) {
-        if (object instanceof Element) {
+        if(object instanceof Element) {
             int indexelement = map.get(x).get(y).indexOf(element);
             map.get(x).get(y).remove(element);
             map.get(x).get(y).add(indexelement, (Element) object);
@@ -2038,19 +2070,20 @@ public class Game {
 
     /**
      * Method to set the active phase within the game.
-     * @param activePhase   is the int of the active phase
+     *
+     * @param activePhase is the int of the active phase
      */
     public void setActivePhase(int activePhase) {
         this.activePhase = activePhase;
-        if (activePhase == 1 && !activePhaseOn) {
+        if(activePhase == 1 && !activePhaseOn) {
             informAboutActivePhase();
             startUpgradePhase();
             activePhaseOn = true;
-        } else if (activePhase == 2 && !activePhaseOn) {
+        } else if(activePhase == 2 && !activePhaseOn) {
             informAboutActivePhase();
             startProgrammingPhase();
             activePhaseOn = true;
-        } else if (activePhase == 3 && !activePhaseOn) {
+        } else if(activePhase == 3 && !activePhaseOn) {
             informAboutActivePhase();
             startActivationPhase();
             activePhaseOn = true;
@@ -2072,12 +2105,12 @@ public class Game {
     /**
      * Refill upgrade shop.
      */
-    public void refillUpgradeShop () {
+    public void refillUpgradeShop() {
         //how much cards reinzutun
         int amount = playerList.size() - upgradeCardsShop.size();
         ArrayList<String> newCards = new ArrayList<>();
         //deckUpgrade.shuffleDeck ();
-        for (int i = 0; i < amount; i++) {
+        for(int i = 0; i < amount; i++) {
             upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
             newCards.add(deckUpgrade.getTopCard().getCardName());
             deckUpgrade.removeTopCard();
@@ -2090,17 +2123,17 @@ public class Game {
     /**
      * Start upgrade phase.
      */
-    public void startUpgradePhase () {
+    public void startUpgradePhase() {
         //After the first round and If no one bought an Upgrade Card
-        if (upgradeCardsShop.size() == playerList.size() && roundCounter != 1) {
+        if(upgradeCardsShop.size() == playerList.size() && roundCounter != 1) {
             upgradeCardsShop.clear();
-            for (int i = 0; i < playerList.size(); i++) {
+            for(int i = 0; i < playerList.size(); i++) {
                 upgradeCardsShop.add(deckUpgrade.getTopCard().getCardName());
                 deckUpgrade.removeTopCard();
             }
             JSONMessage jsonMessage = new JSONMessage("ExchangeShop", new ExchangeShopBody(upgradeCardsShop));
             sendToAllPlayers(jsonMessage);
-        } else if (roundCounter != 1) {
+        } else if(roundCounter != 1) {
             //If the Upgrade Shop not full
             refillUpgradeShop();
         }
@@ -2112,20 +2145,20 @@ public class Game {
     /**
      * Method to check whether the game can start.
      */
-    public void canStartTheGame () {
-        if (server.areAllPlayersReady()) {
+    public void canStartTheGame() {
+        if(server.areAllPlayersReady()) {
             try {
-                if (server.onlyAI() && server.getCurrentGame().getMapName() == null) {
+                if(server.onlyAI() && server.getCurrentGame().getMapName() == null) {
                     ArrayList<String> maps = server.getCurrentGame().getAvailableMaps();
                     int random = (int) (Math.random() * maps.size());
                     String mapName = maps.get(random);
                     server.getCurrentGame().selectMap(mapName);
                 }
-                if (server.getCurrentGame().getMapName() != null) {
+                if(server.getCurrentGame().getMapName() != null) {
                     server.getCurrentGame().setGameOn(true);
                     server.getCurrentGame().startGame(server.getReadyPlayer());
                 }
-            } catch (IOException ioException) {
+            } catch(IOException ioException) {
                 ioException.printStackTrace();
             }
         }
@@ -2135,12 +2168,13 @@ public class Game {
      * Method to get the inverse orientation of a specified orientation.
      * Logically maps via a switch the String orientation to the
      * inverse orientation.
-     * @param orientation   is the original orientation
-     * @return              the inverse orientation
+     *
+     * @param orientation is the original orientation
+     * @return the inverse orientation
      */
     public String getInverseOrientation(String orientation) {
         String inverseOrientation;
-        switch (orientation) {
+        switch(orientation) {
             case "top" -> inverseOrientation = "bottom";
             case "bottom" -> inverseOrientation = "top";
             case "left" -> inverseOrientation = "right";
@@ -2152,12 +2186,13 @@ public class Game {
 
     /**
      * Method to send the current cards.
-     * @param register  is the current register
+     *
+     * @param register is the current register
      */
     public void sendCurrentCards(int register) {
         ArrayList<Object> currentCards = new ArrayList<>();
-        for (Player player : playerList) {
-            if (!deadRobotsIDs.contains(player.getPlayerID())) {
+        for(Player player : playerList) {
+            if(!deadRobotsIDs.contains(player.getPlayerID())) {
                 ArrayList<Object> array1 = new ArrayList<>();
                 array1.add("clientID=" + player.getPlayerID() + ".0");
                 array1.add("card=" + player.getDeckRegister().getDeck().get(register).getCardName());
@@ -2192,12 +2227,12 @@ public class Game {
         @Override
         public int compare(Player o1, Player o2) {
             // Compare Player IDs
-            if (game.getActivePhase() == 0) {
+            if(game.getActivePhase() == 0) {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
-            } else if (game.getActivePhase() == 1) {
+            } else if(game.getActivePhase() == 1) {
                 // Compare distance to Antenna
-                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
-                    if (entry.getValue() != null) {
+                for(HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if(entry.getValue() != null) {
                         int antennaX = (int) entry.getKey().getX();
                         int antennaY = (int) entry.getKey().getY();
 
@@ -2215,12 +2250,12 @@ public class Game {
                 return Integer.compare(o1.getPlayerID(), o2.getPlayerID());
             } else {
                 Player admin = null;
-                if (game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
+                if(game.getAdminPriorityMap().containsKey(game.getCurrentRegister())) {
                     admin = game.getAdminPriorityMap().get(game.getCurrentRegister());
                 }
                 // Compare distance to Antenna
-                for (HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
-                    if (entry.getValue() != null) {
+                for(HashMap.Entry<Point2D, Antenna> entry : game.getAntennaMap().entrySet()) {
+                    if(entry.getValue() != null) {
                         int antennaX = (int) entry.getKey().getX();
                         int antennaY = (int) entry.getKey().getY();
 
@@ -2232,10 +2267,10 @@ public class Game {
 
                         int distance = Math.abs(robotX - antennaX) + Math.abs(robotY - antennaY);
                         int oDistance = Math.abs(oRobotX - antennaX) + Math.abs(oRobotY - antennaY);
-                        if (admin != null) {
-                            if (o1.equals(admin)) {
+                        if(admin != null) {
+                            if(o1.equals(admin)) {
                                 return 1;
-                            } else if (o2.equals((admin))) {
+                            } else if(o2.equals((admin))) {
                                 return -1;
                             }
                         }
@@ -2651,7 +2686,7 @@ public class Game {
      *
      * @return the admin priority map
      */
-    public Map<Integer, Player> getAdminPriorityMap () {
+    public Map<Integer, Player> getAdminPriorityMap() {
         return adminPriorityMap;
     }
 
@@ -2660,7 +2695,7 @@ public class Game {
      *
      * @param adminPriorityMap the admin priority map
      */
-    public void setAdminPriorityMap (Map<Integer, Player> adminPriorityMap) {
+    public void setAdminPriorityMap(Map<Integer, Player> adminPriorityMap) {
         this.adminPriorityMap = adminPriorityMap;
     }
 
@@ -2669,7 +2704,7 @@ public class Game {
      *
      * @return the rear lasers
      */
-    public ArrayList<Player> getRearLasers () {
+    public ArrayList<Player> getRearLasers() {
         return rearLasers;
     }
 
@@ -2678,7 +2713,7 @@ public class Game {
      *
      * @param rearLasers the rear lasers
      */
-    public void setRearLasers (ArrayList<Player> rearLasers) {
+    public void setRearLasers(ArrayList<Player> rearLasers) {
         this.rearLasers = rearLasers;
     }
 }

@@ -42,7 +42,7 @@ public class ClientModelReaderThread extends Thread {
             BufferedReader reader = new BufferedReader(in);
 
             String messageString;
-            while ((messageString = reader.readLine()) != null) {
+            while((messageString = reader.readLine()) != null) {
                 // Deserialize the received JSON String into a JSON object
 
                 JSONMessage jsonMessage = JSONDeserializer.deserializeJSON(messageString);
@@ -60,9 +60,9 @@ public class ClientModelReaderThread extends Thread {
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, messageBody, messageHandler);
             }
-        } catch (SocketException e) {
+        } catch(SocketException e) {
             e.printStackTrace();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

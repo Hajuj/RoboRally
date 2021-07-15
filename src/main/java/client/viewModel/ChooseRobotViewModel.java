@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
 /**
  * The type Choose robot view model.
  */
@@ -35,12 +36,12 @@ public class ChooseRobotViewModel implements Initializable {
      */
 
     ClientModel model = ClientModel.getInstance();
- /**
+    /**
      * The Play button.
      */
 
     public Button playButton;
-     /**
+    /**
      * The Name field.
      */
 
@@ -48,45 +49,46 @@ public class ChooseRobotViewModel implements Initializable {
     private String username;
     private IntegerProperty figureProperty = new SimpleIntegerProperty(-1);
     private static Logger logger = Logger.getLogger(ChooseRobotViewModel.class.getName());
- /**
+    /**
      * The Robot 0.
      */
 
     @FXML
     public ImageView robot0;
-      /**
+    /**
      * The Robot 1.
      */
 
     @FXML
     public ImageView robot1;
-      /**
+    /**
      * The Robot 2.
      */
 
     @FXML
     public ImageView robot2;
-      /**
+    /**
      * The Robot 3.
      */
 
     @FXML
     public ImageView robot3;
-      /**
+    /**
      * The Robot 4.
      */
 
     @FXML
     public ImageView robot4;
-      /**
+    /**
      * The Robot 5.
      */
 
     @FXML
     public ImageView robot5;
-   
-  /**
+
+    /**
      * Initializes the buttons and listeners and sets their values.
+     *
      * @param location
      * @param resources
      */
@@ -100,11 +102,11 @@ public class ChooseRobotViewModel implements Initializable {
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (!isValideUsername(t1)) {
+                if(!isValideUsername(t1)) {
                     playButton.setDisable(true);
-                } else if (figureProperty.getValue() != -1) {
+                } else if(figureProperty.getValue() != -1) {
                     playButton.setDisable(false);
-                } else if (isGameOn()) {
+                } else if(isGameOn()) {
                     playButton.setDefaultButton(true);
                     playButton.setDisable(false);
                 }
@@ -114,9 +116,9 @@ public class ChooseRobotViewModel implements Initializable {
         figureProperty.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                if (figureProperty.getValue() == -1) {
+                if(figureProperty.getValue() == -1) {
                     playButton.setDisable(true);
-                } else if (isValideUsername(nameField.getText())) {
+                } else if(isValideUsername(nameField.getText())) {
                     playButton.setDisable(false);
                 }
             }
@@ -132,15 +134,16 @@ public class ChooseRobotViewModel implements Initializable {
         //   }
 
     }
-  /**
+
+    /**
      * Disable used robots.
      * If a robot is choosen then it is disabled since other players cannot have the same robot.
      */
 
     public void disableUsedRobots() {
         GaussianBlur blur = new GaussianBlur(10);
-        for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
-            switch (entry.getValue()) {
+        for(Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
+            switch(entry.getValue()) {
                 case 0 -> {
                     robot0.setDisable(true);
                     robot0.setEffect(blur);
@@ -168,7 +171,8 @@ public class ChooseRobotViewModel implements Initializable {
             }
         }
     }
-   /**
+
+    /**
      * Disable all robots.Blurs them all.
      */
 
@@ -194,6 +198,7 @@ public class ChooseRobotViewModel implements Initializable {
         robot5.setEffect(blur);
 
     }
+
     /**
      * Refresh shadow.
      * Puts shadow on a choosen robot.
@@ -217,7 +222,7 @@ public class ChooseRobotViewModel implements Initializable {
         disableUsedRobots();
     }
 
-   /**
+    /**
      * Sets robot 0.
      * Sets the choosen robot as Robot0.
      */
@@ -228,7 +233,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(0);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Sets robot 1.
      * Sets the choosen robot as Robot1.
      */
@@ -239,7 +245,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(1);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Sets robot 2.
      * Sets the choosen robot as Robot2.
      */
@@ -250,7 +257,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(2);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Sets robot 3.
      * Sets the choosen robot as Robot3.
      */
@@ -261,7 +269,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(3);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Sets robot 4.
      * Sets the choosen robot as Robot4.
      */
@@ -272,7 +281,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(4);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Sets robot 5.
      * Sets the choosen robot as Robot5.
      */
@@ -284,7 +294,8 @@ public class ChooseRobotViewModel implements Initializable {
         setFigureProperty(5);
         logger.info("Robot " + Game.getRobotNames().get(figureProperty.getValue()) + " has been set.");
     }
-   /**
+
+    /**
      * Play button clicked.
      * Sets the player values and opens the GameStage window when the play button is clicked.
      */
@@ -305,12 +316,13 @@ public class ChooseRobotViewModel implements Initializable {
             // window.sizeToScene();
             /*window.minHeightProperty().bind(window.widthProperty());
             window.maxHeightProperty().bind(window.getScene().widthProperty());*/
-        } catch (
+        } catch(
                 IOException e) {
             e.printStackTrace();
         }
 
     }
+
     /**
      * Is valide username boolean.
      * Checks if the username is valid .
@@ -320,11 +332,12 @@ public class ChooseRobotViewModel implements Initializable {
      */
 
     public boolean isValideUsername(String username) {
-        if (username.isBlank()) return false;
-        if (username.contains(" ")) return false;
+        if(username.isBlank()) return false;
+        if(username.contains(" ")) return false;
         return !username.contains("@");
     }
-  /**
+
+    /**
      * Is game on boolean.
      *
      * @return the boolean
@@ -333,6 +346,7 @@ public class ChooseRobotViewModel implements Initializable {
     public boolean isGameOn() {
         return (model.getPlayersFigureMap().size() >= 6);
     }
+
     /**
      * Gets figure property.
      *
@@ -342,7 +356,8 @@ public class ChooseRobotViewModel implements Initializable {
     public int getFigureProperty() {
         return figureProperty.get();
     }
-  /**
+
+    /**
      * Figure property property integer property.
      *
      * @return the integer property
@@ -351,7 +366,8 @@ public class ChooseRobotViewModel implements Initializable {
     public IntegerProperty figurePropertyProperty() {
         return figureProperty;
     }
-   /**
+
+    /**
      * Sets figure property.
      *
      * @param figureProperty the figure property

@@ -68,19 +68,19 @@ public class MemorySwapEffekt implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cards = FXCollections.observableArrayList(card_0, card_1, card_2, card_3, card_4, card_5,
-                card_6, card_7, card_8, card_9,card_10,card_11);
+                card_6, card_7, card_8, card_9, card_10, card_11);
         Platform.runLater(() -> {
             try {
-                for (int j = 0; j < cards.size(); j++) {
+                for(int j = 0; j < cards.size(); j++) {
                     cardName = clientGameModel.getCardsInHand().get(j);
                     cards.get(j).setImage(loadImage(cardName));
                     cards.get(j).setId(cardName);
                 }
-                for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
+                for(int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
                     cards.get(j).setImage(null);
                     cards.get(j).setId("Null");
                 }
-            } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+            } catch(ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 e.printStackTrace();
             }
         });
@@ -90,7 +90,8 @@ public class MemorySwapEffekt implements Initializable {
     private Image loadImage(String cardName) throws FileNotFoundException {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/ProgrammingCards/" + cardName + ".png")));
     }
-  /**
+
+    /**
      * Choose return card.
      *
      * @param mouseEvent the mouse event
@@ -101,19 +102,20 @@ public class MemorySwapEffekt implements Initializable {
         allReturnedCardsL.add(cardName);
         allReturnedCards = FXCollections.observableArrayList(returnCard1, returnCard2, returnCard3);
         try {
-            for (int i = 0; i < allReturnedCards.size(); i++) {
+            for(int i = 0; i < allReturnedCards.size(); i++) {
                 allReturnedCards.get(j).setImage(returnCard.getImage());
                 j++;
                 break;
             }
             returnCard.setImage(null);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch(ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setContentText("you may choose only 3 Cards");
         }
     }
-  /**
+
+    /**
      * Return cards.
      *
      * @param mouseEvent the mouse event

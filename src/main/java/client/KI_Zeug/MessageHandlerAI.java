@@ -22,15 +22,15 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handlePlayerAdded(ClientModel clientModel, PlayerAddedBody playerAddedBody) {
         super.handlePlayerAdded(clientModel, playerAddedBody);
-        if (simpleAIModel.isHasPlayerValues()) {
+        if(simpleAIModel.isHasPlayerValues()) {
             clientModel.sendMsg("Hi " + playerAddedBody.getName() + "! I'm Simple AI and I love you!");
-        } else if (playerAddedBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+        } else if(playerAddedBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             simpleAIModel.setHasPlayerValues(true);
             //AI ist immer ready
             clientModel.setNewStatus(true);
-            for (Map.Entry<Integer, String> entry : clientModel.getPlayersNamesMap().entrySet()) {
+            for(Map.Entry<Integer, String> entry : clientModel.getPlayersNamesMap().entrySet()) {
                 //say hi zu alle ausser dich selber
-                if (entry.getKey() != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+                if(entry.getKey() != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
                     clientModel.sendMsg("Hi " + entry.getValue() + "! I'm Simple AI and I love you!");
                 }
             }
@@ -41,32 +41,32 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     @Override
     public void handleError(ClientModel clientmodel, ErrorBody errorBody) {
         //für die Automatische Figur Auswählen
-        if (errorBody.getError().equals("Figure is already taken") && !simpleAIModel.isHasPlayerValues()) {
+        if(errorBody.getError().equals("Figure is already taken") && !simpleAIModel.isHasPlayerValues()) {
             simpleAIModel.chooseRobotRoutine();
-        } else if (errorBody.getError().equals("Another robot is on this tile!")) {
+        } else if(errorBody.getError().equals("Another robot is on this tile!")) {
             simpleAIModel.setStartingPointCounter(simpleAIModel.getStartingPointCounter() + 1);
             simpleAIModel.setStartingPointRoutine();
         }
     }
 
     @Override
-    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+    public void handleCheckPointReachedBody(ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
         logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
         clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
-        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+        if(clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
             clientModel.receiveMessage("YOU ARE AWESOME");
         }
     }
 
     @Override
-    public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         super.handleCurrentPlayer(clientModel, currentPlayerBody);
-        if (currentPlayerBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
-            if (clientModel.getClientGameModel().getActualPhase() == 0) {
+        if(currentPlayerBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+            if(clientModel.getClientGameModel().getActualPhase() == 0) {
                 simpleAIModel.setStartingPointRoutine();
-            } else if (clientModel.getClientGameModel().getActualPhase() == 3) {
+            } else if(clientModel.getClientGameModel().getActualPhase() == 3) {
                 simpleAIModel.playCardRoutine(clientModel.getClientGameModel().getValueActualRegister());
-            } else if (clientModel.getClientGameModel().getActualPhase() == 1) {
+            } else if(clientModel.getClientGameModel().getActualPhase() == 1) {
                 clientModel.getClientGameModel().buyUpgradeCard("Null");
             }
         }
@@ -76,10 +76,10 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleYourCards(ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         simpleAIModel.setMyHandCards(yourCardsBody.getCardsInHand());
-        for (int i = 0; i < 5; i++) {
+        for(int i = 0; i < 5; i++) {
             SimpleAIModel.getCardsInRegister().replace(i, null);
         }
-        if (clientModel.getClientGameModel().getActualPhase() == 2) {
+        if(clientModel.getClientGameModel().getActualPhase() == 2) {
             simpleAIModel.chooseCardsRoutine();
         }
     }

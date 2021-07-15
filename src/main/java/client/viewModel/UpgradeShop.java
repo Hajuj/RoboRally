@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -47,132 +48,138 @@ public class UpgradeShop implements Initializable {
     ObservableList<ImageView> upgradeCards;
     public ClientModel model = ClientModel.getInstance();
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
-    private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
+    private StringProperty choosenUpgradeCard = new SimpleStringProperty("");
 
     /**
      * in the following initialize methode cubesNum will show the value of the the player's
      * energyCubes he possesses
      * upgradeCards is an observableArrayList that observes the value of the showen upgradeCards
-     * **/
+     **/
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cubesNum.setText ( String.valueOf ( clientGameModel.getEnergy () ) );
-        upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6);
-        Platform.runLater ( () -> {
+        cubesNum.setText(String.valueOf(clientGameModel.getEnergy()));
+        upgradeCards = FXCollections.observableArrayList(card_1, card_2, card_3, card_4, card_5, card_6);
+        Platform.runLater(() -> {
             try {
-                for (int j = 0; j < clientGameModel.getUpgradeCards ( ).size ( ); j++) {
-                    cardName = clientGameModel.getUpgradeCards ( ).get ( j );
-                    upgradeCards.get ( j ).setImage ( loadImage ( cardName ) );
+                for(int j = 0; j < clientGameModel.getUpgradeCards().size(); j++) {
+                    cardName = clientGameModel.getUpgradeCards().get(j);
+                    upgradeCards.get(j).setImage(loadImage(cardName));
 
-                    upgradeCards.get ( j ).setId ( cardName );
-
-                }
-                for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
-                        upgradeCards.get ( j ).setImage ( null );
+                    upgradeCards.get(j).setId(cardName);
 
                 }
-            } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                e.printStackTrace ( );
+                for(int j = clientGameModel.getUpgradeCards().size(); j < upgradeCards.size(); j++) {
+                    upgradeCards.get(j).setImage(null);
+
+                }
+            } catch(ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+                e.printStackTrace();
             }
 
-        } );
+        });
 
     }
 
 
-  /**
+    /**
      * Show description as a tooltip according to a mouse event
      *
      * @param mouseEvent the mouse event
      */
     public void showDescription(MouseEvent mouseEvent) {
-        ImageView source  = (ImageView) mouseEvent.getSource ();
-        switch (source.getId ()){
-            case "AdminPrivilege"-> {
-                toolTip1.setText ( "give your robot priority for one register." );
+        ImageView source = (ImageView) mouseEvent.getSource();
+        switch(source.getId()) {
+            case "AdminPrivilege" -> {
+                toolTip1.setText("give your robot priority for one register.");
             }
-            case "MemorySwap"-> {
-                toolTip1.setText ( "Draw three cards. Then choose three from your hand to put on top of your deck." );
+            case "MemorySwap" -> {
+                toolTip1.setText("Draw three cards. Then choose three from your hand to put on top of your deck.");
             }
-            case "SpamBlocker"-> {
-                toolTip1.setText ( "Replace each SPAM damage card in your hand with a card from the top of your deck." );
+            case "SpamBlocker" -> {
+                toolTip1.setText("Replace each SPAM damage card in your hand with a card from the top of your deck.");
             }
-            case "RearLaser"-> {
-                toolTip1.setText ( "shoot backward as well as forward." );
+            case "RearLaser" -> {
+                toolTip1.setText("shoot backward as well as forward.");
             }
         }
     }
-   /**
+
+    /**
      * Buy card.
      * Handles the buying of a upgrade card on this window
      *
      * @param mouseEvent the mouse event
      */
     public void buyCard(MouseEvent mouseEvent) {
-        if (mouseEvent.getSource ().equals ( buyButton )){
-                clientGameModel.buyUpgradeCard ( getChoosenUpgradeCard ( ) );
-                clientGameModel.finishBuyCard ( true );
+        if(mouseEvent.getSource().equals(buyButton)) {
+            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard());
+            clientGameModel.finishBuyCard(true);
 
-                buyButton.setVisible ( false );
-                info.setText ( "You dont have enough Energy Cubes" );
-                //clientGameModel.getBoughtCards ().remove ( getChoosenUpgradeCard () );
+            buyButton.setVisible(false);
+            info.setText("You dont have enough Energy Cubes");
+            //clientGameModel.getBoughtCards ().remove ( getChoosenUpgradeCard () );
 
-        }else if (mouseEvent.getSource ().equals ( buyNothing )) {
-            clientGameModel.buyUpgradeCard ( "Null" );
-            Stage stage =(Stage) buyNothing.getScene ().getWindow ();
-            stage.close ();
+        } else if(mouseEvent.getSource().equals(buyNothing)) {
+            clientGameModel.buyUpgradeCard("Null");
+            Stage stage = (Stage) buyNothing.getScene().getWindow();
+            stage.close();
         }
 
-        Stage stage = (Stage) buyButton.getScene ().getWindow ();
-        stage.close ();
+        Stage stage = (Stage) buyButton.getScene().getWindow();
+        stage.close();
     }
-  /**
+
+    /**
      * Choose upgrade card.
      *
      * @param mouseEvent the mouse event
      */
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
-        ImageView choosenCard = (ImageView) mouseEvent.getSource ();
-        if (choosenCard.equals ( null )){
-            buyButton.setDisable ( true );
-            buyButton.setVisible ( false );
-        }else {
-            refreshShadow ( );
-            choosenCard.setEffect ( new DropShadow ( 20.0, Color.RED ) );
+        ImageView choosenCard = (ImageView) mouseEvent.getSource();
+        if(choosenCard.equals(null)) {
+            buyButton.setDisable(true);
+            buyButton.setVisible(false);
+        } else {
+            refreshShadow();
+            choosenCard.setEffect(new DropShadow(20.0, Color.RED));
 
-            setChoosenUpgradeCard ( choosenCard.getId ( ) );
+            setChoosenUpgradeCard(choosenCard.getId());
         }
     }
-     /**
+
+    /**
      * Refreshes shadow.
      */
-    public void refreshShadow () {
-        for (ImageView upgradeCard:upgradeCards) {
-            upgradeCard.setEffect ( new DropShadow ( 0.0,Color.RED ) );
+    public void refreshShadow() {
+        for(ImageView upgradeCard : upgradeCards) {
+            upgradeCard.setEffect(new DropShadow(0.0, Color.RED));
         }
     }
-/**
-*Loads the needed image
-*/
+
+    /**
+     * Loads the needed image
+     */
     private Image loadImage(String cardName) throws FileNotFoundException {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));
     }
-  /**
+
+    /**
      * Sets choosen upgrade card.
      *
      * @param cardName the card name
      */
-    public void setChoosenUpgradeCard (String cardName) {
+    public void setChoosenUpgradeCard(String cardName) {
         this.choosenUpgradeCard.set(cardName);
     }
- /**
+
+    /**
      * Gets choosen upgrade card.
      *
      * @return the choosen upgrade card
      */
     public String getChoosenUpgradeCard() {
-        return this.choosenUpgradeCard.get ( );
+        return this.choosenUpgradeCard.get();
     }
 
 }

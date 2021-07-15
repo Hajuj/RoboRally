@@ -13,16 +13,16 @@ public class HelloClientBody implements ServerMessageAction<HelloClientBody> {
     @Expose
     String protocol;
 
-    public HelloClientBody (String protocol) {
+    public HelloClientBody(String protocol) {
         this.protocol = protocol;
     }
 
     @Override
-    public void triggerAction (ClientModel client, HelloClientBody message, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, HelloClientBody message, MessageHandler messageHandler) {
         messageHandler.handleHelloClient(client, message);
     }
 
-    public String getProtocol () {
+    public String getProtocol() {
         return protocol;
     }
 }

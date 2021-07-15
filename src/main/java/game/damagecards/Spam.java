@@ -8,7 +8,7 @@ public class Spam extends game.Card {
     /**
      * Instantiates a new Spam.
      */
-    public Spam(){
+    public Spam() {
         cardName = "Spam";
     }
 

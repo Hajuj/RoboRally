@@ -37,7 +37,7 @@ public class ClientModelWriterThread extends Thread {
         OutputStreamWriter out = null;
         try {
             out = new OutputStreamWriter(clientSocket.getOutputStream());
-        } catch (IOException ioException) {
+        } catch(IOException ioException) {
             ioException.printStackTrace();
         }
         writer = new PrintWriter(out);

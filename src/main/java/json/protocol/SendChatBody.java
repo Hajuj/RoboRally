@@ -14,21 +14,21 @@ public class SendChatBody implements ClientMessageAction<SendChatBody> {
     @Expose
     private final int to;
 
-    public SendChatBody (String message, int to) {
+    public SendChatBody(String message, int to) {
         this.message = message;
         this.to = to;
     }
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, SendChatBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, SendChatBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleSendChat(server, clientHandler, bodyObject);
     }
 
-    public String getMessage () {
+    public String getMessage() {
         return message;
     }
 
-    public int getTo () {
+    public int getTo() {
         return to;
     }
 }

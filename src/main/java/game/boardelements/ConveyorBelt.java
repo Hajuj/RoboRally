@@ -26,7 +26,7 @@ public class ConveyorBelt extends Element {
     public ConveyorBelt(String type, String isOnBoard, int speed, ArrayList<String> orientations) {
         super(type, isOnBoard, speed, orientations);
 
-        if (speed == 1) {
+        if(speed == 1) {
             this.colour = "green";
         } else {
             this.colour = "blue";

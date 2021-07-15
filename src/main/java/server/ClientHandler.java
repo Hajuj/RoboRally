@@ -71,7 +71,7 @@ public class ClientHandler extends Thread {
 
             //Lese alle incomming Strings mit dem reader und deserialize sie mit dem JSONDeserializer
             String messageString;
-            while ((messageString = reader.readLine()) != null) {
+            while((messageString = reader.readLine()) != null) {
                 // Deserialize the received JSON String into a JSON object
                 jsonMessage = JSONDeserializer.deserializeJSON(messageString);
                 logger.info("Incoming StringMessage " + messageString + " was deserialised to " + jsonMessage);
@@ -90,23 +90,23 @@ public class ClientHandler extends Thread {
                 msg.triggerAction(this.server, this, messageBody, messageHandler);
 
             }
-        } catch (SocketException exp) {
-            if (exp.getMessage().contains("Socket closed"))
+        } catch(SocketException exp) {
+            if(exp.getMessage().contains("Socket closed"))
                 logger.info("ClientModel at " + clientSocket.getInetAddress().getHostAddress() + " disconnected.");
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
         logger.warn("Verbindung mit dem Client " + this.getPlayer_id() + " wurde abgebrochen.");
 
         //The next player can choose a map after the first one disconnects
-        if (!server.getPlayerWithID(this.getPlayer_id()).isAI() && server.getConnections().size() > 0) {
-            if (server.getPlayerWithID(this.getPlayer_id()).isReady()) {
-                if (this.getPlayer_id() == server.readyPlayerWithoutAI().get(0).getPlayerID()) {
+        if(!server.getPlayerWithID(this.getPlayer_id()).isAI() && server.getConnections().size() > 0) {
+            if(server.getPlayerWithID(this.getPlayer_id()).isReady()) {
+                if(this.getPlayer_id() == server.readyPlayerWithoutAI().get(0).getPlayerID()) {
                     server.getCurrentGame().setMapName(null);
                 }
-                if (this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() > 2) {
+                if(this.getPlayer_id() == server.getReadyPlayer().get(0).getPlayerID() && server.getReadyPlayer().size() > 2) {
                     Player nextOne = server.getReadyPlayer().get(1);
                     JSONMessage selectMapMessage = new JSONMessage("SelectMap", new SelectMapBody(server.getCurrentGame().getAvailableMaps()));
                     server.sendMessage(selectMapMessage, server.getConnectionWithID(nextOne.getPlayerID()).getWriter());
@@ -114,13 +114,13 @@ public class ClientHandler extends Thread {
             }
         }
 
-        if (server.getCurrentGame().isGameOn()) {
+        if(server.getCurrentGame().isGameOn()) {
             //If there are two players in the game, and one goes out
-            if (server.getCurrentGame().getPlayerList().size() <= 2) {
+            if(server.getCurrentGame().getPlayerList().size() <= 2) {
                 server.getCurrentGame().getPlayerList().remove(server.getPlayerWithID(this.getPlayer_id()));
                 server.getCurrentGame().setGameOn(false);
-                for (Player player : server.getCurrentGame().getPlayerList()) {
-                    if (player.getPlayerID() != this.getPlayer_id()) {
+                for(Player player : server.getCurrentGame().getPlayerList()) {
+                    if(player.getPlayerID() != this.getPlayer_id()) {
                         JSONMessage gameFinished = new JSONMessage("GameFinished", new GameFinishedBody(player.getPlayerID()));
                         server.getCurrentGame().sendToAllPlayers(gameFinished);
                         server.getCurrentGame().refreshGame();
@@ -128,9 +128,9 @@ public class ClientHandler extends Thread {
                 }
             }
             //More than 2 players, and the current player got out
-            else if (server.getCurrentGame().getCurrentPlayer() == this.player_id) {
+            else if(server.getCurrentGame().getCurrentPlayer() == this.player_id) {
                 //If the player was the last one
-                if (server.getCurrentGame().nextPlayerID() == -1) {
+                if(server.getCurrentGame().nextPlayerID() == -1) {
                     server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().getPlayerList().get(0).getPlayerID());
                 } else {
                     server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
@@ -145,13 +145,13 @@ public class ClientHandler extends Thread {
         server.getReadyPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
         server.getWaitingPlayer().remove(server.getPlayerWithID(this.getPlayer_id()));
 
-        for (Connection connection : server.getConnections()) {
+        for(Connection connection : server.getConnections()) {
             JSONMessage removeMessage = new JSONMessage("ConnectionUpdate", new ConnectionUpdateBody(this.player_id, false, "remove"));
             server.sendMessage(removeMessage, connection.getWriter());
         }
 
-        if (server.areAllPlayersReady() && !server.getCurrentGame().isGameOn()) {
-            for (Connection connection : server.getConnections()) {
+        if(server.areAllPlayersReady() && !server.getCurrentGame().isGameOn()) {
+            for(Connection connection : server.getConnections()) {
                 JSONMessage startMessage = new JSONMessage("GameStarted", new GameStartedBody(server.getCurrentGame().getMap()));
                 server.sendMessage(startMessage, connection.getWriter());
             }
@@ -161,12 +161,55 @@ public class ClientHandler extends Thread {
 
         try {
             clientSocket.close();
-        } catch (IOException ioException) {
+        } catch(IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
     public PrintWriter getWriter() {
         return writer;
+    }
+
+    /**
+     * Inner class to wrap the information from the client
+     *
+     * @author Mohamad, Viktoria
+     */
+    public static class Connection {
+        private PrintWriter writer;
+        private Socket socket;
+        private ClientHandler clientHandler;
+        private int playerID;
+        private String name;
+        private boolean isConnected;
+
+        public Connection(Socket clientSocket) throws IOException {
+            this.socket = clientSocket;
+            this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+        }
+
+        public void setConnected(boolean connected) {
+            isConnected = connected;
+        }
+
+        public boolean isConnected() {
+            return isConnected;
+        }
+
+        public void setPlayerID(int playerID) {
+            this.playerID = playerID;
+        }
+
+        public int getPlayerID() {
+            return playerID;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public PrintWriter getWriter() {
+            return writer;
+        }
     }
 }

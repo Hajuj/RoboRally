@@ -7,7 +7,7 @@ import game.Card;
  */
 public class UTurn extends Card {
 
-    public UTurn(){
+    public UTurn() {
         cardName = "UTurn";
     }
 

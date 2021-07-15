@@ -4,7 +4,7 @@ import game.Card;
 
 public class AdminPrivilege extends Card {
 
-    public AdminPrivilege(){
+    public AdminPrivilege() {
         cardName = "AdminPrivilege";
     }
 
@@ -12,7 +12,7 @@ public class AdminPrivilege extends Card {
         return false;
     }
 
-    public boolean isPermanent(){
+    public boolean isPermanent() {
         return true;
     }
 }

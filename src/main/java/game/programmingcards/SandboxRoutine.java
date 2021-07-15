@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class SandboxRoutine extends Card {
-    public SandboxRoutine(){
+    public SandboxRoutine() {
         cardName = "SandboxRoutine";
     }
 

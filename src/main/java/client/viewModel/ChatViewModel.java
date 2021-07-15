@@ -20,17 +20,18 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.io.IOException;
 import java.util.ResourceBundle;
+
 /**
  * The type Chat view model.
  */
 
 public class ChatViewModel implements Initializable, PropertyChangeListener {
- /**
+    /**
      * The Model.
      */
 
     ClientModel model = ClientModel.getInstance();
- /**
+    /**
      * The Ready display.
      */
 
@@ -42,31 +43,31 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     @FXML
     public Button readyButton;
-     /**
+    /**
      * The Game guide btn.
      */
 
     @FXML
     public Button gameGuideBtn;
-      /**
+    /**
      * The Chat field.
      */
 
     @FXML
     public TextArea chatField = new TextArea("");
-     /**
+    /**
      * The Message field.
      */
 
     @FXML
     public TextField messageField;
-      /**
+    /**
      * The Send button.
      */
 
     @FXML
     public Button sendButton;
-      /**
+    /**
      * The Not ready btn.
      */
 
@@ -74,13 +75,15 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public Button notReadyBtn;
 
     private String message;
-  /**
+    /**
      * The Chat output.
      */
 
     public StringProperty chatOutput;
-  /**
+
+    /**
      * Sets the properties to their values.
+     *
      * @param location
      * @param resources
      */
@@ -108,7 +111,8 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         }));*/
 
     }
-  /**
+
+    /**
      * Chat output property string property.
      *
      * @return the string property
@@ -117,6 +121,7 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     public StringProperty chatOutputProperty() {
         return chatOutput;
     }
+
     /**
      * Send message button.
      *
@@ -140,7 +145,8 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         readyButton.setDisable(true);
         notReadyBtn.setDisable(false);
     }
-   /**
+
+    /**
      * Change status button.
      *
      * @param event the event
@@ -153,22 +159,23 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         model.setDoChooseMap(false);
     }
 
-  /**
+    /**
      * Changes the properties of chat elements.
+     *
      * @param evt
      */
 
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("chatHistory")) {
+        if(evt.getPropertyName().equals("chatHistory")) {
             Platform.runLater(() -> {
                 chatField.setText(evt.getNewValue().toString());
                 chatField.appendText("");
                 chatField.setScrollTop(Double.MAX_VALUE);
             });
         }
-        if (evt.getPropertyName().equals("playerStatus")) {
+        if(evt.getPropertyName().equals("playerStatus")) {
             Platform.runLater(() -> {
                 readyDisplay.setText(evt.getNewValue().toString());
             });

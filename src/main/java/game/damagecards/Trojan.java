@@ -8,7 +8,7 @@ public class Trojan extends game.Card {
     /**
      * Instantiates a new Trojan.
      */
-    public Trojan(){
+    public Trojan() {
         cardName = "Trojan";
     }
 

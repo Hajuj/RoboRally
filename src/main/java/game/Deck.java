@@ -24,7 +24,8 @@ public abstract class Deck {
     /**
      * Method to get the top card from the deck.
      * No checker for empty deck -> used at specific locations
-     * @return  the top card from the deck
+     *
+     * @return the top card from the deck
      */
     public Card getTopCard() {
         topCard = this.getDeck().get(0);
@@ -41,7 +42,7 @@ public abstract class Deck {
     }
 
     public void removeAllCards() {
-        while (this.getDeck().size() > 0) {
+        while(this.getDeck().size() > 0) {
             this.removeTopCard();
         }
     }
