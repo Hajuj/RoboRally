@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -58,6 +59,7 @@ public class GameGuideController {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/CardsInfo.fxml")));
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
+            rootStage.getIcons().add(new Image ("/images/Gui/Icon2.jpg"));
             this.rootStage.show();
             rootStage.setResizable(false);
         }
@@ -66,6 +68,7 @@ public class GameGuideController {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/RobotsInfo.fxml")));
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
+            rootStage.getIcons().add(new Image ("/images/Gui/Icon2.jpg"));
             this.rootStage.show();
             rootStage.setResizable(false);
 
@@ -75,6 +78,7 @@ public class GameGuideController {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/RulesInfo.fxml")));
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
+            rootStage.getIcons().add(new Image ("/images/Gui/Icon2.jpg"));
             this.rootStage.show();
             rootStage.setResizable(false);
 
@@ -85,6 +89,7 @@ public class GameGuideController {
             Scene scene = new Scene(root);
             this.rootStage.setScene(scene);
             rootStage.setResizable(false);
+            rootStage.getIcons().add(new Image ("/images/Gui/Icon2.jpg"));
             this.rootStage.show();
 
         }

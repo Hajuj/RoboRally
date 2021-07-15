@@ -366,6 +366,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
+        newStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
         newStage.setResizable ( false );
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
@@ -397,6 +398,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             newStage.setResizable ( false );
             newStage.setTitle("Game Guide");
             newStage.setScene(new Scene(root1));
+            newStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
             newStage.show();
         } );
     }
@@ -581,6 +583,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
+                    newStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
                     newStage.setResizable ( false );
                     newStage.setTitle("UpgradeShop");
                     newStage.setScene(new Scene(root1));
@@ -694,6 +697,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AdminPrivilegeEffekt.fxml"));
             Parent root1 = fxmlLoader.load();
             Stage newStage = new Stage();
+            newStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
             newStage.setScene(new Scene(root1));
             newStage.show();
         } else if (source.getId().equals("RearLaser")) {

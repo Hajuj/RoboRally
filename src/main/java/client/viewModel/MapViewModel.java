@@ -231,14 +231,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                             if (conveyorBelt.getSpeed() == 2) {
                                 switch (conveyorBelt.getOrientations().size()) {
-
-                                    /*case 1 -> {
-                                        ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        imageGroup.getChildren().add(imageView2);
-                                    }*/
-                                    /*conveyorBelt.getOrientations ().equals ( "[right, left]")|| conveyorBelt.getOrientations ().equals ( "[left, right]" )||
-                                            conveyorBelt.getOrientations ().equals ( "[top, bottom]" )||conveyorBelt.getOrientations ().equals ( "[bottom, top]" ))*/
-
                                     case 2 -> {
                                         ImageView imageView2;
                                         if (conveyorBelt.getOrientations ().get ( 0 ).equals ( "right" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "left" )||
@@ -248,7 +240,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                             imageView2 = loadImage ( "BlueBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
 
                                         }else{
-                                            //System.out.println ( conveyorBelt.getOrientations () );
                                             imageView2 = loadImage ( "RotatingBeltBlue3", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
                                         }
                                         imageGroup.getChildren().add(imageView2);
@@ -556,7 +547,6 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     public void activateLasers() {
-//        ImageView laserBeam = new ImageView();
         for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
             for (Point2D beamPosition : getLaserPath(clientGameModel.getLaserMap().get(entry.getKey()), entry.getKey())) {
                 int x = (int) beamPosition.getX();

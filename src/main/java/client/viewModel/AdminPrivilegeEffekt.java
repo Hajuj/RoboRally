@@ -41,16 +41,11 @@ public class AdminPrivilegeEffekt implements Initializable {
         }
         Stage stage = (Stage) reg_4.getScene().getWindow();
         stage.close();
-        /*System.out.println ( mouseEvent.getSource () );
-        System.out.println ( mouseEvent.getSource ().toString () );
-        //String register = (String) mouseEvent.getSource ();
-        //int choosenRegister = register.charAt ( 4 );
-       // int choosenRegister = Integer.parseInt(String.valueOf(mouseEvent.getSource ().toString ().charAt(4)));
-*/
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         if (clientGameModel.getActualPhase() == 3) {
             int actualRegister = clientGameModel.getValueActualRegister();
             if (actualRegister == 0) {

@@ -90,6 +90,7 @@ public class StartScreenViewModel implements Initializable {
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setResizable ( false );
+        newStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
         newStage.setTitle("Connect");
         newStage.setScene(new Scene(root1));
         newStage.show();
@@ -108,6 +109,7 @@ public class StartScreenViewModel implements Initializable {
         if (event.getSource() == GameGuidButton) {
             root2 = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameGuide.fxml")));
             rootStage.setScene(new Scene(root2));
+            rootStage.getIcons().add(new Image("/images/Gui/Icon2.jpg"));
             rootStage.setTitle("Game Guide");
             rootStage.show();
         }

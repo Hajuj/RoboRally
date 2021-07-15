@@ -53,12 +53,6 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
         sendButton.requestFocus();
 
         chatField.setEditable(false);
-        //readyDisplay.setText(model.getPlayersStatus());
-        //readyDisplay.setEditable(false);
-        //if (model.getClientGameModel().getPlayer().getFigure() == -1) {
-        //  readyButton.setVisible(false);
-        //notReadyBtn.setVisible(false);
-        // }
 
         /*messageField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
         chatOutput.bind(model.getChatHistory());

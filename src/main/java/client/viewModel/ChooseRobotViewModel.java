@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -208,6 +209,7 @@ public class ChooseRobotViewModel implements Initializable {
             model.sendUsernameAndRobot(username, figureProperty.getValue());
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
             Stage window = (Stage) playButton.getScene().getWindow();
+            window.getIcons().add(new Image ("/images/Gui/Icon2.jpg"));
             window.setScene(new Scene(root, 1223, 665));
             window.setResizable(false);
         } catch (

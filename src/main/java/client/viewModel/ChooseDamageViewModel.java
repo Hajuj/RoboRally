@@ -33,7 +33,6 @@ public class ChooseDamageViewModel implements Initializable {
     public void chooseDamageCards(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
         String card = imageView.getId();
-        // damages = FXCollections.observableArrayList(TrojanHorse,Virus,Worm);
         if (tempCount < count) {
             choosenDamageCards.add(card);
             tempCount++;
