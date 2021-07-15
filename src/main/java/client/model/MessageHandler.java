@@ -389,6 +389,11 @@ public class MessageHandler {
         if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
             clientModel.receiveMessage("YOU ARE AWESOME");
         }
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+            alert.show();
+        });
     }
 
     public void handleGameFinished(ClientModel clientModel, GameFinishedBody gameFinishedBody) {

@@ -438,11 +438,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             }
             Platform.runLater ( () -> {
-                pane.setCenter ( null );
-                readyButton.setDisable ( false );
-                model.setGameFinished ( false );
+                pane.setCenter(null);
+                readyButton.setDisable(false);
+                model.setGameFinished(false);
+                try {
+                    readyButton.setImage(loadImage("notReady"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                readyButton.setId("readyButton");
+                model.setNewStatus(false);
+                model.setDoChooseMap(false);
             } );
         }
+
 
         if (evt.getPropertyName ( ).equals ( "handCards" )) {
             clientGameModel.setHandCards ( false );
