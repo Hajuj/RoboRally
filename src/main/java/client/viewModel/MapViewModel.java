@@ -110,7 +110,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             case "left", "right,left,top", "bottom,right", "left,right" -> {
                 imageView.setRotate(-90);
             }
-            case "bottom", "top,bottom,left", "right,top" -> {
+            case "bottom", "top,bottom,left", "right,top","bottom,top"  -> {
                 imageView.setRotate(180);
             }
             case "left,top,right", "bottom,left" -> {
@@ -231,12 +231,26 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                             if (conveyorBelt.getSpeed() == 2) {
                                 switch (conveyorBelt.getOrientations().size()) {
-                                    case 1 -> {
+
+                                    /*case 1 -> {
                                         ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
-                                    }
+                                    }*/
+                                    /*conveyorBelt.getOrientations ().equals ( "[right, left]")|| conveyorBelt.getOrientations ().equals ( "[left, right]" )||
+                                            conveyorBelt.getOrientations ().equals ( "[top, bottom]" )||conveyorBelt.getOrientations ().equals ( "[bottom, top]" ))*/
+
                                     case 2 -> {
-                                        ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
+                                        ImageView imageView2;
+                                        if (conveyorBelt.getOrientations ().get ( 0 ).equals ( "right" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "left" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "top" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "bottom" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "bottom" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "top" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "left" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "right" )){
+                                            imageView2 = loadImage ( "BlueBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+
+                                        }else{
+                                            //System.out.println ( conveyorBelt.getOrientations () );
+                                            imageView2 = loadImage ( "RotatingBeltBlue3", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                        }
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                     case 3 -> {
@@ -246,24 +260,28 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                 }
                             }
 
-                            if (conveyorBelt.getSpeed() == 1) {
-                                switch (conveyorBelt.getOrientations().size()) {
-                                    case 1 -> {
-                                        ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        imageGroup.getChildren().add(imageView2);
-                                    }
-                                    case 2 -> {
-                                        ImageView imageView2;
-                                        if (conveyorBelt.getIsOnBoard().equals("Start A")) {
-                                            imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        } else {
-                                            imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
-                                        }
-                                        imageGroup.getChildren().add(imageView2);
-                                    }
+                            if (conveyorBelt.getSpeed ( ) == 1) {
+                                ImageView imageView2;
+                                if (conveyorBelt.getIsOnBoard ( ).equals ( "Start A" )) {
+                                    imageView2 = loadImage ( "GreenBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    imageGroup.getChildren ( ).add ( imageView2 );
+
+
                                 }
+                                if (!conveyorBelt.getIsOnBoard ( ).equals ( "Start A" )) {
+                                    if (conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "right" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "left" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "top" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "bottom" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "bottom" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "top" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "left" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "right" )) {
+                                        imageView2 = loadImage ( "GreenBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    } else {
+                                        imageView2 = loadImage ( "RotatingBeltGreen1", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    }
+                                    imageGroup.getChildren ( ).add ( imageView2 );
+                                }
+
                             }
-                        }
+                         }
                         case "EnergySpace" -> {
                             //TODO gibt es einen Unterschied wenn die ES richtung links oder recht; Anpassung für isOnBoard 1A/5B
                             Element element = map.get(x).get(y).get(i);
