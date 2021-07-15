@@ -194,7 +194,6 @@ public class ClientModel {
                         if(getIDbyUsername(playerPrivate) != 0) {
                             clientModelWriterThread.sendDirectMessage(clientGameModel.getPlayer().getName() + " : " + message, getIDbyUsername(playerPrivate));
                             setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
-                            setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                         } else {
                             setChatHistory(chatHistory + "No Player with name " + playerPrivate + " found." + "\n");
                         }
