@@ -645,29 +645,36 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             } );
         }
         if (evt.getPropertyName ( ).equals ( "PickDamage" )) {
-            Platform.runLater ( () -> {
-                setCount ( );
+            Platform.runLater(() -> {
+                setCount();
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/PickDamage.fxml" ) );
-                    right_Side.setCenter ( fxmlLoader.load ( ) );
-                } catch (IOException e) {
-                    e.printStackTrace ( );
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+                    right_Side.setCenter(fxmlLoader.load());
+                } catch(IOException e) {
+                    e.printStackTrace();
                 }
-            } );
+            });
         }
-        if (evt.getPropertyName ( ).equals ( "doChooseMap" )) {
-            model.setDoChooseMap ( false );
-            Platform.runLater ( () -> {
+
+        if(evt.getPropertyName().equals("doRefreshPlayerDisplay")) {
+            model.setDoRefreshPlayerDisplay(false);
+
+            readyDisplay.setText(model.getPlayersStatus());
+
+        }
+        if(evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
+            Platform.runLater(() -> {
                 try {
-                    showMaps ( );
-                } catch (IOException ioException) {
-                    ioException.printStackTrace ( );
+                    showMaps();
+                } catch(IOException ioException) {
+                    ioException.printStackTrace();
                 }
-            } );
+            });
         }
-        if (evt.getPropertyName ( ).equals ( "RebootDirection" )) {
-            clientGameModel.setChooseRebootDirection ( false );
-            Platform.runLater ( () -> {
+        if(evt.getPropertyName().equals("RebootDirection")) {
+            clientGameModel.setChooseRebootDirection(false);
+            Platform.runLater(() -> {
                 setCount ( );
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource ( "/view/RebootDirection.fxml" ) );
