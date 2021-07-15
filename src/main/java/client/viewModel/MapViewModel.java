@@ -52,7 +52,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         PushPanelsAnimation();
         activateLasers();
-
+        animateGears ();
     }
 
     /**
