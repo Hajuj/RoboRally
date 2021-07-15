@@ -146,7 +146,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
         readyDisplay.setText(model.getPlayersStatus());
-        //readyDisplay.setEditable(false);
+        readyDisplay.setEditable(false);
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
         model.setDoRefreshPlayerDisplay(false);

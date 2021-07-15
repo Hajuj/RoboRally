@@ -76,18 +76,18 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleYourCards(ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         simpleAIModel.setMyHandCards(yourCardsBody.getCardsInHand());
-        for (int i = 0; i < 5; i++) {
-            SimpleAIModel.getCardsInRegister().replace(i, null);
-        }
-        if (clientModel.getClientGameModel().getActualPhase() == 2) {
-            simpleAIModel.chooseCardsRoutine();
-        }
     }
 
     //wegen Timer Alert
     @Override
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
+        for (int i = 0; i < 5; i++) {
+            SimpleAIModel.getCardsInRegister().replace(i, null);
+        }
+        if (clientModel.getClientGameModel().getActualPhase() == 2) {
+            simpleAIModel.chooseCardsRoutine();
+        }
     }
 
     @Override
