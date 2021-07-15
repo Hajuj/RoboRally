@@ -1,14 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.viewModel.GameGuideController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<GridPane alignment="CENTER" minHeight="600.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.viewModel.GameGuideController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" percentHeight="0.0" prefHeight="25.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" percentHeight="0.0" prefHeight="575.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ImageView blendMode="MULTIPLY" fitHeight="627.0" fitWidth="800.0" GridPane.rowIndex="1">
+            <image>
+                <Image url="@../images/Gui/bcst.jpg" />
+            </image>
+        </ImageView>
+        <ScrollPane blendMode="MULTIPLY" fitToWidth="true" minViewportHeight="575.0" minViewportWidth="780.0" prefHeight="575.0" prefViewportHeight="575.0" prefViewportWidth="780.0" prefWidth="800.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <content>
+                <AnchorPane minHeight="600.0" minWidth="800.0" prefWidth="800.0">
+                    <children>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="145.0" AnchorPane.topAnchor="30.0">
+                            <children>
+                                <Label fx:id="headingWiki" prefHeight="30.0" prefWidth="145.0" text="Robots">
+                                    <VBox.margin>
+                                        <Insets left="35.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="System Bold" size="20.0" />
+                                    </font>
+                                </Label>
+                                <ImageView fitHeight="116.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="40.0" />
+                                    </VBox.margin>
+                                    <image>
+                                        <Image url="@../Robots/robot2.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="65.0" />
+                                    </VBox.margin>
+                                    <image>
+                                        <Image url="@../Robots/robot1.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="65.0" />
+                                    </VBox.margin>
+                                    <image>
+                                        <Image url="@../Robots/robot0.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="60.0" />
+                                    </VBox.margin>
+                                    <image>
+                                        <Image url="@../Robots/robot4.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="75.0" />
+                                    </VBox.margin>
+                                    <image>
+                                        <Image url="@../Robots/robot5.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </VBox>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="655.0" AnchorPane.leftAnchor="145.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Label fx:id="subheadingWiki" prefHeight="27.0" prefWidth="640.0" text="Twonky">
+                                    <VBox.margin>
+                                        <Insets left="15.0" top="90.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="Yu Gothic Bold" size="21.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="textWiki" prefHeight="100.0" prefWidth="640.0" text="Twonky is cute - by robot standards - and this is perhaps its greatest defense. From every &#10;angle, it appears friendly and unassuming, but Twonky is the kind of robot who kicks &#10;you hard in the shins with its titanium feet, giggles in a high-pitched voice that makes your &#10;ears ring for days, then runs away at a surprisingly high speed.">
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <Label font="${subheadingWiki.font}" prefHeight="27.0" prefWidth="640.0" text="Spin Bot">
+                                    <VBox.margin>
+                                        <Insets left="15.0" top="40.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="Yu Gothic Bold" size="21.0" />
+                                    </font>
+                                </Label>
+                                <Label font="${textWiki.font}" prefHeight="100.0" prefWidth="640.0" text="If Spin Bot looks mean, it's because it is. Spin Bot has to constantly spin to keep &#10;upright, and that's tiring work. It's saw-like shape doesn't help its disposition, &#10;but it does make it pretty good at pushing fellow bots. Most of the time, &#10;other robots just stay out of its way. ">
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <Label font="${subheadingWiki.font}" prefHeight="27.0" prefWidth="640.0" text="Hulk x90">
+                                    <VBox.margin>
+                                        <Insets left="15.0" top="40.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="Yu Gothic Bold" size="21.0" />
+                                    </font>
+                                </Label>
+                                <Label font="${textWiki.font}" prefHeight="100.0" prefWidth="640.0" text="The large cannon on the front of Hulk x90 points it in the direction of its next challenge. &#10;Its overall mission: intimidate, flatten, and move on. But Hulk x90 has to be careful and &#10;methodical in its movements, or it could easily flatten the factory machinery as it goes. ">
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <Label font="${subheadingWiki.font}" prefHeight="27.0" prefWidth="640.0" text="Squash Bot">
+                                    <VBox.margin>
+                                        <Insets left="15.0" top="40.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="Yu Gothic Bold" size="21.0" />
+                                    </font>
+                                </Label>
+                                <Label font="${textWiki.font}" prefHeight="100.0" prefWidth="640.0" text="Squash Bot doesn't mind taking things a bit slow. It relishes the fact that every step &#10;it takes is a metal-flattening stomp. It likes things that bounce back up once flattened, &#10;and it'll pause after it has smashed something to see if it is inclined to pop up again. &#10;A proud robot, Smash Bot often lingers over its work with a sinister smile. ">
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <Label font="${subheadingWiki.font}" prefHeight="27.0" prefWidth="640.0" text="Zoom Bot">
+                                    <VBox.margin>
+                                        <Insets left="15.0" top="35.0" />
+                                    </VBox.margin>
+                                    <font>
+                                        <Font name="Yu Gothic Bold" size="21.0" />
+                                    </font>
+                                </Label>
+                                <Label font="${textWiki.font}" prefHeight="100.0" prefWidth="640.0" text="You would expect something with the name Zoom Bot to be a shoo-in for a rally win, &#10;but Zoom Bot is built so much so for speed, it has a hard time thinking about anything else. &#10;With two giant wheels in its periphery, it looks straight ahead and goes, &#10;sometimes without seeing the wall of lasers in its path.&#10;">
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+            <GridPane.margin>
+                <Insets top="15.0" />
+            </GridPane.margin>
+        </ScrollPane>
+        <HBox blendMode="MULTIPLY" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="800.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </HBox>
+    </children>
+</GridPane>

@@ -441,6 +441,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 pane.setCenter ( null );
                 readyButton.setDisable ( false );
                 model.setGameFinished ( false );
+                upgradeCards.clear ();
+                registers.clear ();
             } );
         }
 
@@ -595,6 +597,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     Stage newStage = new Stage();
                     newStage.setTitle("UpgradeShop");
                     newStage.setScene(new Scene(root1));
+                    newStage.setOnCloseRequest ( event ->clientGameModel.buyUpgradeCard ( "Null" ));
                     newStage.show();
                 } catch (IOException | InterruptedException ioException) {
                     ioException.printStackTrace ( );

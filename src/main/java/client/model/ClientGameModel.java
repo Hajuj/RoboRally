@@ -343,9 +343,11 @@ public class ClientGameModel {
      * **/
     public void buyUpgradeCard (String cardName) {
         boolean isBuying = true;
+        if (cardName.equals ( "Null" )){
+            isBuying = false;
+        }
         if (checkAllowToBuy(cardName)) {
             boughtCards.add(cardName);
-            this.boughtCard= cardName;
         }
         JSONMessage buyMessage = new JSONMessage("BuyUpgrade", new BuyUpgradeBody(isBuying, cardName));
         clientModel.sendMessage(buyMessage);

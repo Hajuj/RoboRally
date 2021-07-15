@@ -57,6 +57,8 @@ public class UpgradeShop implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        buyButton.setDisable ( true );
+        buyButton.setVisible ( false );
         cubesNum.setText ( String.valueOf ( clientGameModel.getEnergy () ) );
         upgradeCards = FXCollections.observableArrayList ( card_1, card_2, card_3, card_4, card_5, card_6);
         Platform.runLater ( () -> {
@@ -70,6 +72,7 @@ public class UpgradeShop implements Initializable {
                 }
                 for (int j = clientGameModel.getUpgradeCards ( ).size ( ); j < upgradeCards.size ( ); j++) {
                         upgradeCards.get ( j ).setImage ( null );
+                        upgradeCards.get ( j ).setId ( "null" );
 
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
@@ -77,6 +80,7 @@ public class UpgradeShop implements Initializable {
             }
 
         } );
+
 
     }
 
@@ -101,30 +105,27 @@ public class UpgradeShop implements Initializable {
     }
 
     public void buyCard(MouseEvent mouseEvent) {
+        Stage stage =(Stage) buyNothing.getScene ().getWindow ();
         if (mouseEvent.getSource ().equals ( buyButton )){
                 clientGameModel.buyUpgradeCard ( getChoosenUpgradeCard ( ) );
                 clientGameModel.finishBuyCard ( true );
-
-                buyButton.setVisible ( false );
                 info.setText ( "You dont have enough Energy Cubes" );
-                //clientGameModel.getBoughtCards ().remove ( getChoosenUpgradeCard () );
 
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );
-            Stage stage =(Stage) buyNothing.getScene ().getWindow ();
             stage.close ();
         }
-
-        Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
     }
 
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
-        if (choosenCard.equals ( null )){
-            buyButton.setDisable ( true );
+        if (choosenCard.getId ().equals ( null )||choosenCard.getId ().equals ( "null" )){
+            buyButton.setDisable ( true);
             buyButton.setVisible ( false );
         }else {
+            buyButton.setDisable ( false );
+            buyButton.setVisible ( true );
             refreshShadow ( );
             choosenCard.setEffect ( new DropShadow ( 20.0, Color.RED ) );
 
