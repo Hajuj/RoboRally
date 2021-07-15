@@ -116,6 +116,7 @@ public class MessageHandler {
     public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
+
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
@@ -388,6 +389,11 @@ public class MessageHandler {
         if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
             clientModel.receiveMessage("YOU ARE AWESOME");
         }
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+            alert.show();
+        });
     }
 
     public void handleGameFinished(ClientModel clientModel, GameFinishedBody gameFinishedBody) {
@@ -462,7 +468,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();
         String card = upgradeBoughtBody.getCard();
-        clientModel.getClientGameModel ().getUpgradBoughtCards ().add(card);
+
         for (String upgradeCard:clientModel.getClientGameModel ().getUpgradeCards ()) {
             if (upgradeCard.equals ( card )){
                 clientModel.getClientGameModel ().getUpgradeCards ().remove (upgradeCard );

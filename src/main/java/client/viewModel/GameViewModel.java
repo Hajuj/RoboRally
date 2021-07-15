@@ -45,7 +45,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
 public class GameViewModel implements Initializable, PropertyChangeListener {
 
@@ -147,9 +146,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
         readyDisplay.setText(model.getPlayersStatus());
-        readyDisplay.setEditable(false);
+        //readyDisplay.setEditable(false);
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        model.setDoRefreshPlayerDisplay(false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
         }
@@ -303,8 +303,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" ) && registerNum==0) {
-                System.out.println ( clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
-                System.out.println ( "bin drinnen" );
                 registers.get ( 0 ).setImage ( null );
                 try {
                     returnSource.setImage ( loadImage ( "Again" ) );
@@ -440,19 +438,20 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             }
             Platform.runLater ( () -> {
-                pane.setCenter ( null );
-                readyButton.setDisable ( false );
-                model.setGameFinished ( false );
+                pane.setCenter(null);
+                readyButton.setDisable(false);
+                model.setGameFinished(false);
                 try {
-                    readyButton.setImage ( loadImage ( "notReady" ) );
+                    readyButton.setImage(loadImage("notReady"));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                readyButton.setId ( "readyButton" );
+                readyButton.setId("readyButton");
                 model.setNewStatus(false);
                 model.setDoChooseMap(false);
             } );
         }
+
 
         if (evt.getPropertyName ( ).equals ( "handCards" )) {
             clientGameModel.setHandCards ( false );
@@ -565,9 +564,16 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 }
             } );
         }
-        if (evt.getPropertyName ( ).equals ( "doChooseMap" )) {
-            model.setDoChooseMap ( false );
-            Platform.runLater ( () -> {
+
+        if (evt.getPropertyName().equals("doRefreshPlayerDisplay")) {
+            model.setDoRefreshPlayerDisplay(false);
+
+            readyDisplay.setText(model.getPlayersStatus());
+
+        }
+        if (evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
+            Platform.runLater(() -> {
                 try {
                     showMaps ( );
                 } catch (IOException ioException) {
@@ -598,8 +604,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 try {
                     showPopup("Upgrade Phase has begun");
                    // seconds = 30;
-                    //clientGameModel.getUpgradBoughtCards ().clear ();
-                    clientGameModel.getBoughtCards ().clear ();
+                   //clientGameModel.getUpgradBoughtCards ().clear ();
+
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
@@ -723,6 +729,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
                 source.setImage ( null );
+                clientGameModel.getBoughtCards ().remove ( "MemorySwap" );
                 clientGameModel.playMemorySwap(true);
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
@@ -737,6 +744,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "SpamBlocker" )){
             if (clientGameModel.getActualPhase ()== 2) {
                 source.setImage ( null );
+                clientGameModel.getBoughtCards ().remove ( "SpamBlocker" );
                /* regToCard.put ( 0, null );
                 regToCard.put ( 1, null );
                 regToCard.put ( 2, null );

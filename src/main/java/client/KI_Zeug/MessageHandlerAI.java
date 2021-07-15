@@ -50,7 +50,16 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     }
 
     @Override
-    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
+    }
+
+    @Override
+    public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         super.handleCurrentPlayer(clientModel, currentPlayerBody);
         if (currentPlayerBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             if (clientModel.getClientGameModel().getActualPhase() == 0) {

@@ -23,6 +23,9 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * @author Lilas
+ */
 
 public class UpgradeShop implements Initializable {
     public Tooltip toolTip1;
@@ -38,6 +41,7 @@ public class UpgradeShop implements Initializable {
 
     public ImageView buyButton;
     public ImageView buyNothing;
+    public Text info;
     String cardName;
 
     ObservableList<ImageView> upgradeCards;
@@ -45,7 +49,11 @@ public class UpgradeShop implements Initializable {
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
 
-
+    /**
+     * in the following initialize methode cubesNum will show the value of the the player's
+     * energyCubes he possesses
+     * upgradeCards is an observableArrayList that observes the value of the showen upgradeCards
+     * **/
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,9 +102,12 @@ public class UpgradeShop implements Initializable {
 
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
-            clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
-            clientGameModel.finishBuyCard(true);
-            //clientGameModel.getUpgradBoughtCards ().remove ( getChoosenUpgradeCard () );
+                clientGameModel.buyUpgradeCard ( getChoosenUpgradeCard ( ) );
+                clientGameModel.finishBuyCard ( true );
+
+                buyButton.setVisible ( false );
+                info.setText ( "You dont have enough Energy Cubes" );
+                //clientGameModel.getBoughtCards ().remove ( getChoosenUpgradeCard () );
 
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );
