@@ -24,24 +24,69 @@ import java.net.URL;
 import java.util.*;
 
 
+/**
+ * The type Upgrade shop.
+ */
 public class UpgradeShop implements Initializable {
+    /**
+     * The Tool tip 1.
+     */
     public Tooltip toolTip1;
+    /**
+     * The Cubes num.
+     */
     public Text cubesNum;
 
+    /**
+     * The Card 1.
+     */
     @FXML
     public ImageView card_1;
+    /**
+     * The Card 2.
+     */
     public ImageView card_2;
+    /**
+     * The Card 3.
+     */
     public ImageView card_3;
+    /**
+     * The Card 4.
+     */
     public ImageView card_4;
+    /**
+     * The Card 5.
+     */
     public ImageView card_5;
+    /**
+     * The Card 6.
+     */
     public ImageView card_6;
 
+    /**
+     * The Buy button.
+     */
     public ImageView buyButton;
+    /**
+     * The Buy nothing.
+     */
     public ImageView buyNothing;
+    /**
+     * The Card name.
+     */
     String cardName;
 
+    /**
+     * The Upgrade cards.
+     */
     ObservableList<ImageView> upgradeCards;
+    /**
+     * The Model.
+     */
     public ClientModel model = ClientModel.getInstance();
+    /**
+     * The Client game model.
+     */
     public ClientGameModel clientGameModel = ClientGameModel.getInstance();
     private StringProperty choosenUpgradeCard = new SimpleStringProperty ( "" );
 
@@ -73,7 +118,11 @@ public class UpgradeShop implements Initializable {
     }
 
 
-
+    /**
+     * Show description as a tooltip according to a mouse event
+     *
+     * @param mouseEvent the mouse event
+     */
     public void showDescription(MouseEvent mouseEvent) {
         ImageView source  = (ImageView) mouseEvent.getSource ();
         switch (source.getId ()){
@@ -92,6 +141,12 @@ public class UpgradeShop implements Initializable {
         }
     }
 
+    /**
+     * Buy card.
+     * Handles the buying of a upgrade card on this window
+     *
+     * @param mouseEvent the mouse event
+     */
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
             clientGameModel.buyUpgradeCard(getChoosenUpgradeCard ());
@@ -108,6 +163,11 @@ public class UpgradeShop implements Initializable {
         stage.close ();
     }
 
+    /**
+     * Choose upgrade card.
+     *
+     * @param mouseEvent the mouse event
+     */
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
         if (choosenCard.equals ( null )){
@@ -120,6 +180,10 @@ public class UpgradeShop implements Initializable {
             setChoosenUpgradeCard ( choosenCard.getId ( ) );
         }
     }
+
+    /**
+     * Refresh shadow.
+     */
     public void refreshShadow () {
         for (ImageView upgradeCard:upgradeCards) {
             upgradeCard.setEffect ( new DropShadow ( 0.0,Color.RED ) );
@@ -130,10 +194,20 @@ public class UpgradeShop implements Initializable {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));
     }
 
+    /**
+     * Sets choosen upgrade card.
+     *
+     * @param cardName the card name
+     */
     public void setChoosenUpgradeCard (String cardName) {
         this.choosenUpgradeCard.set(cardName);
     }
 
+    /**
+     * Gets choosen upgrade card.
+     *
+     * @return the choosen upgrade card
+     */
     public String getChoosenUpgradeCard() {
         return this.choosenUpgradeCard.get ( );
     }

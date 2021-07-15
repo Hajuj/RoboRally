@@ -13,42 +13,86 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * The type Reboot direction view model.
+ */
 public class RebootDirectionViewModel implements Initializable {
+    /**
+     * The Robot avatar.
+     */
     public ImageView robotAvatar;
+    /**
+     * The Robot orientation.
+     */
     public ImageView robotOrientation;
+    /**
+     * The Client model.
+     */
     ClientModel clientModel = ClientModel.getInstance();
+    /**
+     * The Client game model.
+     */
     ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+    /**
+     * The Top.
+     */
     @FXML
     public Button top;
+    /**
+     * The Bottom.
+     */
     @FXML
     public Button bottom;
+    /**
+     * The Right.
+     */
     @FXML
     public Button right;
+    /**
+     * The Left.
+     */
     @FXML
     public Button left;
 
 
+    /**
+     * Choose top.
+     */
     @FXML
     public void chooseTop() {
         clientModel.getClientGameModel().sendRebootDirection("top");
     }
 
+    /**
+     * Choose bottom.
+     */
     @FXML
     public void chooseBottom() {
         clientModel.getClientGameModel().sendRebootDirection("bottom");
     }
 
+    /**
+     * Choose left.
+     */
     @FXML
     public void chooseLeft() {
         clientModel.getClientGameModel().sendRebootDirection("left");
     }
 
+    /**
+     * Choose right.
+     */
     @FXML
     public void chooseRight() {
         clientModel.getClientGameModel().sendRebootDirection("right");
     }
 
+    /**
+     * Your robot image.
+     *
+     * @return the image
+     */
     public Image yourRobot() {
 
         int figure = clientGameModel.getPlayer().getFigure();
@@ -62,6 +106,12 @@ public class RebootDirectionViewModel implements Initializable {
     }
 
 
+    /**
+     * Show orientation.
+     * Sets the image in the place according to its orientation
+     *
+     * @param mouseEvent the mouse event
+     */
     public void showOrientation(MouseEvent mouseEvent) {
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RobotDirectionArrowHUGE.png")));
         if (mouseEvent.getSource().equals(top)) {

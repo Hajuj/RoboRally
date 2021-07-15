@@ -12,10 +12,19 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * The type Available maps view model.
+ */
 public class AvailableMapsViewModel implements Initializable {
 
+    /**
+     * The Model.
+     */
     ClientModel model = ClientModel.getInstance();
 
+    /**
+     * The Choice box.
+     */
     @FXML
     public ChoiceBox choiceBox;
 

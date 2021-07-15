@@ -22,23 +22,47 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+/**
+ * The type Server ip stage view model.
+ */
 public class ServerIpStageViewModel implements Initializable {
+    /**
+     * The Model.
+     */
     ClientModel model = ClientModel.getInstance();
 
     private int serverPort;
     private String serverIP;
     private StringProperty serverAddress;
 
+    /**
+     * The Server address field.
+     */
     @FXML
     public TextField serverAddressField;
+    /**
+     * The Server port field.
+     */
     @FXML
     public TextField serverPortField;
+    /**
+     * The Connect button.
+     */
     @FXML
     public Button connectButton;
+    /**
+     * The Logo.
+     */
     @FXML
     public ImageView logo;
+    /**
+     * The Lmu button.
+     */
     @FXML
     public Button LMUButton;
+    /**
+     * The B button.
+     */
     @FXML
     public Button BButton;
 
@@ -51,15 +75,34 @@ public class ServerIpStageViewModel implements Initializable {
         connectButton.setDefaultButton(true);
     }
 
+    /**
+     * Find path file.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
     public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
+    /**
+     * Server address property string property.
+     *
+     * @return the string property
+     */
     public StringProperty serverAddressProperty() {
         return serverAddress;
     }
 
+    /**
+     * Connect button action.
+     * Handles the action when the connect button is clicked.
+     * Takes the given IP and Port info and tries to connect
+     * Opens the chooserobot window if the connect is succesful
+     *
+     * @param event the event
+     */
     @FXML
     public void connectButtonAction(ActionEvent event) {
         try {
@@ -96,12 +139,24 @@ public class ServerIpStageViewModel implements Initializable {
         return IP_PATTERN.matcher(IP).matches();
     }
 
+    /**
+     * Lmu button action.
+     * Sets the IP and the Port to our beloved LMU's server
+     *
+     * @param event the event
+     */
     @FXML
     public void LMUButtonAction(ActionEvent event) {
         serverAddressField.setText("sep21.dbs.ifi.lmu.de");
         serverPortField.setText("52021");
     }
 
+    /**
+     * Bb button action.
+     * Sets the IP and the Port to our beloved bb server
+     *
+     * @param event the event
+     */
     @FXML
     public void BBButtonAction(ActionEvent event) {
         serverAddressField.setText("127.0.0.1");

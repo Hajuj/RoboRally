@@ -13,15 +13,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+/**
+ * The type Choose damage view model.
+ */
 public class ChooseDamageViewModel implements Initializable {
+    /**
+     * The Count display.
+     */
     public Text countDisplay;
+    /**
+     * The Client game model.
+     */
     ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
 
+    /**
+     * The Trojan.
+     */
     @FXML
     public ImageView Trojan;
+    /**
+     * The Virus.
+     */
     @FXML
     public ImageView Virus;
+    /**
+     * The Worm.
+     */
     @FXML
     public ImageView Worm;
 
@@ -30,6 +48,12 @@ public class ChooseDamageViewModel implements Initializable {
     private ArrayList<String> choosenDamageCards = new ArrayList<>();
 
 
+    /**
+     * Choose damage cards.
+     * Method to choose a damage card when all spam cards are used
+     *
+     * @param event the event
+     */
     public void chooseDamageCards(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
         String card = imageView.getId();

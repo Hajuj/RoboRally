@@ -21,27 +21,57 @@ import java.net.URL;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
+/**
+ * The type Chat view model.
+ */
 public class ChatViewModel implements Initializable, PropertyChangeListener {
 
+    /**
+     * The Model.
+     */
     ClientModel model = ClientModel.getInstance();
 
+    /**
+     * The Ready display.
+     */
     @FXML
     public TextArea readyDisplay = new TextArea("");
+    /**
+     * The Ready button.
+     */
     @FXML
     public Button readyButton;
+    /**
+     * The Game guide btn.
+     */
     @FXML
     public Button gameGuideBtn;
+    /**
+     * The Chat field.
+     */
     @FXML
     public TextArea chatField = new TextArea("");
+    /**
+     * The Message field.
+     */
     @FXML
     public TextField messageField;
+    /**
+     * The Send button.
+     */
     @FXML
     public Button sendButton;
+    /**
+     * The Not ready btn.
+     */
     @FXML
     public Button notReadyBtn;
 
     private String message;
 
+    /**
+     * The Chat output.
+     */
     public StringProperty chatOutput;
 
 
@@ -68,10 +98,21 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Chat output property string property.
+     *
+     * @return the string property
+     */
     public StringProperty chatOutputProperty() {
         return chatOutput;
     }
 
+    /**
+     * Send message button.
+     * Sends the message and clears the messagefield
+     *
+     * @param event the event
+     */
     public void sendMessageButton(ActionEvent event) {
         message = messageField.getText();
         model.sendMsg(message);
@@ -79,12 +120,24 @@ public class ChatViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Send ready status.
+     * Sends the ready status of the player
+     *
+     * @param event the event
+     */
     public void sendReadyStatus(ActionEvent event) {
         model.setNewStatus(true);
         readyButton.setDisable(true);
         notReadyBtn.setDisable(false);
     }
 
+    /**
+     * Change status button.
+     * Change the players status and opens choose map
+     *
+     * @param event the event
+     */
     public void changeStatusButton(ActionEvent event) {
         model.setNewStatus(false);
         notReadyBtn.setDisable(true);

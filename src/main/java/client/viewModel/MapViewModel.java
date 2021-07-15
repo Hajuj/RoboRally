@@ -27,11 +27,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * The type Map view model.
+ */
 public class MapViewModel implements Initializable, PropertyChangeListener {
 
     private ClientModel clientModel = ClientModel.getInstance();
     private ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+    /**
+     * The Map grid.
+     */
     @FXML
     public GridPane mapGrid;
 
@@ -56,6 +62,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Sets robots on their place and sets their figures
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
     public void setRobot(int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Robots/robot" + figure + ".png")));
@@ -75,12 +88,28 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
 
+    /**
+     * Find path file.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
     public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
 
+    /**
+     * Load image image view.
+     * Nice and long method to place the animated gifs of map elements
+     * Switch case in its best
+     *
+     * @param element      the element
+     * @param orientations the orientations
+     * @return the image view
+     * @throws FileNotFoundException the file not found exception
+     */
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         Image image;
 
@@ -139,6 +168,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Click grid.
+     * Handles what happens when someone clicks on the grid
+     * Used to pick a starting point
+     *
+     * @param event the event
+     */
     public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         if (clickedNode != mapGrid) {
@@ -149,6 +185,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Turn robot.
+     *
+     * @param playerID the player id
+     * @param rotation the rotation
+     */
     public void turnRobot(int playerID, String rotation) {
         Platform.runLater(() -> {
             Robot robot = null;
@@ -175,6 +217,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Move robot.
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
     public void moveRobot(int playerID, int x, int y) {
         Robot robot = null;
         for (HashMap.Entry<Robot, Point2D> entry : clientGameModel.getRobotMap().entrySet()) {
@@ -384,6 +433,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Gets robots on fields.
+     *
+     * @param position the position
+     * @return the robots on fields
+     */
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -396,6 +451,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         return robotsOnFields;
     }
 
+    /**
+     * Gets laser path.
+     *
+     * @param laser         the laser
+     * @param laserPosition the laser position
+     * @return the laser path
+     */
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
@@ -504,6 +566,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Move check point.
+     *
+     * @param checkpointID the checkpoint id
+     * @param newPosition  the new position
+     */
     public void moveCheckPoint(int checkpointID, Point2D newPosition) {
         Point2D oldPosition = clientGameModel.getCheckpointPositionByID(checkpointID);
         int layer;
@@ -537,6 +605,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
 
+    /**
+     * Activate lasers.
+     */
     public void activateLasers() {
 //        ImageView laserBeam = new ImageView();
         for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
@@ -579,6 +650,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Animate energy spaces.
+     */
     public void animateEnergySpaces() {
         for (Map.Entry<Point2D, EnergySpace> entry : clientGameModel.getEnergySpaceMap().entrySet()) {
             int x = (int) entry.getKey().getX();
@@ -611,6 +685,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Push panels animation.
+     */
     public void PushPanelsAnimation() {
         double ToX = 0;
         double ToY = 0;

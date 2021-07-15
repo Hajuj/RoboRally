@@ -21,7 +21,7 @@ import java.util.Date;
  */
 public class Server {
     private static Server instance;
-    private static int serverPort = 500;
+    private static int serverPort = 507;
     private final int MAX_CLIENT = 50;
     private static final Logger logger = Logger.getLogger(Server.class.getName());
     private MessageHandler messageHandler;
