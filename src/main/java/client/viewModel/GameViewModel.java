@@ -172,7 +172,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         Stage not = new Stage ( );
         not.setTitle ( "Player Notification" );
         not.setScene ( scene );
-        //not.show();
         ScaleTransition scaleTransition = new ScaleTransition ( );
         scaleTransition.setDuration ( Duration.seconds ( 2 ) );
         scaleTransition.setNode ( text );
@@ -185,7 +184,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         executor.submit ( () -> Platform.runLater ( not::show ) );
         executor.schedule (
                 () -> Platform.runLater ( () -> not.close ())
-                , 3
+                , 2
                 , TimeUnit.SECONDS );
 
     }
