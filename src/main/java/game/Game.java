@@ -33,7 +33,7 @@ public class Game {
     private ArrayList<String> upgradeCardsShop = new ArrayList<>();
     private ArrayList<String> availableMaps = new ArrayList<>();
     private ArrayList<Integer> deadRobotsIDs = new ArrayList<>();
-    private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Twonky", "Squash Bot", "Zoom Bot", "Twitch", "Spin Bot"));
+    private static ArrayList<String> robotNames = new ArrayList<String>(Arrays.asList("Hulk X90", "Spin Bot", "Twonky", "Twitch", "Squash Bot", "Zoom Bot"));
 
     private Map<Point2D, Antenna> antennaMap = new HashMap<>();
     private Map<Point2D, CheckPoint> checkPointMap = new HashMap<>();
