@@ -13,51 +13,23 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-/**
- * The type Reboot direction view model.
- */
 public class RebootDirectionViewModel implements Initializable {
-    /**
-     * The Robot avatar.
-     */
     public ImageView robotAvatar;
-    /**
-     * The Robot orientation.
-     */
     public ImageView robotOrientation;
-    /**
-     * The Client model.
-     */
     ClientModel clientModel = ClientModel.getInstance();
-    /**
-     * The Client game model.
-     */
     ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
-    /**
-     * The Top.
-     */
     @FXML
     public Button top;
-    /**
-     * The Bottom.
-     */
     @FXML
     public Button bottom;
-    /**
-     * The Right.
-     */
     @FXML
     public Button right;
-    /**
-     * The Left.
-     */
     @FXML
     public Button left;
 
-
     /**
-     * Choose top.
+     * Chooses top as orientation.
      */
     @FXML
     public void chooseTop() {
@@ -65,7 +37,7 @@ public class RebootDirectionViewModel implements Initializable {
     }
 
     /**
-     * Choose bottom.
+     * Chooses bottom as orientation.
      */
     @FXML
     public void chooseBottom() {
@@ -73,7 +45,7 @@ public class RebootDirectionViewModel implements Initializable {
     }
 
     /**
-     * Choose left.
+     * Chooses left as orientation.
      */
     @FXML
     public void chooseLeft() {
@@ -81,7 +53,7 @@ public class RebootDirectionViewModel implements Initializable {
     }
 
     /**
-     * Choose right.
+     * Chooses right as orientation.
      */
     @FXML
     public void chooseRight() {
@@ -105,7 +77,6 @@ public class RebootDirectionViewModel implements Initializable {
         robotAvatar.setImage(yourRobot());
     }
 
-
     /**
      * Show orientation.
      * Sets the image in the place according to its orientation
@@ -114,19 +85,19 @@ public class RebootDirectionViewModel implements Initializable {
      */
     public void showOrientation(MouseEvent mouseEvent) {
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RobotDirectionArrowHUGE.png")));
-        if (mouseEvent.getSource().equals(top)) {
+        if(mouseEvent.getSource().equals(top)) {
             robotOrientation.setRotate(180);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(bottom)) {
+        if(mouseEvent.getSource().equals(bottom)) {
             robotOrientation.setRotate(0);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(left)) {
+        if(mouseEvent.getSource().equals(left)) {
             robotOrientation.setRotate(90);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(right)) {
+        if(mouseEvent.getSource().equals(right)) {
             robotOrientation.setRotate(-90);
             robotOrientation.setImage(image);
         }

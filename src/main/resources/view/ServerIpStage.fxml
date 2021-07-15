@@ -27,7 +27,7 @@
         </TextField>
 
 
-        <Button fx:id="BBButton" layoutX="604.0" layoutY="239.0" mnemonicParsing="false" onAction="#BBButtonAction" prefHeight="96.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="BB" textAlignment="CENTER">
+        <Button fx:id="BBButton" layoutX="604.0" layoutY="239.0" mnemonicParsing="false" onAction="#BBButtonAction" prefHeight="96.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: #fcba03;" text="BB" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -62,9 +62,9 @@
         </Button>
 
 
-        <Button fx:id="LMUButton" layoutX="604.0" layoutY="346.0" mnemonicParsing="false" onAction="#LMUButtonAction" prefHeight="102.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: white;" text="LMU" textAlignment="CENTER">
+        <Button fx:id="LMUButton" layoutX="604.0" layoutY="346.0" mnemonicParsing="false" onAction="#LMUButtonAction" prefHeight="102.0" prefWidth="92.0" style="-fx-background-radius: 180; -fx-background-color: #fcba03;" text="LMU" textAlignment="CENTER">
             <font>
-                <Font name="System Bold" size="18.0" />
+                <Font name="System Bold" size="7.0" />
             </font>
             <effect>
                 <InnerShadow choke="0.35" height="51.4" radius="25.755" width="53.62">

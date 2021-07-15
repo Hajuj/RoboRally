@@ -5,7 +5,10 @@ package game.damagecards;
  */
 public class Worm extends game.Card {
 
-    public Worm(){
+    /**
+     * Instantiates a new Worm.
+     */
+    public Worm() {
         cardName = "Worm";
     }
 

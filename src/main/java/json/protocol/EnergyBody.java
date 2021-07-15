@@ -18,38 +18,38 @@ public class EnergyBody implements ServerMessageAction<EnergyBody> {
     @Expose
     private String source;
 
-    public EnergyBody (int clientID, int count, String source) {
+    public EnergyBody(int clientID, int count, String source) {
         this.clientID = clientID;
         this.count = count;
         this.source = source;
     }
 
     @Override
-    public void triggerAction (ClientModel client, EnergyBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, EnergyBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleEnergy(client, bodyObject);
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public void setClientID (int clientID) {
+    public void setClientID(int clientID) {
         this.clientID = clientID;
     }
 
-    public int getCount () {
+    public int getCount() {
         return count;
     }
 
-    public void setCount (int count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
-    public String getSource () {
+    public String getSource() {
         return source;
     }
 
-    public void setSource (String source) {
+    public void setSource(String source) {
         this.source = source;
     }
 }

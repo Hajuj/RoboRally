@@ -269,7 +269,7 @@
                <top>
                   <TextArea fx:id="readyDisplay" prefHeight="124.0" prefWidth="405.0" stylesheets="@../images/Gui/readyDisplay.css" BorderPane.alignment="CENTER">
                      <font>
-                        <Font name="Yu Gothic Bold" size="12.0" />
+                        <Font name="Yu Gothic Bold" size="16.0" />
                      </font>
                   </TextArea>
                </top>
@@ -278,9 +278,9 @@
          <bottom>
             <HBox maxHeight="150.0" maxWidth="480.0" minHeight="0.0" minWidth="0.0" prefHeight="108.0" prefWidth="538.0" BorderPane.alignment="CENTER">
                <children>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="96.0" prefWidth="70.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
-                        <ImageView fx:id="upgradeCard_1" fitHeight="95.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="upgradeCard_1" fitHeight="95.0" fitWidth="67.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true">
                            <VBox.margin>
                               <Insets left="-2.0" />
                            </VBox.margin>
@@ -293,7 +293,7 @@
                         <Insets right="-2.0" />
                      </padding>
                   </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
                         <ImageView fx:id="upgradeCard_2" fitHeight="90.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true" />
                      </children>
@@ -301,22 +301,22 @@
                         <Insets />
                      </HBox.margin>
                   </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
                         <ImageView fx:id="upgradeCard_3" fitHeight="90.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
                         <ImageView fx:id="upgradeCard_4" fitHeight="90.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
                         <ImageView fx:id="upgradeCard_5" fitHeight="90.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="72.0" style="-fx-border-color: yellow;">
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="68.0" style="-fx-border-color: yellow;">
                      <children>
                         <ImageView fx:id="upgradeCard_6" fitHeight="90.0" fitWidth="70.0" onMouseClicked="#handleUpgradeCard" pickOnBounds="true" preserveRatio="true" />
                      </children>
@@ -331,9 +331,9 @@
             </HBox>
          </bottom>
       </BorderPane>
-      <HBox fx:id="Timer" layoutX="137.0" layoutY="492.0" prefHeight="52.0" prefWidth="137.0" style="-fx-background-color: #ffae00; -fx-background-radius: 20;">
+      <HBox fx:id="Timer" layoutX="150.0" layoutY="502.0" prefHeight="43.0" prefWidth="124.0" style="-fx-background-color: #ffae00; -fx-background-radius: 20;">
          <children>
-            <Label fx:id="timerLable" prefHeight="52.0" prefWidth="158.0" textAlignment="JUSTIFY">
+            <Label fx:id="timerLable" prefHeight="44.0" prefWidth="137.0" textAlignment="JUSTIFY">
                <font>
                   <Font name="Yu Gothic Bold" size="16.0" />
                </font>

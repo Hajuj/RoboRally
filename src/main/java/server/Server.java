@@ -32,7 +32,7 @@ public class Server {
     private static String loggerStamp = "Server";
 
     private int clientsCounter = 1;
-    private ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<ClientHandler.Connection> connections = new ArrayList<>();
 
 
     private Server() {
@@ -43,7 +43,7 @@ public class Server {
     }
 
     public static Server getInstance() {
-        if (instance == null) {
+        if(instance == null) {
             instance = new Server();
         }
         return instance;
@@ -51,27 +51,27 @@ public class Server {
 
 
     public static void main(String[] args) {
-        if (args.length == 0)
+        if(args.length == 0)
             throw new IllegalArgumentException("No arguments provided. Flags: -p Port.");
-        if (args.length == 1) {
-            if (args[0].charAt(0) == '-') {
+        if(args.length == 1) {
+            if(args[0].charAt(0) == '-') {
                 throw new IllegalArgumentException("Expected argument after: " + args[0]);
             } else {
                 throw new IllegalArgumentException("Illegal Argument: " + args[0]);
             }
         }
 
-        for (int i = 0; i < args.length; i++) {
+        for(int i = 0; i < args.length; i++) {
             String arg = args[i];
             String nextArg;
-            if (i + 1 == args.length || args[i + 1].charAt(0) == '-') {
+            if(i + 1 == args.length || args[i + 1].charAt(0) == '-') {
                 throw new IllegalArgumentException("Expected argument after: " + arg);
             } else {
                 nextArg = args[i + 1];
             }
-            if ("-p".equals(arg)) {
+            if("-p".equals(arg)) {
                 int port = Integer.parseInt(nextArg);
-                if (port < 500 || port > 65555)
+                if(port < 500 || port > 65535)
                     throw new IllegalArgumentException("Port number: " + port + " is invalid");
                 serverPort = port;
                 i++;
@@ -91,21 +91,21 @@ public class Server {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(serverPort);
-        } catch (IOException ioException) {
+        } catch(IOException ioException) {
             logger.warn("Exception in opening Serversocket for incoming connections. " + ioException.getMessage());
             System.exit(0);
         }
 
         logger.info("The server has a port number " + serverPort + ", and runs on localhost.");
 
-        while (checkMaxClient()) {
+        while(checkMaxClient()) {
             logger.info("Waiting for new client...");
 
             //serverSocket.accept() waits for new clientSocket
             Socket clientSocket = null;
             try {
                 clientSocket = serverSocket.accept();
-            } catch (IOException | NullPointerException ioException) {
+            } catch(IOException | NullPointerException ioException) {
                 logger.warn("Exception in accepting Clientsocket. " + ioException.getMessage());
             }
 
@@ -122,7 +122,7 @@ public class Server {
         logger.warn("Server shut down. Closing the Serversocket..");
         try {
             serverSocket.close();
-        } catch (IOException ioException) {
+        } catch(IOException ioException) {
             logger.warn("Exception in closing Serversocket. " + ioException.getMessage());
         }
     }
@@ -134,23 +134,23 @@ public class Server {
     }
 
     public boolean areAllPlayersReady() {
-        if (getReadyPlayer().size() < 2) return false;
-        if (getReadyPlayer().size() == 6) return true;
+        if(getReadyPlayer().size() < 2) return false;
+        if(getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
     public Player getPlayerWithID(int ID) {
-        for (Player player : waitingPlayer) {
-            if (player.getPlayerID() == ID) {
+        for(Player player : waitingPlayer) {
+            if(player.getPlayerID() == ID) {
                 return player;
             }
         }
         return null;
     }
 
-    public Connection getConnectionWithID(int ID) {
-        for (Connection connection : connections) {
-            if (connection.getPlayerID() == ID) {
+    public ClientHandler.Connection getConnectionWithID(int ID) {
+        for(ClientHandler.Connection connection : connections) {
+            if(connection.getPlayerID() == ID) {
                 return connection;
             }
         }
@@ -159,8 +159,8 @@ public class Server {
 
     public ArrayList<Player> readyPlayerWithoutAI() {
         ArrayList<Player> readyPlayerWithoutAI = new ArrayList<>();
-        for (Player player : readyPlayer) {
-            if (!player.isAI()) {
+        for(Player player : readyPlayer) {
+            if(!player.isAI()) {
                 readyPlayerWithoutAI.add(player);
             }
         }
@@ -168,8 +168,8 @@ public class Server {
     }
 
     public boolean onlyAI() {
-        for (Player player : readyPlayer) {
-            if (!player.isAI()) {
+        for(Player player : readyPlayer) {
+            if(!player.isAI()) {
                 return false;
             }
         }
@@ -208,7 +208,7 @@ public class Server {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections() {
+    public ArrayList<ClientHandler.Connection> getConnections() {
         return connections;
     }
 

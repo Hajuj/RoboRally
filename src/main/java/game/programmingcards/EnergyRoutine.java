@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class EnergyRoutine extends Card {
-    public EnergyRoutine(){
+    public EnergyRoutine() {
         cardName = "EnergyRoutine";
     }
 

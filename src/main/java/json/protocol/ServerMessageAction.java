@@ -11,5 +11,5 @@ import client.model.MessageHandler;
  * @author Mohamad, Viktoria
  */
 public interface ServerMessageAction<T> {
-    void triggerAction (ClientModel client, T bodyObject, MessageHandler messageHandler);
+    void triggerAction(ClientModel client, T bodyObject, MessageHandler messageHandler);
 }

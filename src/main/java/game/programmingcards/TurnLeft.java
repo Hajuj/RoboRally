@@ -7,7 +7,7 @@ import game.Card;
  */
 public class TurnLeft extends Card {
 
-    public TurnLeft(){
+    public TurnLeft() {
         cardName = "TurnLeft";
     }
 

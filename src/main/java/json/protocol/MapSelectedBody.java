@@ -19,16 +19,16 @@ public class MapSelectedBody implements ServerMessageAction<MapSelectedBody>, Cl
     }
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, MapSelectedBody bodyObject, server.MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, MapSelectedBody bodyObject, server.MessageHandler messageHandler) {
         try {
             messageHandler.handleMapSelected(server, clientHandler, bodyObject);
-        } catch (IOException ioException) {
+        } catch(IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
     @Override
-    public void triggerAction (ClientModel client, MapSelectedBody bodyObject, client.model.MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, MapSelectedBody bodyObject, client.model.MessageHandler messageHandler) {
         messageHandler.handleMapSelected(client, bodyObject);
     }
 

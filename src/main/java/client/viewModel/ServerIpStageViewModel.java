@@ -72,7 +72,7 @@ public class ServerIpStageViewModel implements Initializable {
         serverAddress = new SimpleStringProperty();
         LMUButton = new Button();
         BButton = new Button();
-        connectButton.setDefaultButton(true);
+        connectButton.requestFocus();
     }
 
     /**
@@ -108,35 +108,46 @@ public class ServerIpStageViewModel implements Initializable {
         try {
             serverIP = serverAddressField.getText();
             //Numberformatexception, wenn nicht checken, ob valide ist
-            serverPort = Integer.parseInt(serverPortField.getText());
+            if(validatePort(serverPortField.getText())) {
+                serverPort = Integer.parseInt(serverPortField.getText());
 //            if (validateIpAdress(serverIP, serverPort)) {
-            if (model.connectClient(serverIP, serverPort)) {
-                Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-                stage.close();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
-                Parent root1 = fxmlLoader.load();
-                Stage newStage = new Stage();
-                newStage.setTitle("RoboRally");
-                newStage.setScene(new Scene(root1));
-                newStage.show();
+                if(model.connectClient(serverIP, serverPort)) {
+                    Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    stage.close();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
+                    Parent root1 = fxmlLoader.load();
+                    Stage newStage = new Stage();
+                    newStage.setResizable(false);
+                    newStage.setTitle("RoboRally");
+                    newStage.setScene(new Scene(root1));
+                    newStage.show();
+                } else {
+                    Alert a = new Alert(Alert.AlertType.NONE);
+                    a.setAlertType(Alert.AlertType.ERROR);
+                    a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
+                    a.show();
+                    serverAddressField.clear();
+                }
             } else {
                 Alert a = new Alert(Alert.AlertType.NONE);
                 a.setAlertType(Alert.AlertType.ERROR);
-                a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
+                a.setContentText("A port number is integer ranging from 500 to 65535");
                 a.show();
-                serverAddressField.clear();
                 serverPortField.clear();
             }
-        } catch (IOException e) {
+
+        } catch(IOException e) {
             e.printStackTrace();
 
         }
     }
 
-    private boolean validateIpAdress(String IP, int port) {
-        String IP_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
-        Pattern IP_PATTERN = Pattern.compile(IP_REGEX);
-        return IP_PATTERN.matcher(IP).matches();
+
+    private boolean validatePort(String port) {
+        if(port.matches("^-?\\d+$")) {
+            return (Integer.parseInt(port) >= 500 && Integer.parseInt(port) <= 65535);
+        }
+        return false;
     }
 
     /**

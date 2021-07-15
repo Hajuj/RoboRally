@@ -52,7 +52,7 @@ public class JSONDeserializer {
             Class<?> reflection = null;
             try {
                 reflection = Class.forName("json.protocol." + messageType + "Body");
-            } catch (ClassNotFoundException e) {
+            } catch(ClassNotFoundException e) {
                 logger.warn("Something went wrong while deserializing.");
                 return new JSONMessage("Error", new ErrorBody("Something went wrong while deserializing. Hier sollte " + messageType + " message sein!"));
             }

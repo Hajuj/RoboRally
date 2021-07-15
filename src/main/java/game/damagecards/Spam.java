@@ -5,7 +5,10 @@ package game.damagecards;
  */
 public class Spam extends game.Card {
 
-    public Spam(){
+    /**
+     * Instantiates a new Spam.
+     */
+    public Spam() {
         cardName = "Spam";
     }
 

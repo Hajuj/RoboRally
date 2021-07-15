@@ -1,1124 +1,1140 @@
 {
   "messageBody": {
-    "gameMap": [
+  "gameMap": [
+    [
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          },
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "RestartPoint",
-            "isOnBoard": "ExtraCrispy"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Antenna",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        },
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "RestartPoint",
+          "isOnBoard": "ExtraCrispy"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "top"
-            ],
-            "type": "Wall",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Wall",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "StartPoint",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "right",
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "Start A"
-          }
-        ],
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "right",
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "Start A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "type": "EnergySpace",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "top"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "type": "EnergySpace",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "right",
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "right",
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "left"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Antenna",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "top"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          },
-          {
-            "count": 4,
-            "type": "CheckPoint",
-            "isOnBoard": "ExtraCrispy"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "right"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "right"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "top"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          },
-          {
-            "count": 2,
-            "type": "CheckPoint",
-            "isOnBoard": "ExtraCrispy"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "bottom",
-              "right"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "clockwise"
-            ],
-            "type": "Gear",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "left"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "left"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "left"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "type": "EnergySpace",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "left"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "count": 1,
-            "type": "EnergySpace",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "left"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "left"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "right"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "left"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "counterclockwise"
-            ],
-            "type": "Gear",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Pit",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 1,
-            "orientations": [
-              "top",
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "top"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          },
-          {
-            "count": 1,
-            "type": "CheckPoint",
-            "isOnBoard": "ExtraCrispy"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "left"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "top"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          },
-          {
-            "count": 3,
-            "type": "CheckPoint",
-            "isOnBoard": "ExtraCrispy"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "count": 1,
-            "orientations": [
-              "left"
-            ],
-            "type": "Laser",
-            "isOnBoard": "4A"
-          },
-          {
-            "orientations": [
-              "right"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "left",
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "count": 1,
-            "type": "EnergySpace",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "left",
-              "bottom"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "speed": 2,
-            "orientations": [
-              "top"
-            ],
-            "type": "ConveyorBelt",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "orientations": [
+            "top"
+          ],
+          "type": "Wall",
+          "isOnBoard": "Start A"
+        }
       ],
       [
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "top"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "orientations": [
-              "bottom"
-            ],
-            "type": "Wall",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ],
-        [
-          {
-            "type": "Empty",
-            "isOnBoard": "4A"
-          }
-        ]
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Wall",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "StartPoint",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "right",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "Start A"
+        }
+      ],
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "right",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "Start A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "type": "EnergySpace",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "top"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "type": "EnergySpace",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "right",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "right",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "top",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "top",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "right"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "left"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "top"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        },
+        {
+          "count": 4,
+          "type": "CheckPoint",
+          "isOnBoard": "ExtraCrispy"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "right",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "right",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "top"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        },
+        {
+          "count": 2,
+          "type": "CheckPoint",
+          "isOnBoard": "ExtraCrispy"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "bottom",
+            "right"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "clockwise"
+          ],
+          "type": "Gear",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "left"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "left"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "left",
+            "right"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "right"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "left"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "type": "EnergySpace",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "right"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "left"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "count": 1,
+          "type": "EnergySpace",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "left"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "left"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "right",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "right"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "left"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "counterclockwise"
+          ],
+          "type": "Gear",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Pit",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 1,
+          "orientations": [
+            "top",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "top"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        },
+        {
+          "count": 1,
+          "type": "CheckPoint",
+          "isOnBoard": "ExtraCrispy"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "left",
+            "right"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "left",
+            "right"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "top"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        },
+        {
+          "count": 3,
+          "type": "CheckPoint",
+          "isOnBoard": "ExtraCrispy"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "count": 1,
+          "orientations": [
+            "left"
+          ],
+          "type": "Laser",
+          "isOnBoard": "4A"
+        },
+        {
+          "orientations": [
+            "right"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "left",
+            "top"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "count": 1,
+          "type": "EnergySpace",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "bottom",
+            "left"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "top",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "top",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "speed": 2,
+          "orientations": [
+            "top",
+            "bottom"
+          ],
+          "type": "ConveyorBelt",
+          "isOnBoard": "4A"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "top"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "orientations": [
+            "bottom"
+          ],
+          "type": "Wall",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
+      ],
+      [
+        {
+          "type": "Empty",
+          "isOnBoard": "4A"
+        }
       ]
     ]
-  },
+  ]
+},
   "messageType": "GameStarted"
 }

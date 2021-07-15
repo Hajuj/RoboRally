@@ -14,22 +14,22 @@ public class PlayerStatusBody implements ServerMessageAction<PlayerStatusBody> {
     @Expose
     private final boolean ready;
 
-    public PlayerStatusBody (int clientID, boolean ready) {
+    public PlayerStatusBody(int clientID, boolean ready) {
         this.clientID = clientID;
         this.ready = ready;
     }
 
 
     @Override
-    public void triggerAction (ClientModel client, PlayerStatusBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, PlayerStatusBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handlePlayerStatus(client, bodyObject);
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public boolean isReady () {
+    public boolean isReady() {
         return ready;
     }
 }

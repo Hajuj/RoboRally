@@ -230,7 +230,8 @@
           {
             "speed": 1,
             "orientations": [
-              "left"
+              "left",
+              "right"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -276,7 +277,8 @@
           {
             "speed": 1,
             "orientations": [
-              "right"
+              "right",
+              "left"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -294,7 +296,8 @@
           {
             "speed": 1,
             "orientations": [
-              "bottom"
+              "bottom",
+              "top"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -367,7 +370,8 @@
           {
             "speed": 1,
             "orientations": [
-              "bottom"
+              "bottom",
+              "top"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -398,7 +402,8 @@
           {
             "speed": 2,
             "orientations": [
-              "bottom"
+              "bottom",
+              "top"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -426,7 +431,8 @@
           {
             "speed": 2,
             "orientations": [
-              "top"
+              "top",
+              "bottom"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -463,7 +469,8 @@
           {
             "speed": 1,
             "orientations": [
-              "left"
+              "left",
+              "right"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -543,7 +550,8 @@
           {
             "speed": 1,
             "orientations": [
-              "left"
+              "left",
+              "right"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -613,7 +621,8 @@
           {
             "speed": 1,
             "orientations": [
-              "right"
+              "right",
+              "left"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -693,7 +702,8 @@
           {
             "speed": 1,
             "orientations": [
-              "right"
+              "right",
+              "left"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -786,7 +796,8 @@
           {
             "speed": 2,
             "orientations": [
-              "bottom"
+              "bottom",
+              "top"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -814,7 +825,8 @@
           {
             "speed": 2,
             "orientations": [
-              "top"
+              "top",
+              "bottom"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -845,7 +857,8 @@
           {
             "speed": 1,
             "orientations": [
-              "top"
+              "top",
+              "bottom"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -918,7 +931,8 @@
           {
             "speed": 1,
             "orientations": [
-              "top"
+              "top",
+              "bottom"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -936,7 +950,8 @@
           {
             "speed": 1,
             "orientations": [
-              "left"
+              "left",
+              "right"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"
@@ -982,7 +997,8 @@
           {
             "speed": 1,
             "orientations": [
-              "right"
+              "right",
+              "left"
             ],
             "type": "ConveyorBelt",
             "isOnBoard": "1A"

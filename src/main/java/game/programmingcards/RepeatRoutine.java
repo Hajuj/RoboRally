@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class RepeatRoutine extends Card {
-    public RepeatRoutine(){
+    public RepeatRoutine() {
         cardName = "RepeatRoutine";
     }
 

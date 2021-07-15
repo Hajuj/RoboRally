@@ -15,16 +15,16 @@ public class GameStartedBody implements ServerMessageAction<GameStartedBody> {
     @Expose
     private ArrayList<ArrayList<ArrayList<Element>>> gameMap;
 
-    public GameStartedBody (ArrayList<ArrayList<ArrayList<Element>>> map) {
+    public GameStartedBody(ArrayList<ArrayList<ArrayList<Element>>> map) {
         this.gameMap = map;
     }
 
     @Override
-    public void triggerAction (ClientModel client, GameStartedBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, GameStartedBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleGameStarted(client, bodyObject);
     }
 
-    public ArrayList<ArrayList<ArrayList<Element>>> getGameMap () {
+    public ArrayList<ArrayList<ArrayList<Element>>> getGameMap() {
         return gameMap;
     }
 }

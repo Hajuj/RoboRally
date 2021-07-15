@@ -12,26 +12,26 @@ public class ConnectionUpdateBody implements ServerMessageAction<ConnectionUpdat
     private final boolean isConnected;
     private final String action;
 
-    public ConnectionUpdateBody (int playerID, boolean isConnected, String action) {
+    public ConnectionUpdateBody(int playerID, boolean isConnected, String action) {
         this.playerID = playerID;
         this.isConnected = isConnected;
         this.action = action;
     }
 
     @Override
-    public void triggerAction (ClientModel client, ConnectionUpdateBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, ConnectionUpdateBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleConnectionUpdate(client, bodyObject);
     }
 
-    public int getPlayerID () {
+    public int getPlayerID() {
         return playerID;
     }
 
-    public boolean isConnected () {
+    public boolean isConnected() {
         return isConnected;
     }
 
-    public String getAction () {
+    public String getAction() {
         return action;
     }
 }
