@@ -146,9 +146,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         dummesButton.setDisable(true);
         dummesButton.setText(Integer.toString(1));
         readyDisplay.setText(model.getPlayersStatus());
-        readyDisplay.setEditable(false);
+        //readyDisplay.setEditable(false);
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
+        model.setDoRefreshPlayerDisplay(false);
         if (model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
         }
@@ -556,11 +557,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
 
         if (evt.getPropertyName().equals("doRefreshPlayerDisplay")) {
-            System.out.println("drin in property");
             model.setDoRefreshPlayerDisplay(false);
-            Platform.runLater(() -> {
-                readyDisplay.setText(model.getPlayersStatus());
-            });
+
+            readyDisplay.setText(model.getPlayersStatus());
+
         }
         if (evt.getPropertyName().equals("doChooseMap")) {
             model.setDoChooseMap(false);

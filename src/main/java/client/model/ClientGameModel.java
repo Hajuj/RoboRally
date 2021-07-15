@@ -364,7 +364,6 @@ public class ClientGameModel {
         boolean allowToBuy = true;
         int numOfPermanent = Collections.frequency(boughtCards, "AdminPrivilege") + Collections.frequency(boughtCards, "RearLaser");
         int numOfTemporary = Collections.frequency(boughtCards, "MemorySwap") + Collections.frequency(boughtCards, "SpamBlocker");
-        System.out.println(cardName);
         // ob er noch nicht 3 und 3 karten hat
         if (cardName.equals("Null")) {
             allowToBuy = false;

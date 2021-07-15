@@ -390,9 +390,7 @@ public class ClientModel {
     public void setDoRefreshPlayerDisplay(boolean doRefreshPlayerDisplay) {
         boolean oldsDoRefreshPlayerDisplay = this.doRefreshPlayerDisplay;
         this.doRefreshPlayerDisplay = doRefreshPlayerDisplay;
-        System.out.println("drin in set");
         if (this.doRefreshPlayerDisplay) {
-            System.out.println("drin in if");
             propertyChangeSupport.firePropertyChange("doRefreshPlayerDisplay", oldsDoRefreshPlayerDisplay, true);
         }
     }
