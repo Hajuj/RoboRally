@@ -73,6 +73,7 @@ public class ServerIpStageViewModel implements Initializable {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
                 Parent root1 = fxmlLoader.load();
                 Stage newStage = new Stage();
+                newStage.setResizable ( false );
                 newStage.setTitle("RoboRally");
                 newStage.setScene(new Scene(root1));
                 newStage.show();

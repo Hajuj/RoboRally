@@ -154,8 +154,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             readyButton.setVisible(false);
         }
 
-    /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
-        paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
@@ -284,13 +282,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             collectingCards ( );
         }
     }
-         /*else if(dragEvent.getGestureTarget ().equals ( card_0 )||dragEvent.getGestureTarget ().equals ( card_1 )||
-                dragEvent.getGestureTarget ().equals ( card_2 )||dragEvent.getGestureTarget ().equals ( card_3 )||dragEvent.getGestureTarget ().equals ( card_4 )||
-                dragEvent.getGestureTarget ().equals ( card_5 )||dragEvent.getGestureTarget ().equals ( card_6 )||dragEvent.getGestureTarget ().equals ( card_7 )||
-                dragEvent.getGestureTarget ().equals ( card_8 )){
-            handlewithdraw ( target, image );
-            */
-
 
 
 
@@ -376,6 +367,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
+        newStage.setResizable ( false );
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
@@ -403,6 +395,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 e.printStackTrace ( );
             }
             Stage newStage = new Stage();
+            newStage.setResizable ( false );
             newStage.setTitle("Game Guide");
             newStage.setScene(new Scene(root1));
             newStage.show();
@@ -464,10 +457,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             }
             cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8 );
-            /*for (ImageView card : cards) {
-                Image image = card.getImage ();
-                card.setImage ( null );
-            }*/
             Platform.runLater ( () -> {
                 try {
                     for (int j = 0; j < cards.size ( ); j++) {
@@ -476,10 +465,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                         cards.get ( j ).setId ( Integer.toString ( j ) );
 
                     }
-                 /*  for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
-                        cards.get(j).setImage(null);
-                        cards.get(j).setId("Null");
-                   }*/
+
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace ( );
                 }
@@ -596,6 +582,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
+                    newStage.setResizable ( false );
                     newStage.setTitle("UpgradeShop");
                     newStage.setScene(new Scene(root1));
                     newStage.setOnCloseRequest ( event ->clientGameModel.buyUpgradeCard ( "Null" ));
@@ -733,11 +720,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             if (clientGameModel.getActualPhase ()== 2) {
                 source.setImage ( null );
                 clientGameModel.getBoughtCards ().remove ( "SpamBlocker" );
-               /* regToCard.put ( 0, null );
-                regToCard.put ( 1, null );
-                regToCard.put ( 2, null );
-                regToCard.put ( 3, null );
-                regToCard.put ( 4, null );*/
               cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                         card_6, card_7, card_8 );
                 for (ImageView card : cards) {

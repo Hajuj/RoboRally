@@ -89,6 +89,7 @@ public class StartScreenViewModel implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ServerIpStage.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
+        newStage.setResizable ( false );
         newStage.setTitle("Connect");
         newStage.setScene(new Scene(root1));
         newStage.show();
