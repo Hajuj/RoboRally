@@ -12,7 +12,9 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.media.AudioClip;
@@ -87,6 +89,7 @@ public class StartScreenViewModel implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ServerIpStage.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
+        newStage.setResizable ( false );
         newStage.setTitle("Connect");
         newStage.setScene(new Scene(root1));
         newStage.show();

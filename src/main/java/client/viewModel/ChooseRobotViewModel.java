@@ -102,12 +102,12 @@ public class ChooseRobotViewModel implements Initializable {
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if(!isValideUsername(t1)) {
+                if (!isValideUsername(t1)) {
                     playButton.setDisable(true);
-                } else if(figureProperty.getValue() != -1) {
+                } else if (figureProperty.getValue() != -1) {
                     playButton.setDisable(false);
-                } else if(isGameOn()) {
-                    playButton.setDefaultButton(true);
+                } else if (isGameOn()) {
+                    playButton.requestFocus();
                     playButton.setDisable(false);
                 }
             }
@@ -116,22 +116,15 @@ public class ChooseRobotViewModel implements Initializable {
         figureProperty.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                if(figureProperty.getValue() == -1) {
+                if (figureProperty.getValue() == -1) {
                     playButton.setDisable(true);
-                } else if(isValideUsername(nameField.getText())) {
+                } else if (isValideUsername(nameField.getText())) {
                     playButton.setDisable(false);
                 }
             }
         });
 
         disableUsedRobots();
-
-        //TODO: SCHAUEN WIE WIR DAS ANDERS machen
-        //  if (isGameOn() || !model.isCanPlay()) {
-        //     playButton.setText("Chat!");
-        //     playButton.setDisable(false);
-        //       disableAllRobots();
-        //   }
 
     }
 
@@ -142,8 +135,8 @@ public class ChooseRobotViewModel implements Initializable {
 
     public void disableUsedRobots() {
         GaussianBlur blur = new GaussianBlur(10);
-        for(Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
-            switch(entry.getValue()) {
+        for (Map.Entry<Integer, Integer> entry : model.getPlayersFigureMap().entrySet()) {
+            switch (entry.getValue()) {
                 case 0 -> {
                     robot0.setDisable(true);
                     robot0.setEffect(blur);
@@ -310,13 +303,8 @@ public class ChooseRobotViewModel implements Initializable {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/GameStage.fxml")));
             Stage window = (Stage) playButton.getScene().getWindow();
             window.setScene(new Scene(root, 1223, 665));
-
-            //window.setResizable(false);
-            //window.maxHeightProperty().bind(window.getScene().heightProperty());
-            // window.sizeToScene();
-            /*window.minHeightProperty().bind(window.widthProperty());
-            window.maxHeightProperty().bind(window.getScene().widthProperty());*/
-        } catch(
+            window.setResizable(false);
+        } catch (
                 IOException e) {
             e.printStackTrace();
         }
@@ -332,8 +320,8 @@ public class ChooseRobotViewModel implements Initializable {
      */
 
     public boolean isValideUsername(String username) {
-        if(username.isBlank()) return false;
-        if(username.contains(" ")) return false;
+        if (username.isBlank()) return false;
+        if (username.contains(" ")) return false;
         return !username.contains("@");
     }
 

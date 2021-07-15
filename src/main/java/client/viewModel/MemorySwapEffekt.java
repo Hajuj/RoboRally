@@ -121,11 +121,6 @@ public class MemorySwapEffekt implements Initializable {
      * @param mouseEvent the mouse event
      */
     public void returnCards(MouseEvent mouseEvent) {
-       /* for (String card:allReturnedCardsL) {
-            if (clientGameModel.getCardsInHand ().contains ( card )){
-
-            }
-        }*/
         clientGameModel.sendRetrunCards(allReturnedCardsL);
         // clientGameModel.finishRetunrCard ( true );
         Stage stage = (Stage) OkButton.getScene().getWindow();
