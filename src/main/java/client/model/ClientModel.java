@@ -45,6 +45,8 @@ public class ClientModel {
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
+    private boolean doRefreshPlayerDisplay = false;
+
     private String playersStatus = "";
     private String chatHistory = "";
 
@@ -238,6 +240,7 @@ public class ClientModel {
             }
             setPlayersStatus(playersStatus + "Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
         }
+        setDoRefreshPlayerDisplay(true);
     }
 
     /**
@@ -383,6 +386,18 @@ public class ClientModel {
             propertyChangeSupport.firePropertyChange("doChooseMap", oldDoChooseMap, true);
         }
     }
+
+    public void setDoRefreshPlayerDisplay(boolean doRefreshPlayerDisplay) {
+        boolean oldsDoRefreshPlayerDisplay = this.doRefreshPlayerDisplay;
+        this.doRefreshPlayerDisplay = doRefreshPlayerDisplay;
+        System.out.println("drin in set");
+        if (this.doRefreshPlayerDisplay) {
+            System.out.println("drin in if");
+            propertyChangeSupport.firePropertyChange("doRefreshPlayerDisplay", oldsDoRefreshPlayerDisplay, true);
+        }
+    }
+
+
 
     public void setAvailableMaps(ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;

@@ -116,6 +116,7 @@ public class MessageHandler {
     public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
+
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
