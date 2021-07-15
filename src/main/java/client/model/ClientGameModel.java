@@ -888,11 +888,21 @@ public class ClientGameModel {
         return queueCPMove;
     }
 
-    public void setQueueCPMove (boolean queueCPMove) {
+    public void setQueueCPMove(boolean queueCPMove) {
         boolean oldQueueCPMove = this.queueCPMove;
         this.queueCPMove = queueCPMove;
-        if (this.queueCPMove) {
+        if(this.queueCPMove) {
             propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
         }
     }
+
+
+    public void setGameFinished(boolean gameFinished) {
+        boolean oldGameFinished = this.gameFinished;
+        this.gameFinished = gameFinished;
+        if(this.gameFinished) {
+            propertyChangeSupport.firePropertyChange("gameFinished", oldGameFinished, true);
+        }
+    }
+
 }
