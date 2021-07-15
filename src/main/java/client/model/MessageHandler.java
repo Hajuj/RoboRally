@@ -462,7 +462,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();
         String card = upgradeBoughtBody.getCard();
-        clientModel.getClientGameModel ().getUpgradBoughtCards ().add(card);
+
         for (String upgradeCard:clientModel.getClientGameModel ().getUpgradeCards ()) {
             if (upgradeCard.equals ( card )){
                 clientModel.getClientGameModel ().getUpgradeCards ().remove (upgradeCard );

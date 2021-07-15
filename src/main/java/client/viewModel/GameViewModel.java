@@ -303,8 +303,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" ) && registerNum==0) {
-                System.out.println ( clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
-                System.out.println ( "bin drinnen" );
                 registers.get ( 0 ).setImage ( null );
                 try {
                     returnSource.setImage ( loadImage ( "Again" ) );
@@ -590,8 +588,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 try {
                     showPopup("Upgrade Phase has begun");
                    // seconds = 30;
-                    //clientGameModel.getUpgradBoughtCards ().clear ();
-                    clientGameModel.getBoughtCards ().clear ();
+                   //clientGameModel.getUpgradBoughtCards ().clear ();
+
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
@@ -715,6 +713,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
                 source.setImage ( null );
+                clientGameModel.getBoughtCards ().remove ( "MemorySwap" );
                 clientGameModel.playMemorySwap(true);
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
@@ -729,6 +728,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         else if (source.getId ().equals ( "SpamBlocker" )){
             if (clientGameModel.getActualPhase ()== 2) {
                 source.setImage ( null );
+                clientGameModel.getBoughtCards ().remove ( "SpamBlocker" );
                /* regToCard.put ( 0, null );
                 regToCard.put ( 1, null );
                 regToCard.put ( 2, null );

@@ -53,5 +53,10 @@
             <Image url="@../images/Gui/buyNthnButton.png" />
          </image>
       </ImageView>
+      <Text fx:id="info" fill="#ad1818" layoutX="318.0" layoutY="510.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="329.13671875">
+         <font>
+            <Font name="Yu Gothic Bold" size="22.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
