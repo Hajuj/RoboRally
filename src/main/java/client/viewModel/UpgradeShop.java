@@ -52,7 +52,8 @@ public class UpgradeShop implements Initializable {
     /**
      * in the following initialize methode cubesNum will show the value of the the player's
      * energyCubes he possesses
-     * upgradeCards is an observableArrayList that observes the value of the showen upgradeCards
+     * upgradeCards is an observableArrayList that observes the value of showen upgradeCards, which takes its Value form
+     * the clienGameModel and then lookup the suitable image and put it in the Views
      * **/
 
     @Override
@@ -109,7 +110,7 @@ public class UpgradeShop implements Initializable {
         if (mouseEvent.getSource ().equals ( buyButton )){
                 clientGameModel.buyUpgradeCard ( getChoosenUpgradeCard ( ) );
                 clientGameModel.finishBuyCard ( true );
-                info.setText ( "You dont have enough Energy Cubes" );
+                //info.setText ( "You dont have enough Energy Cubes" );
 
         }else if (mouseEvent.getSource ().equals ( buyNothing )) {
             clientGameModel.buyUpgradeCard ( "Null" );

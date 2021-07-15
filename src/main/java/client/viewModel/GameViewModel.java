@@ -432,17 +432,21 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                     cards.setImage ( null );
                 }
             }
-            if (register != null) {
+            if (registers != null) {
                 for (ImageView register : registers) {
                     register.setImage ( null );
+                }
+            }
+            if(upgradeCards !=null){
+                for (ImageView upgradCard: upgradeCards) {
+                    upgradCard.setImage ( null );
                 }
             }
             Platform.runLater ( () -> {
                 pane.setCenter ( null );
                 readyButton.setDisable ( false );
                 model.setGameFinished ( false );
-                upgradeCards.clear ();
-                registers.clear ();
+
             } );
         }
 
@@ -589,9 +593,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 Parent root1 = null;
                 try {
                     showPopup("Upgrade Phase has begun");
-                   // seconds = 30;
-                   //clientGameModel.getUpgradBoughtCards ().clear ();
-
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
