@@ -55,6 +55,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+  /**
+     * Sets the robot and its image for each player and loads their image.
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
 
     public void setRobot(int playerID, int x, int y) {
         int figure = clientModel.getPlayersFigureMap().get(playerID);
@@ -74,12 +81,26 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setRotate(clientGameModel.getAntennaOrientation());
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
+   /**
+     * Finds the paths for files,nice tool for loading images.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
 
     public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
+   /**
+     * Loads image views for the realted imaged.
+     *
+     * @param element      the element
+     * @param orientations the orientations
+     * @return the image view
+     * @throws FileNotFoundException the file not found exception
+     */
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         Image image;
@@ -138,6 +159,11 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     }
 
+    /**
+     * Hnadles the click event on the grid.
+     *
+     * @param event the event
+     */
 
     public void clickGrid(MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
@@ -148,6 +174,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
     }
 
+    /**
+     * Important method for turning the robot.
+     * Gets the location of the robot and turns it right or left.
+     *
+     * @param playerID the player id
+     * @param rotation the rotation
+     */
 
     public void turnRobot(int playerID, String rotation) {
         Platform.runLater(() -> {
@@ -174,6 +207,13 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         });
     }
 
+  /**
+     * Important method to move the robots.Gets the robots location and replaces it with the new one.
+     *
+     * @param playerID the player id
+     * @param x        the x
+     * @param y        the y
+     */
 
     public void moveRobot(int playerID, int x, int y) {
         Robot robot = null;
@@ -197,6 +237,14 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         clientGameModel.getRobotMap().replace(robot, newPosition);
     }
 
+    /**
+     * Creates the map objects on the map.
+     * Reads the map obejects and according to their type loads their images on the according coordinate.
+     * @param map
+     * @param mapX
+     * @param mapY
+     * @throws IOException
+     */
 
     private void createMapObjects(ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) throws IOException {
 
@@ -362,6 +410,12 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             }
         }
     }
+  /**
+     * Handles the animations of gears.
+     * Reads the orientations of the elements and calls the related animation.
+     *
+     * @param type the type
+     */
 
     private void animateGears() {
         for (Map.Entry<Point2D, Gear> entry : clientGameModel.getGearMap().entrySet()) {
@@ -383,7 +437,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             rotateTransition.play();
         }
     }
-
+/**
+*Returns the points of the robots on the field 
+*/
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -395,7 +451,8 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         return robotsOnFields;
     }
-
+/**
+*Finds the path of the laserPosition*/
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
@@ -489,7 +546,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         return laserPath;
     }
-
+/**
+*Allows to walk throug the coordinates
+*/
     private Point2D getMoveInDirection(Point2D position, String orientation) {
         double x = position.getX();
         double y = position.getY();
@@ -502,7 +561,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
         return new Point2D(x, y);
     }
-
+/**
+* Moves the checkpoints on some wicked mapElements
+*/
 
     public void moveCheckPoint(int checkpointID, Point2D newPosition) {
         Point2D oldPosition = clientGameModel.getCheckpointPositionByID(checkpointID);
@@ -536,7 +597,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-
+/**
+*Activates the lasers along their path
+*Some poor robots gets setCheckpointPositionByID
+*/
     public void activateLasers() {
 //        ImageView laserBeam = new ImageView();
         for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
@@ -578,6 +642,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             }
         }
     }
+/**
+Animation of the energy spaces 
+*/
 
     public void animateEnergySpaces() {
         for (Map.Entry<Point2D, EnergySpace> entry : clientGameModel.getEnergySpaceMap().entrySet()) {
@@ -610,7 +677,9 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
 
     }
-
+/**
+*Animation of the push panels according to their register numbers and orientation
+*/
     public void PushPanelsAnimation() {
         double ToX = 0;
         double ToY = 0;
@@ -646,6 +715,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             tt.play();
         }
     }
+ /**
+     * Handles the property changes for Starting point, move queue and turning queue.
+     * @param evt
+     */
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
