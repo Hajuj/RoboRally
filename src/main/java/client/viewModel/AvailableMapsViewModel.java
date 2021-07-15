@@ -11,7 +11,9 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
+/**
+javadoc test
+*/
 public class AvailableMapsViewModel implements Initializable {
 
     ClientModel model = ClientModel.getInstance();
