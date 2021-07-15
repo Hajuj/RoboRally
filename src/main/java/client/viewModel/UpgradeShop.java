@@ -81,7 +81,11 @@ public class UpgradeShop implements Initializable {
     }
 
 
-
+  /**
+     * Show description as a tooltip according to a mouse event
+     *
+     * @param mouseEvent the mouse event
+     */
     public void showDescription(MouseEvent mouseEvent) {
         ImageView source  = (ImageView) mouseEvent.getSource ();
         switch (source.getId ()){
@@ -99,7 +103,12 @@ public class UpgradeShop implements Initializable {
             }
         }
     }
-
+   /**
+     * Buy card.
+     * Handles the buying of a upgrade card on this window
+     *
+     * @param mouseEvent the mouse event
+     */
     public void buyCard(MouseEvent mouseEvent) {
         if (mouseEvent.getSource ().equals ( buyButton )){
                 clientGameModel.buyUpgradeCard ( getChoosenUpgradeCard ( ) );
@@ -118,7 +127,11 @@ public class UpgradeShop implements Initializable {
         Stage stage = (Stage) buyButton.getScene ().getWindow ();
         stage.close ();
     }
-
+  /**
+     * Choose upgrade card.
+     *
+     * @param mouseEvent the mouse event
+     */
     public void chooseUpgradeCard(MouseEvent mouseEvent) {
         ImageView choosenCard = (ImageView) mouseEvent.getSource ();
         if (choosenCard.equals ( null )){
@@ -131,20 +144,33 @@ public class UpgradeShop implements Initializable {
             setChoosenUpgradeCard ( choosenCard.getId ( ) );
         }
     }
+     /**
+     * Refreshes shadow.
+     */
     public void refreshShadow () {
         for (ImageView upgradeCard:upgradeCards) {
             upgradeCard.setEffect ( new DropShadow ( 0.0,Color.RED ) );
         }
     }
-
+/**
+*Loads the needed image
+*/
     private Image loadImage(String cardName) throws FileNotFoundException {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/UpgradeCards/" + cardName + ".png")));
     }
-
+  /**
+     * Sets choosen upgrade card.
+     *
+     * @param cardName the card name
+     */
     public void setChoosenUpgradeCard (String cardName) {
         this.choosenUpgradeCard.set(cardName);
     }
-
+ /**
+     * Gets choosen upgrade card.
+     *
+     * @return the choosen upgrade card
+     */
     public String getChoosenUpgradeCard() {
         return this.choosenUpgradeCard.get ( );
     }

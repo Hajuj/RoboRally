@@ -50,16 +50,32 @@ public class ServerIpStageViewModel implements Initializable {
         BButton = new Button();
         connectButton.setDefaultButton(true);
     }
-
+  /**
+     * Find path file.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
     public File findPath (String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
-
+   /**
+     * Server address property string property.
+     *
+     * @return the string property
+     */
     public StringProperty serverAddressProperty () {
         return serverAddress;
     }
-
+ /**
+     * Connect button action.
+     * Handles the action when the connect button is clicked.
+     * Takes the given IP and Port info and tries to connect
+     * Opens the chooserobot window if the connect is succesful
+     *
+     * @param event the event
+     */
     @FXML
     public void connectButtonAction (ActionEvent event) {
         try {
@@ -106,13 +122,23 @@ public class ServerIpStageViewModel implements Initializable {
         }
         return false;
     }
-
+  /**
+     * Lmu button action.
+     * Sets the IP and the Port to our beloved LMU's server
+     *
+     * @param event the event
+     */
     @FXML
     public void LMUButtonAction (ActionEvent event) {
         serverAddressField.setText("sep21.dbs.ifi.lmu.de");
         serverPortField.setText("52021");
     }
-
+   /**
+     * Bb button action.
+     * Sets the IP and the Port to our beloved bb server
+     *
+     * @param event the event
+     */
     @FXML
     public void BBButtonAction (ActionEvent event) {
         serverAddressField.setText("127.0.0.1");
