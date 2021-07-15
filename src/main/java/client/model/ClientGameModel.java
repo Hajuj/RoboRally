@@ -28,7 +28,6 @@ public class ClientGameModel {
     private ArrayList<String> refillShopCards = new ArrayList<>();
     private ArrayList<String> exchangeShopCards = new ArrayList<>();
     private ArrayList<String> boughtCards = new ArrayList<>();
-    private ArrayList<String> upgradeBoughtCards = new ArrayList<> ();
 
     private ArrayList<String> cardsInHand = new ArrayList<>();
     private ArrayList<String> upgradeCards = new ArrayList<>();
@@ -207,12 +206,46 @@ public class ClientGameModel {
     public boolean isCurrentPlayer() {
         return currentPlayer;
     }
-
+    /**
+     * Methode to send the played card in a PlayCard- Message to the clientModel
+     * which will send the message to the server to be handled
+     * @param cardName string vlaue of the played-card name
+     * **/
     public void sendPlayCard (String cardName) {
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(cardName));
         clientModel.sendMessage(playCard);
     }
+    /**
+     * Methode that sends choosen cards by the player after placing them in registers
+     * in a  SelectedCard- Message to the clientModel
+     * which will send the message to the server to be handled
+     * @param cardName string vlaue of the played-card name
+     * @param registerNum is an int value of the current register
+     * **/
+    public void sendSelectedCards (int registerNum, String cardName) {
+        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
+        clientModel.sendMessage(jsonMessage);
+    }
+    /**
+     * Methode that sends the choosen return-cards by the player after playing
+     * the upgrade Card MemorySwap. Then send it in ReturnCards Message
+     * @param allReturnedCardsL an ArrayList of strings of all 3 returned choosen-cards
+     **/
+    public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
+        this.returnedCards = allReturnedCardsL;
+        JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
+        clientModel.sendMessage(returnCardsMessage);
+    }
 
+
+    /**
+     * Methode to set Map Objects with their Type, isOnBoard and Orientation and put it
+     * in a Hashmap for each Element in order to save their Location and ElementTyp in a Hashmap
+     * this will serve the purpose of easy accessing to every map-element and its properties
+     * @param map is a 3D ArrayList of the jsonMap
+     * @param mapX is the x Demension of the Map
+     * @param mapY is the y Demension of the Map
+     * **/
     public void createMapObjects (ArrayList<ArrayList<ArrayList<Element>>> map, int mapX, int mapY) {
         for (int x = 0; x < mapX; x++) {
             for (int y = 0; y < mapY; y++) {
@@ -302,15 +335,12 @@ public class ClientGameModel {
     public void placeElementOnMap (Element element, int x, int y) {
         map.get(x).get(y).add(element);
     }
-
-   /* public void setActualPlayerID (int actualPlayerID) {
-        int currentPlayer = this.actualPlayerID;
-        this.actualPlayerID = actualPlayerID;
-        propertyChangeSupport.firePropertyChange("yourTurn", currentPlayer, actualPlayerID);
-
-    }*/
-
-
+    /**
+     * Methode that check if its allowed to buy an UpgradeCard using the MEthode checkAllowtoBuy
+     * and then send cardName to BuyUpgradeBody with a boolean value isBuying
+     * whether the player is buying or not and the cardName of the upgradeCard
+     * @param cardName is a String value of the Upgrade Card name
+     * **/
     public void buyUpgradeCard (String cardName) {
         boolean isBuying = true;
         if (checkAllowToBuy(cardName)) {
@@ -321,6 +351,15 @@ public class ClientGameModel {
         clientModel.sendMessage(buyMessage);
     }
 
+
+    /**
+     * Methode to check if the Player is allowed to buy an Upgrade Card in case of having enough Energy
+     * and not more than 3 of each permanent and Temporary Upgrade Cards
+     * Depending on all mensioned condtions, the methode returns a boolean value if the player can
+     * or cant buy the choosen Upgrad card
+     * @param cardName a String Value of the choosen card name
+     * @return boolean value gives the permission to buy the card or not
+     * **/
     public boolean checkAllowToBuy (String cardName) {
         boolean allowToBuy = true;
         int numOfPermanent = Collections.frequency(boughtCards, "AdminPrivilege") + Collections.frequency(boughtCards, "RearLaser");
@@ -329,29 +368,28 @@ public class ClientGameModel {
         // ob er noch nicht 3 und 3 karten hat
         if (cardName.equals("Null")) {
             allowToBuy = false;
-            System.out.println(1);
         } else {
             if (isPermanent(cardName) && numOfPermanent == 3) {
                 allowToBuy = false;
-                System.out.println(2);
             } else if ((!isPermanent(cardName)) && numOfTemporary == 3) {
                 allowToBuy = false;
-                System.out.println(3);
+
             }
         }
         int energyCost = getUpgradeCost(cardName);
         if (this.energy < energyCost) {
             allowToBuy = false;
-            System.out.println(4);
         }
         if (allowToBuy) {
             this.energy = this.energy -energyCost;
         }
-        System.out.println ( this.energy );
-        System.out.println ( energyCost );
         return allowToBuy;
     }
-
+    /**
+     * Methode to lookup the price of player-choice of an Upgrade Card
+     * @param cardName String value of the choosen card
+     * @return int value of the cost of the choosen upgrade Card
+     * **/
     public int getUpgradeCost (String cardName) {
         return switch (cardName) {
             case "AdminPrivilege", "SpamBlocker" -> 3;
@@ -362,16 +400,19 @@ public class ClientGameModel {
 
         };
     }
-
+    /**
+     *Methode to check if an upgrade Card is permanent
+     * @param cardName string vlaue for the upgrade-card name
+     * @return boolean value whether the given card permanent or not
+     * **/
     public boolean isPermanent (String cardName) {
         return (cardName.equals("AdminPrivilege") || cardName.equals("RearLaser"));
     }
 
 
-    public String getBoughtCard () {
-        return this.boughtCard;
-    }
-
+    /**
+     * Methode to activate the upgrade-card SpamBlocker using sendPlayCard methode
+     * **/
     public void activateSpamBlocker () {
         sendPlayCard("SpamBlocker");
     }
@@ -535,6 +576,11 @@ public class ClientGameModel {
         }
     }
 
+    public void playMemorySwap(boolean b) {
+        this.MemorySwapOnPlay = b;
+        JSONMessage memorySwapMessage = new JSONMessage("PlayCard", new PlayCardBody ("MemorySwap"));
+        clientModel.sendMessage(memorySwapMessage);
+    }
 
 
     public void refillShop(boolean refill) {
@@ -565,10 +611,7 @@ public class ClientGameModel {
         return robotMap;
     }
 
-    public void sendSelectedCards (int registerNum, String cardName) {
-        JSONMessage jsonMessage = new JSONMessage("SelectedCard", new SelectedCardBody(cardName, registerNum + 1));
-        clientModel.sendMessage(jsonMessage);
-    }
+
 
 
     public HashMap<Robot, Point2D> getStartingPointQueue () {
@@ -595,7 +638,6 @@ public class ClientGameModel {
         }
     }
 
-
     public void setCheckpointPositionByID (int checkpointID, Point2D newPosition) {
         Point2D oldPosition = getCheckpointPositionByID(checkpointID);
         CheckPoint checkPoint = checkPointMap.get(oldPosition);
@@ -613,7 +655,12 @@ public class ClientGameModel {
         return null;
     }
 
-
+    /**
+     * Method to get every Robot on a specific position.
+     * Takes a position.
+     *@param position  is the position that is checked
+     *@return          every Robot on the position
+     * **/
     public ArrayList<Robot> getRobotsOnFields (Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
         for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
@@ -624,7 +671,10 @@ public class ClientGameModel {
         return robotsOnFields;
     }
 
-
+    /**
+     * Methode that retruns the angle depending on the orientation of the Antenna
+     * @return  int value of the angle
+     * **/
     public int getAntennaOrientation () {
         for (Map.Entry<Point2D, Antenna> entry : antennaMap.entrySet()) {
             if (entry.getValue().getOrientations().contains("left")) {
@@ -636,7 +686,11 @@ public class ClientGameModel {
         return 0;
     }
 
-
+    /**
+     * Methode that checks if a Robot is on a specific position
+     * @param position a Point2D value the helds an x and y position as a tuple (x,y)
+     * @return boolean value whether a robot is on the given position
+     * **/
     public boolean isRobotOnField (Point2D position) {
         for (Map.Entry<Robot, Point2D> entry : robotMap.entrySet()) {
             if (position.getX() == entry.getValue().getX() && position.getY() == entry.getValue().getY()) {
@@ -742,31 +796,11 @@ public class ClientGameModel {
         }
     }
 
-    public void setChoosenRegister(int choosenRegister) {
-
-        this.choosenRegister= choosenRegister;
-        JSONMessage chooseRegisterMessage = new JSONMessage("ChooseRegister", new ChooseRegisterBody (choosenRegister));
-        clientModel.sendMessage(chooseRegisterMessage);
-    }
-
-    public int getChoosenRegister(){
-        return this.choosenRegister;
-    }
-
     public void canBackShooting(boolean b) {
         this.backShooting= b;
     }
 
-    public void sendRetrunCards(ArrayList<String> allReturnedCardsL) {
-        this.returnedCards = allReturnedCardsL;
-        JSONMessage returnCardsMessage = new JSONMessage("ReturnCards", new ReturnCardsBody (allReturnedCardsL));
-        clientModel.sendMessage(returnCardsMessage);
-    }
-    public void playMemorySwap(boolean b) {
-        this.MemorySwapOnPlay = b;
-        JSONMessage memorySwapMessage = new JSONMessage("PlayCard", new PlayCardBody ("MemorySwap"));
-        clientModel.sendMessage(memorySwapMessage);
-    }
+
 
     public void finishRetunrCard(boolean b) {
         boolean oldValue = this.isReturning ;
@@ -780,13 +814,7 @@ public class ClientGameModel {
         return this.returnedCards;
     }
 
-    public ArrayList<String> getUpgradBoughtCards() {
-        return upgradeBoughtCards;
-    }
 
-    public void setUpgradeBoughtCards( ArrayList<String> upgradeBoughtCards) {
-        this.upgradeBoughtCards = upgradeBoughtCards;
-    }
 
 
 
