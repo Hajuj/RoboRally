@@ -12,16 +12,34 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+/**
+ * The type Choose damage view model.
+ */
 
 public class ChooseDamageViewModel implements Initializable {
     public Text countDisplay;
+      /**
+     * The Client game model.
+     */
+
     ClientGameModel clientGameModel = ClientGameModel.getInstance();
 
+  /**
+     * The Trojan.
+     */
 
     @FXML
     public ImageView Trojan;
+      /**
+     * The Virus.
+     */
+
     @FXML
     public ImageView Virus;
+      /**
+     * The Worm.
+     */
+
     @FXML
     public ImageView Worm;
 
@@ -29,6 +47,12 @@ public class ChooseDamageViewModel implements Initializable {
     private int tempCount = 0;
     private ArrayList<String> choosenDamageCards = new ArrayList<>();
 
+    /**
+     * Choose damage cards.
+     * Adds damage cards
+     *
+     * @param event the event
+     */
 
     public void chooseDamageCards(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
@@ -48,6 +72,11 @@ public class ChooseDamageViewModel implements Initializable {
         }
     }
 
+   /**
+     * Initializes count ,tempcount and sets damage count to zero.
+     * @param url
+     * @param resourceBundle
+     */
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
