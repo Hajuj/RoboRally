@@ -83,6 +83,7 @@ public class MessageHandler {
 
     public void handleGameStarted(ClientModel client, GameStartedBody bodyObject) {
         logger.info(ANSI_CYAN + "Game Started received." + ANSI_RESET);
+        client.getClientGameModel().setEnergy(5);
         client.getClientGameModel().setMap(bodyObject.getGameMap());
         int mapX = bodyObject.getGameMap().size();
         int mapY = bodyObject.getGameMap().get(0).size();
