@@ -22,8 +22,9 @@ java -jar SimpleAIModel-jar-with-dependencies.jar -h HOST_IP -p PORTNUMBER
 * **Repeat 3 until you get the desired number of players.**
 
 ## Game
-Look [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/wikis/home) to find everything relevant for the Game.
-
+Look at the [Wiki](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/wikis/home) to find everything relevant for the Game.
+##
+* JavaDocs are [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/tree/Abgabe/JavaDocs)
 ## Project Requirements
 - Java 16
 - JavaFX 16
