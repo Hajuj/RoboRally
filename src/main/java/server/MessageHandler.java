@@ -70,7 +70,7 @@ public class MessageHandler {
                 }
 
                 if (server.getCurrentGame().isGameOn()) {
-                    JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("gameOn"));
+                    JSONMessage errorGameOnMessage = new JSONMessage("Error", new ErrorBody("The game is already started, but you can join to chat!"));
                     server.sendMessage(errorGameOnMessage, clientHandler.getWriter());
                 }
 
@@ -291,18 +291,7 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * When the player puts a card in the register.
-     * The server checks if the register is empty, if not it throws an error.
-     * It checks if the selected card is an Again card, if its in the first register,
-     * the server send an error to the player.
-     * If the selected card is approved the server informs all the players about it.
-     *
-     * @param server           The Server
-     * @param clientHandler    The ClientHandler of the Server
-     * @param selectedCardBody The message body of the JSON message
-     */
-    public void handleSelectedCard(Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
+    public void handleSelectedCard (Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
         int register = selectedCardBody.getRegister() - 1;
@@ -356,9 +345,9 @@ public class MessageHandler {
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
         if (card.equals("SpamBlocker")) {
-            server.getCurrentGame().activatSpamCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
+            server.getCurrentGame().activateSpamCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
         } else if (card.equals("MemorySwap")) {
-            server.getCurrentGame().activatMemorySwapCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
+            server.getCurrentGame().activateMemorySwapCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
         } else {
             //When it's the turn of the player himself
             if (clientHandler.getPlayer_id() == server.getCurrentGame().getCurrentPlayer()) {

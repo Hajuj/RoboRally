@@ -237,7 +237,7 @@ public class ClientModel {
                 robotName = "Robot " + Game.getRobotNames().get(playersFigureMap.get(p.getKey()));
                 isReady = p.getValue() ? " is ready" : " is not ready";
             }
-            setPlayersStatus(playersStatus + "Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
+            setPlayersStatus(playersStatus + "      Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
         }
         setDoRefreshPlayerDisplay(true);
     }

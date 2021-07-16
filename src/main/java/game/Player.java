@@ -85,6 +85,10 @@ public class Player {
 
         this.installedPermanentUpgrades = new ArrayList<>();
         this.temporaryUpgrades = new ArrayList<>();
+
+        this.activeAdminPrivilege = 0;
+        this.numberOfAdminPrivilege = 0;
+        this.energy = 5;
     }
 
     /**

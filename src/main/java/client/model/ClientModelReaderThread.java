@@ -1,5 +1,7 @@
 package client.model;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import json.JSONDeserializer;
 import json.JSONMessage;
 import json.protocol.ServerMessageAction;
@@ -59,10 +61,17 @@ public class ClientModelReaderThread extends Thread {
 
                 ServerMessageAction msg = (ServerMessageAction) jsonMessage.getMessageBody();
                 msg.triggerAction(client, messageBody, messageHandler);
+            } if (!client.isAI()) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Server is dead, you have to leave!");
+                    alert.show();
+                });
             }
-        } catch(SocketException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
-        } catch(IOException | ClassNotFoundException e) {
+        }
+        catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

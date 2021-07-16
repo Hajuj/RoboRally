@@ -179,10 +179,14 @@ public class Game {
         robotMap = new HashMap<>();
         startingPointMap = new HashMap<>();
         checkPointReached = new HashMap<>();
+        for (Player player : playerList) {
+            checkPointReached.put(player, 0);
+        }
         robotsRebootDirection = new HashMap<>();
         currentDamage = new HashMap<>();
         robotsHitByRobotLaser = new ArrayList<>();
         deadRobotsIDs = new ArrayList<>();
+        upgradeCardsShop = new ArrayList<>();
 
         roundCounter = 1;
         currentRegister = 0;
@@ -238,7 +242,6 @@ public class Game {
             if (!server.getCurrentGame().getDeadRobotsIDs().contains(playerList.get(i).getPlayerID())) {
                 return playerList.get(i).getPlayerID();
             }
-            System.out.println("Player " + playerList.get(i).getPlayerID() + " ist tot");
         }
         //No more players in the list / no more alive players in the list
         return -1;
@@ -433,11 +436,9 @@ public class Game {
                         int numCP = checkPointMap.get(position).getCount();
                         Point2D newPosition = getMoveInDirection(positionCheckPoint,
                                 conveyorBeltMap.get(position).getOrientations().get(0));
-                        System.out.println(conveyorBeltMap.get(position).getOrientations());
                         //second movement:
                         newPosition = getMoveInDirection(newPosition,
                                 conveyorBeltMap.get(newPosition).getOrientations().get(0));
-                        System.out.println(conveyorBeltMap.get(newPosition).getOrientations());
                         //save new positions
                         checkPointMovedMap.put(newPosition, checkPointMap.get(positionCheckPoint));
                         //adjust map
@@ -452,11 +453,11 @@ public class Game {
                     }
                 }
             }
+            //change old CheckPoint positions in HashMap to new positions
+            checkPointMap.clear();
+            checkPointMap.putAll(checkPointMovedMap);
+            checkPointMovedMap.clear();
         }
-        //change old CheckPoint positions in HashMap to new positions
-        checkPointMap.clear();
-        checkPointMap.putAll(checkPointMovedMap);
-        checkPointMovedMap.clear();
     }
 
     /**
@@ -659,7 +660,6 @@ public class Game {
     public void activatePushPanels() {
         int currentRegister = this.currentRegister + 1;
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
-            System.out.println();
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
                         pushPanelMap.get(position).getRegisters().contains(3) ||
@@ -1165,17 +1165,13 @@ public class Game {
      *
      * @param player the player
      */
-    public void activatSpamCard(Player player){
+    public void activateSpamCard(Player player){
         replaceSpamCardsHand(player);
 
     }
 
-    public void activatMemorySwapCard (Player player) {
-        //Draw three cards for the player and remove them from deck Programming
-        for (int i = 0; i < 3; i++) {
-            player.getDeckHand().getDeck().add(player.getDeckProgramming().getTopCard());
-            player.getDeckProgramming().removeTopCard();
-        }
+    public void activateMemorySwapCard(Player player) {
+        player.drawCardsProgramming(3);
         JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));
         server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
     }
@@ -1610,11 +1606,11 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition - 1);
                             robotYPosition--;
-                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
+                            sendNewPosition(getRobotOwner(robot));
                         }
                     }
                     if (IS_LAZY) {
@@ -1639,11 +1635,11 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setyPosition(robotYPosition + 1);
                             robotYPosition++;
-                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
+                            sendNewPosition(getRobotOwner(robot));
                         }
                     }
                     if (IS_LAZY) {
@@ -1668,11 +1664,11 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition - 1);
                             robotXPosition--;
-                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
+                            sendNewPosition(getRobotOwner(robot));
                         }
                     }
                     if (IS_LAZY) {
@@ -1697,11 +1693,11 @@ public class Game {
                         if (canMove && canRobotMove(robotXPosition, robotYPosition, orientation)) {
                             robot.setxPosition(robotXPosition + 1);
                             robotXPosition++;
-                            sendNewPosition(getRobotOwner(robot));
                             if (!getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).isEmpty()) {
                                 pushRobot(robot,
                                         getRobotsOnFieldsWithout(new Point2D(robotXPosition, robotYPosition), robot).get(0), 1);
                             }
+                            sendNewPosition(getRobotOwner(robot));
                         }
                     }
                     if (IS_LAZY) {

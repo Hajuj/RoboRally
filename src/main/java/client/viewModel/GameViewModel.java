@@ -307,17 +307,22 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         //TODO 2 Karten auf einem Register
         //TODO TargetId nehemn und überprüfen
         this.register = target.getId ( );
-        if (target.getImage ( ) != null ) {
+        if (target.getImage ( ) != null) {
 
             returnSource.setImage ( target.getImage ( ) );
             target.setImage ( dbImage.getImage ( ) );
 
+        } if (target.getId().equals(card_0.getId()) || target.getId().equals(card_1.getId())
+                || target.getId().equals(card_3.getId()) || target.getId().equals(card_4.getId()) || target.getId().equals(card_5.getId())
+                ||target.getId().equals(card_6.getId())|| target.getId().equals(card_7.getId())|| target.getId().equals(card_8.getId())){
+            handlewithdraw ( target,image );
         }else {
 
             handlewithdraw ( target, image );
             collectingCards ( );
         }
     }
+
          /*else if(dragEvent.getGestureTarget ().equals ( card_0 )||dragEvent.getGestureTarget ().equals ( card_1 )||
                 dragEvent.getGestureTarget ().equals ( card_2 )||dragEvent.getGestureTarget ().equals ( card_3 )||dragEvent.getGestureTarget ().equals ( card_4 )||
                 dragEvent.getGestureTarget ().equals ( card_5 )||dragEvent.getGestureTarget ().equals ( card_6 )||dragEvent.getGestureTarget ().equals ( card_7 )||
@@ -547,6 +552,14 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
                 pane.setCenter ( null );
                 readyButton.setDisable ( false );
                 model.setGameFinished ( false );
+                try {
+                    readyButton.setImage(loadImage("notReady"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                readyButton.setId("readyButton");
+                model.setNewStatus(false);
+                model.setDoChooseMap(false);
 
             } );
         }
