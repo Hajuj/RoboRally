@@ -26,7 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
+/**
+ * @author Lilas, Viktoria
+ */
 public class MapViewModel implements Initializable, PropertyChangeListener {
 
     private ClientModel clientModel = ClientModel.getInstance();

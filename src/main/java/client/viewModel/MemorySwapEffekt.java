@@ -19,7 +19,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
+/**
+ * @author Lilas
+ */
 public class MemorySwapEffekt implements Initializable {
 
 

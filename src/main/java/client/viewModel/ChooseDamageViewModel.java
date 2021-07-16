@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
+ * @author Lilas
+ */
+
+
+/**
  * The type Choose damage view model.
  */
 

@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
+ * @author Lilas
+ */
+
+/**
  * The type Chat view model.
  */
 

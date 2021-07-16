@@ -10,7 +10,9 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
+/**
+ * @author Lilas
+ */
 public class AdminPrivilegeEffekt implements Initializable {
 
     public CheckBox reg_0;

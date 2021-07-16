@@ -12,7 +12,9 @@ import javafx.scene.input.MouseEvent;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
+/**
+ * @author Lilas
+ */
 public class RebootDirectionViewModel implements Initializable {
     public ImageView robotAvatar;
     public ImageView robotOrientation;
