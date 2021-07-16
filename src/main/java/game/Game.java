@@ -657,7 +657,9 @@ public class Game {
      * of the PushPanel.
      */
     public void activatePushPanels() {
+        int currentRegister = this.currentRegister + 1;
         if (currentRegister == 1 || currentRegister == 3 || currentRegister == 5) {
+            System.out.println();
             for (Point2D position : pushPanelMap.keySet()) {
                 if (pushPanelMap.get(position).getRegisters().contains(1) ||
                         pushPanelMap.get(position).getRegisters().contains(3) ||
