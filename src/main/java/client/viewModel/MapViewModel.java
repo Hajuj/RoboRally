@@ -52,7 +52,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         PushPanelsAnimation();
         activateLasers();
-        animateGears ();
+//        animateGears ();
     }
 
     /**
@@ -94,6 +94,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/TwoLaserBeam_transparent_animated.gif")));
         } else if (element.equals("TribleLaserBeam")) {
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/ThreeLaserBeam_transparent_animated.gif")));
+        } else if (element.equals("GreenGear")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/GreenGear_transparent_animated_2.gif")));
+        }  else if (element.equals("RedGear")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RedGear_transparent_animated_slower.gif")));
         } else {
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/" + element + ".png")));
         }
@@ -769,7 +773,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         if (evt.getPropertyName().equals("Gears")) {
             clientModel.getClientGameModel().setAnimateGears(false);
             Platform.runLater(() -> {
-                animateGears();
+//                animateGears();
             });
         }
         if (evt.getPropertyName().equals("EnergySpaces")) {
