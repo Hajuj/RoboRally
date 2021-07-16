@@ -6,7 +6,7 @@ import game.Card;
  * @author Ilja Knis
  */
 public class MoveII extends Card {
-    public MoveII(){
+    public MoveII() {
         cardName = "MoveII";
     }
 

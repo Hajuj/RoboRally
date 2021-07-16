@@ -16,26 +16,26 @@ public class MovementBody implements ServerMessageAction<MovementBody> {
     @Expose
     private int y;
 
-    public MovementBody (int clientID, int x, int y) {
+    public MovementBody(int clientID, int x, int y) {
         this.clientID = clientID;
         this.x = x;
         this.y = y;
     }
 
     @Override
-    public void triggerAction (ClientModel client, MovementBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, MovementBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleMovement(client, bodyObject);
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public int getX () {
+    public int getX() {
         return x;
     }
 
-    public int getY () {
+    public int getY() {
         return y;
     }
 }

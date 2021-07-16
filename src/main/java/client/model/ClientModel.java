@@ -45,6 +45,8 @@ public class ClientModel {
     private HashMap<Integer, String> playersNamesMap = new HashMap<Integer, String>();
     private HashMap<Integer, Integer> playersFigureMap = new HashMap<Integer, Integer>();
 
+    private boolean doRefreshPlayerDisplay = false;
+
     private String playersStatus = "";
     private String chatHistory = "";
 
@@ -70,7 +72,7 @@ public class ClientModel {
      * @return instace of ClientModel Klasse
      */
     public static ClientModel getInstance() {
-        if (instance == null) {
+        if(instance == null) {
             instance = new ClientModel();
         }
         return instance;
@@ -102,8 +104,8 @@ public class ClientModel {
             writerTread.start();
 
             //waiting for server response
-            synchronized (this) {
-                while (waitingForServer) {
+            synchronized(this) {
+                while(waitingForServer) {
                     logger.info("Waiting for the server answer...");
                     this.wait();
                 }
@@ -113,13 +115,13 @@ public class ClientModel {
             sendMessage(new JSONMessage("HelloServer", new HelloServerBody(group, isAI, protocolVersion)));
             return true;
 
-        } catch (ConnectException connectException) {
+        } catch(ConnectException connectException) {
             return false;
-        } catch (IllegalArgumentException connectException) {
+        } catch(IllegalArgumentException connectException) {
             return false;
-        } catch (IOException connectException) {
+        } catch(IOException connectException) {
             return false;
-        } catch (InterruptedException connectException) {
+        } catch(InterruptedException connectException) {
             return false;
         }
     }
@@ -167,8 +169,8 @@ public class ClientModel {
      * @return ID der Spielers, falls er in dem HashMap gefunden wurde, oder 0 falls nicht.
      */
     public int getIDbyUsername(String username) {
-        for (Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
-            if (entry.getValue().equals(username)) {
+        for(Map.Entry<Integer, String> entry : playersNamesMap.entrySet()) {
+            if(entry.getValue().equals(username)) {
                 return entry.getKey();
             }
         }
@@ -182,16 +184,15 @@ public class ClientModel {
      * @param message - Nachricht zu schicken
      */
     public void sendMsg(String message) {
-        if (!message.isBlank()) {
+        if(!message.isBlank()) {
             //schauen ob das eine private Nachricht ist
-            if (message.charAt(0) == '@') {
-                if (message.contains(" ")) {
+            if(message.charAt(0) == '@') {
+                if(message.contains(" ")) {
                     int beginMsg = message.indexOf(" ");
                     String playerPrivate = message.substring(1, beginMsg);
-                    if (getIDbyUsername(playerPrivate) != clientGameModel.getPlayer().getPlayerID()) {
-                        if (getIDbyUsername(playerPrivate) != 0) {
+                    if(getIDbyUsername(playerPrivate) != clientGameModel.getPlayer().getPlayerID()) {
+                        if(getIDbyUsername(playerPrivate) != 0) {
                             clientModelWriterThread.sendDirectMessage(clientGameModel.getPlayer().getName() + " : " + message, getIDbyUsername(playerPrivate));
-                            setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                             setChatHistory(chatHistory + clientGameModel.getPlayer().getName() + " : " + message + "\n");
                         } else {
                             setChatHistory(chatHistory + "No Player with name " + playerPrivate + " found." + "\n");
@@ -229,15 +230,16 @@ public class ClientModel {
     public void refreshPlayerStatus(int playerID, boolean newPlayerStatus) {
         playersStatusMap.replace(playerID, newPlayerStatus);
         setPlayersStatus("");
-        for (Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
+        for(Map.Entry<Integer, Boolean> p : playersStatusMap.entrySet()) {
             String robotName = "**chat only**";
             String isReady = "               ";
-            if (playersFigureMap.get(p.getKey()) != -1) {
+            if(playersFigureMap.get(p.getKey()) != -1) {
                 robotName = "Robot " + Game.getRobotNames().get(playersFigureMap.get(p.getKey()));
                 isReady = p.getValue() ? " is ready" : " is not ready";
             }
-            setPlayersStatus(playersStatus + "Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
+            setPlayersStatus(playersStatus + "      Player " + playersNamesMap.get(p.getKey()) + isReady + "  |   " + robotName + "\n");
         }
+        setDoRefreshPlayerDisplay(true);
     }
 
     /**
@@ -247,8 +249,8 @@ public class ClientModel {
      * @return ID des Spielers, falls er gefunden wurde und -1, falls nicht.
      */
     public int getIDfromRobotName(String name) {
-        for (Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
-            if (Game.getRobotNames().get(entry.getValue()).equals(name)) {
+        for(Map.Entry<Integer, Integer> entry : getPlayersFigureMap().entrySet()) {
+            if(Game.getRobotNames().get(entry.getValue()).equals(name)) {
                 return entry.getKey();
             }
         }
@@ -285,7 +287,7 @@ public class ClientModel {
     public void setGameOn(boolean gameOn) {
         boolean oldGameOn = this.gameOn;
         this.gameOn = gameOn;
-        if (this.gameOn) {
+        if(this.gameOn) {
             propertyChangeSupport.firePropertyChange("gameOn", oldGameOn, true);
         }
     }
@@ -293,7 +295,7 @@ public class ClientModel {
     public void setGameFinished(boolean gameFinished) {
         boolean oldGameFinished = this.gameFinished;
         this.gameFinished = gameFinished;
-        if (this.gameFinished) {
+        if(this.gameFinished) {
             propertyChangeSupport.firePropertyChange("gameFinished", oldGameFinished, true);
         }
     }
@@ -379,10 +381,19 @@ public class ClientModel {
     public void setDoChooseMap(boolean doChooseMap) {
         boolean oldDoChooseMap = this.doChooseMap;
         this.doChooseMap = doChooseMap;
-        if (this.doChooseMap) {
+        if(this.doChooseMap) {
             propertyChangeSupport.firePropertyChange("doChooseMap", oldDoChooseMap, true);
         }
     }
+
+    public void setDoRefreshPlayerDisplay(boolean doRefreshPlayerDisplay) {
+        boolean oldsDoRefreshPlayerDisplay = this.doRefreshPlayerDisplay;
+        this.doRefreshPlayerDisplay = doRefreshPlayerDisplay;
+        if(this.doRefreshPlayerDisplay) {
+            propertyChangeSupport.firePropertyChange("doRefreshPlayerDisplay", oldsDoRefreshPlayerDisplay, true);
+        }
+    }
+
 
     public void setAvailableMaps(ArrayList<String> availableMaps) {
         this.availableMaps = availableMaps;

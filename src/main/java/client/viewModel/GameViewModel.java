@@ -45,7 +45,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//TODO: hier sollte noch die Stage für die beiden Chat und Spiel implementiert werden
 
 public class GameViewModel implements Initializable, PropertyChangeListener {
 
@@ -134,8 +133,9 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
     public BooleanProperty gameOn = new SimpleBooleanProperty(false);
 
-  /**
+    /**
      * Sets the values of the buttons,properties and panes.
+     *
      * @param url
      * @param resourceBundle
      */
@@ -155,12 +155,11 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         readyDisplay.setEditable(false);
 
         model.refreshPlayerStatus(model.getClientGameModel().getPlayer().getPlayerID(), false);
-        if (model.getClientGameModel().getPlayer().getFigure() == -1) {
+        model.setDoRefreshPlayerDisplay(false);
+        if(model.getClientGameModel().getPlayer().getFigure() == -1) {
             readyButton.setVisible(false);
         }
 
-    /*    paneA.prefHeightProperty().bind(.getScene().getWindow().heightProperty());
-        paneA.prefWidthProperty().bind(pane.getScene().getWindow().widthProperty());*/
 
         registers = FXCollections.observableArrayList(reg_0, reg_1, reg_2, reg_3, reg_4);
         Platform.runLater(() -> {
@@ -168,12 +167,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             yourRobot.setId(String.valueOf(clientGameModel.getPlayer().getFigure()));
         });
     }
-  /**
-     * Show popup.
-     * Initiates a new Popup
-     *
-     * @param popupText the popup text
-     */
 
     public void showPopup(String popText) throws IOException, InterruptedException {
         Text text = new Text ( popText );
@@ -185,7 +178,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         Stage not = new Stage ( );
         not.setTitle ( "Player Notification" );
         not.setScene ( scene );
-        //not.show();
         ScaleTransition scaleTransition = new ScaleTransition ( );
         scaleTransition.setDuration ( Duration.seconds ( 2 ) );
         scaleTransition.setNode ( text );
@@ -198,11 +190,12 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         executor.submit ( () -> Platform.runLater ( not::show ) );
         executor.schedule (
                 () -> Platform.runLater ( () -> not.close ())
-                , 3
+                , 2
                 , TimeUnit.SECONDS );
 
     }
-  /**
+
+    /**
      * Your robot image.
      * Gets the players values and sets its robot.Figure gets called.
      *
@@ -220,7 +213,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         return image;
     }
-   /**
+
+    /**
      * Load image image.
      * Loads the required image.
      *
@@ -248,8 +242,10 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         return image;
 
     }
-/**
-    * Handles the cards put in the register.
+
+    /**
+     * Handles the cards put in the register.
+     *
      * @param event the event
      */
 
@@ -268,7 +264,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         event.consume();
         handleSource(source);
     }
-/**
+
+    /**
      * Handles the draged cards.
      *
      * @param event the event
@@ -279,7 +276,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             event.acceptTransferModes(TransferMode.MOVE);
         }
     }
-  /**
+
+    /**
      * Handles the source of the draged image.
      *
      * @param source the source
@@ -295,7 +293,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         dbImage.setContent(content);
 
     }
-   /**
+
+    /**
      * Handles the dropped image.
      * This image is the card.
      *
@@ -308,17 +307,22 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         //TODO 2 Karten auf einem Register
         //TODO TargetId nehemn und überprüfen
         this.register = target.getId ( );
-        if (target.getImage ( ) != null ) {
+        if (target.getImage ( ) != null) {
 
             returnSource.setImage ( target.getImage ( ) );
             target.setImage ( dbImage.getImage ( ) );
 
+        } if (target.getId().equals(card_0.getId()) || target.getId().equals(card_1.getId())
+                || target.getId().equals(card_3.getId()) || target.getId().equals(card_4.getId()) || target.getId().equals(card_5.getId())
+                ||target.getId().equals(card_6.getId())|| target.getId().equals(card_7.getId())|| target.getId().equals(card_8.getId())){
+            handlewithdraw ( target,image );
         }else {
 
             handlewithdraw ( target, image );
             collectingCards ( );
         }
     }
+
          /*else if(dragEvent.getGestureTarget ().equals ( card_0 )||dragEvent.getGestureTarget ().equals ( card_1 )||
                 dragEvent.getGestureTarget ().equals ( card_2 )||dragEvent.getGestureTarget ().equals ( card_3 )||dragEvent.getGestureTarget ().equals ( card_4 )||
                 dragEvent.getGestureTarget ().equals ( card_5 )||dragEvent.getGestureTarget ().equals ( card_6 )||dragEvent.getGestureTarget ().equals ( card_7 )||
@@ -328,18 +332,13 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
 
 
 
- /**
-     * Handlewithdraw.
-     *
-     * @param target the target
-     * @param image  the image
-     */
 
     public void handlewithdraw(ImageView target, Image image) {
         target.setImage(image);
 
     }
-  /**
+
+    /**
      * Sends the selected cards to be played to the server
      */
 
@@ -347,8 +346,6 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         int registerNum = Integer.parseInt(String.valueOf(this.register.charAt(4)));
         if (!cardName.equals("Null")) {
             if (clientGameModel.getCardsInHand ().get(Integer.parseInt ( cardName )).equals ( "Again" ) && registerNum==0) {
-                System.out.println ( clientGameModel.getCardsInHand ( ).get ( Integer.parseInt ( cardName ) ) );
-                System.out.println ( "bin drinnen" );
                 registers.get ( 0 ).setImage ( null );
                 try {
                     returnSource.setImage ( loadImage ( "Again" ) );
@@ -363,7 +360,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             clientGameModel.sendSelectedCards(registerNum, "Null");
         }
     }
-   /**
+
+    /**
      * Puts the selected card in the selected register
      */
 
@@ -378,6 +376,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
             e.printStackTrace();
         }
     }
+
     /**
      * Sets card name.
      *
@@ -387,7 +386,8 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
-   /**
+
+    /**
      * Gets card name.
      *
      * @return the card name
@@ -397,7 +397,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         return cardName;
     }
 
-   /**
+    /**
      * Drag exited.
      *
      * @param dragEvent the drag event
@@ -410,7 +410,7 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
     }
 
 
-   /**
+    /**
      * Gets next available register.
      *
      * @return the next available register
@@ -426,43 +426,49 @@ public class GameViewModel implements Initializable, PropertyChangeListener {
         }
         return regNumber;
     }
+
     /**
-    disables all registers
-    */
+     * disables all registers
+     */
     private void disableAllRegisters(boolean b) {
         for (ImageView register:registers) {
             register.setDisable(b);
         }
     }
-/**
-disables the hand
-*/
+
+    /**
+     * disables the hand
+     */
     private void disableHand(boolean b) {
         for (ImageView hand : cards) {
             hand.setDisable(b);
         }
     }
-     /**
+
+    /**
      * Sets damage count.
      */
 
-    public void setCount () {
+    public void setCount() {
         this.count = clientGameModel.getDamageCount();
     }
-/**
-    *Loads the window for avaible maps 
-    */
+
+    /**
+     * Loads the window for avaible maps
+     */
     public void showMaps() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/AvailableMaps.fxml"));
         Parent root1 = fxmlLoader.load();
         Stage newStage = new Stage();
+        newStage.setResizable ( false );
         newStage.setTitle("Available Maps");
         newStage.setScene(new Scene(root1));
         newStage.show();
     }
+
     /**
-    *sends the ready or not ready stauts of a player
-    */
+     * sends the ready or not ready stauts of a player
+     */
     public void sendReadyStatus(MouseEvent mouseEvent) throws FileNotFoundException {
         if (readyButton.getId ().equals ( "readyButton" )) {
             readyButton.setImage ( loadImage ( "ready" ) );
@@ -475,9 +481,10 @@ disables the hand
             model.setDoChooseMap(false);
         }
     }
+
     /**
-    *Goes to the game guide and loads the required images
-    */
+     * Goes to the game guide and loads the required images
+     */
     public void goToGameGuide(MouseEvent event) throws IOException {
         Platform.runLater ( () -> {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/GameGuide.fxml"));
@@ -489,11 +496,13 @@ disables the hand
                 e.printStackTrace ( );
             }
             Stage newStage = new Stage();
+            newStage.setResizable ( false );
             newStage.setTitle("Game Guide");
             newStage.setScene(new Scene(root1));
             newStage.show();
         } );
     }
+
     /**
      * Handles the property changes and their values
      * Loads the map
@@ -502,6 +511,7 @@ disables the hand
      * It's your turn label is set when it is player's turn.
      * Shows pop ups for the actual phase.
      * Sets the damage and robot direction.
+     *
      * @param evt
      */
 
@@ -528,15 +538,29 @@ disables the hand
                     cards.setImage ( null );
                 }
             }
-            if (register != null) {
+            if (registers != null) {
                 for (ImageView register : registers) {
                     register.setImage ( null );
+                }
+            }
+            if(upgradeCards !=null){
+                for (ImageView upgradCard: upgradeCards) {
+                    upgradCard.setImage ( null );
                 }
             }
             Platform.runLater ( () -> {
                 pane.setCenter ( null );
                 readyButton.setDisable ( false );
                 model.setGameFinished ( false );
+                try {
+                    readyButton.setImage(loadImage("notReady"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                readyButton.setId("readyButton");
+                model.setNewStatus(false);
+                model.setDoChooseMap(false);
+
             } );
         }
 
@@ -554,10 +578,6 @@ disables the hand
             }
             cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                     card_6, card_7, card_8 );
-            /*for (ImageView card : cards) {
-                Image image = card.getImage ();
-                card.setImage ( null );
-            }*/
             Platform.runLater ( () -> {
                 try {
                     for (int j = 0; j < cards.size ( ); j++) {
@@ -566,10 +586,7 @@ disables the hand
                         cards.get ( j ).setId ( Integer.toString ( j ) );
 
                     }
-                 /*  for (int j = clientGameModel.getCardsInHand().size(); j < cards.size(); j++) {
-                        cards.get(j).setImage(null);
-                        cards.get(j).setId("Null");
-                   }*/
+
                 } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                     e.printStackTrace ( );
                 }
@@ -641,29 +658,36 @@ disables the hand
             } );
         }
         if (evt.getPropertyName ( ).equals ( "PickDamage" )) {
-            Platform.runLater ( () -> {
-                setCount ( );
+            Platform.runLater(() -> {
+                setCount();
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/PickDamage.fxml" ) );
-                    right_Side.setCenter ( fxmlLoader.load ( ) );
-                } catch (IOException e) {
-                    e.printStackTrace ( );
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/PickDamage.fxml"));
+                    right_Side.setCenter(fxmlLoader.load());
+                } catch(IOException e) {
+                    e.printStackTrace();
                 }
-            } );
+            });
         }
-        if (evt.getPropertyName ( ).equals ( "doChooseMap" )) {
-            model.setDoChooseMap ( false );
-            Platform.runLater ( () -> {
+
+        if(evt.getPropertyName().equals("doRefreshPlayerDisplay")) {
+            model.setDoRefreshPlayerDisplay(false);
+
+            readyDisplay.setText(model.getPlayersStatus());
+
+        }
+        if(evt.getPropertyName().equals("doChooseMap")) {
+            model.setDoChooseMap(false);
+            Platform.runLater(() -> {
                 try {
-                    showMaps ( );
-                } catch (IOException ioException) {
-                    ioException.printStackTrace ( );
+                    showMaps();
+                } catch(IOException ioException) {
+                    ioException.printStackTrace();
                 }
-            } );
+            });
         }
-        if (evt.getPropertyName ( ).equals ( "RebootDirection" )) {
-            clientGameModel.setChooseRebootDirection ( false );
-            Platform.runLater ( () -> {
+        if(evt.getPropertyName().equals("RebootDirection")) {
+            clientGameModel.setChooseRebootDirection(false);
+            Platform.runLater(() -> {
                 setCount ( );
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource ( "/view/RebootDirection.fxml" ) );
@@ -684,13 +708,15 @@ disables the hand
                 try {
                     showPopup("Upgrade Phase has begun");
                    // seconds = 30;
-                    //clientGameModel.getUpgradBoughtCards ().clear ();
-                    clientGameModel.getBoughtCards ().clear ();
+                   //clientGameModel.getUpgradBoughtCards ().clear ();
+
                     enableUpgradeCards();
                     root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
+                    newStage.setResizable ( false );
                     newStage.setTitle("UpgradeShop");
                     newStage.setScene(new Scene(root1));
+                    newStage.setOnCloseRequest ( event ->clientGameModel.buyUpgradeCard ( "Null" ));
                     newStage.show();
                 } catch (IOException | InterruptedException ioException) {
                     ioException.printStackTrace ( );
@@ -741,9 +767,10 @@ disables the hand
         }
 
     }
+
     /**
-    *Timer for the truns
-    */
+     * Timer for the truns
+     */
 
     private void doTimer() {
         Timeline time = new Timeline (  );
@@ -767,9 +794,10 @@ disables the hand
 
 
     }
+
     /**
-    *enables the event of buying upgrade cards 
-    */
+     * enables the event of buying upgrade cards
+     */
 
     private void enableUpgradeCards() {
         upgradeCards = FXCollections.observableArrayList(upgradeCard_1, upgradeCard_2, upgradeCard_3, upgradeCard_4, upgradeCard_5, upgradeCard_6);
@@ -778,9 +806,10 @@ disables the hand
             card.setDisable ( false );
         }
     }
-/**
-*cool method of opening and closing the chat
-*/
+
+    /**
+     * cool method of opening and closing the chat
+     */
     public void open_chat(MouseEvent mouseEvent) {
         Platform.runLater ( () -> {
         try {
@@ -800,9 +829,7 @@ disables the hand
         }});
     }
 
-/**
-*Loads the images of the upgrade cards and acts if one of them is chosen.
-*/
+
     public void handleUpgradeCard (MouseEvent mouseEvent) throws IOException {
         ImageView source = (ImageView) mouseEvent.getSource();
         if (source.getId().equals("AdminPrivilege")) {
@@ -819,6 +846,7 @@ disables the hand
         else if (source.getId ().equals ( "MemorySwap" )){
             if (clientGameModel.getActualPhase ()==2) {
                 source.setImage ( null );
+                clientGameModel.getBoughtCards ().remove ( "MemorySwap" );
                 clientGameModel.playMemorySwap(true);
                 FXMLLoader fxmlLoader = new FXMLLoader ( getClass ( ).getResource ( "/view/MemorySwapEffekt.fxml" ) );
                 Parent root1 = fxmlLoader.load ( );
@@ -833,11 +861,7 @@ disables the hand
         else if (source.getId ().equals ( "SpamBlocker" )){
             if (clientGameModel.getActualPhase ()== 2) {
                 source.setImage ( null );
-               /* regToCard.put ( 0, null );
-                regToCard.put ( 1, null );
-                regToCard.put ( 2, null );
-                regToCard.put ( 3, null );
-                regToCard.put ( 4, null );*/
+                clientGameModel.getBoughtCards ().remove ( "SpamBlocker" );
               cards = FXCollections.observableArrayList ( card_0, card_1, card_2, card_3, card_4, card_5,
                         card_6, card_7, card_8 );
                 for (ImageView card : cards) {

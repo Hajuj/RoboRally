@@ -52,10 +52,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         PushPanelsAnimation();
         activateLasers();
-
+        animateGears ();
     }
 
-  /**
+    /**
      * Sets the robot and its image for each player and loads their image.
      *
      * @param playerID the player id
@@ -81,26 +81,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         imageView.setRotate(clientGameModel.getAntennaOrientation());
         fieldMap.get(new Point2D(x, y)).getChildren().add(imageView);
     }
-   /**
-     * Finds the paths for files,nice tool for loading images.
-     *
-     * @param fileName the file name
-     * @return the file
-     */
 
-    public File findPath(String fileName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
-    }
-
-   /**
-     * Loads image views for the realted imaged.
-     *
-     * @param element      the element
-     * @param orientations the orientations
-     * @return the image view
-     * @throws FileNotFoundException the file not found exception
-     */
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
         Image image;
@@ -131,7 +112,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             case "left", "right,left,top", "bottom,right", "left,right" -> {
                 imageView.setRotate(-90);
             }
-            case "bottom", "top,bottom,left", "right,top" -> {
+            case "bottom", "top,bottom,left", "right,top","bottom,top"  -> {
                 imageView.setRotate(180);
             }
             case "left,top,right", "bottom,left" -> {
@@ -207,7 +188,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         });
     }
 
-  /**
+    /**
      * Important method to move the robots.Gets the robots location and replaces it with the new one.
      *
      * @param playerID the player id
@@ -240,6 +221,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     /**
      * Creates the map objects on the map.
      * Reads the map obejects and according to their type loads their images on the according coordinate.
+     *
      * @param map
      * @param mapX
      * @param mapY
@@ -279,12 +261,26 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
                             if (conveyorBelt.getSpeed() == 2) {
                                 switch (conveyorBelt.getOrientations().size()) {
-                                    case 1 -> {
+
+                                    /*case 1 -> {
                                         ImageView imageView2 = loadImage("BlueBelt", String.join(",", conveyorBelt.getOrientations()));
                                         imageGroup.getChildren().add(imageView2);
-                                    }
+                                    }*/
+                                    /*conveyorBelt.getOrientations ().equals ( "[right, left]")|| conveyorBelt.getOrientations ().equals ( "[left, right]" )||
+                                            conveyorBelt.getOrientations ().equals ( "[top, bottom]" )||conveyorBelt.getOrientations ().equals ( "[bottom, top]" ))*/
+
                                     case 2 -> {
-                                        ImageView imageView2 = loadImage("RotatingBeltBlue3", String.join(",", conveyorBelt.getOrientations()));
+                                        ImageView imageView2;
+                                        if (conveyorBelt.getOrientations ().get ( 0 ).equals ( "right" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "left" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "top" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "bottom" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "bottom" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "top" )||
+                                                conveyorBelt.getOrientations ().get ( 0 ).equals ( "left" )&&conveyorBelt.getOrientations ().get ( 1 ).equals ( "right" )){
+                                            imageView2 = loadImage ( "BlueBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+
+                                        }else{
+                                            //System.out.println ( conveyorBelt.getOrientations () );
+                                            imageView2 = loadImage ( "RotatingBeltBlue3", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                        }
                                         imageGroup.getChildren().add(imageView2);
                                     }
                                     case 3 -> {
@@ -294,24 +290,28 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
                                 }
                             }
 
-                            if (conveyorBelt.getSpeed() == 1) {
-                                switch (conveyorBelt.getOrientations().size()) {
-                                    case 1 -> {
-                                        ImageView imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        imageGroup.getChildren().add(imageView2);
-                                    }
-                                    case 2 -> {
-                                        ImageView imageView2;
-                                        if (conveyorBelt.getIsOnBoard().equals("Start A")) {
-                                            imageView2 = loadImage("GreenBelt", String.join(",", conveyorBelt.getOrientations()));
-                                        } else {
-                                            imageView2 = loadImage("RotatingBeltGreen1", String.join(",", conveyorBelt.getOrientations()));
-                                        }
-                                        imageGroup.getChildren().add(imageView2);
-                                    }
+                            if (conveyorBelt.getSpeed ( ) == 1) {
+                                ImageView imageView2;
+                                if (conveyorBelt.getIsOnBoard ( ).equals ( "Start A" )) {
+                                    imageView2 = loadImage ( "GreenBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    imageGroup.getChildren ( ).add ( imageView2 );
+
+
                                 }
+                                if (!conveyorBelt.getIsOnBoard ( ).equals ( "Start A" )) {
+                                    if (conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "right" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "left" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "top" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "bottom" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "bottom" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "top" ) ||
+                                            conveyorBelt.getOrientations ( ).get ( 0 ).equals ( "left" ) && conveyorBelt.getOrientations ( ).get ( 1 ).equals ( "right" )) {
+                                        imageView2 = loadImage ( "GreenBelt", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    } else {
+                                        imageView2 = loadImage ( "RotatingBeltGreen1", String.join ( ",", conveyorBelt.getOrientations ( ) ) );
+                                    }
+                                    imageGroup.getChildren ( ).add ( imageView2 );
+                                }
+
                             }
-                        }
+                         }
                         case "EnergySpace" -> {
                             //TODO gibt es einen Unterschied wenn die ES richtung links oder recht; Anpassung für isOnBoard 1A/5B
                             Element element = map.get(x).get(y).get(i);
@@ -410,11 +410,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             }
         }
     }
-  /**
+
+    /**
      * Handles the animations of gears.
      * Reads the orientations of the elements and calls the related animation.
-     *
-     * @param type the type
      */
 
     private void animateGears() {
@@ -437,9 +436,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             rotateTransition.play();
         }
     }
-/**
-*Returns the points of the robots on the field 
-*/
+
+    /**
+     * Returns the points of the robots on the field
+     */
     public ArrayList<Robot> getRobotsOnFields(Point2D position) {
         ArrayList<Robot> robotsOnFields = new ArrayList<>();
 
@@ -451,8 +451,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         return robotsOnFields;
     }
-/**
-*Finds the path of the laserPosition*/
+
+    /**
+     * Finds the path of the laserPosition
+     */
     public ArrayList<Point2D> getLaserPath(Laser laser, Point2D laserPosition) {
         ArrayList<Point2D> laserPath = new ArrayList<>();
         laserPath.add(laserPosition);
@@ -546,9 +548,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
         }
         return laserPath;
     }
-/**
-*Allows to walk throug the coordinates
-*/
+
+    /**
+     * Allows to walk throug the coordinates
+     */
     private Point2D getMoveInDirection(Point2D position, String orientation) {
         double x = position.getX();
         double y = position.getY();
@@ -561,9 +564,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
         return new Point2D(x, y);
     }
-/**
-* Moves the checkpoints on some wicked mapElements
-*/
+
 
     public void moveCheckPoint(int checkpointID, Point2D newPosition) {
         Point2D oldPosition = clientGameModel.getCheckpointPositionByID(checkpointID);
@@ -597,10 +598,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
     }
 
-/**
-*Activates the lasers along their path
-*Some poor robots gets setCheckpointPositionByID
-*/
+    /**
+     * Activates the lasers along their path
+     * Some poor robots gets setCheckpointPositionByID
+     */
     public void activateLasers() {
 //        ImageView laserBeam = new ImageView();
         for (Map.Entry<Point2D, Laser> entry : clientGameModel.getLaserMap().entrySet()) {
@@ -642,9 +643,10 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
             }
         }
     }
-/**
-Animation of the energy spaces 
-*/
+
+    /**
+     * Animation of the energy spaces
+     */
 
     public void animateEnergySpaces() {
         for (Map.Entry<Point2D, EnergySpace> entry : clientGameModel.getEnergySpaceMap().entrySet()) {
@@ -677,9 +679,10 @@ Animation of the energy spaces
         }
 
     }
-/**
-*Animation of the push panels according to their register numbers and orientation
-*/
+
+    /**
+     * Animation of the push panels according to their register numbers and orientation
+     */
     public void PushPanelsAnimation() {
         double ToX = 0;
         double ToY = 0;
@@ -715,8 +718,10 @@ Animation of the energy spaces
             tt.play();
         }
     }
- /**
+
+    /**
      * Handles the property changes for Starting point, move queue and turning queue.
+     *
      * @param evt
      */
 

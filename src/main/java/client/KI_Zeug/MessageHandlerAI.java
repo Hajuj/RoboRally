@@ -50,7 +50,16 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     }
 
     @Override
-    public void handleCurrentPlayer(ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
+    public void handleCheckPointReachedBody (ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
+        logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
+        clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+            clientModel.receiveMessage("YOU ARE AWESOME");
+        }
+    }
+
+    @Override
+    public void handleCurrentPlayer (ClientModel clientModel, CurrentPlayerBody currentPlayerBody) {
         super.handleCurrentPlayer(clientModel, currentPlayerBody);
         if (currentPlayerBody.getClientID() == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             if (clientModel.getClientGameModel().getActualPhase() == 0) {
@@ -67,18 +76,18 @@ public class MessageHandlerAI extends client.model.MessageHandler {
     public void handleYourCards(ClientModel clientModel, YourCardsBody yourCardsBody) {
         super.handleYourCards(clientModel, yourCardsBody);
         simpleAIModel.setMyHandCards(yourCardsBody.getCardsInHand());
-        for (int i = 0; i < 5; i++) {
-            SimpleAIModel.getCardsInRegister().replace(i, null);
-        }
-        if (clientModel.getClientGameModel().getActualPhase() == 2) {
-            simpleAIModel.chooseCardsRoutine();
-        }
     }
 
     //wegen Timer Alert
     @Override
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
+        for (int i = 0; i < 5; i++) {
+            SimpleAIModel.getCardsInRegister().replace(i, null);
+        }
+        if (clientModel.getClientGameModel().getActualPhase() == 2) {
+            simpleAIModel.chooseCardsRoutine();
+        }
     }
 
     @Override

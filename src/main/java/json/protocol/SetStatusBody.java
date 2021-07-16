@@ -13,16 +13,16 @@ public class SetStatusBody implements ClientMessageAction<SetStatusBody> {
     @Expose
     private final boolean ready;
 
-    public SetStatusBody (boolean ready) {
+    public SetStatusBody(boolean ready) {
         this.ready = ready;
     }
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, SetStatusBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, SetStatusBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleSetStatus(server, clientHandler, bodyObject);
     }
 
-    public boolean isReady () {
+    public boolean isReady() {
         return ready;
     }
 }

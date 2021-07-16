@@ -3,6 +3,7 @@ package game.decks;
 import game.Card;
 import game.Deck;
 import game.damagecards.Virus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,7 +17,7 @@ public class DeckVirus extends Deck {
     public void initializeDeck() {
         deckVirus = new ArrayList<Card>();
 
-        for(int i = 0; i < 18; i++){
+        for(int i = 0; i < 18; i++) {
             deckVirus.add(new Virus());
         }
     }

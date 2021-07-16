@@ -19,7 +19,7 @@ public class Player {
     private int playerID;
     private String name;
     private Robot robot;
-    private int figure;
+    private int figure = -1;
     private boolean isReady;
     private int energy = 5;
     private boolean isAI = false;
@@ -37,7 +37,8 @@ public class Player {
     /**
      * Constructor for a new player.
      * Creates a new player with corresponding decks.
-     * @param playerID  is the player ID the player has at the server
+     *
+     * @param playerID is the player ID the player has at the server
      */
     public Player(int playerID) {
         this.playerID = playerID;
@@ -84,16 +85,21 @@ public class Player {
 
         this.installedPermanentUpgrades = new ArrayList<>();
         this.temporaryUpgrades = new ArrayList<>();
+
+        this.activeAdminPrivilege = 0;
+        this.numberOfAdminPrivilege = 0;
+        this.energy = 5;
     }
 
     /**
      * Method to check if all registers are full.
-     * @return  true if all registers are full
+     *
+     * @return true if all registers are full
      */
     public boolean isRegisterFull() {
         int count = 0;
-        for (Card card : this.getDeckRegister().getDeck()) {
-            if (card != null) {
+        for(Card card : this.getDeckRegister().getDeck()) {
+            if(card != null) {
                 count++;
             }
         }
@@ -104,15 +110,16 @@ public class Player {
      * Method to draw cards from the deck into empty registers.
      * Discards current hand. Then draws new cards into
      * empty registers. Doesn't draw "Again" into first register.
-     * @return  an ArrayList of drawn cards
+     *
+     * @return an ArrayList of drawn cards
      */
     public ArrayList<String> drawBlind() {
         discardHandCards();
         ArrayList<String> newCard = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            if (this.getDeckRegister().getDeck().get(i) == null) {
+        for(int i = 0; i < 5; i++) {
+            if(this.getDeckRegister().getDeck().get(i) == null) {
                 Card card = drawRegisterCards();
-                if (card.cardName.equals("Again") && i == 0) {
+                if(card.cardName.equals("Again") && i == 0) {
                     this.getDeckDiscard().getDeck().add(card);
                     i--;
                 } else {
@@ -128,16 +135,15 @@ public class Player {
      * Method to draw a new card for registers.
      * Shuffles deckDiscard into deckProgramming, if deckProgramming
      * is empty.
-     * @return  a new drawn card
+     *
+     * @return a new drawn card
      */
     public Card drawRegisterCards() {
-        if (this.deckProgramming.getDeck().size() > 0) {
+        if(this.deckProgramming.getDeck().size() > 0) {
             Card card = this.deckProgramming.getTopCard();
             this.deckProgramming.removeTopCard();
             return card;
-        }
-
-        else {
+        } else {
             shuffleDiscardIntoProgramming();
             Card card = this.deckProgramming.getTopCard();
             this.deckProgramming.removeTopCard();
@@ -152,7 +158,7 @@ public class Player {
      * Method to discard all cards from deckHand into deckDiscard.
      */
     public void discardHandCards() {
-        for (int i = 0; i < this.deckHand.getDeck().size(); i++) {
+        for(int i = 0; i < this.deckHand.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckHand.getDeck().get(i));
         }
         this.deckHand.getDeck().clear();
@@ -162,7 +168,7 @@ public class Player {
      * Method to discard all cards from deckRegister into deckDiscard.
      */
     public void discardRegisterCards() {
-        for (int i = 0; i < this.deckRegister.getDeck().size(); i++) {
+        for(int i = 0; i < this.deckRegister.getDeck().size(); i++) {
             this.deckDiscard.getDeck().add(this.deckRegister.getDeck().get(i));
             this.deckRegister.getDeck().set(i, null);
         }
@@ -174,26 +180,25 @@ public class Player {
      * If there is not enough cards left -> draws the rest of the deck,
      * shuffles deckDiscard into deckProgramming and draws the rest
      * of the needed cards.
-     * @param amount    is the amount of cards you need to draw
+     *
+     * @param amount is the amount of cards you need to draw
      */
     public void drawCardsProgramming(int amount) {
         int amountLeft;
-        if (amount <= this.deckProgramming.getDeck().size()) {
-            for (int i = 0; i < amount; i++) {
+        if(amount <= this.deckProgramming.getDeck().size()) {
+            for(int i = 0; i < amount; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(0));
                 this.deckProgramming.getDeck().remove(0);
             }
-        }
-
-        else if (amount > this.deckProgramming.getDeck().size()) {
+        } else if(amount > this.deckProgramming.getDeck().size()) {
             amountLeft = amount - (this.deckProgramming.getDeck().size());
 
-            for (int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
+            for(int i = 0; i < this.deckProgramming.getDeck().size(); i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getDeck().get(i));
             }
             this.deckProgramming.getDeck().clear();
             shuffleDiscardIntoProgramming();
-            for (int i = 0; i < amountLeft; i++) {
+            for(int i = 0; i < amountLeft; i++) {
                 this.deckHand.getDeck().add(this.deckProgramming.getTopCard());
                 this.deckProgramming.removeTopCard();
             }
@@ -213,12 +218,13 @@ public class Player {
 
     /**
      * Method to select and remove a card from hand.
-     * @param card  is the card one selects
-     * @return      the removed card
+     *
+     * @param card is the card one selects
+     * @return the removed card
      */
     public Card removeSelectedCard(String card) {
-        for (Card card1 : this.deckHand.getDeck()) {
-            if (card.equals(card1.getCardName())) {
+        for(Card card1 : this.deckHand.getDeck()) {
+            if(card.equals(card1.getCardName())) {
                 deckHand.getDeck().remove(card1);
                 return card1;
             }
@@ -228,8 +234,9 @@ public class Player {
 
     /**
      * Method to assign a robot to a player
-     * @param figure    is the robot
-     * @param name      is the username
+     *
+     * @param figure is the robot
+     * @param name   is the username
      */
     public void pickRobot(int figure, String name) {
         this.figure = figure;
@@ -242,7 +249,7 @@ public class Player {
      * @return the boolean
      */
     public boolean checkAdmin() {
-        if (numberOfAdminPrivilege >= activeAdminPrivilege + 1) {
+        if(numberOfAdminPrivilege >= activeAdminPrivilege + 1) {
             activeAdminPrivilege++;
             return true;
         } else {

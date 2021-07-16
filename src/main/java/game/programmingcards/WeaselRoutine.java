@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class WeaselRoutine extends Card {
-    public WeaselRoutine(){
+    public WeaselRoutine() {
         cardName = "WeaselRoutine";
     }
 

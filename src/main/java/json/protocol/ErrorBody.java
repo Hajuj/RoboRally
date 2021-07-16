@@ -13,16 +13,16 @@ public class ErrorBody implements ServerMessageAction<ErrorBody> {
     @Expose
     private final String error;
 
-    public ErrorBody (String error) {
+    public ErrorBody(String error) {
         this.error = error;
     }
 
-    public String getError () {
+    public String getError() {
         return error;
     }
 
     @Override
-    public void triggerAction (ClientModel clientmodel, ErrorBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel clientmodel, ErrorBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleError(clientmodel, bodyObject);
     }
 

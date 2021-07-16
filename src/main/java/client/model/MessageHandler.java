@@ -33,7 +33,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "HalloClient Message received." + ANSI_RESET);
         logger.info("Server has protocol " + helloClientBody.getProtocol());
 
-        synchronized (clientmodel) {
+        synchronized(clientmodel) {
             clientmodel.setWaitingForServer(false);
             clientmodel.notifyAll();
         }
@@ -64,7 +64,7 @@ public class MessageHandler {
         logger.warn(ANSI_CYAN + "Error has occurred! " + ANSI_RESET);
         logger.info("Error has occurred! " + errorBody.getError());
 
-        if ("gameOn".equals(errorBody.getError())) {
+        if("gameOn".equals(errorBody.getError())) {
             clientmodel.setCanPlay(false);
         }
 
@@ -104,7 +104,7 @@ public class MessageHandler {
         int figure = playerAddedBody.getFigure();
 
         // The player himself has been added
-        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == clientID) {
+        if(clientModel.getClientGameModel().getPlayer().getPlayerID() == clientID) {
             clientModel.getClientGameModel().getPlayer().setName(name);
             clientModel.getClientGameModel().getPlayer().setFigure(figure);
         }
@@ -116,13 +116,14 @@ public class MessageHandler {
     public void handlePlayerStatus(ClientModel clientModel, PlayerStatusBody playerStatusBody) {
         logger.info(ANSI_CYAN + "PlayerStatus Message received." + ANSI_RESET);
         clientModel.refreshPlayerStatus(playerStatusBody.getClientID(), playerStatusBody.isReady());
+
     }
 
     //diese Methode wird getriggert wenn Client eine SelectMap Message bekommt.
     public void handleSelectMap(ClientModel clientModel, SelectMapBody selectMapBody) {
         logger.info(ANSI_CYAN + "SelectMap Message received." + ANSI_RESET);
         clientModel.getAvailableMaps().clear();
-        for (String map : selectMapBody.getAvailableMaps()) {
+        for(String map : selectMapBody.getAvailableMaps()) {
             clientModel.getAvailableMaps().add(map);
         }
         clientModel.setDoChooseMap(true);
@@ -139,7 +140,7 @@ public class MessageHandler {
         boolean isConnected = connectionUpdateBody.isConnected();
         String action = connectionUpdateBody.getAction();
 
-        if (action.equals("remove") && !isConnected) {
+        if(action.equals("remove") && !isConnected) {
             clientmodel.removePlayer(playerID);
         }
     }
@@ -148,7 +149,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "StartingPointTaken Message received." + ANSI_RESET);
         int playerID = startingPointTakenBody.getClientID();
 
-        if (playerID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+        if(playerID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             String robotName = Game.getRobotNames().get(clientModel.getPlayersFigureMap().get(playerID));
             Robot myRobot = new Robot(robotName, startingPointTakenBody.getX(), startingPointTakenBody.getY());
             clientModel.getClientGameModel().getPlayer().setRobot(myRobot);
@@ -172,7 +173,7 @@ public class MessageHandler {
         int playerID = currentPlayerBody.getClientID();
         clientModel.getClientGameModel().setActualPlayerID(playerID);
         clientModel.getClientGameModel().switchPlayer(true);
-        if (clientModel.getClientGameModel().getActualPhase() == 1 && clientModel.getClientGameModel().getPlayer().getPlayerID() == playerID) {
+        if(clientModel.getClientGameModel().getActualPhase() == 1 && clientModel.getClientGameModel().getPlayer().getPlayerID() == playerID) {
             clientModel.getClientGameModel().refillShop(true);
         }
         //TODO phase 1 und Pkayer == selbst if ()
@@ -185,7 +186,7 @@ public class MessageHandler {
         int phase = activePhaseBody.getPhase();
 
         clientModel.getClientGameModel().setActualPhase(phase);
-        if (phase == 2) {
+        if(phase == 2) {
             clientModel.getClientGameModel().setActualRegister(-1);
         }
     }
@@ -195,7 +196,7 @@ public class MessageHandler {
         int clientID = cardSelectedBody.getClientID();
         int register = cardSelectedBody.getRegister();
 
-        if (cardSelectedBody.isFilled()) {
+        if(cardSelectedBody.isFilled()) {
             clientModel.receiveMessage("Player with ID: " + clientID + " added a card to register number: " + (register + 1));
         } else {
             clientModel.receiveMessage("Player with ID: " + clientID + " removed a card from register number: " + (register + 1));
@@ -234,7 +235,7 @@ public class MessageHandler {
     public void handleSelectionFinished(ClientModel clientModel, SelectionFinishedBody selectionFinishedBody) {
         logger.info(ANSI_CYAN + "SelectionFinished Message received." + ANSI_RESET);
         int clientID = selectionFinishedBody.getClientID();
-        if (clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+        if(clientID != clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             clientModel.receiveMessage("Player with ID: " + clientID + " finished selecting cards!");
         }
     }
@@ -242,7 +243,7 @@ public class MessageHandler {
     public void handleTimerStarted(ClientModel clientModel, TimerStartedBody timerStartedBody) {
         logger.info(ANSI_CYAN + "TimerStarted Message received." + ANSI_RESET);
         Platform.runLater(() -> {
-            clientModel.getClientGameModel ().setTimer(true);
+            clientModel.getClientGameModel().setTimer(true);
           /*  Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setContentText("Selection Finished! You have 30 Seconds! Hurry up!");
             a.show();*/
@@ -269,12 +270,12 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "CurrentCards Message received." + ANSI_RESET);
         ArrayList<Object> currentCards = currentCardsBody.getActiveCards();
 
-        if (clientModel.getClientGameModel().getValueActualRegister() != 4) {
+        if(clientModel.getClientGameModel().getValueActualRegister() != 4) {
             clientModel.getClientGameModel().setActualRegister(clientModel.getClientGameModel().getValueActualRegister() + 1);
         } else {
             clientModel.getClientGameModel().setActualRegister(0);
         }
-        for (Object currentCard : currentCards) {
+        for(Object currentCard : currentCards) {
             String message = currentCard.toString().substring(10, currentCard.toString().length() - 1);
             String userNameDelimiter = ".0, card=";
             String[] split = message.split(userNameDelimiter);
@@ -326,7 +327,7 @@ public class MessageHandler {
     public void handleAnimation(ClientModel clientModel, AnimationBody animationBody) {
         logger.info(ANSI_CYAN + "Animation Message received." + ANSI_RESET);
         String type = animationBody.getType();
-        switch (type) {
+        switch(type) {
             case "BlueConveyorBelt": {
                 clientModel.getClientGameModel().setAnimateBelts(true);
                 break;
@@ -365,7 +366,7 @@ public class MessageHandler {
     public void handleEnergy(ClientModel clientModel, EnergyBody energyBody) {
         logger.info(ANSI_CYAN + "Energy Message received." + ANSI_RESET);
         clientModel.receiveMessage("The Energy from Player " + energyBody.getClientID() + " is " + energyBody.getCount() + " now!");
-        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
+        if(clientModel.getClientGameModel().getPlayer().getPlayerID() == energyBody.getClientID()) {
             clientModel.getClientGameModel().setEnergy(energyBody.getCount());
         }
         //TODO: speichern? benutzen?
@@ -376,7 +377,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "Reboot Message received." + ANSI_RESET);
 
         int clientID = rebootBody.getClientID();
-        if (clientID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
+        if(clientID == clientModel.getClientGameModel().getPlayer().getPlayerID()) {
             clientModel.getClientGameModel().setChooseRebootDirection(true);
         }
 
@@ -385,9 +386,14 @@ public class MessageHandler {
     public void handleCheckPointReachedBody(ClientModel clientModel, CheckPointReachedBody checkPointReachedBody) {
         logger.info(ANSI_CYAN + "CheckPointReached Message received." + ANSI_RESET);
         clientModel.receiveMessage("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
-        if (clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
+        if(clientModel.getClientGameModel().getPlayer().getPlayerID() == checkPointReachedBody.getClientID()) {
             clientModel.receiveMessage("YOU ARE AWESOME");
         }
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Player " + checkPointReachedBody.getClientID() + " is on the " + checkPointReachedBody.getNumber() + " Checkpoint now!");
+            alert.show();
+        });
     }
 
     public void handleGameFinished(ClientModel clientModel, GameFinishedBody gameFinishedBody) {
@@ -399,7 +405,7 @@ public class MessageHandler {
         });
         clientModel.setGameFinished(true);
         clientModel.getClientGameModel().refreshModel();
-        // clientModel.getClientGameModel ().gameFinished(true);
+        clientModel.getClientGameModel().setGameFinished(true);
     }
 
     public void handleDrawDamage(ClientModel clientModel, DrawDamageBody drawDamageBody) {
@@ -407,7 +413,7 @@ public class MessageHandler {
         ArrayList<String> cards = drawDamageBody.getCards();
         int clientID = drawDamageBody.getClientID();
         String cardsString = "";
-        for (String one : cards) {
+        for(String one : cards) {
             cardsString = cardsString + " " + one;
         }
         clientModel.receiveMessage("Player " + clientID + " has " + cardsString);
@@ -425,7 +431,7 @@ public class MessageHandler {
         //clientModel.getClientGameModel ().setUpgradeCards (cards);
         //clientModel.getClientGameModel ().refillShop ( true );
 
-        for (String card : cards) {
+        for(String card : cards) {
             clientModel.getClientGameModel().getUpgradeCards().add(card);
         }
     }
@@ -434,7 +440,7 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "ExchangeShop Message received." + ANSI_RESET);
         ArrayList<String> cards = exchangeShopBody.getCards();
 
-      clientModel.getClientGameModel ().setUpgradeCards ( exchangeShopBody.getCards () );
+        clientModel.getClientGameModel().setUpgradeCards(exchangeShopBody.getCards());
     }
 
     public void handleCheckpointMovedBody(ClientModel clientModel, CheckpointMovedBody checkpointMovedBody) {
@@ -462,11 +468,11 @@ public class MessageHandler {
         logger.info(ANSI_CYAN + "UpgradeBought Message received." + ANSI_RESET);
         int clientID = upgradeBoughtBody.getClientID();
         String card = upgradeBoughtBody.getCard();
-        clientModel.getClientGameModel ().getUpgradBoughtCards ().add(card);
-        for (String upgradeCard:clientModel.getClientGameModel ().getUpgradeCards ()) {
-            if (upgradeCard.equals ( card )){
-                clientModel.getClientGameModel ().getUpgradeCards ().remove (upgradeCard );
-            break;
+
+        for(String upgradeCard : clientModel.getClientGameModel().getUpgradeCards()) {
+            if(upgradeCard.equals(card)) {
+                clientModel.getClientGameModel().getUpgradeCards().remove(upgradeCard);
+                break;
             }
 
         }

@@ -6,7 +6,7 @@ import game.Card;
  * @author Ilja Knis
  */
 public class BackUp extends Card {
-    public BackUp(){
+    public BackUp() {
         cardName = "BackUp";
     }
 

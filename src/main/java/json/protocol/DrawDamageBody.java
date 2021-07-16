@@ -17,21 +17,21 @@ public class DrawDamageBody implements ServerMessageAction<DrawDamageBody> {
     @Expose
     private ArrayList<String> cards;
 
-    public DrawDamageBody (int clientID, ArrayList<String> cards) {
+    public DrawDamageBody(int clientID, ArrayList<String> cards) {
         this.clientID = clientID;
         this.cards = cards;
     }
 
     @Override
-    public void triggerAction (ClientModel client, DrawDamageBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, DrawDamageBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleDrawDamage(client, bodyObject);
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public ArrayList<String> getCards () {
+    public ArrayList<String> getCards() {
         return cards;
     }
 }

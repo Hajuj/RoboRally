@@ -3,7 +3,7 @@ package game.programmingcards;
 import game.Card;
 
 public class SpamFolder extends Card {
-    public SpamFolder(){
+    public SpamFolder() {
         cardName = "SpamFolder";
     }
 

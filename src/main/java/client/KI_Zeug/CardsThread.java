@@ -17,11 +17,11 @@ public class CardsThread extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 5; i++) {
+        for(int i = 0; i < 5; i++) {
             myCards.add(i, null);
         }
         decodeCards();
-        if (againInZeroRegister()) {
+        if(againInZeroRegister()) {
             simpleAIModel.getMyBabyList().remove(this);
             this.interrupt();
         } else {
@@ -31,7 +31,7 @@ public class CardsThread extends Thread {
 
 
     public boolean againInZeroRegister() {
-        if (myCards.get(0).equals("Again")) return true;
+        if(myCards.get(0).equals("Again")) return true;
         return false;
     }
 

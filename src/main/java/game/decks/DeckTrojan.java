@@ -3,6 +3,7 @@ package game.decks;
 import game.Card;
 import game.Deck;
 import game.damagecards.Trojan;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,7 +17,7 @@ public class DeckTrojan extends Deck {
     public void initializeDeck() {
         this.deckTrojan = new ArrayList<Card>();
 
-        for(int i = 0; i < 12; i++){
+        for(int i = 0; i < 12; i++) {
             deckTrojan.add(new Trojan());
         }
     }

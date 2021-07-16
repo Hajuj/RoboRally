@@ -23,7 +23,7 @@ public class Gear extends Element {
     public Gear(String type, String isOnBoard, ArrayList<String> orientations) {
         super(type, isOnBoard, orientations);
 
-        if (orientations.contains("counterclockwise")) {
+        if(orientations.contains("counterclockwise")) {
             this.colour = "red";
         } else {
             this.colour = "green";

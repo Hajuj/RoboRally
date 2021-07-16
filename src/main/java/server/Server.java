@@ -32,7 +32,7 @@ public class Server {
     private static String loggerStamp = "Server";
 
     private int clientsCounter = 1;
-    private ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<ClientHandler.Connection> connections = new ArrayList<>();
 
 
     private Server() {
@@ -148,8 +148,8 @@ public class Server {
         return null;
     }
 
-    public Connection getConnectionWithID(int ID) {
-        for (Connection connection : connections) {
+    public ClientHandler.Connection getConnectionWithID(int ID) {
+        for (ClientHandler.Connection connection : connections) {
             if (connection.getPlayerID() == ID) {
                 return connection;
             }
@@ -208,7 +208,7 @@ public class Server {
         this.clientsCounter = clientsCounter;
     }
 
-    public ArrayList<Connection> getConnections() {
+    public ArrayList<ClientHandler.Connection> getConnections() {
         return connections;
     }
 
