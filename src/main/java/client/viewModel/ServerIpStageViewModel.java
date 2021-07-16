@@ -44,36 +44,56 @@ public class ServerIpStageViewModel implements Initializable {
 
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         serverAddress = new SimpleStringProperty();
         LMUButton = new Button();
         BButton = new Button();
-        connectButton.setDefaultButton(true);
+        connectButton.requestFocus();
     }
 
-    public File findPath (String fileName) {
+    /**
+     * Find path file.
+     *
+     * @param fileName the file name
+     * @return the file
+     */
+    public File findPath(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
     }
 
-    public StringProperty serverAddressProperty () {
+    /**
+     * Server address property string property.
+     *
+     * @return the string property
+     */
+    public StringProperty serverAddressProperty() {
         return serverAddress;
     }
 
+    /**
+     * Connect button action.
+     * Handles the action when the connect button is clicked.
+     * Takes the given IP and Port info and tries to connect
+     * Opens the chooserobot window if the connect is succesful
+     *
+     * @param event the event
+     */
     @FXML
-    public void connectButtonAction (ActionEvent event) {
+    public void connectButtonAction(ActionEvent event) {
         try {
             serverIP = serverAddressField.getText();
             //Numberformatexception, wenn nicht checken, ob valide ist
-            if (validatePort(serverPortField.getText())) {
+            if(validatePort(serverPortField.getText())) {
                 serverPort = Integer.parseInt(serverPortField.getText());
 //            if (validateIpAdress(serverIP, serverPort)) {
-                if (model.connectClient(serverIP, serverPort)) {
+                if(model.connectClient(serverIP, serverPort)) {
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ChooseRobot.fxml"));
                     Parent root1 = fxmlLoader.load();
                     Stage newStage = new Stage();
+                    newStage.setResizable(false);
                     newStage.setTitle("RoboRally");
                     newStage.setScene(new Scene(root1));
                     newStage.show();
@@ -83,7 +103,6 @@ public class ServerIpStageViewModel implements Initializable {
                     a.setContentText("I can't find a game-server at " + serverIP + " : " + serverPort);
                     a.show();
                     serverAddressField.clear();
-                    serverPortField.clear();
                 }
             } else {
                 Alert a = new Alert(Alert.AlertType.NONE);
@@ -93,28 +112,40 @@ public class ServerIpStageViewModel implements Initializable {
                 serverPortField.clear();
             }
 
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
 
         }
     }
 
 
-    private boolean validatePort (String port) {
-        if (port.matches("^-?\\d+$")) {
+    private boolean validatePort(String port) {
+        if(port.matches("^-?\\d+$")) {
             return (Integer.parseInt(port) >= 500 && Integer.parseInt(port) <= 65535);
         }
         return false;
     }
 
+    /**
+     * Lmu button action.
+     * Sets the IP and the Port to our beloved LMU's server
+     *
+     * @param event the event
+     */
     @FXML
-    public void LMUButtonAction (ActionEvent event) {
+    public void LMUButtonAction(ActionEvent event) {
         serverAddressField.setText("sep21.dbs.ifi.lmu.de");
         serverPortField.setText("52021");
     }
 
+    /**
+     * Bb button action.
+     * Sets the IP and the Port to our beloved bb server
+     *
+     * @param event the event
+     */
     @FXML
-    public void BBButtonAction (ActionEvent event) {
+    public void BBButtonAction(ActionEvent event) {
         serverAddressField.setText("127.0.0.1");
         serverPortField.setText("500");
     }

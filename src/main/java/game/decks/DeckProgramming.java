@@ -15,17 +15,17 @@ public class DeckProgramming extends Deck {
 
     public void initializeDeck() {
 
-        for (int i = 0; i < 5; i++) {
+        for(int i = 0; i < 5; i++) {
             this.deckProgramming.add(new MoveI());
         }
 
-        for (int i = 0; i < 3; i++) {
+        for(int i = 0; i < 3; i++) {
             this.deckProgramming.add(new MoveII());
             this.deckProgramming.add(new TurnLeft());
             this.deckProgramming.add(new TurnRight());
         }
 
-        for (int i = 0; i < 2; i++) {
+        for(int i = 0; i < 2; i++) {
             this.deckProgramming.add(new Again());
         }
 

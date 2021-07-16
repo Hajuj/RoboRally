@@ -2,6 +2,7 @@ package game.decks;
 
 import game.Card;
 import game.Deck;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,7 +15,7 @@ public class DeckRegister extends Deck {
 
     public void initializeDeck() {
         this.deckRegister = new ArrayList<Card>();
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 5; i++) {
             deckRegister.add(i, null);
         }
     }

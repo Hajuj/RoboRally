@@ -33,7 +33,7 @@ public class GameTimer {
     public void timerEnded() {
         server.getCurrentGame().setTimerOn(new AtomicBoolean(false));
         server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
-        for (int i : server.getCurrentGame().tooLateClients()) {
+        for(int i : server.getCurrentGame().tooLateClients()) {
             Player player = server.getPlayerWithID(i);
             JSONMessage jsonMessage = new JSONMessage("CardsYouGotNow", new CardsYouGotNowBody(player.drawBlind()));
             server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
@@ -47,7 +47,7 @@ public class GameTimer {
 
     class RemindTask extends TimerTask {
         public void run() {
-            if (server.getCurrentGame().getTimerOn()) {
+            if(server.getCurrentGame().getTimerOn()) {
                 timerEnded();
 //                timer.cancel();
 //                timer.purge();

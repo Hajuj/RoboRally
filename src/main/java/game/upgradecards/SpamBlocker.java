@@ -4,7 +4,7 @@ import game.Card;
 
 public class SpamBlocker extends Card {
 
-    public SpamBlocker(){
+    public SpamBlocker() {
         cardName = "SpamBlocker";
     }
 
@@ -12,7 +12,7 @@ public class SpamBlocker extends Card {
         return false;
     }
 
-    public boolean isPermanent(){
+    public boolean isPermanent() {
         return false;
     }
 }

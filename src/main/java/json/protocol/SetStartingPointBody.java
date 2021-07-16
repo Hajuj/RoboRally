@@ -16,21 +16,21 @@ public class SetStartingPointBody implements ClientMessageAction<SetStartingPoin
     @Expose
     private final int y;
 
-    public SetStartingPointBody (int x, int y) {
+    public SetStartingPointBody(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX () {
+    public int getX() {
         return x;
     }
 
-    public int getY () {
+    public int getY() {
         return y;
     }
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, SetStartingPointBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleSetStartingPoint(server, clientHandler, bodyObject);
     }
 }

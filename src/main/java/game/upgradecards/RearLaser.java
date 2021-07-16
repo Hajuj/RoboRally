@@ -4,7 +4,7 @@ import game.Card;
 
 public class RearLaser extends Card {
 
-    public RearLaser(){
+    public RearLaser() {
         cardName = "RearLaser";
     }
 
@@ -12,7 +12,7 @@ public class RearLaser extends Card {
         return false;
     }
 
-    public boolean isPermanent(){
+    public boolean isPermanent() {
         return true;
     }
 }

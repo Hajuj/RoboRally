@@ -16,20 +16,20 @@ public class RegisterChosenBody implements ServerMessageAction<RegisterChosenBod
 
 
     @Override
-    public void triggerAction (ClientModel client, RegisterChosenBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, RegisterChosenBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleRegisterChosen(client, bodyObject);
     }
 
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public int getRegister () {
+    public int getRegister() {
         return register;
     }
 
-    public RegisterChosenBody (int clientID, int register) {
+    public RegisterChosenBody(int clientID, int register) {
         this.clientID = clientID;
         this.register = register;
     }

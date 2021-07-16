@@ -28,27 +28,43 @@ public class RebootDirectionViewModel implements Initializable {
     @FXML
     public Button left;
 
-
+    /**
+     * Chooses top as orientation.
+     */
     @FXML
     public void chooseTop() {
         clientModel.getClientGameModel().sendRebootDirection("top");
     }
 
+    /**
+     * Chooses bottom as orientation.
+     */
     @FXML
     public void chooseBottom() {
         clientModel.getClientGameModel().sendRebootDirection("bottom");
     }
 
+    /**
+     * Chooses left as orientation.
+     */
     @FXML
     public void chooseLeft() {
         clientModel.getClientGameModel().sendRebootDirection("left");
     }
 
+    /**
+     * Chooses right as orientation.
+     */
     @FXML
     public void chooseRight() {
         clientModel.getClientGameModel().sendRebootDirection("right");
     }
 
+    /**
+     * Your robot image.
+     *
+     * @return the image
+     */
     public Image yourRobot() {
 
         int figure = clientGameModel.getPlayer().getFigure();
@@ -61,22 +77,27 @@ public class RebootDirectionViewModel implements Initializable {
         robotAvatar.setImage(yourRobot());
     }
 
-
+    /**
+     * Show orientation.
+     * Sets the image in the place according to its orientation
+     *
+     * @param mouseEvent the mouse event
+     */
     public void showOrientation(MouseEvent mouseEvent) {
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RobotDirectionArrowHUGE.png")));
-        if (mouseEvent.getSource().equals(top)) {
+        if(mouseEvent.getSource().equals(top)) {
             robotOrientation.setRotate(180);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(bottom)) {
+        if(mouseEvent.getSource().equals(bottom)) {
             robotOrientation.setRotate(0);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(left)) {
+        if(mouseEvent.getSource().equals(left)) {
             robotOrientation.setRotate(90);
             robotOrientation.setImage(image);
         }
-        if (mouseEvent.getSource().equals(right)) {
+        if(mouseEvent.getSource().equals(right)) {
             robotOrientation.setRotate(-90);
             robotOrientation.setImage(image);
         }

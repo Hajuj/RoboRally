@@ -53,7 +53,7 @@ public class GameGuideController {
     public void buttonClicked(ActionEvent event) throws IOException {
         Parent root;
 
-        if (event.getSource() == buttonCards) {
+        if(event.getSource() == buttonCards) {
             this.rootStage = (Stage) buttonCards.getScene().getWindow();
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/CardsInfo.fxml")));
             Scene scene = new Scene(root);
@@ -61,7 +61,7 @@ public class GameGuideController {
             this.rootStage.show();
             rootStage.setResizable(false);
         }
-        if (event.getSource() == buttonRobots) {
+        if(event.getSource() == buttonRobots) {
             this.rootStage = (Stage) buttonRobots.getScene().getWindow();
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/RobotsInfo.fxml")));
             Scene scene = new Scene(root);
@@ -70,7 +70,7 @@ public class GameGuideController {
             rootStage.setResizable(false);
 
         }
-        if (event.getSource() == buttonRules) {
+        if(event.getSource() == buttonRules) {
             this.rootStage = (Stage) buttonRules.getScene().getWindow();
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/RulesInfo.fxml")));
             Scene scene = new Scene(root);
@@ -79,7 +79,7 @@ public class GameGuideController {
             rootStage.setResizable(false);
 
         }
-        if (event.getSource() == buttonCourses) {
+        if(event.getSource() == buttonCourses) {
             this.rootStage = (Stage) buttonCourses.getScene().getWindow();
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/CoursesInfo.fxml")));
             Scene scene = new Scene(root);

@@ -16,20 +16,20 @@ public class PlayerTurningBody implements ServerMessageAction<PlayerTurningBody>
     private String rotation;
 
     @Override
-    public void triggerAction (ClientModel client, PlayerTurningBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, PlayerTurningBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handlePlayerTurning(client, bodyObject);
     }
 
-    public PlayerTurningBody (int clientID, String rotation) {
+    public PlayerTurningBody(int clientID, String rotation) {
         this.clientID = clientID;
         this.rotation = rotation;
     }
 
-    public int getClientID () {
+    public int getClientID() {
         return clientID;
     }
 
-    public String getRotation () {
+    public String getRotation() {
         return rotation;
     }
 }

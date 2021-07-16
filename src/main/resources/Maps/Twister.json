@@ -606,12 +606,21 @@
             "count": 1,
             "type": "EnergySpace",
             "isOnBoard": "6B"
+          },
+          {
+            "orientations": [
+              "bottom"
+            ],
+            "type": "Wall",
+            "isOnBoard": "6B"
           }
         ],
         [
           {
-            "count": 1,
-            "type": "EnergySpace",
+            "orientations": [
+              "right"
+            ],
+            "type": "Wall",
             "isOnBoard": "6B"
           }
         ],
@@ -689,8 +698,10 @@
         ],
         [
           {
-            "count": 1,
-            "type": "EnergySpace",
+            "orientations": [
+              "left"
+            ],
+            "type": "Wall",
             "isOnBoard": "6B"
           }
         ],
@@ -698,6 +709,13 @@
           {
             "count": 1,
             "type": "EnergySpace",
+            "isOnBoard": "6B"
+          },
+          {
+            "orientations": [
+              "top"
+            ],
+            "type": "Wall",
             "isOnBoard": "6B"
           }
         ],

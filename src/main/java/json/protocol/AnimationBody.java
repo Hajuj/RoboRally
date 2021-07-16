@@ -12,17 +12,17 @@ public class AnimationBody implements ServerMessageAction<AnimationBody> {
     @Expose
     private String type;
 
-    public AnimationBody (String type) {
+    public AnimationBody(String type) {
         this.type = type;
     }
 
 
     @Override
-    public void triggerAction (ClientModel client, AnimationBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, AnimationBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleAnimation(client, bodyObject);
     }
 
-    public String getType () {
+    public String getType() {
         return type;
     }
 }

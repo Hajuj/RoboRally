@@ -12,6 +12,7 @@ public class Robot {
 
     /**
      * Constructor to create a new Robot.
+     *
      * @param name      is the name of the robot
      * @param xPosition is the x position of the robot on the map
      * @param yPosition is the y position of the robot on the map

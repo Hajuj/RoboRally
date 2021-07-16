@@ -6,7 +6,7 @@ import game.Card;
  * @author Ilja Knis
  */
 public class Again extends Card {
-    public Again(){
+    public Again() {
         this.cardName = "Again";
     }
 

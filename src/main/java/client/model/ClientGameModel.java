@@ -206,15 +206,18 @@ public class ClientGameModel {
     public boolean isCurrentPlayer() {
         return currentPlayer;
     }
+
     /**
      * Methode to send the played card in a PlayCard- Message to the clientModel
      * which will send the message to the server to be handled
+     *
      * @param cardName string vlaue of the played-card name
      * **/
     public void sendPlayCard (String cardName) {
         JSONMessage playCard = new JSONMessage("PlayCard", new PlayCardBody(cardName));
         clientModel.sendMessage(playCard);
     }
+
     /**
      * Methode that sends choosen cards by the player after placing them in registers
      * in a  SelectedCard- Message to the clientModel
@@ -323,9 +326,9 @@ public class ClientGameModel {
         }
     }
 
-    public void removeElementFromMap (Element element, int x, int y) {
-        for (int i = 0; i < map.get(x).get(y).size(); i++) {
-            if (element.getType().equals(map.get(x).get(y).get(i).getType())) {
+    public void removeElementFromMap(Element element, int x, int y) {
+        for(int i = 0; i < map.get(x).get(y).size(); i++) {
+            if(element.getType().equals(map.get(x).get(y).get(i).getType())) {
                 map.get(x).get(y).remove(i);
                 break;
             }
@@ -343,6 +346,9 @@ public class ClientGameModel {
      * **/
     public void buyUpgradeCard (String cardName) {
         boolean isBuying = true;
+        if (cardName.equals ( "Null" )){
+            isBuying = false;
+        }
         if (checkAllowToBuy(cardName)) {
             boughtCards.add(cardName);
             this.boughtCard= cardName;
@@ -882,19 +888,21 @@ public class ClientGameModel {
         return queueCPMove;
     }
 
-    public void setQueueCPMove (boolean queueCPMove) {
+    public void setQueueCPMove(boolean queueCPMove) {
         boolean oldQueueCPMove = this.queueCPMove;
         this.queueCPMove = queueCPMove;
-        if (this.queueCPMove) {
+        if(this.queueCPMove) {
             propertyChangeSupport.firePropertyChange("oldQueueCPMove", oldQueueCPMove, true);
         }
     }
 
-    public void setGameFinished (boolean gameFinished) {
+
+    public void setGameFinished(boolean gameFinished) {
         boolean oldGameFinished = this.gameFinished;
         this.gameFinished = gameFinished;
-        if (this.gameFinished) {
+        if(this.gameFinished) {
             propertyChangeSupport.firePropertyChange("gameFinished", oldGameFinished, true);
         }
     }
+
 }

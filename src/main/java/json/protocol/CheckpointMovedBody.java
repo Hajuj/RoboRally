@@ -17,23 +17,23 @@ public class CheckpointMovedBody implements ServerMessageAction<CheckpointMovedB
 
 
     @Override
-    public void triggerAction (ClientModel client, CheckpointMovedBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(ClientModel client, CheckpointMovedBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleCheckpointMovedBody(client, bodyObject);
     }
 
-    public int getCheckpointID () {
+    public int getCheckpointID() {
         return checkpointID;
     }
 
-    public int getX () {
+    public int getX() {
         return x;
     }
 
-    public int getY () {
+    public int getY() {
         return y;
     }
 
-    public CheckpointMovedBody (int checkpointID, int x, int y) {
+    public CheckpointMovedBody(int checkpointID, int x, int y) {
         this.checkpointID = checkpointID;
         this.x = x;
         this.y = y;

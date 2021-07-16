@@ -8,7 +8,7 @@ public class Virus extends game.Card {
     /**
      * Instantiates a new Virus.
      */
-    public Virus(){
+    public Virus() {
         cardName = "Virus";
     }
 

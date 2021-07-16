@@ -14,7 +14,7 @@ public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
     @Expose
     private int clientID;
 
-    public CardPlayedBody(int clientID ,String card) {
+    public CardPlayedBody(int clientID, String card) {
 
         this.card = card;
         this.clientID = clientID;
@@ -25,7 +25,11 @@ public class CardPlayedBody implements ServerMessageAction<CardPlayedBody> {
         messageHandler.handleCardPlayed(clientModel, bodyObject);
     }
 
-    public String getCard(){return card;}
+    public String getCard() {
+        return card;
+    }
 
-    public int getClientID(){return clientID;}
+    public int getClientID() {
+        return clientID;
+    }
 }

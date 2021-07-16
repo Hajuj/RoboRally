@@ -17,7 +17,7 @@ public class DeckWorm extends Deck {
     public void initializeDeck() {
         deckWorm = new ArrayList<Card>();
 
-        for (int i = 0; i < 6; i++) {
+        for(int i = 0; i < 6; i++) {
             deckWorm.add(new Worm());
         }
     }

@@ -14,15 +14,15 @@ public class ChooseRegisterBody implements ClientMessageAction<ChooseRegisterBod
     private int register;
 
     @Override
-    public void triggerAction (Server server, ClientHandler clientHandler, ChooseRegisterBody bodyObject, MessageHandler messageHandler) {
+    public void triggerAction(Server server, ClientHandler clientHandler, ChooseRegisterBody bodyObject, MessageHandler messageHandler) {
         messageHandler.handleChooseRegister(server, clientHandler, bodyObject);
     }
 
-    public ChooseRegisterBody (int register) {
+    public ChooseRegisterBody(int register) {
         this.register = register;
     }
 
-    public int getRegister () {
+    public int getRegister() {
         return register;
     }
 }
