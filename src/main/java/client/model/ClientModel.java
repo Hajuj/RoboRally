@@ -69,7 +69,7 @@ public class ClientModel {
      * ClientModel realisiert Singelton-Pattern,
      * damit alle ViewModels referenzen auf das gleiche Object von ClientModel Klasse haben
      *
-     * @return instace of ClientModel Klasse
+     * @return instance of ClientModel Klasse
      */
     public static ClientModel getInstance() {
         if(instance == null) {

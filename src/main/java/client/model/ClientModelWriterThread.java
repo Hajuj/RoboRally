@@ -48,12 +48,10 @@ public class ClientModelWriterThread extends Thread {
         writer.flush();
     }
 
-    //TODO check if working
     public void sendChatMessage(String message) {
         sendMessage(new JSONMessage("SendChat", new SendChatBody(message, -1)));
     }
 
-    //TODO check if working
     public void sendDirectMessage(String message, int playerID) {
         sendMessage(new JSONMessage("SendChat", new SendChatBody(message, playerID)));
     }

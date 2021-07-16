@@ -1178,7 +1178,7 @@ public class Game {
     }
 
     /**
-     * Activat spam card.
+     * Activate spam card.
      *
      * @param player the player
      */
@@ -1187,6 +1187,11 @@ public class Game {
 
     }
 
+    /**
+     * Activate memory swap card.
+     *
+     * @param player the player
+     */
     public void activateMemorySwapCard(Player player) {
         player.drawCardsProgramming(3);
         JSONMessage jsonMessage = new JSONMessage("YourCards", new YourCardsBody(player.getDeckHand().toArrayList()));

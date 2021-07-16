@@ -22,6 +22,10 @@ public class GameTimer {
         this.server = server;
     }
 
+    /**
+     * startTimer():
+     * starts a 30 sec timer and sends JSON Message
+     */
     public void startTimer() {
         timer = new Timer();
         server.getCurrentGame().setTimerOn(new AtomicBoolean(true));
@@ -30,6 +34,10 @@ public class GameTimer {
         timer.schedule(new RemindTask(), 30000);
     }
 
+    /**
+     * When the timer ends a JSON Message is sent and the late players also,
+     * with the cards that they have got.
+     */
     public void timerEnded() {
         server.getCurrentGame().setTimerOn(new AtomicBoolean(false));
         server.getCurrentGame().sendToAllPlayers(new JSONMessage("TimerEnded", new TimerEndedBody(server.getCurrentGame().tooLateClients())));
@@ -45,12 +53,14 @@ public class GameTimer {
         timer = null;
     }
 
+
+    /**
+     * Task to be executed once timer ends
+     */
     class RemindTask extends TimerTask {
         public void run() {
             if(server.getCurrentGame().getTimerOn()) {
                 timerEnded();
-//                timer.cancel();
-//                timer.purge();
             }
         }
     }

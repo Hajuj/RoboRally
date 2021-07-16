@@ -7,6 +7,12 @@ import org.apache.log4j.Logger;
 
 import java.util.Map;
 
+/**
+ * @author Viktoria
+ * This is a message handler for the AI that overrides some of the methods from client MessageHandler.
+ * The current stand of the AI is that it chooses random cards, doesn't buy upgrade cards,
+ * doesn't choose a reboot direction.
+ */
 public class MessageHandlerAI extends client.model.MessageHandler {
     private static SimpleAIModel simpleAIModel = SimpleAIModel.getInstance();
     private static final Logger logger = Logger.getLogger(MessageHandler.class.getName());

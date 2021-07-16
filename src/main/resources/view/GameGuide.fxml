@@ -33,7 +33,7 @@
         </viewport>
     </ImageView>
    <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);;" />
-    <Label fx:id="robopedia" prefHeight="129.0" prefWidth="272.0" text="Game Guid" textFill="#9e0101">
+    <Label fx:id="robopedia" prefHeight="129.0" prefWidth="272.0" text="Game Guide" textFill="#9e0101">
         <GridPane.margin>
             <Insets bottom="250.0" />
         </GridPane.margin>

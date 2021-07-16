@@ -14,6 +14,9 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author Viktoria, Mohamad
+ */
 public class ClientGameModel {
 
     private static ClientGameModel instance;

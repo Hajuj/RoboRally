@@ -4,6 +4,10 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
+/**
+ * @author Viktoria
+ * The class is under construction.
+ */
 public class CardsThread extends Thread {
     private SimpleAIModel simpleAIModel;
     private int cards;

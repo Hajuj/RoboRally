@@ -3,7 +3,6 @@ package client.KI_Zeug;
 import client.model.ClientModel;
 import game.Game;
 import game.boardelements.StartPoint;
-import javafx.application.Application;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -11,6 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * The type Simple ai model.
+ *
+ * @author Viktoria
+ */
 public class SimpleAIModel {
     private static SimpleAIModel instance;
     private static ClientModel clientModel = ClientModel.getInstance();
@@ -35,6 +39,11 @@ public class SimpleAIModel {
     private SimpleAIModel() {
     }
 
+    /**
+     * AI Instance because it's singleton.
+     *
+     * @return it return the instance of the AI.
+     */
     public static SimpleAIModel getInstance() {
         if(instance == null) {
             instance = new SimpleAIModel();
@@ -43,6 +52,11 @@ public class SimpleAIModel {
     }
 
 
+    /**
+     * AI Main method, with the serverPort and IP as arguments.
+     *
+     * @param args the arguments that the server takes.
+     */
     public static void main(String[] args) {
         if (args.length == 0)
             throw new IllegalArgumentException("No arguments provided. Flags: -h IP -p Port.");
@@ -85,6 +99,9 @@ public class SimpleAIModel {
         //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52021);
     }
 
+    /**
+     * Chooses the free figure
+     */
     public void chooseRobotRoutine() {
         if(figureCounter != 5) {
             figureCounter++;
@@ -94,6 +111,9 @@ public class SimpleAIModel {
         }
     }
 
+    /**
+     * Sets a starting point
+     */
     public void setStartingPointRoutine() {
         int i = 0;
         if(startingPointCounter != clientModel.getClientGameModel().getStartPointMap().size() - 1) {
@@ -112,6 +132,16 @@ public class SimpleAIModel {
         }
     }
 
+    /**
+     * Check doubl and zeros boolean.
+     *
+     * @param reg0 the reg 0
+     * @param reg1 the reg 1
+     * @param reg2 the reg 2
+     * @param reg3 the reg 3
+     * @param reg4 the reg 4
+     * @return the boolean
+     */
     public static boolean checkDoublAndZeros(int reg0, int reg1, int reg2, int reg3, int reg4) {
         if(reg0 == 0 || reg1 == 0 || reg2 == 0 || reg3 == 0 || reg4 == 0) return true;
         if((reg0 == reg1) || reg0 == reg2 || reg0 == reg3 || reg0 == reg4) return true;
@@ -121,6 +151,11 @@ public class SimpleAIModel {
         return false;
     }
 
+    /**
+     * Generate arrays array list.
+     *
+     * @return the array list
+     */
     public static ArrayList<Integer> generateArrays() {
         ArrayList<Integer> nubArr = new ArrayList<>();
         for(int i = 11111; i < 100000; i++) {
@@ -136,6 +171,9 @@ public class SimpleAIModel {
         return nubArr;
     }
 
+    /**
+     * Create threads.
+     */
     public void createThreads() {
         ArrayList<Integer> numArr = generateArrays();
         for(int i = 0; i < numArr.size(); i++) {
@@ -147,13 +185,17 @@ public class SimpleAIModel {
     }
 
 
+    /**
+     * Choode cards with threads routine.
+     */
     public void choodeCardsWithThreadsRoutine() {
         createThreads();
     }
 
-
+    /**
+     * Choose random cards from the hand to the register
+     */
     public void chooseCardsRoutine() {
-
         for(int j = 5; j < 9; j++) {
             if(!clientModel.getClientGameModel().getCardsInHand().get(j).equals("Again")) {
                 clientModel.getClientGameModel().sendSelectedCards(0, clientModel.getClientGameModel().getCardsInHand().get(j));
@@ -171,15 +213,12 @@ public class SimpleAIModel {
     }
 
 
-    public ArrayList<String> getMyHandCards() {
-        return myHandCards;
-    }
-
-    public void setMyHandCards(ArrayList<String> myHandCards) {
-        this.myHandCards = myHandCards;
-    }
-
-    public void playCardRoutine(int currentRegiser) {
+    /**
+     * Play automatically the card in the register
+     *
+     * @param currentRegister the current register
+     */
+    public void playCardRoutine(int currentRegister) {
         if(IS_LAZY) {
             try {
                 Thread.sleep(1000);
@@ -187,10 +226,13 @@ public class SimpleAIModel {
                 e.printStackTrace();
             }
         }
-        clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegiser));
+        clientModel.getClientGameModel().sendPlayCard(cardsInRegister.get(currentRegister));
     }
 
 
+    /**
+     * Picks random damage.
+     */
     public void pickDamageRoutine() {
         Random random = new Random();
         ArrayList<String> pickedDamage = new ArrayList();
@@ -205,63 +247,156 @@ public class SimpleAIModel {
         clientModel.getClientGameModel().sendSelectedDamage(pickedDamage);
     }
 
+    /**
+     * Gets my hand cards.
+     *
+     * @return the my hand cards
+     */
+    public ArrayList<String> getMyHandCards() {
+        return myHandCards;
+    }
+
+    /**
+     * Sets my hand cards.
+     *
+     * @param myHandCards the my hand cards
+     */
+    public void setMyHandCards(ArrayList<String> myHandCards) {
+        this.myHandCards = myHandCards;
+    }
+
+    /**
+     * Gets cards in register.
+     *
+     * @return the cards in register
+     */
     public static HashMap<Integer, String> getCardsInRegister() {
         return cardsInRegister;
     }
 
+    /**
+     * Sets starting point counter.
+     *
+     * @param startingPointCounter the starting point counter
+     */
     public void setStartingPointCounter(int startingPointCounter) {
         this.startingPointCounter = startingPointCounter;
     }
 
+    /**
+     * Gets starting point counter.
+     *
+     * @return the starting point counter
+     */
     public int getStartingPointCounter() {
         return startingPointCounter;
     }
 
+    /**
+     * Is has player values boolean.
+     *
+     * @return the boolean
+     */
     public boolean isHasPlayerValues() {
         return hasPlayerValues;
     }
 
+    /**
+     * Sets has player values.
+     *
+     * @param hasPlayerValues the has player values
+     */
     public void setHasPlayerValues(boolean hasPlayerValues) {
         this.hasPlayerValues = hasPlayerValues;
     }
 
 
+    /**
+     * Gets figure counter.
+     *
+     * @return the figure counter
+     */
     public int getFigureCounter() {
         return figureCounter;
     }
 
+    /**
+     * Gets my baby list.
+     *
+     * @return the my baby list
+     */
     public ArrayList<CardsThread> getMyBabyList() {
         return myBabyList;
     }
 
+    /**
+     * Sets my baby list.
+     *
+     * @param myBabyList the my baby list
+     */
     public void setMyBabyList(ArrayList<CardsThread> myBabyList) {
         this.myBabyList = myBabyList;
     }
 
+    /**
+     * Sets figure counter.
+     *
+     * @param figureCounter the figure counter
+     */
     public void setFigureCounter(int figureCounter) {
         this.figureCounter = figureCounter;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets client model.
+     *
+     * @return the client model
+     */
     public static ClientModel getClientModel() {
         return clientModel;
     }
 
+    /**
+     * Sets client model.
+     *
+     * @param clientModel the client model
+     */
     public static void setClientModel(ClientModel clientModel) {
         SimpleAIModel.clientModel = clientModel;
     }
 
+    /**
+     * Gets game.
+     *
+     * @return the game
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Sets game.
+     *
+     * @param game the game
+     */
     public void setGame(Game game) {
         this.game = game;
     }
