@@ -21,7 +21,9 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
-
+/**
+ * @author Lilas
+ */
 public class ServerIpStageViewModel implements Initializable {
     ClientModel model = ClientModel.getInstance();
 

@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
+ * @author Lilas
+ */
+
+/**
  * The type Game guide controller.
  */
 public class GameGuideController {
