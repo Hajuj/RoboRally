@@ -6,7 +6,7 @@ This is our university project for the board game RoboRally.
 Here you will find everything needed for you to downaload and run the game on your local machine.
 
 ## Run Using JAR
-1. Download the JAR files from [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/tree/master/target)
+1. Download the JAR files from [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/tree/Abgabe/target)
 2. To run the server, write:
 ~~~
 java -jar Server-jar-with-dependencies.jar -p PORTNUMBER
@@ -17,15 +17,12 @@ java -jar --module-path "PATH-TO-JAVAFX" --add-modules javafx.controls,javafx.gr
 ~~~
 4. To run AI, write:
 ~~~
-java -jar SimpleAIModel-jar-with-dependencies.jar
+java -jar SimpleAIModel-jar-with-dependencies.jar -h HOST_IP -p PORTNUMBER
 ~~~
 * **Repeat 3 until you get the desired number of players.**
 
 ## Game
-
-### Lobby
-
-### Game Rules
+Look [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/wikis/home) to find everything relevant for the Game.
 
 ## Project Requirements
 - Java 16
