@@ -32,6 +32,9 @@ public class ClientHandler extends Thread {
     private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
 
+    /**
+     * ClientHandler Constructor.
+     */
     public ClientHandler(Socket clientSocket, Server server, String protocolVersion, MessageHandler messageHandler) {
         this.clientSocket = clientSocket;
         this.server = server;
@@ -39,22 +42,17 @@ public class ClientHandler extends Thread {
         this.protocolVersion = protocolVersion;
     }
 
-    public int getPlayer_id() {
-        return player_id;
-    }
-
-    public void setPlayer_id(int player_id) {
-        this.player_id = player_id;
-    }
-
-    public Socket getClientSocket() {
-        return clientSocket;
-    }
-
+    /**
+     * This method starts the Client as a Thread and assign a Reader and Writer for him.
+     * It send HelloClient to the new Client with the writer, the reader waits for all the messages,
+     * when a new message comes, it deserialize it and trigger the required handle method in MessageHandler.
+     * Then it checks if a Client/Player disconnects from the server, then it sends ConnectionUpdate to all the players,
+     * then it checks if a game can be started, with the available clients
+     */
     @Override
     public void run() {
         try {
-            // output and input Streams of the Clientsocket
+            // output and input Streams of the ClientSocket
             OutputStreamWriter out = new OutputStreamWriter(clientSocket.getOutputStream());
             InputStreamReader in = new InputStreamReader(clientSocket.getInputStream());
 
@@ -69,12 +67,12 @@ public class ClientHandler extends Thread {
             writer.println(JSONSerializer.serializeJSON(jsonMessage));
             writer.flush();
 
-            //Lese alle incomming Strings mit dem reader und deserialize sie mit dem JSONDeserializer
+            //Lese alle incoming Strings mit dem reader und deserialize sie mit dem JSONDeserializer
             String messageString;
             while ((messageString = reader.readLine()) != null) {
                 // Deserialize the received JSON String into a JSON object
                 jsonMessage = JSONDeserializer.deserializeJSON(messageString);
-                logger.info("Incoming StringMessage " + messageString + " was deserialised to " + jsonMessage);
+                logger.info("Incoming StringMessage " + messageString + " was deserialized to " + jsonMessage);
 
                 // Casting a messageBody class by reflection
                 // Alle mögliche MessageBody aus dem Protokoll befinden sich in package json.protocol. und
@@ -156,7 +154,6 @@ public class ClientHandler extends Thread {
                 server.sendMessage(startMessage, connection.getWriter());
             }
             server.getCurrentGame().canStartTheGame();
-            logger.info("I CAN START THE GAME");
         }
 
         try {
@@ -164,6 +161,21 @@ public class ClientHandler extends Thread {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+    }
+
+    /**
+     * Getters and Setters
+     */
+    public int getPlayer_id() {
+        return player_id;
+    }
+
+    public void setPlayer_id(int player_id) {
+        this.player_id = player_id;
+    }
+
+    public Socket getClientSocket() {
+        return clientSocket;
     }
 
     public PrintWriter getWriter() {
@@ -180,11 +192,17 @@ public class ClientHandler extends Thread {
         private int playerID;
         private boolean isConnected;
 
+        /**
+         * Constructor
+         */
         public Connection(Socket clientSocket) throws IOException {
             this.socket = clientSocket;
             this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
         }
 
+        /**
+         * Getters and Setters.
+         */
         public void setConnected(boolean connected) {
             isConnected = connected;
         }

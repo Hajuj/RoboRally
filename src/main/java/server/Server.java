@@ -34,7 +34,9 @@ public class Server {
     private int clientsCounter = 1;
     private ArrayList<ClientHandler.Connection> connections = new ArrayList<>();
 
-
+    /**
+     * Server Constructor, with the current date.
+     */
     private Server() {
         Date date = new Date();
         String workIt = date.toString().replaceAll("\\s+", "_");
@@ -42,6 +44,11 @@ public class Server {
         loggerStamp += workIt;
     }
 
+    /**
+     * Server Instance because it's singleton.
+     *
+     * @return it return the instance of the server.
+     */
     public static Server getInstance() {
         if (instance == null) {
             instance = new Server();
@@ -50,6 +57,11 @@ public class Server {
     }
 
 
+    /**
+     * Server Main method, with the serverPort as an argument.
+     *
+     * @param args the arguments that the server takes.
+     */
     public static void main(String[] args) {
         if (args.length == 0)
             throw new IllegalArgumentException("No arguments provided. Flags: -p Port.");
@@ -84,6 +96,11 @@ public class Server {
         server.start();
     }
 
+    /**
+     * Server start method, creates a server socket, and waits for the player,
+     * when a new player comes to the server, the server establish a new ClientHandler
+     * and starts the client as a thread.
+     */
     public void start() {
         logger.info("Starting server...");
 
@@ -128,17 +145,34 @@ public class Server {
     }
 
 
+    /**
+     * This message is activated when a JSON Message is being sent.
+     *
+     * @param jsonMessage The JSON Message itself
+     * @param writer The writer of the client who the message should be sent to.
+     */
     public void sendMessage(JSONMessage jsonMessage, PrintWriter writer) {
         writer.println(JSONSerializer.serializeJSON(jsonMessage));
         writer.flush();
     }
 
+    /**
+     * This method checks if a all the players in the lobby are ready.
+     *
+     * @return True if all are ready, if not it returns false.
+     */
     public boolean areAllPlayersReady() {
         if (getReadyPlayer().size() < 2) return false;
         if (getReadyPlayer().size() == 6) return true;
         return getReadyPlayer().size() == getWaitingPlayer().size();
     }
 
+    /**
+     * This method gets the Player of the sent ID.
+     *
+     * @param ID The ID of the player.
+     * @return the player if the ID is right, if not then null.
+     */
     public Player getPlayerWithID(int ID) {
         for (Player player : waitingPlayer) {
             if (player.getPlayerID() == ID) {
@@ -148,6 +182,12 @@ public class Server {
         return null;
     }
 
+    /**
+     * This method gets the Connection of the sent ID.
+     *
+     * @param ID The ID of the player.
+     * @return the player if the ID is right, if not then null.
+     */
     public ClientHandler.Connection getConnectionWithID(int ID) {
         for (ClientHandler.Connection connection : connections) {
             if (connection.getPlayerID() == ID) {
@@ -157,6 +197,11 @@ public class Server {
         return null;
     }
 
+    /**
+     * This method save all the players in the game without the AI.
+     *
+     * @return the ArrayList.
+     */
     public ArrayList<Player> readyPlayerWithoutAI() {
         ArrayList<Player> readyPlayerWithoutAI = new ArrayList<>();
         for (Player player : readyPlayer) {
@@ -167,6 +212,11 @@ public class Server {
         return readyPlayerWithoutAI;
     }
 
+    /**
+     * This method checks if only AIs are in the server.
+     *
+     * @return True if all players are AIs, otherwise false.
+     */
     public boolean onlyAI() {
         for (Player player : readyPlayer) {
             if (!player.isAI()) {
@@ -176,6 +226,9 @@ public class Server {
         return true;
     }
 
+    /**
+     * Getters and Setters.
+     */
     public Game getCurrentGame() {
         return currentGame;
     }

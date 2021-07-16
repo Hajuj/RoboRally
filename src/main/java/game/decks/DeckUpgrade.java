@@ -10,6 +10,9 @@ import game.upgradecards.SpamBlocker;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Ilja
+ */
 public class DeckUpgrade extends Deck {
     ArrayList<Card> deckUpgrade = new ArrayList<>();
 

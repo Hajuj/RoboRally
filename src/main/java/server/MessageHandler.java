@@ -291,6 +291,16 @@ public class MessageHandler {
         }
     }
 
+    /**
+     * The player send the selected card from hand deck. The server adds the card to the register,
+     * if the first card in the first deck is Again, the server throws an error to the player.
+     * If the selection is successful the server send the selected to all the players.
+     * After the selection is finished the server starts the timer.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param selectedCardBody The message body of the JSON message
+     */
     public void handleSelectedCard (Server server, ClientHandler clientHandler, SelectedCardBody selectedCardBody) {
         String card = selectedCardBody.getCard();
         logger.info(ANSI_CYAN + "SelectedCard Message received. " + card + ANSI_RESET);
@@ -340,11 +350,24 @@ public class MessageHandler {
         }
     }
 
+    /**
+     * When a player plays a card the server checks if the it's the turn of the player,
+     * then it checks if the player has the card in register, and if everything is okay,
+     * the server activates the card effect and sends the played card to all other players.
+     * Then it informs all the players about the next player.
+     * If all the players played there turn, the server gets the new register so the players can play it.
+     * If all registers are already played, the server starts a new round.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param playCardBody The message body of the JSON message
+     */
     public void handlePlayCard (Server server, ClientHandler clientHandler, PlayCardBody playCardBody) {
         logger.info(ANSI_CYAN + "PlayCard Message received." + ANSI_RESET);
         String card = playCardBody.getCard();
         boolean canStartNewRound = true;
 
+        //Play card only when the game is running
         if (server.getCurrentGame().isGameOn()) {
             if (card.equals("SpamBlocker")) {
                 server.getCurrentGame().activateSpamCard(server.getPlayerWithID(clientHandler.getPlayer_id()));
@@ -358,7 +381,6 @@ public class MessageHandler {
                             if (player.getPlayerID() != clientHandler.getPlayer_id()) {
                                 JSONMessage cardPlayed = new JSONMessage("CardPlayed", new CardPlayedBody(clientHandler.getPlayer_id(), card));
                                 server.sendMessage(cardPlayed, server.getConnectionWithID(player.getPlayerID()).getWriter());
-                                //TODO send also all Movement and Animations
                             }
                         }
                         server.getCurrentGame().activateCardEffect(card);
@@ -416,6 +438,14 @@ public class MessageHandler {
         }
     }
 
+    /**
+     * The player send the requested direction after he reboots.
+     * The server saves the direction and the player in Hash Map.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param rebootDirectionBody The message body of the JSON message
+     */
     public void handleRebootDirection (Server server, ClientHandler clientHandler, RebootDirectionBody rebootDirectionBody) {
         logger.info(ANSI_CYAN + "RebootDirection Message received." + ANSI_RESET);
         String direction = rebootDirectionBody.getDirection();
@@ -426,6 +456,15 @@ public class MessageHandler {
         server.getCurrentGame().getRobotsRebootDirection().put(player, direction);
     }
 
+    /**
+     * If there is no more spam cards in the spam the deck, the the player has to choose a damage card.
+     * The player sends to the server the requested damage card, then the server checks if there is enough cards
+     * of that type, if not the server throws an error to the user, and sends again PickDamage to the player.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param selectedDamageBody The message body of the JSON message
+     */
     public void handleSelectedDamage (Server server, ClientHandler clientHandler, SelectedDamageBody selectedDamageBody) {
         logger.info(ANSI_CYAN + "SelectedDamage Message received." + ANSI_RESET);
         ArrayList<String> cards = selectedDamageBody.getCards();
@@ -508,6 +547,13 @@ public class MessageHandler {
         }
     }
 
+    /**
+     *
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param buyUpgradeBody The message body of the JSON message
+     */
     public void handleBuyUpgrade (Server server, ClientHandler clientHandler, BuyUpgradeBody buyUpgradeBody) {
         logger.info(ANSI_CYAN + "BuyUpgrade Message received." + ANSI_RESET);
         String cardName = buyUpgradeBody.getCard();
@@ -560,6 +606,9 @@ public class MessageHandler {
                     player.getTemporaryUpgrades().add(new SpamBlocker());
                 }
             }
+        } else {
+            JSONMessage jsonMessage = new JSONMessage("Error", new ErrorBody(errorMessage));
+            server.sendMessage(jsonMessage, server.getConnectionWithID(player.getPlayerID()).getWriter());
         }
 
         server.getCurrentGame().setCurrentPlayer(server.getCurrentGame().nextPlayerID());
@@ -574,6 +623,14 @@ public class MessageHandler {
     }
 
 
+    /**
+     * This method is activated after a player plays Admin Privilege card.
+     * The server checks if the player has the card, and if yes it sends all the players RegisterChosen.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param chooseRegisterBody The message body of the JSON message
+     */
     public void handleChooseRegister (Server server, ClientHandler clientHandler, ChooseRegisterBody chooseRegisterBody) {
         logger.info(ANSI_CYAN + "ChooseRegister Message received." + ANSI_RESET);
         //schauen ob dieser spieler echt AdminPrivilege hat
@@ -584,10 +641,17 @@ public class MessageHandler {
             JSONMessage adminMessage = new JSONMessage("RegisterChosen", new RegisterChosenBody(player.getPlayerID(), chooseRegisterBody.getRegister()));
             server.getCurrentGame().sendToAllPlayers(adminMessage);
         }
-
-
     }
 
+    /**
+     * This method is activated after the player plays Memory Swap.
+     * The server removes the returned cards that the player sends,
+     * and then it sends to the player YourCards message with the new cards.
+     *
+     * @param server          The Server
+     * @param clientHandler   The ClientHandler of the Server
+     * @param returnCardsBody The message body of the JSON message
+     */
     public void handleReturnCards (Server server, ClientHandler clientHandler, ReturnCardsBody returnCardsBody) {
         logger.info(ANSI_CYAN + "ReturnCards Message received." + ANSI_RESET);
         ArrayList<String> returnedCards = returnCardsBody.getCards();

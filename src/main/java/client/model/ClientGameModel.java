@@ -13,8 +13,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
- * @author Viktoria, Lilas
+ * @author Viktoria, Mohamad
  */
 public class ClientGameModel {
 

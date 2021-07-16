@@ -86,23 +86,16 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
 
 
     public ImageView loadImage(String element, String orientations) throws FileNotFoundException {
-        Image image;
-
-        if (element.equals("BlueBelt")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/BlueBelt_transparent_animated.gif")));
-        } else if (element.equals("OneLaserBeam")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/OneLaserBeamAnimated.gif")));
-        } else if (element.equals("DoppleLaserBeam")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/TwoLaserBeam_transparent_animated.gif")));
-        } else if (element.equals("TribleLaserBeam")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/ThreeLaserBeam_transparent_animated.gif")));
-        } else if (element.equals("GreenGear")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/GreenGear_transparent_animated_2.gif")));
-        }  else if (element.equals("RedGear")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RedGear_transparent_animated_slower.gif")));
-        } else {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/" + element + ".png")));
-        }
+        Image image = switch (element) {
+            case "BlueBelt" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/BlueBelt_transparent_animated.gif")));
+            case "GreenBelt" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/GreenBelt_animated.gif")));
+            case "OneLaserBeam" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/OneLaserBeamAnimated.gif")));
+            case "DoppleLaserBeam" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/TwoLaserBeam_transparent_animated.gif")));
+            case "TribleLaserBeam" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/ThreeLaserBeam_transparent_animated.gif")));
+            case "GreenGear" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/GreenGear_transparent_animated_2.gif")));
+            case "RedGear" -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/TransparentElements/RedGear_transparent_animated_slower.gif")));
+            default -> new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/mapElements/Elements/" + element + ".png")));
+        };
 
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -147,7 +140,7 @@ public class MapViewModel implements Initializable, PropertyChangeListener {
     }
 
     /**
-     * Hnadles the click event on the grid.
+     * Handles the click event on the grid.
      *
      * @param event the event
      */

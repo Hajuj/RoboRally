@@ -40,7 +40,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="GameGuidButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
+                  <Button fx:id="GameGuideButton" mnemonicParsing="false" onAction="#openGameGuid" prefHeight="69.0" prefWidth="276.0" style="-fx-background-color: #907509#907509;" styleClass="bodybg" stylesheets="@../images/Gui/Startscreen.css" text="How to play">
                      <font>
                         <Font name="Franklin Gothic Heavy" size="27.0" />
                      </font>

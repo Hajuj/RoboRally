@@ -1,0 +1,14 @@
+unnamed package
+client
+client.KI_Zeug
+client.model
+client.viewModel
+game
+game.boardelements
+game.damagecards
+game.decks
+game.programmingcards
+game.upgradecards
+json
+json.protocol
+server
