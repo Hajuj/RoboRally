@@ -3,6 +3,7 @@ package client.KI_Zeug;
 import client.model.ClientModel;
 import game.Game;
 import game.boardelements.StartPoint;
+import javafx.application.Application;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class SimpleAIModel {
 
     private static Game game;
 
-    private final String SERVER_IP = "127.0.0.1";
-    private final int SERVER_PORT = 500;
+    private static String serverIP = "127.0.0.1";
+    private static int serverPort = 500;
 
     private boolean hasPlayerValues = false;
     private int figureCounter = 0;
@@ -43,12 +44,44 @@ public class SimpleAIModel {
 
 
     public static void main(String[] args) {
+        if (args.length == 0)
+            throw new IllegalArgumentException("No arguments provided. Flags: -h IP -p Port.");
+        if (args.length == 1) {
+            if (args[0].charAt(0) == '-')
+                throw new IllegalArgumentException("Expected argument after: " + args[0]);
+            else
+                throw new IllegalArgumentException("Illegal Argument: " + args[0]);
+
+        }
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            String nextArg;
+            if (i + 1 == args.length || args[i + 1].charAt(0) == '-') {
+                throw new IllegalArgumentException("Expected argument after: " + arg);
+            } else {
+                nextArg = args[i + 1];
+            }
+            switch (arg) {
+                case "-h" -> {
+                    serverIP = nextArg;
+                    i++;
+                }
+                case "-p" -> {
+                    int port = Integer.parseInt(nextArg);
+                    if (port < 500 || port > 65535)
+                        throw new IllegalArgumentException("Port number " + port + " invalid");
+                    serverPort = port;
+                    i++;
+                }
+                default -> throw new IllegalArgumentException("Illegal Argument: " + arg);
+            }
+        }
         clientModel.setMessageHandler(new MessageHandlerAI());
         clientModel.setAI(true);
         for(int i = 0; i < 5; i++) {
             cardsInRegister.put(i, null);
         }
-        clientModel.connectClient(instance.SERVER_IP, instance.SERVER_PORT);
+        clientModel.connectClient(instance.serverIP, instance.serverPort);
         //clientModel.connectClient("sep21.dbs.ifi.lmu.de", 52021);
     }
 
