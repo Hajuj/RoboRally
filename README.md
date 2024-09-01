@@ -5,7 +5,7 @@ This is our university project for the board game RoboRally.
 
 Here you will find everything needed for you to downaload and run the game on your local machine.
 
-Check out the our [**Wiki**](https://github.com/Hajuj/RoboRally/wiki) for game rules.
+Check out our [**Wiki**](https://github.com/Hajuj/RoboRally/wiki) for game rules.
 
 ## Run Using JAR
 1. Download the JAR files from [here](https://github.com/Hajuj/RoboRally/tree/master/target)
