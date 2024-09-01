@@ -1,4 +1,4 @@
-![](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/raw/master/src/main/resources/images/Gui/startScreen.gif)
+![startScreen](https://github.com/user-attachments/assets/87fb15a4-82ec-43a1-8009-cb04c96e1b55)
 
 # Welcome!
 This is our university project for the board game RoboRally.
@@ -6,7 +6,7 @@ This is our university project for the board game RoboRally.
 Here you will find everything needed for you to downaload and run the game on your local machine.
 
 ## Run Using JAR
-1. Download the JAR files from [here](https://gitlab2.cip.ifi.lmu.de/dbs_sep/dbs_sep2021/blinde-bonbons/-/tree/master/target)
+1. Download the JAR files from [here](https://github.com/Hajuj/RoboRally/tree/master/target)
 2. To run the server, write:
 ~~~
 java -jar Server-jar-with-dependencies.jar -p PORTNUMBER
@@ -21,11 +21,21 @@ java -jar SimpleAIModel-jar-with-dependencies.jar
 ~~~
 * **Repeat 3 until you get the desired number of players.**
 
+## Lobby
+
+1. Type in your name and click "Choose username".
+2. Select your robot by clicking on it.
+3. Click on "Submit selections".
+4. Click on "Ready to play!".
+5. If you are the first one ready, you can select the racing course in the dropdown-menu and then confirm your selection by clicking on the green check mark.
+6. If enough players are ready, the game starts. There are four buttons on the left side.
+
 ## Game
 
-### Lobby
-
-### Game Rules
+1. Green robot button: amount of energy cubes and reached checkpoints.
+2. Purple register button: played cards.
+3. Pink speech bubbles button: chat.
+4. Blue arrow button (only visible in the activation phase): plays the card.
 
 ## Project Requirements
 - Java 16
